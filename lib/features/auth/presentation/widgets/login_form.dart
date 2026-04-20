@@ -1,0 +1,88 @@
+import 'package:wassaly/core/imports/core_imports.dart';
+import 'package:wassaly/core/imports/packages_imports.dart';
+import 'package:wassaly/features/auth/presentation/bloc/login_bloc.dart';
+import 'package:wassaly/features/auth/presentation/widgets/forgot_password_link.dart';
+import 'package:wassaly/features/auth/presentation/widgets/login_email_field.dart';
+import 'package:wassaly/features/auth/presentation/widgets/login_form_container.dart';
+import 'package:wassaly/features/auth/presentation/widgets/login_password_field.dart';
+import 'package:wassaly/features/auth/presentation/widgets/social_login_section.dart';
+
+class LoginForm extends StatelessWidget {
+  final TextEditingController emailController;
+  final TextEditingController passwordController;
+  final ValueChanged<String> onEmailChanged;
+  final ValueChanged<String> onPasswordChanged;
+  final ValueChanged<bool> onTogglePasswordVisibility;
+  final VoidCallback onLogin;
+  final VoidCallback onForgotPassword;
+  final VoidCallback onLoginWithGoogle;
+  final VoidCallback onLoginWithFacebook;
+
+  const LoginForm({
+    super.key,
+    required this.emailController,
+    required this.passwordController,
+    required this.onEmailChanged,
+    required this.onPasswordChanged,
+    required this.onTogglePasswordVisibility,
+    required this.onLogin,
+    required this.onForgotPassword,
+    required this.onLoginWithGoogle,
+    required this.onLoginWithFacebook,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = context.theme.colorScheme;
+    final tt = context.theme.textTheme;
+
+    return LoginFormContainer(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'auth.email_or_phone'.tr(),
+            textAlign: TextAlign.start,
+            style: tt.bodyMedium?.copyWith(
+              color: cs.primary,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          SizedBox(height: 12.h),
+          LoginEmailField(
+            controller: emailController,
+            onChanged: onEmailChanged,
+          ),
+          SizedBox(height: 16.h),
+          ForgotPasswordLink(onPressed: onForgotPassword),
+          SizedBox(height: 8.h),
+          LoginPasswordField(
+            controller: passwordController,
+            onChanged: onPasswordChanged,
+            onToggleVisibility: onTogglePasswordVisibility,
+          ),
+          SizedBox(height: 24.h),
+          BlocBuilder<LoginBloc, LoginState>(
+            buildWhen: (previous, current) =>
+                previous.isLoading != current.isLoading,
+            builder: (context, state) {
+              return AppButton(
+                label: 'auth.login_button'.tr(),
+                onPressed: state.isLoading ? null : onLogin,
+                isLoading: state.isLoading,
+                variant: ButtonVariant.primary,
+                isFullWidth: true,
+                height: ButtonSize.medium,
+              );
+            },
+          ),
+          SizedBox(height: 20.h),
+          SocialLoginSection(
+            onLoginWithGoogle: onLoginWithGoogle,
+            onLoginWithFacebook: onLoginWithFacebook,
+          ),
+        ],
+      ),
+    );
+  }
+}

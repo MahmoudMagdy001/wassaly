@@ -1,20 +1,22 @@
-import 'package:flutter/material.dart';
+import 'app.dart';
+import 'core/imports/core_imports.dart';
+import 'core/imports/packages_imports.dart';
+import 'core/injection/injection.dart';
 
-void main() {
-  runApp(const MainApp());
-}
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+  await EasyLocalization.ensureInitialized();
+  await dotenv.load(fileName: '.env');
 
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
+  await AppConfig.init();
+  await initDependencies();
+
+  runApp(
+    const LocalizationWrapper(
+      child: StateWrapper(
+        child: App(),
       ),
-    );
-  }
+    ),
+  );
 }

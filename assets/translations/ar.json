@@ -1,0 +1,52 @@
+{
+  "shared": {
+    "get_started": "Get Started"
+  },
+  "onboarding": {
+    "onboarding_title_1": "Your Journey,\nPerfectly Planned",
+    "onboarding_subtitle_1": "Effortlessly create and organize your\ndream trips. Start exploring now!",
+    "onboarding_title_2": "Discover\nFriends Nearby",
+    "onboarding_subtitle_2": "See where your friends are traveling and\nexplore the world together.",
+    "onboarding_title_3": "Stay Updated\nwith Top Places",
+    "onboarding_subtitle_3": "Find trending destinations and must-see attractions,\nall tailored to enhance your travel plans."
+  },
+  "home": {
+    "home_title": "Home",
+    "welcome_home": "Welcome Home!",
+    "home_subtitle": "You have successfully completed the onboarding process."
+  },
+  "auth": {
+    "log_in": "تسجيل الدخول",
+    "log_in_subtitle": "مرحبا بك مجددا في واصلي",
+    "email_or_phone": "البريد الإلكتروني أو رقم الهاتف",
+    "email": "البريد الإلكتروني",
+    "email_placeholder": "أدخل بياناتك هنا",
+    "email_required": "البريد الإلكتروني مطلوب",
+    "email_invalid": "أدخل بريد إلكتروني صالح",
+    "password": "كلمة المرور",
+    "password_required": "كلمة المرور مطلوبة",
+    "password_too_short": "يجب أن تكون كلمة المرور 6 أحرف على الأقل",
+    "forgot_password": "نسيت كلمة المرور؟",
+    "remember_me": "تذكرني",
+    "login_button": "تسجيل الدخول",
+    "dont_have_account": "ليس لديك حساب؟",
+    "sign_up": "إنشاء حساب جديد",
+    "sign_up_google": "جوجل",
+    "sign_up_facebook": "فيسبوك",
+    "or_login_with": "أو سجل دخول عبر",
+    "create_account": "Create Account",
+    "create_account_subtitle": "Create a new account to get started.",
+    "name": "Name",
+    "name_required": "Name is required",
+    "confirm_password": "Confirm Password",
+    "confirm_password_required": "Confirm password is required",
+    "passwords_do_not_match": "Passwords do not match",
+    "create_account_button": "Create Account",
+    "already_have_account": "Already have an account? ",
+    "sign_in": "Sign In",
+    "or_continue_with": "Or Continue With Account",
+    "forgot_password_title": "Forgot Password",
+    "forgot_password_subtitle": "Enter your email address to receive a reset link\nand regain access to your account.",
+    "reset_link_sent": "Password reset link sent to your email."
+  }
+}
