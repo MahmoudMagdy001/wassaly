@@ -153,11 +153,14 @@ class SignupForm extends StatelessWidget {
             SizedBox(height: 20.h),
             BlocBuilder<SignupBloc, SignupState>(
               buildWhen: (previous, current) =>
-                  previous.isLoading != current.isLoading,
+                  previous.isLoading != current.isLoading ||
+                  previous.isTermsAccepted != current.isTermsAccepted,
               builder: (context, state) {
                 return AppButton(
                   label: 'auth.create_account_button'.tr(),
-                  onPressed: state.isLoading ? null : onSignup,
+                  onPressed: (state.isLoading || !state.isTermsAccepted)
+                      ? null
+                      : onSignup,
                   isLoading: state.isLoading,
                   variant: ButtonVariant.success,
                   isFullWidth: true,
