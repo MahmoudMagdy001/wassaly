@@ -91,6 +91,24 @@ class OtpVerificationBloc
           resetToken: response.token,
         )),
       );
+    } else if (state.verificationType.isLogin) {
+      final result = await _verifyOtpUseCase(
+        VerifyOtpParams(
+          email: state.email,
+          otp: state.otp,
+        ),
+      );
+
+      result.fold(
+        (failure) => emit(state.copyWith(
+          verificationStatus: OtpVerificationStatus.error,
+          errorMessage: failure.message,
+        )),
+        (response) => emit(state.copyWith(
+          verificationStatus: OtpVerificationStatus.verifiedForLogin,
+          verifyOtpResponse: response,
+        )),
+      );
     } else {
       final result = await _verifyOtpUseCase(
         VerifyOtpParams(

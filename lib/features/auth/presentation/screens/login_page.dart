@@ -83,13 +83,23 @@ class _LoginViewState extends State<_LoginView> {
     return BlocListener<LoginBloc, LoginState>(
       listenWhen: (previous, current) =>
           previous.user != current.user ||
-          previous.errorMessage != current.errorMessage,
+          previous.errorMessage != current.errorMessage ||
+          previous.requiresVerification != current.requiresVerification,
       listener: (context, state) {
         if (state.user != null) {
           context.go(AppRoutes.home);
         }
         if (state.errorMessage != null) {
           context.showErrorSnackBar(state.errorMessage!);
+        }
+        if (state.requiresVerification && state.verificationEmail != null) {
+          context.push(
+            AppRoutes.otpVerification,
+            extra: {
+              'email': state.verificationEmail,
+              'verificationType': VerificationType.login,
+            },
+          );
         }
       },
       child: Scaffold(

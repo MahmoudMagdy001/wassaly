@@ -101,6 +101,12 @@ class _OtpVerificationViewState extends State<_OtpVerificationView> {
           }
         }
 
+        if (state.verificationStatus ==
+            OtpVerificationStatus.verifiedForLogin) {
+          context.showSuccessSnackBar('otp.verification_success'.tr());
+          context.go(AppRoutes.login);
+        }
+
         if (state.verificationStatus == OtpVerificationStatus.error &&
             state.errorMessage != null) {
           context.showErrorSnackBar(state.errorMessage!.tr());

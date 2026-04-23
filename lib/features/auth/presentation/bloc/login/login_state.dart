@@ -7,6 +7,8 @@ class LoginState extends Equatable {
   final bool isLoading;
   final String? errorMessage;
   final UserEntity? user;
+  final bool requiresVerification;
+  final String? verificationEmail;
 
   const LoginState({
     this.email = '',
@@ -15,6 +17,8 @@ class LoginState extends Equatable {
     this.isLoading = false,
     this.errorMessage,
     this.user,
+    this.requiresVerification = false,
+    this.verificationEmail,
   });
 
   LoginState copyWith({
@@ -24,8 +28,11 @@ class LoginState extends Equatable {
     bool? isLoading,
     String? errorMessage,
     UserEntity? user,
+    bool? requiresVerification,
+    String? verificationEmail,
     bool clearError = false,
     bool clearUser = false,
+    bool clearVerification = false,
   }) {
     return LoginState(
       email: email ?? this.email,
@@ -34,6 +41,12 @@ class LoginState extends Equatable {
       isLoading: isLoading ?? this.isLoading,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       user: clearUser ? null : (user ?? this.user),
+      requiresVerification: clearVerification
+          ? false
+          : (requiresVerification ?? this.requiresVerification),
+      verificationEmail: clearVerification
+          ? null
+          : (verificationEmail ?? this.verificationEmail),
     );
   }
 
@@ -45,5 +58,7 @@ class LoginState extends Equatable {
         isLoading,
         errorMessage,
         user,
+        requiresVerification,
+        verificationEmail,
       ];
 }

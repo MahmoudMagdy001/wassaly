@@ -5,6 +5,7 @@ enum OtpVerificationStatus {
   loading,
   verifiedForRegister,
   verifiedForForgotPassword,
+  verifiedForLogin,
   error,
 }
 

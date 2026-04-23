@@ -45,3 +45,12 @@ class LoginWithGoogle extends LoginEvent {
 class LoginWithFacebook extends LoginEvent {
   const LoginWithFacebook();
 }
+
+class LoginRequiresVerification extends LoginEvent {
+  final String email;
+
+  const LoginRequiresVerification(this.email);
+
+  @override
+  List<Object?> get props => [email];
+}
