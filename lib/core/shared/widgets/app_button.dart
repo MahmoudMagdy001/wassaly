@@ -109,7 +109,7 @@ class AppButton extends StatelessWidget {
             children: [
               if (prefixIcon != null) ...[
                 prefixIcon!,
-                const SizedBox(width: 8),
+                8.horizontalSpace,
               ],
               Text(
                 label,
@@ -121,7 +121,7 @@ class AppButton extends StatelessWidget {
                 ),
               ),
               if (suffixIcon != null) ...[
-                const SizedBox(width: 8),
+                8.horizontalSpace,
                 suffixIcon!,
               ],
             ],

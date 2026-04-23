@@ -1,4 +1,7 @@
-import '../../imports/imports.dart';
+import 'package:wassaly/core/imports/core_imports.dart';
+import 'package:wassaly/core/imports/packages_imports.dart';
+import 'package:wassaly/core/injection/injection.dart';
+import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
 
 /// A wrapper to initialize the chosen State Management library.
 class StateWrapper extends StatelessWidget {
@@ -11,13 +14,11 @@ class StateWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const providers = <BlocProvider<dynamic>>[
-      // TODO: Add global BLoC providers here
+    final providers = <BlocProvider>[
+      BlocProvider<SessionBloc>(
+        create: (_) => sl<SessionBloc>(),
+      ),
     ];
-
-    if (providers.isEmpty) {
-      return child;
-    }
 
     return MultiBlocProvider(
       providers: providers,

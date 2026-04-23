@@ -24,7 +24,7 @@ class SignupHeader extends StatelessWidget {
             color: cs.primary,
           ),
         ),
-        SizedBox(height: 8.h),
+        8.verticalSpace,
         Text(
           'auth.create_account_subtitle'.tr(),
           style: tt.bodyMedium?.copyWith(

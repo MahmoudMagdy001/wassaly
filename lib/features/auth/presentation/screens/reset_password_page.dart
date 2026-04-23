@@ -89,7 +89,7 @@ class _ResetPasswordView extends StatelessWidget {
                     size: 40.w,
                   ),
                 ),
-                SizedBox(height: 24.h),
+                24.verticalSpace,
 
                 // Title
                 Text(
@@ -100,7 +100,7 @@ class _ResetPasswordView extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 8.h),
+                8.verticalSpace,
 
                 // Subtitle with email
                 Text(
@@ -110,7 +110,7 @@ class _ResetPasswordView extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 4.h),
+                4.verticalSpace,
                 Text(
                   email.maskEmail,
                   style: context.theme.textTheme.bodyMedium?.copyWith(
@@ -119,7 +119,7 @@ class _ResetPasswordView extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 32.h),
+                32.verticalSpace,
 
                 // Password Requirements Hint
                 BlocBuilder<ResetPasswordBloc, ResetPasswordState>(
@@ -147,13 +147,13 @@ class _ResetPasswordView extends StatelessWidget {
                               color: cs.onSurface,
                             ),
                           ),
-                          SizedBox(height: 12.h),
+                          12.verticalSpace,
                           _buildRequirementRow(
                             context,
                             'reset_password.req_min_length'.tr(),
                             isMet: state.isNewPasswordValid,
                           ),
-                          SizedBox(height: 8.h),
+                          8.verticalSpace,
                           _buildRequirementRow(
                             context,
                             'reset_password.req_match'.tr(),
@@ -164,11 +164,11 @@ class _ResetPasswordView extends StatelessWidget {
                     );
                   },
                 ),
-                SizedBox(height: 24.h),
+                24.verticalSpace,
 
                 // Form
                 const ResetPasswordForm(),
-                SizedBox(height: 24.h),
+                24.verticalSpace,
               ],
             ),
           ),
@@ -194,7 +194,7 @@ class _ResetPasswordView extends StatelessWidget {
             size: 16.w,
           ),
         ),
-        SizedBox(width: 8.w),
+        8.horizontalSpace,
         Expanded(
           child: Text(
             text,

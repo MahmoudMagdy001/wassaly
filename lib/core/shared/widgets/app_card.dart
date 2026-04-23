@@ -64,7 +64,7 @@ class AppCard extends StatelessWidget {
             ),
             child: Row(
               children: [
-                if (leading != null) ...[leading!, const SizedBox(width: 12)],
+                if (leading != null) ...[leading!, 12.horizontalSpace],
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,9 +108,8 @@ class AppCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: cardColor,
         borderRadius: AppBorders.card,
-        border: showShadow
-            ? null
-            : Border.all(color: cs.outlineVariant, width: 1),
+        border:
+            showShadow ? null : Border.all(color: cs.outlineVariant, width: 1),
         boxShadow: showShadow ? AppShadows.card : AppShadows.none,
       ),
       clipBehavior: Clip.antiAlias,

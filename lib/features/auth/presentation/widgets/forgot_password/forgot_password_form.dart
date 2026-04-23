@@ -39,7 +39,7 @@ class ForgotPasswordForm extends StatelessWidget {
               return null;
             },
           ),
-          SizedBox(height: 24.h),
+          24.verticalSpace,
           BlocBuilder<ForgotPasswordBloc, ForgotPasswordState>(
             buildWhen: (previous, current) =>
                 previous.isLoading != current.isLoading,

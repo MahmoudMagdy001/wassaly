@@ -70,7 +70,7 @@ class SignupForm extends StatelessWidget {
                 fontWeight: FontWeight.w900,
               ),
             ),
-            SizedBox(height: 12.h),
+            12.verticalSpace,
             SignupNameField(
               controller: nameController,
               onChanged: onNameChanged,
@@ -81,7 +81,7 @@ class SignupForm extends StatelessWidget {
                 return null;
               },
             ),
-            SizedBox(height: 16.h),
+            16.verticalSpace,
             Text(
               'auth.phone'.tr(),
               textAlign: TextAlign.start,
@@ -90,7 +90,7 @@ class SignupForm extends StatelessWidget {
                 fontWeight: FontWeight.w900,
               ),
             ),
-            SizedBox(height: 12.h),
+            12.verticalSpace,
             SignupPhoneField(
               controller: phoneController,
               onChanged: onPhoneChanged,
@@ -104,7 +104,7 @@ class SignupForm extends StatelessWidget {
                 return null;
               },
             ),
-            SizedBox(height: 16.h),
+            16.verticalSpace,
             Text(
               'auth.email'.tr(),
               textAlign: TextAlign.start,
@@ -113,7 +113,7 @@ class SignupForm extends StatelessWidget {
                 fontWeight: FontWeight.w900,
               ),
             ),
-            SizedBox(height: 12.h),
+            12.verticalSpace,
             SignupEmailField(
               controller: emailController,
               onChanged: onEmailChanged,
@@ -127,7 +127,7 @@ class SignupForm extends StatelessWidget {
                 return null;
               },
             ),
-            SizedBox(height: 16.h),
+            16.verticalSpace,
             Text(
               'auth.password'.tr(),
               textAlign: TextAlign.start,
@@ -136,7 +136,7 @@ class SignupForm extends StatelessWidget {
                 fontWeight: FontWeight.w900,
               ),
             ),
-            SizedBox(height: 12.h),
+            12.verticalSpace,
             SignupPasswordField(
               controller: passwordController,
               onChanged: onPasswordChanged,
@@ -151,7 +151,7 @@ class SignupForm extends StatelessWidget {
                 return null;
               },
             ),
-            SizedBox(height: 16.h),
+            16.verticalSpace,
             Text(
               'auth.confirm_password'.tr(),
               textAlign: TextAlign.start,
@@ -160,7 +160,7 @@ class SignupForm extends StatelessWidget {
                 fontWeight: FontWeight.w900,
               ),
             ),
-            SizedBox(height: 12.h),
+            12.verticalSpace,
             SignupPasswordField(
               controller: confirmPasswordController,
               onChanged: onConfirmPasswordChanged,
@@ -176,12 +176,12 @@ class SignupForm extends StatelessWidget {
                 return null;
               },
             ),
-            SizedBox(height: 16.h),
+            16.verticalSpace,
             SignupTermsCheckbox(
               onTermsPressed: onTermsPressed,
               onPrivacyPressed: onPrivacyPressed,
             ),
-            SizedBox(height: 20.h),
+            20.verticalSpace,
             BlocBuilder<SignupBloc, SignupState>(
               buildWhen: (previous, current) =>
                   previous.isLoading != current.isLoading ||
@@ -199,7 +199,7 @@ class SignupForm extends StatelessWidget {
                 );
               },
             ),
-            SizedBox(height: 20.h),
+            20.verticalSpace,
             SocialLoginSection(
               onLoginWithGoogle: onSignupWithGoogle,
               onLoginWithFacebook: onSignupWithFacebook,

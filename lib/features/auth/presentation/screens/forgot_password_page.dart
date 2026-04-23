@@ -90,7 +90,7 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
                   onEmailChanged: _onEmailChanged,
                   onSubmit: _onSubmit,
                 ),
-                SizedBox(height: 40.h),
+                40.verticalSpace,
                 BackToLoginLink(onPressed: _onBackToLogin),
               ],
             ),

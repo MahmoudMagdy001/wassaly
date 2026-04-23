@@ -40,7 +40,8 @@ class SignupPasswordField extends StatelessWidget {
             obscureText: !isVisible,
             textInputAction: TextInputAction.done,
             hint: '••••••••',
-            prefixIcon: IconButton(
+            prefixIcon: const Icon(Icons.lock_outline),
+            suffixIcon: IconButton(
               onPressed: () => onToggleVisibility(isVisible),
               icon: Icon(
                 isVisible

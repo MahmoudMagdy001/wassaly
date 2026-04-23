@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import '../imports/core_imports.dart';
 
@@ -30,25 +31,16 @@ class AppConfig {
     // Add auth token interceptor
     _addAuthInterceptor();
 
-    dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) {
-          AppLogger.info(
-              '🌐 [DIO] REQUEST[${options.method}] => PATH: ${options.path}');
-          return handler.next(options);
-        },
-        onResponse: (response, handler) {
-          AppLogger.info(
-              '✅ [DIO] RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}');
-          return handler.next(response);
-        },
-        onError: (DioException e, handler) {
-          AppLogger.error(
-              '❌ [DIO] ERROR[${e.response?.statusCode}] => PATH: ${e.requestOptions.path}');
-          return handler.next(e);
-        },
-      ),
-    );
+    // Add pretty logger for detailed request/response logging
+    dio.interceptors.add(PrettyDioLogger(
+      requestHeader: true,
+      requestBody: true,
+      responseHeader: true,
+      responseBody: true,
+      error: true,
+      compact: true,
+      maxWidth: 120,
+    ));
   }
 
   /// Adds an interceptor that automatically attaches the Authorization header

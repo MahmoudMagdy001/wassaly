@@ -52,7 +52,7 @@ class LoginForm extends StatelessWidget {
                 fontWeight: FontWeight.w900,
               ),
             ),
-            SizedBox(height: 12.h),
+            12.verticalSpace,
             LoginEmailField(
               controller: emailController,
               onChanged: onEmailChanged,
@@ -66,9 +66,9 @@ class LoginForm extends StatelessWidget {
                 return null;
               },
             ),
-            SizedBox(height: 16.h),
+            16.verticalSpace,
             ForgotPasswordLink(onPressed: onForgotPassword),
-            SizedBox(height: 8.h),
+            8.verticalSpace,
             LoginPasswordField(
               controller: passwordController,
               onChanged: onPasswordChanged,
@@ -83,7 +83,7 @@ class LoginForm extends StatelessWidget {
                 return null;
               },
             ),
-            SizedBox(height: 24.h),
+            24.verticalSpace,
             BlocBuilder<LoginBloc, LoginState>(
               buildWhen: (previous, current) =>
                   previous.isLoading != current.isLoading,
@@ -98,7 +98,7 @@ class LoginForm extends StatelessWidget {
                 );
               },
             ),
-            SizedBox(height: 20.h),
+            20.verticalSpace,
             SocialLoginSection(
               onLoginWithGoogle: onLoginWithGoogle,
               onLoginWithFacebook: onLoginWithFacebook,

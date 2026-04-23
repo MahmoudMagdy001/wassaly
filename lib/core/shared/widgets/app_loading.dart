@@ -38,12 +38,12 @@ class AppLoading extends StatelessWidget {
             ),
           ),
           if (message != null) ...[
-            const SizedBox(height: 16),
+            16.verticalSpace,
             Text(
               message!,
               style: context.theme.textTheme.bodyMedium?.copyWith(
-                    color: cs.onSurfaceVariant,
-                  ),
+                color: cs.onSurfaceVariant,
+              ),
               textAlign: TextAlign.center,
             ),
           ],

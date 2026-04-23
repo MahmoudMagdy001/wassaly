@@ -131,9 +131,9 @@ class _OtpVerificationViewState extends State<_OtpVerificationView> {
                   onCompleted: _onOtpCompleted,
                   autoFocus: true,
                 ),
-                SizedBox(height: 32.h),
+                32.verticalSpace,
                 ResendOtpWidget(onResend: _onResendPressed),
-                SizedBox(height: 40.h),
+                40.verticalSpace,
                 BlocBuilder<OtpVerificationBloc, OtpVerificationState>(
                   buildWhen: (previous, current) =>
                       previous.canVerify != current.canVerify ||

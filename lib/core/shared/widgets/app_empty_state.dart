@@ -39,8 +39,9 @@ class AppEmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 64, color: cs.onSurfaceVariant.withValues(alpha: 0.5)),
-            const SizedBox(height: 20),
+            Icon(icon,
+                size: 64, color: cs.onSurfaceVariant.withValues(alpha: 0.5)),
+            20.verticalSpace,
             Text(
               title,
               style: tt.titleMedium?.copyWith(
@@ -50,7 +51,7 @@ class AppEmptyState extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             if (subtitle != null) ...[
-              const SizedBox(height: 8),
+              8.verticalSpace,
               Text(
                 subtitle!,
                 style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
@@ -58,7 +59,7 @@ class AppEmptyState extends StatelessWidget {
               ),
             ],
             if (actionLabel != null && onAction != null) ...[
-              const SizedBox(height: 28),
+              28.verticalSpace,
               AppButton(
                 label: actionLabel!,
                 onPressed: onAction,

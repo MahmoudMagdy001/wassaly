@@ -32,7 +32,8 @@ class LoginPasswordField extends StatelessWidget {
             validator: validator,
             obscureText: !state.isPasswordVisible,
             hint: '••••••••',
-            prefixIcon: IconButton(
+            prefixIcon: const Icon(Icons.lock_outline),
+            suffixIcon: IconButton(
               onPressed: () => onToggleVisibility(state.isPasswordVisible),
               icon: Icon(
                 state.isPasswordVisible

@@ -1,5 +1,6 @@
+import 'dart:async';
+
 import 'package:wassaly/core/imports/imports.dart';
-import 'package:wassaly/core/injection/injection.dart';
 import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
 
 class SplashPage extends StatelessWidget {
@@ -7,11 +8,7 @@ class SplashPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          sl<SessionBloc>()..add(const SessionCheckRequested()),
-      child: const _SplashView(),
-    );
+    return const _SplashView();
   }
 }
 
@@ -34,6 +31,9 @@ class _SplashViewState extends State<_SplashView>
   late final Animation<double> _contentFade; // text + dots appear
   late final Animation<double> _contentSlide; // text slides up slightly
 
+  // Track initialization state
+  final Completer<void> _initCompleter = Completer<void>();
+
   @override
   void initState() {
     super.initState();
@@ -42,6 +42,9 @@ class _SplashViewState extends State<_SplashView>
       vsync: this,
       duration: const Duration(milliseconds: 2000),
     );
+
+    // Start initialization in parallel with animation
+    _initializeServices();
 
     // ── Staggered intervals ──────────────────────────────────────────────
     //
@@ -81,11 +84,43 @@ class _SplashViewState extends State<_SplashView>
     _startAnimation();
   }
 
+  /// Initialize heavy services in parallel with splash animation
+  Future<void> _initializeServices() async {
+    try {
+      await Future.wait([
+        StorageService.instance.init(),
+        AppConfig.init(),
+      ]);
+    } catch (e) {
+      // Log error but don't block navigation - services will handle failures gracefully
+      debugPrint('Splash initialization error: $e');
+    } finally {
+      if (mounted && !_initCompleter.isCompleted) {
+        _initCompleter.complete();
+      }
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    context.read<SessionBloc>().add(const SessionCheckRequested());
+  }
+
   Future<void> _startAnimation() async {
     // تقليل التأخير للحد الأدنى لتقليل الإحساس بالفجوة الزمنية
     await Future<void>.delayed(const Duration(milliseconds: 50));
     if (!mounted) return;
-    await _controller.forward();
+
+    // Run animation and initialization in parallel
+    final animationFuture = _controller.forward();
+
+    // Wait for both animation and initialization to complete
+    await Future.wait([
+      animationFuture,
+      _initCompleter.future,
+    ]);
+
     if (mounted) {
       _handleNavigation(context.read<SessionBloc>().state);
     }
@@ -108,6 +143,9 @@ class _SplashViewState extends State<_SplashView>
   @override
   void dispose() {
     _controller.dispose();
+    if (!_initCompleter.isCompleted) {
+      _initCompleter.completeError(StateError('Disposed before init complete'));
+    }
     super.dispose();
   }
 

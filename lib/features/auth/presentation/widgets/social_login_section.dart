@@ -44,7 +44,7 @@ class SocialLoginSection extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: 20.h),
+        20.verticalSpace,
         Row(
           children: [
             Expanded(
@@ -56,7 +56,7 @@ class SocialLoginSection extends StatelessWidget {
                 onPressed: onLoginWithFacebook,
               ),
             ),
-            SizedBox(width: 12.w),
+            12.horizontalSpace,
             Expanded(
               child: SocialButton(
                 label: 'auth.sign_up_google'.tr(),

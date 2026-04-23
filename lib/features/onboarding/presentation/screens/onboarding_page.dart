@@ -149,7 +149,7 @@ class _OnboardingView extends StatelessWidget {
                                 fontSize: 24.sp,
                               ),
                             ),
-                            SizedBox(height: AppSpacing.md.h),
+                            AppSpacing.md.verticalSpace,
                             Text(
                               onboardingData[index]['subtitle'] as String,
                               textAlign: TextAlign.center,
@@ -162,7 +162,7 @@ class _OnboardingView extends StatelessWidget {
                           ],
                         ),
                       ),
-                      SizedBox(height: 40.h),
+                      40.verticalSpace,
                     ],
                   );
                 },
@@ -174,7 +174,7 @@ class _OnboardingView extends StatelessWidget {
               padding: EdgeInsets.all(AppSpacing.xl.w),
               child: Column(
                 children: [
-                  SizedBox(height: AppSpacing.xl.h),
+                  AppSpacing.xl.verticalSpace,
                   // Get Started Button
                   AppButton(
                     label: 'shared.get_started'.tr(),
@@ -182,7 +182,7 @@ class _OnboardingView extends StatelessWidget {
                     variant: ButtonVariant.primary,
                     width: ButtonSize.medium,
                   ),
-                  SizedBox(height: AppSpacing.md.h),
+                  AppSpacing.md.verticalSpace,
                 ],
               ),
             ),

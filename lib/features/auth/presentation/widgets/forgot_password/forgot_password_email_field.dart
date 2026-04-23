@@ -28,7 +28,7 @@ class ForgotPasswordEmailField extends StatelessWidget {
             fontWeight: FontWeight.w500,
           ),
         ),
-        SizedBox(height: 8.h),
+        8.verticalSpace,
         ClipRRect(
           borderRadius: BorderRadius.circular(12.r),
           child: AppTextField(

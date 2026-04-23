@@ -138,7 +138,7 @@ class _SignupViewState extends State<_SignupView> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SignupHeader(),
-                SizedBox(height: 15.h),
+                15.verticalSpace,
                 SignupForm(
                   formKey: _formKey,
                   nameController: _nameController,
@@ -160,7 +160,7 @@ class _SignupViewState extends State<_SignupView> {
                   onTermsPressed: _onTermsPressed,
                   onPrivacyPressed: _onPrivacyPressed,
                 ),
-                SizedBox(height: 15.h),
+                15.verticalSpace,
                 LoginLink(onLogin: _onLogin),
               ],
             ),

@@ -100,7 +100,7 @@ class _LoginViewState extends State<_LoginView> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const LoginHeader(),
-                SizedBox(height: 25.h),
+                25.verticalSpace,
                 LoginForm(
                   formKey: _formKey,
                   emailController: _emailController,
@@ -113,7 +113,7 @@ class _LoginViewState extends State<_LoginView> {
                   onLoginWithGoogle: _onLoginWithGoogle,
                   onLoginWithFacebook: _onLoginWithFacebook,
                 ),
-                SizedBox(height: 15.h),
+                15.verticalSpace,
                 CreateAccountLink(onCreateAccount: _onCreateAccount),
               ],
             ),

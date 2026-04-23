@@ -40,7 +40,7 @@ class SocialButton extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          SizedBox(width: 8.w),
+          8.horizontalSpace,
           SvgPicture.asset(
             iconPath,
             width: 20.w,

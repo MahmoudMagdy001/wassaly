@@ -30,7 +30,7 @@ class BackToLoginLink extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          SizedBox(width: 4.w),
+          4.horizontalSpace,
           Icon(
             Icons.arrow_back,
             size: 18.w,

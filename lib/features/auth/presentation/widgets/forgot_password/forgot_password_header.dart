@@ -11,7 +11,7 @@ class ForgotPasswordHeader extends StatelessWidget {
 
     return Column(
       children: [
-        SizedBox(height: 60.h),
+        60.verticalSpace,
         Text(
           'auth.forgot_password_title'.tr(),
           style: tt.headlineMedium?.copyWith(
@@ -19,7 +19,7 @@ class ForgotPasswordHeader extends StatelessWidget {
             color: cs.onSurface,
           ),
         ),
-        SizedBox(height: 12.h),
+        12.verticalSpace,
         Text(
           'auth.forgot_password_subtitle'.tr(),
           style: tt.bodyMedium?.copyWith(
@@ -27,7 +27,7 @@ class ForgotPasswordHeader extends StatelessWidget {
           ),
           textAlign: TextAlign.center,
         ),
-        SizedBox(height: 40.h),
+        40.verticalSpace,
       ],
     );
   }

@@ -64,7 +64,7 @@ class ResendOtpWidget extends StatelessWidget {
               ],
             ),
             if (state.isTimerRunning) ...[
-              SizedBox(height: 4.h),
+              4.verticalSpace,
               Text(
                 'otp.retry_after'
                     .tr(namedArgs: {'timer': state.formattedTimer}),

@@ -95,7 +95,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
                   color: cs.onSurface,
                 ),
               ),
-              SizedBox(height: 8.h),
+              8.verticalSpace,
               AppTextField(
                 hint: 'reset_password.new_password_hint'.tr(),
                 obscureText: !state.isNewPasswordVisible,
@@ -141,7 +141,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
                     : const SizedBox.shrink(),
               ),
 
-              SizedBox(height: 24.h),
+              24.verticalSpace,
 
               // Confirm Password Field
               Text(
@@ -151,7 +151,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
                   color: cs.onSurface,
                 ),
               ),
-              SizedBox(height: 8.h),
+              8.verticalSpace,
               AppTextField(
                 hint: 'reset_password.confirm_password_hint'.tr(),
                 obscureText: !state.isConfirmPasswordVisible,
@@ -182,7 +182,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
                 ),
               ),
 
-              SizedBox(height: 32.h),
+              32.verticalSpace,
 
               // Submit Button
               AppButton(

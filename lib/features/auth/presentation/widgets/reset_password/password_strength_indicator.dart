@@ -81,7 +81,7 @@ class PasswordStrengthIndicator extends StatelessWidget {
           }),
         ),
         if (showLabel && strength > 0) ...[
-          SizedBox(height: 8.h),
+          8.verticalSpace,
           AnimatedDefaultTextStyle(
             duration: const Duration(milliseconds: 300),
             style: context.theme.textTheme.bodySmall!.copyWith(

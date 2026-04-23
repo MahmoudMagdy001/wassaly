@@ -16,7 +16,7 @@ class OtpVerificationHeader extends StatelessWidget {
 
     return Column(
       children: [
-        SizedBox(height: 60.h),
+        60.verticalSpace,
         Text(
           'auth.otp_verification_title'.tr(),
           style: tt.headlineMedium?.copyWith(
@@ -26,7 +26,7 @@ class OtpVerificationHeader extends StatelessWidget {
           ),
           textAlign: TextAlign.center,
         ),
-        SizedBox(height: 16.h),
+        16.verticalSpace,
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 24.w),
           child: RichText(
@@ -50,7 +50,7 @@ class OtpVerificationHeader extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(height: 40.h),
+        40.verticalSpace,
       ],
     );
   }
