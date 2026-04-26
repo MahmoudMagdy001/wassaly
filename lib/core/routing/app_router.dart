@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:wassaly/core/imports/core_imports.dart';
+import 'package:wassaly/features/auth/presentation/screens/auth_callback_page.dart';
 import 'package:wassaly/features/auth/presentation/screens/forgot_password_page.dart';
 import 'package:wassaly/features/auth/presentation/screens/login_page.dart';
 import 'package:wassaly/features/auth/presentation/screens/otp_verification_page.dart';
@@ -65,6 +66,20 @@ final GoRouter appRouter = GoRouter(
         return ResetPasswordPage(
           email: args?.email ?? '',
           token: args?.token ?? '',
+        );
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.authCallback,
+      name: 'authCallback',
+      builder: (context, state) {
+        final queryParams = state.uri.queryParameters;
+        return AuthCallbackPage(
+          token: queryParams['token'],
+          id: queryParams['id'],
+          fullName: queryParams['full_name'],
+          email: queryParams['email'],
+          avatar: queryParams['avatar'],
         );
       },
     ),

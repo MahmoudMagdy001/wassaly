@@ -38,14 +38,6 @@ class LoginSubmitted extends LoginEvent {
   const LoginSubmitted();
 }
 
-class LoginWithGoogle extends LoginEvent {
-  const LoginWithGoogle();
-}
-
-class LoginWithFacebook extends LoginEvent {
-  const LoginWithFacebook();
-}
-
 class LoginRequiresVerification extends LoginEvent {
   final String email;
 

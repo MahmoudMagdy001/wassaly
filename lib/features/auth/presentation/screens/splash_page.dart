@@ -93,7 +93,6 @@ class _SplashViewState extends State<_SplashView>
       ]);
     } catch (e) {
       // Log error but don't block navigation - services will handle failures gracefully
-      debugPrint('Splash initialization error: $e');
     } finally {
       if (mounted && !_initCompleter.isCompleted) {
         _initCompleter.complete();

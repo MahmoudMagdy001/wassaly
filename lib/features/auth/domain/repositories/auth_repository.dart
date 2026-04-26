@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:wassaly/core/utils/typedefs.dart';
 import 'package:wassaly/features/auth/data/models/forget_send_otp_response_model.dart';
 import 'package:wassaly/features/auth/data/models/forget_verify_otp_response_model.dart';
@@ -16,16 +18,13 @@ abstract class AuthRepository {
 
   FutureEither<void> logout();
 
-  FutureEither<UserEntity> loginWithGoogle();
-
-  FutureEither<UserEntity> loginWithFacebook();
-
   FutureEither<UserEntity> signup({
     required String name,
     required String phone,
     required String email,
     required String password,
     required String confirmPassword,
+    File? avatarFile,
   });
 
   FutureEither<VerifyOtpResponseModel> verifyOtp({

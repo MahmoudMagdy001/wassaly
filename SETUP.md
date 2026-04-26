@@ -17,7 +17,7 @@ flutter pub get
 ### Localization
 Since you chose to include `easy_localization`, run these commands whenever you add or modify string translations to generate your keys correctly:
 ```bash
-flutter pub run easy_localization:generate -S assets/translations -O lib/core/i18n -o locale_keys.g.dart
+dart run easy_localization:generate -S assets/translations -O lib/core/i18n -o locale_keys.g.dart
 ```
 
 ---
@@ -38,8 +38,7 @@ Open [`android/app/src/main/AndroidManifest.xml`](android/app/src/main/AndroidMa
     
     <!-- Required for image_picker -->
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" /> <!-- Android 13+ -->
+<!-- Android 13+ -->
 ```
 
 ### iOS Setup 

@@ -35,8 +35,11 @@ Future<void> initDependencies() async {
         loginUseCase: sl(),
         resendOtpUseCase: sl(),
       ));
-  sl.registerFactory(() => SignupBloc(signupUseCase: sl()));
+  sl.registerFactory(() => SignupBloc(
+        signupUseCase: sl(),
+      ));
   sl.registerFactory(() => ForgotPasswordBloc(forgetSendOtpUseCase: sl()));
+
   sl.registerFactoryParam<OtpVerificationBloc, String, VerificationType>(
     (email, verificationType) => OtpVerificationBloc(
       email: email,

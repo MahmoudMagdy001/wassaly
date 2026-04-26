@@ -83,10 +83,15 @@ class SignupSubmitted extends SignupEvent {
   const SignupSubmitted();
 }
 
-class SignupWithGoogle extends SignupEvent {
-  const SignupWithGoogle();
-}
-
 class SignupWithFacebook extends SignupEvent {
   const SignupWithFacebook();
+}
+
+class AvatarChanged extends SignupEvent {
+  final File? avatarFile;
+
+  const AvatarChanged(this.avatarFile);
+
+  @override
+  List<Object?> get props => [avatarFile];
 }

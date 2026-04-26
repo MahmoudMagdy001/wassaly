@@ -89,14 +89,6 @@ class _SignupViewState extends State<_SignupView> {
     }
   }
 
-  void _onSignupWithGoogle() {
-    context.read<SignupBloc>().add(const SignupWithGoogle());
-  }
-
-  void _onSignupWithFacebook() {
-    context.read<SignupBloc>().add(const SignupWithFacebook());
-  }
-
   void _onLogin() {
     context.pop();
   }
@@ -107,6 +99,14 @@ class _SignupViewState extends State<_SignupView> {
 
   void _onPrivacyPressed() {
     // TODO: Navigate to privacy policy
+  }
+
+  void _onAvatarSelected(File file) {
+    context.read<SignupBloc>().add(AvatarChanged(file));
+  }
+
+  void _onAvatarCleared() {
+    context.read<SignupBloc>().add(const AvatarChanged(null));
   }
 
   @override
@@ -133,32 +133,39 @@ class _SignupViewState extends State<_SignupView> {
       child: Scaffold(
         body: SafeArea(
           child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 18.w),
+            padding: EdgeInsets.symmetric(horizontal: 12.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SignupHeader(),
                 15.verticalSpace,
-                SignupForm(
-                  formKey: _formKey,
-                  nameController: _nameController,
-                  phoneController: _phoneController,
-                  emailController: _emailController,
-                  passwordController: _passwordController,
-                  confirmPasswordController: _confirmPasswordController,
-                  onNameChanged: _onNameChanged,
-                  onPhoneChanged: _onPhoneChanged,
-                  onEmailChanged: _onEmailChanged,
-                  onPasswordChanged: _onPasswordChanged,
-                  onTogglePasswordVisibility: _onTogglePasswordVisibility,
-                  onConfirmPasswordChanged: _onConfirmPasswordChanged,
-                  onToggleConfirmPasswordVisibility:
-                      _onToggleConfirmPasswordVisibility,
-                  onSignup: _onSignup,
-                  onSignupWithGoogle: _onSignupWithGoogle,
-                  onSignupWithFacebook: _onSignupWithFacebook,
-                  onTermsPressed: _onTermsPressed,
-                  onPrivacyPressed: _onPrivacyPressed,
+                BlocBuilder<SignupBloc, SignupState>(
+                  buildWhen: (previous, current) =>
+                      previous.avatarFile != current.avatarFile,
+                  builder: (context, state) {
+                    return SignupForm(
+                      formKey: _formKey,
+                      nameController: _nameController,
+                      phoneController: _phoneController,
+                      emailController: _emailController,
+                      passwordController: _passwordController,
+                      confirmPasswordController: _confirmPasswordController,
+                      onNameChanged: _onNameChanged,
+                      onPhoneChanged: _onPhoneChanged,
+                      onEmailChanged: _onEmailChanged,
+                      onPasswordChanged: _onPasswordChanged,
+                      onTogglePasswordVisibility: _onTogglePasswordVisibility,
+                      onConfirmPasswordChanged: _onConfirmPasswordChanged,
+                      onToggleConfirmPasswordVisibility:
+                          _onToggleConfirmPasswordVisibility,
+                      onSignup: _onSignup,
+                      onTermsPressed: _onTermsPressed,
+                      onPrivacyPressed: _onPrivacyPressed,
+                      avatarFile: state.avatarFile,
+                      onAvatarSelected: _onAvatarSelected,
+                      onAvatarCleared: _onAvatarCleared,
+                    );
+                  },
                 ),
                 15.verticalSpace,
                 LoginLink(onLogin: _onLogin),

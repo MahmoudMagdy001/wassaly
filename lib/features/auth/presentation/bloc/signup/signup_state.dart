@@ -12,6 +12,7 @@ class SignupState extends Equatable {
   final bool isLoading;
   final String? errorMessage;
   final bool isRegistered;
+  final File? avatarFile;
 
   const SignupState({
     this.name = '',
@@ -25,6 +26,7 @@ class SignupState extends Equatable {
     this.isLoading = false,
     this.errorMessage,
     this.isRegistered = false,
+    this.avatarFile,
   });
 
   SignupState copyWith({
@@ -39,8 +41,10 @@ class SignupState extends Equatable {
     bool? isLoading,
     String? errorMessage,
     bool? isRegistered,
+    File? avatarFile,
     bool clearError = false,
     bool clearRegistered = false,
+    bool clearAvatar = false,
   }) {
     return SignupState(
       name: name ?? this.name,
@@ -56,6 +60,7 @@ class SignupState extends Equatable {
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       isRegistered:
           clearRegistered ? false : (isRegistered ?? this.isRegistered),
+      avatarFile: clearAvatar ? null : (avatarFile ?? this.avatarFile),
     );
   }
 
@@ -72,5 +77,6 @@ class SignupState extends Equatable {
         isLoading,
         errorMessage,
         isRegistered,
+        avatarFile,
       ];
 }

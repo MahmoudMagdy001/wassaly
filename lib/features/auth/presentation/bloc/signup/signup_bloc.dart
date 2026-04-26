@@ -7,8 +7,9 @@ part 'signup_state.dart';
 class SignupBloc extends Bloc<SignupEvent, SignupState> {
   final SignupUseCase _signupUseCase;
 
-  SignupBloc({required SignupUseCase signupUseCase})
-      : _signupUseCase = signupUseCase,
+  SignupBloc({
+    required SignupUseCase signupUseCase,
+  })  : _signupUseCase = signupUseCase,
         super(const SignupState()) {
     on<NameChanged>(_onNameChanged);
     on<PhoneChanged>(_onPhoneChanged);
@@ -18,9 +19,8 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
     on<ConfirmPasswordChanged>(_onConfirmPasswordChanged);
     on<ConfirmPasswordVisibilityChanged>(_onConfirmPasswordVisibilityChanged);
     on<TermsAcceptedChanged>(_onTermsAcceptedChanged);
+    on<AvatarChanged>(_onAvatarChanged);
     on<SignupSubmitted>(_onSignupSubmitted);
-    on<SignupWithGoogle>(_onSignupWithGoogle);
-    on<SignupWithFacebook>(_onSignupWithFacebook);
   }
 
   void _onNameChanged(NameChanged event, Emitter<SignupState> emit) {
@@ -68,6 +68,17 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
     emit(state.copyWith(isTermsAccepted: event.isAccepted, clearError: true));
   }
 
+  void _onAvatarChanged(
+    AvatarChanged event,
+    Emitter<SignupState> emit,
+  ) {
+    emit(state.copyWith(
+      avatarFile: event.avatarFile,
+      clearError: true,
+      clearAvatar: event.avatarFile == null,
+    ));
+  }
+
   Future<void> _onSignupSubmitted(
     SignupSubmitted event,
     Emitter<SignupState> emit,
@@ -88,6 +99,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
         email: state.email,
         password: state.password,
         confirmPassword: state.confirmPassword,
+        avatarFile: state.avatarFile,
       ),
     );
 
@@ -101,23 +113,5 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
         isRegistered: true,
       )),
     );
-  }
-
-  Future<void> _onSignupWithGoogle(
-    SignupWithGoogle event,
-    Emitter<SignupState> emit,
-  ) async {
-    emit(state.copyWith(isLoading: true, clearError: true));
-    await Future<void>.delayed(const Duration(seconds: 1));
-    emit(state.copyWith(isLoading: false));
-  }
-
-  Future<void> _onSignupWithFacebook(
-    SignupWithFacebook event,
-    Emitter<SignupState> emit,
-  ) async {
-    emit(state.copyWith(isLoading: true, clearError: true));
-    await Future<void>.delayed(const Duration(seconds: 1));
-    emit(state.copyWith(isLoading: false));
   }
 }

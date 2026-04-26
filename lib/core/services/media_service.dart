@@ -1,100 +1,79 @@
-import 'dart:io';
-import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
-import '../utils/utils.dart';
+import '../imports/core_imports.dart';
+import '../imports/packages_imports.dart';
 
 /// A service to handle media selection (images, videos, files).
+/// Uses system_asset_picker which leverages Android's native Photo Picker
+/// without requiring storage permissions.
 class MediaService {
   MediaService._();
   static final MediaService instance = MediaService._();
 
-  final ImagePicker _imagePicker = ImagePicker();
-
-  /// Pick an image from gallery or camera.
+  /// Pick a single image from gallery or camera.
   FutureEither<File?> pickImage({
     required ImageSource source,
-    double? maxWidth,
-    double? maxHeight,
-    int? imageQuality,
   }) async {
     return runTask(() async {
-      // Check permissions
-      if (source == ImageSource.camera) {
-        final status = await Permission.camera.request();
-        if (!status.isGranted) {
-          throw Exception('Camera permission denied');
-        }
-      } else {
-        if (Platform.isAndroid || Platform.isIOS) {
-          final status = await Permission.photos.request();
-          if (!status.isGranted && !status.isLimited) {
-            throw Exception('Photos permission denied');
-          }
-        }
-      }
-
-      final XFile? file = await _imagePicker.pickImage(
+      final XFile? file = await SystemAssetPicker.pickImage(
         source: source,
-        maxWidth: maxWidth,
-        maxHeight: maxHeight,
-        imageQuality: imageQuality,
       );
-
       return file != null ? File(file.path) : null;
     });
   }
 
   /// Pick multiple images from gallery.
   FutureEither<List<File>> pickMultiImage({
-    double? maxWidth,
-    double? maxHeight,
-    int? imageQuality,
+    int maxItems = 10,
   }) async {
     return runTask(() async {
-      if (Platform.isAndroid || Platform.isIOS) {
-        final status = await Permission.photos.request();
-        if (!status.isGranted && !status.isLimited) {
-          throw Exception('Photos permission denied');
-        }
-      }
-
-      final List<XFile> files = await _imagePicker.pickMultiImage(
-        maxWidth: maxWidth,
-        maxHeight: maxHeight,
-        imageQuality: imageQuality,
+      final List<String> paths = await SystemAssetPicker.pickMultipleImages(
+        maxItems: maxItems,
       );
-
-      return files.map((file) => File(file.path)).toList();
+      return paths.map((path) => File(path)).toList();
     });
   }
 
-  /// Pick a video from gallery or camera.
+  /// Pick a single video from gallery or camera.
   FutureEither<File?> pickVideo({
     required ImageSource source,
-    Duration? maxDuration,
   }) async {
     return runTask(() async {
-      if (source == ImageSource.camera) {
-        final status = await Permission.camera.request();
-        if (!status.isGranted) {
-          throw Exception('Camera permission denied');
-        }
-      } else {
-        if (Platform.isAndroid || Platform.isIOS) {
-          final status = await Permission.photos.request();
-          if (!status.isGranted && !status.isLimited) {
-            throw Exception('Photos permission denied');
-          }
-        }
-      }
-
-      final XFile? file = await _imagePicker.pickVideo(
+      final XFile? file = await SystemAssetPicker.pickVideo(
         source: source,
-        maxDuration: maxDuration,
       );
-
       return file != null ? File(file.path) : null;
     });
   }
 
+  /// Pick multiple videos from gallery.
+  FutureEither<List<File>> pickMultiVideo({
+    int maxItems = 5,
+    int maxVideoSizeMB = 100,
+  }) async {
+    return runTask(() async {
+      final List<String> paths = await SystemAssetPicker.pickMultipleVideos(
+        maxItems: maxItems,
+        maxVideoSizeMB: maxVideoSizeMB,
+      );
+      return paths.map((path) => File(path)).toList();
+    });
+  }
+
+  /// Pick both images and videos together.
+  FutureEither<List<File>> pickImagesAndVideos({
+    int maxItems = 10,
+    int maxVideoSizeMB = 100,
+  }) async {
+    return runTask(() async {
+      final List<String> paths = await SystemAssetPicker.pickImagesAndVideos(
+        maxItems: maxItems,
+        maxVideoSizeMB: maxVideoSizeMB,
+      );
+      return paths.map((path) => File(path)).toList();
+    });
+  }
+
+  /// Check if the native Photo Picker is available (Android 11+).
+  Future<bool> isPhotoPickerAvailable() async {
+    return SystemAssetPicker.isPhotoPickerAvailable();
+  }
 }

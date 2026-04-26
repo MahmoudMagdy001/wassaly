@@ -75,7 +75,16 @@ class CodegenLoader extends AssetLoader{
     "back_to_login": "العودة لتسجيل الدخول",
     "reset_link_sent": "تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني.",
     "otp_verification_title": "تأكيد رمز التحقق",
-    "otp_verification_subtitle": "أدخل رمز التحقق المرسل إلى بريدك الإلكتروني"
+    "otp_verification_subtitle": "أدخل رمز التحقق المرسل إلى بريدك الإلكتروني",
+    "add_avatar": "إضافة صورة شخصية",
+    "change_avatar": "تغيير الصورة",
+    "select_image_source": "اختر مصدر الصورة",
+    "camera": "الكاميرا",
+    "gallery": "المعرض",
+    "complete_in_browser": "يرجى إكمال تسجيل الدخول في المتصفح",
+    "logging_in": "جاري تسجيل الدخول...",
+    "login_success": "تم تسجيل الدخول بنجاح",
+    "login_failed": "فشل تسجيل الدخول"
   },
   "otp": {
     "verify_now": "تحقق الآن",
@@ -165,7 +174,16 @@ static const Map<String,dynamic> _en = {
     "back_to_login": "Back to Login",
     "reset_link_sent": "Password reset link sent to your email.",
     "otp_verification_title": "OTP Verification",
-    "otp_verification_subtitle": "Enter the verification code sent to your email"
+    "otp_verification_subtitle": "Enter the verification code sent to your email",
+    "add_avatar": "Add Profile Photo",
+    "change_avatar": "Change Photo",
+    "select_image_source": "Select Image Source",
+    "camera": "Camera",
+    "gallery": "Gallery",
+    "complete_in_browser": "Please complete sign-in in browser",
+    "logging_in": "Logging in...",
+    "login_success": "Login successful",
+    "login_failed": "Login failed"
   },
   "otp": {
     "verify_now": "Verify Now",

@@ -16,8 +16,6 @@ class LoginForm extends StatelessWidget {
   final ValueChanged<bool> onTogglePasswordVisibility;
   final VoidCallback onLogin;
   final VoidCallback onForgotPassword;
-  final VoidCallback onLoginWithGoogle;
-  final VoidCallback onLoginWithFacebook;
 
   const LoginForm({
     super.key,
@@ -29,8 +27,6 @@ class LoginForm extends StatelessWidget {
     required this.onTogglePasswordVisibility,
     required this.onLogin,
     required this.onForgotPassword,
-    required this.onLoginWithGoogle,
-    required this.onLoginWithFacebook,
   });
 
   @override
@@ -99,10 +95,7 @@ class LoginForm extends StatelessWidget {
               },
             ),
             20.verticalSpace,
-            SocialLoginSection(
-              onLoginWithGoogle: onLoginWithGoogle,
-              onLoginWithFacebook: onLoginWithFacebook,
-            ),
+            const SocialLoginSection(),
           ],
         ),
       ),

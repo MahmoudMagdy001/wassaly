@@ -13,4 +13,5 @@ abstract final class AppRoutes {
   static const String forgotPassword = '/forgot-password';
   static const String otpVerification = '/otp-verification';
   static const String resetPassword = '/reset-password';
+  static const String authCallback = '/auth/callback';
 }

@@ -62,14 +62,6 @@ class _LoginViewState extends State<_LoginView> {
     }
   }
 
-  void _onLoginWithGoogle() {
-    context.read<LoginBloc>().add(const LoginWithGoogle());
-  }
-
-  void _onLoginWithFacebook() {
-    context.read<LoginBloc>().add(const LoginWithFacebook());
-  }
-
   void _onForgotPassword() {
     context.push(AppRoutes.forgotPassword);
   }
@@ -105,7 +97,7 @@ class _LoginViewState extends State<_LoginView> {
       child: Scaffold(
         body: SafeArea(
           child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 18.w),
+            padding: EdgeInsets.symmetric(horizontal: 12.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -120,8 +112,6 @@ class _LoginViewState extends State<_LoginView> {
                   onTogglePasswordVisibility: _onTogglePasswordVisibility,
                   onLogin: _onLogin,
                   onForgotPassword: _onForgotPassword,
-                  onLoginWithGoogle: _onLoginWithGoogle,
-                  onLoginWithFacebook: _onLoginWithFacebook,
                 ),
                 15.verticalSpace,
                 CreateAccountLink(onCreateAccount: _onCreateAccount),

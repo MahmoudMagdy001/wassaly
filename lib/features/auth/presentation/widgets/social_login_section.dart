@@ -1,16 +1,8 @@
 import 'package:wassaly/core/imports/core_imports.dart';
 import 'package:wassaly/core/imports/packages_imports.dart';
-import 'package:wassaly/features/auth/presentation/widgets/social_button.dart';
 
 class SocialLoginSection extends StatelessWidget {
-  final VoidCallback onLoginWithGoogle;
-  final VoidCallback onLoginWithFacebook;
-
-  const SocialLoginSection({
-    super.key,
-    required this.onLoginWithGoogle,
-    required this.onLoginWithFacebook,
-  });
+  const SocialLoginSection({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -45,29 +37,6 @@ class SocialLoginSection extends StatelessWidget {
           ],
         ),
         20.verticalSpace,
-        Row(
-          children: [
-            Expanded(
-              child: SocialButton(
-                label: 'auth.sign_up_facebook'.tr(),
-                iconPath: AppAssets.facebookIcon,
-                backgroundColor: cs.primary,
-                foregroundColor: cs.onPrimary,
-                onPressed: onLoginWithFacebook,
-              ),
-            ),
-            12.horizontalSpace,
-            Expanded(
-              child: SocialButton(
-                label: 'auth.sign_up_google'.tr(),
-                iconPath: AppAssets.googleIcon,
-                backgroundColor: cs.surfaceContainerHighest,
-                foregroundColor: cs.onSurface,
-                onPressed: onLoginWithGoogle,
-              ),
-            ),
-          ],
-        ),
       ],
     );
   }

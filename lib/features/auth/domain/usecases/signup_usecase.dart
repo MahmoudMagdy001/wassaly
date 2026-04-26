@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:wassaly/core/utils/typedefs.dart';
 import 'package:wassaly/features/auth/domain/entities/user_entity.dart';
 import 'package:wassaly/features/auth/domain/repositories/auth_repository.dart';
@@ -14,6 +16,7 @@ class SignupUseCase {
       email: params.email,
       password: params.password,
       confirmPassword: params.confirmPassword,
+      avatarFile: params.avatarFile,
     );
   }
 }
@@ -24,6 +27,7 @@ class SignupParams {
   final String email;
   final String password;
   final String confirmPassword;
+  final File? avatarFile;
 
   const SignupParams({
     required this.name,
@@ -31,5 +35,6 @@ class SignupParams {
     required this.email,
     required this.password,
     required this.confirmPassword,
+    this.avatarFile,
   });
 }

@@ -20,8 +20,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<PasswordChanged>(_onPasswordChanged);
     on<PasswordVisibilityChanged>(_onPasswordVisibilityChanged);
     on<LoginSubmitted>(_onLoginSubmitted);
-    on<LoginWithGoogle>(_onLoginWithGoogle);
-    on<LoginWithFacebook>(_onLoginWithFacebook);
     on<LoginRequiresVerification>(_onLoginRequiresVerification);
   }
 
@@ -100,27 +98,5 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         verificationEmail: event.email,
       )),
     );
-  }
-
-  Future<void> _onLoginWithGoogle(
-    LoginWithGoogle event,
-    Emitter<LoginState> emit,
-  ) async {
-    // TODO: Implement Google login
-    emit(state.copyWith(isLoading: true, clearError: true));
-    // Placeholder - actual implementation needed
-    await Future<void>.delayed(const Duration(seconds: 1));
-    emit(state.copyWith(isLoading: false));
-  }
-
-  Future<void> _onLoginWithFacebook(
-    LoginWithFacebook event,
-    Emitter<LoginState> emit,
-  ) async {
-    // TODO: Implement Facebook login
-    emit(state.copyWith(isLoading: true, clearError: true));
-    // Placeholder - actual implementation needed
-    await Future<void>.delayed(const Duration(seconds: 1));
-    emit(state.copyWith(isLoading: false));
   }
 }

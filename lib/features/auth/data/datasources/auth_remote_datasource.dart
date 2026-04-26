@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:wassaly/core/imports/core_imports.dart';
 import 'package:wassaly/features/auth/data/models/forget_send_otp_response_model.dart';
 import 'package:wassaly/features/auth/data/models/forget_verify_otp_response_model.dart';
@@ -15,16 +16,13 @@ abstract class AuthRemoteDataSource {
 
   Future<UserModel> getProfile(String token);
 
-  Future<UserModel> loginWithGoogle();
-
-  Future<UserModel> loginWithFacebook();
-
   Future<UserModel> signup({
     required String name,
     required String phone,
     required String email,
     required String password,
     required String confirmPassword,
+    File? avatarFile,
   });
 
   Future<VerifyOtpResponseModel> verifyOtp({
@@ -119,49 +117,32 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<UserModel> loginWithGoogle() async {
-    await Future<void>.delayed(const Duration(seconds: 1));
-    return const UserModel(
-      id: 'google_1',
-      email: 'user@gmail.com',
-      name: 'Google User',
-      phone: null,
-      avatarUrl: null,
-      token: 'google_mock_token',
-    );
-  }
-
-  @override
-  Future<UserModel> loginWithFacebook() async {
-    await Future<void>.delayed(const Duration(seconds: 1));
-    return const UserModel(
-      id: 'fb_1',
-      email: 'user@facebook.com',
-      name: 'Facebook User',
-      phone: null,
-      avatarUrl: null,
-      token: 'fb_mock_token',
-    );
-  }
-
-  @override
   Future<UserModel> signup({
     required String name,
     required String phone,
     required String email,
     required String password,
     required String confirmPassword,
+    File? avatarFile,
   }) async {
+    // Build form data for multipart request
+    final formData = FormData.fromMap({
+      'email': email,
+      'password': password,
+      'password_confirmation': confirmPassword,
+      'full_name': name,
+      'type': 'user',
+      'phone': phone,
+      if (avatarFile != null)
+        'avatar': await MultipartFile.fromFile(
+          avatarFile.path,
+          filename: avatarFile.path.split('/').last,
+        ),
+    });
+
     final response = await _dioService.post(
       '/api/register',
-      data: {
-        'email': email,
-        'password': password,
-        'password_confirmation': confirmPassword,
-        'full_name': name,
-        'type': 'user',
-        'phone': phone,
-      },
+      data: formData,
     );
 
     return response.fold(

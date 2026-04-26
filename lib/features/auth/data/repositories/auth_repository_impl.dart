@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fpdart/fpdart.dart';
 import 'package:wassaly/core/utils/failure.dart';
 import 'package:wassaly/core/utils/typedefs.dart';
@@ -96,36 +98,13 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  FutureEither<UserEntity> loginWithGoogle() async {
-    try {
-      final result = await _remoteDataSource.loginWithGoogle();
-      return Right(result);
-    } on Failure catch (e) {
-      return Left(e);
-    } catch (e) {
-      return Left(UnknownFailure('Unexpected error: $e'));
-    }
-  }
-
-  @override
-  FutureEither<UserEntity> loginWithFacebook() async {
-    try {
-      final result = await _remoteDataSource.loginWithFacebook();
-      return Right(result);
-    } on Failure catch (e) {
-      return Left(e);
-    } catch (e) {
-      return Left(UnknownFailure('Unexpected error: $e'));
-    }
-  }
-
-  @override
   FutureEither<UserEntity> signup({
     required String name,
     required String phone,
     required String email,
     required String password,
     required String confirmPassword,
+    File? avatarFile,
   }) async {
     try {
       final result = await _remoteDataSource.signup(
@@ -134,6 +113,7 @@ class AuthRepositoryImpl implements AuthRepository {
         email: email,
         password: password,
         confirmPassword: confirmPassword,
+        avatarFile: avatarFile,
       );
       return Right(result);
     } on Failure catch (e) {
