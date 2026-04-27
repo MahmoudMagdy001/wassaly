@@ -30,7 +30,10 @@ class _AuthCallbackPageState extends State<AuthCallbackPage> {
   @override
   void initState() {
     super.initState();
-    _handleAuthCallback();
+    // Use addPostFrameCallback to ensure the widget tree is fully built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _handleAuthCallback();
+    });
   }
 
   Future<void> _handleAuthCallback() async {
