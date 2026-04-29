@@ -7,7 +7,17 @@ import 'package:wassaly/features/auth/presentation/screens/otp_verification_page
 import 'package:wassaly/features/auth/presentation/screens/reset_password_page.dart';
 import 'package:wassaly/features/auth/presentation/screens/signup_page.dart';
 import 'package:wassaly/features/auth/presentation/screens/splash_page.dart';
+import 'package:wassaly/features/cart/presentation/screens/cart_page.dart';
+import 'package:wassaly/features/category/presentation/screens/category_page.dart';
+import 'package:wassaly/features/favorite/presentation/screens/favorite_page.dart';
 import 'package:wassaly/features/home/presentation/screens/home_page.dart';
+import 'package:wassaly/features/main_layout/presentation/screens/main_layout_page.dart';
+import 'package:wassaly/features/profile/presentation/screens/profile_page.dart';
+
+import '../../features/profile/presentation/screens/add_address_page.dart';
+import '../../features/profile/presentation/screens/addresses_page.dart';
+import '../../features/profile/presentation/screens/edit_profile_page.dart';
+import '../../features/profile/presentation/screens/language_page.dart';
 
 final GoRouter appRouter = GoRouter(
   navigatorKey: rootNavigatorKey,
@@ -65,10 +75,53 @@ final GoRouter appRouter = GoRouter(
       name: 'onboarding',
       builder: (context, state) => const OnboardingPage(),
     ),
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) => MainLayoutPage(
+        navigationShell: navigationShell,
+      ),
+      branches: [
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: AppRoutes.home,
+              name: 'home',
+              builder: (context, state) => const HomePage(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: AppRoutes.category,
+              name: 'category',
+              builder: (context, state) => const CategoryPage(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: AppRoutes.favorite,
+              name: 'favorite',
+              builder: (context, state) => const FavoritePage(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: AppRoutes.profile,
+              name: 'profile',
+              builder: (context, state) => const ProfilePage(),
+            ),
+          ],
+        ),
+      ],
+    ),
     GoRoute(
-      path: AppRoutes.home,
-      name: 'home',
-      builder: (context, state) => const HomePage(),
+      path: AppRoutes.cart,
+      name: 'cart',
+      builder: (context, state) => const CartPage(),
     ),
     GoRoute(
       path: AppRoutes.login,
@@ -124,6 +177,26 @@ final GoRouter appRouter = GoRouter(
           avatar: queryParams['avatar'],
         );
       },
+    ),
+    GoRoute(
+      path: AppRoutes.editProfile,
+      name: 'editProfile',
+      builder: (context, state) => const EditProfilePage(),
+    ),
+    GoRoute(
+      path: AppRoutes.addresses,
+      name: 'addresses',
+      builder: (context, state) => const AddressesPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.addAddress,
+      name: 'addAddress',
+      builder: (context, state) => const AddAddressPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.language,
+      name: 'language',
+      builder: (context, state) => const LanguagePage(),
     ),
   ],
 );

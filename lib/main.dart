@@ -24,8 +24,8 @@ Future<void> main() async {
   await EasyLocalization.ensureInitialized();
   await dotenv.load(fileName: '.env');
   await initDependencies();
+  await StorageService.instance.init();
 
-  // Initialize DeepLinkService for Google OAuth callbacks
   await DeepLinkService.instance.initialize();
 
   runApp(

@@ -16,7 +16,7 @@ class SignupFormContainer extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: cs.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(24.r),
         boxShadow: [
           BoxShadow(

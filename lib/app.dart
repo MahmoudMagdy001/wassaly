@@ -6,17 +6,19 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilWrapper(
-      builder: (context) => _buildMaterialApp(context),
+      builder: (context) => SettingsListenerWrapper(
+        builder: (context, themeMode) => _buildMaterialApp(context, themeMode),
+      ),
     );
   }
 
-  Widget _buildMaterialApp(BuildContext context) {
+  Widget _buildMaterialApp(BuildContext context, ThemeMode themeMode) {
     return MaterialApp.router(
       title: 'وصّلي',
       debugShowCheckedModeBanner: false,
       theme: buildLightTheme(primaryColorHex: '#093773'),
       darkTheme: buildDarkTheme(primaryColorHex: '#093773'),
-      themeMode: ThemeMode.light,
+      themeMode: themeMode,
       routerConfig: appRouter,
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,

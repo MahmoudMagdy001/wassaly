@@ -16,7 +16,8 @@ class CodegenLoader extends AssetLoader{
 
   static const Map<String,dynamic> _ar = {
   "shared": {
-    "get_started": "Get Started"
+    "get_started": "Get Started",
+    "cancel": "إلغاء"
   },
   "onboarding": {
     "onboarding_title_1": "Your Journey,\nPerfectly Planned",
@@ -27,9 +28,76 @@ class CodegenLoader extends AssetLoader{
     "onboarding_subtitle_3": "Find trending destinations and must-see attractions,\nall tailored to enhance your travel plans."
   },
   "home": {
-    "home_title": "Home",
-    "welcome_home": "Welcome Home!",
-    "home_subtitle": "You have successfully completed the onboarding process."
+    "home_title": "الرئيسية",
+    "welcome_home": "مرحباً بك!",
+    "home_subtitle": "مرحبا بك في تطبيق وصّلي"
+  },
+  "nav": {
+    "nav_home": "الرئيسية",
+    "nav_category": "الأقسام",
+    "nav_cart": "السلة",
+    "nav_favorite": "المفضلة",
+    "nav_profile": "حسابي"
+  },
+  "category": {
+    "category_title": "الأقسام",
+    "category_subtitle": "استكشف أقسام منتجاتنا"
+  },
+  "cart": {
+    "cart_title": "السلة",
+    "cart_subtitle": "سلة التسوق فارغة"
+  },
+  "favorite": {
+    "favorite_title": "المفضلة",
+    "favorite_subtitle": "ستظهر عناصرك المفضلة هنا"
+  },
+  "profile": {
+    "profile_title": "حسابي",
+    "profile_subtitle": "إدارة إعدادات حسابك",
+    "personal_info": "المعلومات الشخصية",
+    "addresses": "العناوين",
+    "manage": "إدارة",
+    "settings": "الإعدادات",
+    "security": "الأمان",
+    "language": "اللغة",
+    "theme": "السمة",
+    "dark": "داكن",
+    "light": "فاتح",
+    "arabic": "العربية",
+    "english": "الإنجليزية",
+    "logout": "تسجيل الخروج",
+    "logout_all_devices": "تسجيل الخروج من جميع الأجهزة",
+    "delete_account": "حذف الحساب",
+    "edit_profile": "تعديل الملف الشخصي",
+    "change_password": "تغيير كلمة المرور",
+    "current_password": "كلمة المرور الحالية",
+    "save_changes": "حفظ التغييرات",
+    "update_success": "تم تحديث الملف الشخصي بنجاح",
+    "action_success": "تمت العملية بنجاح",
+    "logout_title": "تسجيل الخروج",
+    "logout_message": "هل أنت متأكد من أنك تريد تسجيل الخروج؟",
+    "logout_all_title": "تسجيل الخروج من جميع الأجهزة",
+    "logout_all_message": "سيتم تسجيل خروجك من جميع الأجهزة. هل أنت متأكد؟",
+    "delete_account_title": "حذف الحساب",
+    "delete_account_message": "لا يمكن التراجع عن هذا الإجراء. سيتم حذف جميع بياناتك بشكل دائم. هل أنت متأكد؟",
+    "delete": "حذف",
+    "add_address": "إضافة عنوان",
+    "save_address": "حفظ العنوان",
+    "address_added": "تمت إضافة العنوان بنجاح",
+    "address_title": "عنوان العنوان",
+    "address_title_hint": "المنزل، العمل، إلخ",
+    "address_details": "تفاصيل العنوان",
+    "address_details_hint": "الشارع، المبنى، الطابق",
+    "governorate": "المحافظة",
+    "center": "المركز/المدينة",
+    "select_governorate": "الرجاء اختيار المحافظة",
+    "select_center": "الرجاء اختيار المركز",
+    "title_required": "العنوان مطلوب",
+    "address_required": "العنوان مطلوب",
+    "current_password_required": "كلمة المرور الحالية مطلوبة لتغيير كلمة المرور",
+    "no_addresses": "لا توجد عناوين بعد",
+    "add_address_hint": "أضف عنوانك الأول للبدء",
+    "addresses_error": "فشل في تحميل العناوين"
   },
   "auth": {
     "log_in": "تسجيل الدخول",
@@ -116,7 +184,8 @@ class CodegenLoader extends AssetLoader{
 };
 static const Map<String,dynamic> _en = {
   "shared": {
-    "get_started": "Get Started"
+    "get_started": "Get Started",
+    "cancel": "Cancel"
   },
   "onboarding": {
     "onboarding_title_1": "Your Journey,\nPerfectly Planned",
@@ -129,7 +198,74 @@ static const Map<String,dynamic> _en = {
   "home": {
     "home_title": "Home",
     "welcome_home": "Welcome Home!",
-    "home_subtitle": "You have successfully completed the onboarding process."
+    "home_subtitle": "Welcome to the Wasally app"
+  },
+  "nav": {
+    "nav_home": "Home",
+    "nav_category": "Category",
+    "nav_cart": "Cart",
+    "nav_favorite": "Favorite",
+    "nav_profile": "Profile"
+  },
+  "category": {
+    "category_title": "Categories",
+    "category_subtitle": "Explore our product categories"
+  },
+  "cart": {
+    "cart_title": "Cart",
+    "cart_subtitle": "Your shopping cart is empty"
+  },
+  "favorite": {
+    "favorite_title": "Favorites",
+    "favorite_subtitle": "Your favorite items will appear here"
+  },
+  "profile": {
+    "profile_title": "Profile",
+    "profile_subtitle": "Manage your account settings",
+    "personal_info": "Personal Information",
+    "addresses": "Addresses",
+    "manage": "Manage",
+    "settings": "Settings",
+    "security": "Security",
+    "language": "Language",
+    "theme": "Theme",
+    "dark": "Dark",
+    "light": "Light",
+    "arabic": "Arabic",
+    "english": "English",
+    "logout": "Logout",
+    "logout_all_devices": "Logout from all devices",
+    "delete_account": "Delete account",
+    "edit_profile": "Edit Profile",
+    "change_password": "Change Password",
+    "current_password": "Current Password",
+    "save_changes": "Save Changes",
+    "update_success": "Profile updated successfully",
+    "action_success": "Action completed successfully",
+    "logout_title": "Logout",
+    "logout_message": "Are you sure you want to logout?",
+    "logout_all_title": "Logout from all devices",
+    "logout_all_message": "This will log you out from all devices. Are you sure?",
+    "delete_account_title": "Delete Account",
+    "delete_account_message": "This action cannot be undone. All your data will be permanently deleted. Are you sure?",
+    "delete": "Delete",
+    "add_address": "Add Address",
+    "save_address": "Save Address",
+    "address_added": "Address added successfully",
+    "address_title": "Address Title",
+    "address_title_hint": "Home, Work, etc.",
+    "address_details": "Address Details",
+    "address_details_hint": "Street, Building, Floor",
+    "governorate": "Governorate",
+    "center": "Center/City",
+    "select_governorate": "Please select a governorate",
+    "select_center": "Please select a center",
+    "title_required": "Title is required",
+    "address_required": "Address is required",
+    "current_password_required": "Current password is required for password change",
+    "no_addresses": "No addresses yet",
+    "add_address_hint": "Add your first address to get started",
+    "addresses_error": "Failed to load addresses"
   },
   "auth": {
     "log_in": "Log in",

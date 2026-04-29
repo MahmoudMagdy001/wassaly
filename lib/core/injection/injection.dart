@@ -23,12 +23,27 @@ import 'package:wassaly/features/auth/presentation/bloc/signup/signup_bloc.dart'
 
 import '../../features/auth/domain/usecases/google_login_usecase.dart';
 import '../../features/auth/presentation/bloc/google_login/google_login_bloc.dart';
+import '../../features/profile/data/datasources/profile_remote_datasource.dart';
+import '../../features/profile/data/repositories/profile_repository_impl.dart';
+import '../../features/profile/domain/repositories/profile_repository.dart';
+import '../../features/profile/domain/usecases/create_address_usecase.dart';
+import '../../features/profile/domain/usecases/delete_account_usecase.dart';
+import '../../features/profile/domain/usecases/get_addresses_usecase.dart';
+import '../../features/profile/domain/usecases/get_centers_usecase.dart';
+import '../../features/profile/domain/usecases/get_governorates_usecase.dart';
+import '../../features/profile/domain/usecases/get_profile_usecase.dart'
+    as profile;
+import '../../features/profile/domain/usecases/logout_all_devices_usecase.dart';
+import '../../features/profile/domain/usecases/logout_usecase.dart' as profile;
+import '../../features/profile/domain/usecases/update_profile_usecase.dart';
+import '../../features/profile/presentation/bloc/profile/profile_bloc.dart';
+import '../../features/profile/presentation/bloc/settings/settings_bloc.dart';
 
 final sl = GetIt.instance;
 
 Future<void> initDependencies() async {
   // Blocs
-  sl.registerFactory(() => SessionBloc(
+  sl.registerLazySingleton(() => SessionBloc(
         loginUseCase: sl(),
         getProfileUseCase: sl(),
         getSavedTokenUseCase: sl(),
@@ -45,6 +60,20 @@ Future<void> initDependencies() async {
         signupUseCase: sl(),
       ));
   sl.registerFactory(() => ForgotPasswordBloc(forgetSendOtpUseCase: sl()));
+  sl.registerFactory(() => ProfileBloc(
+        getProfileUseCase: sl<profile.GetProfileUseCase>(),
+        updateProfileUseCase: sl(),
+        logoutUseCase: sl<profile.LogoutUseCase>(),
+        logoutAllDevicesUseCase: sl(),
+        deleteAccountUseCase: sl(),
+        getAddressesUseCase: sl(),
+        createAddressUseCase: sl(),
+        getGovernoratesUseCase: sl(),
+        getCentersUseCase: sl(),
+      ));
+  sl.registerLazySingleton(() => SettingsBloc(
+        storage: StorageService.instance,
+      ));
 
   sl.registerFactoryParam<OtpVerificationBloc, String, VerificationType>(
     (email, verificationType) => OtpVerificationBloc(
@@ -63,7 +92,7 @@ Future<void> initDependencies() async {
     ),
   );
 
-  // UseCases
+  // UseCases - Auth
   sl.registerLazySingleton(() => LoginUseCase(sl()));
   sl.registerLazySingleton(() => GoogleLoginUseCase(sl()));
   sl.registerLazySingleton(() => GetProfileUseCase(sl()));
@@ -76,13 +105,28 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(() => ForgetVerifyOtpUseCase(sl()));
   sl.registerLazySingleton(() => ResetPasswordUseCase(sl()));
 
+  // UseCases - Profile
+  sl.registerLazySingleton(() => profile.GetProfileUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateProfileUseCase(sl()));
+  sl.registerLazySingleton(() => profile.LogoutUseCase(sl()));
+  sl.registerLazySingleton(() => LogoutAllDevicesUseCase(sl()));
+  sl.registerLazySingleton(() => DeleteAccountUseCase(sl()));
+  sl.registerLazySingleton(() => GetAddressesUseCase(sl()));
+  sl.registerLazySingleton(() => CreateAddressUseCase(sl()));
+  sl.registerLazySingleton(() => GetGovernoratesUseCase(sl()));
+  sl.registerLazySingleton(() => GetCentersUseCase(sl()));
+
   // Repositories
   sl.registerLazySingleton<AuthRepository>(
       () => AuthRepositoryImpl(sl(), sl()));
+  sl.registerLazySingleton<ProfileRepository>(
+      () => ProfileRepositoryImpl(sl(), sl()));
 
   // DataSources
   sl.registerLazySingleton<AuthRemoteDataSource>(
       () => AuthRemoteDataSourceImpl(DioService.instance));
   sl.registerLazySingleton<AuthLocalDataSource>(() => AuthLocalDataSourceImpl(
       SecureStorageService.instance, StorageService.instance));
+  sl.registerLazySingleton<ProfileRemoteDataSource>(
+      () => ProfileRemoteDataSourceImpl(DioService.instance));
 }

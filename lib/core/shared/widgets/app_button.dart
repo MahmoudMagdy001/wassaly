@@ -88,7 +88,7 @@ class AppButton extends StatelessWidget {
           cs.primary,
           BorderSide(color: cs.outline, width: 1.5)
         ),
-      ButtonVariant.ghost => (Colors.transparent, cs.primary, null),
+      ButtonVariant.ghost => (cs.surface, cs.primary, null),
       ButtonVariant.danger => (cs.error, cs.onError, null),
       ButtonVariant.success => (appColors.success, appColors.onSuccess, null),
     };
