@@ -7,8 +7,6 @@ import 'package:wassaly/features/profile/domain/entities/center_entity.dart';
 import 'package:wassaly/features/profile/domain/entities/governorate_entity.dart';
 
 abstract class ProfileRepository {
-  FutureEither<UserEntity> getProfile();
-
   FutureEither<UserEntity> updateProfile({
     required String fullName,
     required String phone,
@@ -17,8 +15,6 @@ abstract class ProfileRepository {
     String? currentPassword,
     String? passwordConfirmation,
   });
-
-  FutureEither<void> logout();
 
   FutureEither<void> logoutAllDevices();
 
@@ -38,4 +34,14 @@ abstract class ProfileRepository {
   FutureEither<List<CenterEntity>> getCenters({
     required String governorateId,
   });
+
+  FutureEither<AddressEntity> updateAddress({
+    required String addressId,
+    required String title,
+    required String address,
+    required String governorateId,
+    required String centerId,
+  });
+
+  FutureEither<void> deleteAddress({required String addressId});
 }

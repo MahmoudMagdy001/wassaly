@@ -18,19 +18,6 @@ class ProfileRepositoryImpl implements ProfileRepository {
   ProfileRepositoryImpl(this._remoteDataSource, this._localDataSource);
 
   @override
-  FutureEither<UserEntity> getProfile() async {
-    try {
-      final user = await _remoteDataSource.getProfile();
-      await _localDataSource.cacheUser(user);
-      return Right(user);
-    } on Failure catch (e) {
-      return Left(e);
-    } catch (e) {
-      return Left(UnknownFailure('Unexpected error: $e'));
-    }
-  }
-
-  @override
   FutureEither<UserEntity> updateProfile({
     required String fullName,
     required String phone,
@@ -50,19 +37,6 @@ class ProfileRepositoryImpl implements ProfileRepository {
       );
       await _localDataSource.cacheUser(user);
       return Right(user);
-    } on Failure catch (e) {
-      return Left(e);
-    } catch (e) {
-      return Left(UnknownFailure('Unexpected error: $e'));
-    }
-  }
-
-  @override
-  FutureEither<void> logout() async {
-    try {
-      await _remoteDataSource.logout();
-      await _localDataSource.clearAuthData();
-      return const Right(null);
     } on Failure catch (e) {
       return Left(e);
     } catch (e) {
@@ -151,6 +125,42 @@ class ProfileRepositoryImpl implements ProfileRepository {
         governorateId: governorateId,
       );
       return Right(centers);
+    } on Failure catch (e) {
+      return Left(e);
+    } catch (e) {
+      return Left(UnknownFailure('Unexpected error: $e'));
+    }
+  }
+
+  @override
+  FutureEither<AddressEntity> updateAddress({
+    required String addressId,
+    required String title,
+    required String address,
+    required String governorateId,
+    required String centerId,
+  }) async {
+    try {
+      final result = await _remoteDataSource.updateAddress(
+        addressId: addressId,
+        title: title,
+        address: address,
+        governorateId: governorateId,
+        centerId: centerId,
+      );
+      return Right(result);
+    } on Failure catch (e) {
+      return Left(e);
+    } catch (e) {
+      return Left(UnknownFailure('Unexpected error: $e'));
+    }
+  }
+
+  @override
+  FutureEither<void> deleteAddress({required String addressId}) async {
+    try {
+      await _remoteDataSource.deleteAddress(addressId: addressId);
+      return const Right(null);
     } on Failure catch (e) {
       return Left(e);
     } catch (e) {

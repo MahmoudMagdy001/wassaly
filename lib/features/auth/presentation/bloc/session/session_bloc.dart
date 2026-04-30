@@ -10,18 +10,18 @@ part 'session_state.dart';
 
 class SessionBloc extends Bloc<SessionEvent, SessionState> {
   final LoginUseCase _loginUseCase;
-  final GetProfileUseCase _getProfileUseCase;
   final GetSavedTokenUseCase _getSavedTokenUseCase;
+  final GetProfileUseCase _getProfileUseCase;
   final LogoutUseCase _logoutUseCase;
 
   SessionBloc({
     required LoginUseCase loginUseCase,
-    required GetProfileUseCase getProfileUseCase,
     required GetSavedTokenUseCase getSavedTokenUseCase,
+    required GetProfileUseCase getProfileUseCase,
     required LogoutUseCase logoutUseCase,
   })  : _loginUseCase = loginUseCase,
-        _getProfileUseCase = getProfileUseCase,
         _getSavedTokenUseCase = getSavedTokenUseCase,
+        _getProfileUseCase = getProfileUseCase,
         _logoutUseCase = logoutUseCase,
         super(const SessionInitial()) {
     on<SessionLoginRequested>(_onSessionLoginRequested);
@@ -54,6 +54,7 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
   ) async {
     emit(const SessionLoading());
 
+    // Step 1: Check if token exists in secure storage
     final tokenResult = await _getSavedTokenUseCase();
 
     final token = tokenResult.fold(
@@ -62,18 +63,24 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
     );
 
     if (token == null) {
+      // No token → navigate to Login
       emit(const SessionUnauthenticated());
       return;
     }
 
+    // Step 2: Validate token via API (get profile)
     final profileResult = await _getProfileUseCase();
 
     profileResult.fold(
       (failure) {
+        // Token is invalid or API error → clear auth data and navigate to Login
         _logoutUseCase();
         emit(const SessionUnauthenticated());
       },
-      (user) => emit(SessionAuthenticated(user)),
+      (user) {
+        // Token is valid → update cached user and navigate to Home
+        emit(SessionAuthenticated(user));
+      },
     );
   }
 

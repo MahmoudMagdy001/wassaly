@@ -25,5 +25,5 @@ abstract final class AppRoutes {
   static const String editProfile = '/profile/edit';
   static const String addresses = '/profile/addresses';
   static const String addAddress = '/profile/addresses/add';
-  static const String language = '/profile/language';
+  static const String privacyPolicy = '/profile/privacy-policy';
 }

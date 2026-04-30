@@ -21,6 +21,7 @@ import 'package:wassaly/features/auth/presentation/bloc/reset_password/reset_pas
 import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
 import 'package:wassaly/features/auth/presentation/bloc/signup/signup_bloc.dart';
 
+import '../../features/auth/domain/usecases/get_cached_user_usecase.dart';
 import '../../features/auth/domain/usecases/google_login_usecase.dart';
 import '../../features/auth/presentation/bloc/google_login/google_login_bloc.dart';
 import '../../features/profile/data/datasources/profile_remote_datasource.dart';
@@ -28,13 +29,12 @@ import '../../features/profile/data/repositories/profile_repository_impl.dart';
 import '../../features/profile/domain/repositories/profile_repository.dart';
 import '../../features/profile/domain/usecases/create_address_usecase.dart';
 import '../../features/profile/domain/usecases/delete_account_usecase.dart';
+import '../../features/profile/domain/usecases/delete_address_usecase.dart';
 import '../../features/profile/domain/usecases/get_addresses_usecase.dart';
 import '../../features/profile/domain/usecases/get_centers_usecase.dart';
 import '../../features/profile/domain/usecases/get_governorates_usecase.dart';
-import '../../features/profile/domain/usecases/get_profile_usecase.dart'
-    as profile;
 import '../../features/profile/domain/usecases/logout_all_devices_usecase.dart';
-import '../../features/profile/domain/usecases/logout_usecase.dart' as profile;
+import '../../features/profile/domain/usecases/update_address_usecase.dart';
 import '../../features/profile/domain/usecases/update_profile_usecase.dart';
 import '../../features/profile/presentation/bloc/profile/profile_bloc.dart';
 import '../../features/profile/presentation/bloc/settings/settings_bloc.dart';
@@ -45,8 +45,8 @@ Future<void> initDependencies() async {
   // Blocs
   sl.registerLazySingleton(() => SessionBloc(
         loginUseCase: sl(),
-        getProfileUseCase: sl(),
         getSavedTokenUseCase: sl(),
+        getProfileUseCase: sl(),
         logoutUseCase: sl(),
       ));
   sl.registerFactory(() => LoginBloc(
@@ -60,16 +60,19 @@ Future<void> initDependencies() async {
         signupUseCase: sl(),
       ));
   sl.registerFactory(() => ForgotPasswordBloc(forgetSendOtpUseCase: sl()));
-  sl.registerFactory(() => ProfileBloc(
-        getProfileUseCase: sl<profile.GetProfileUseCase>(),
+  sl.registerLazySingleton(() => ProfileBloc(
+        getCachedUserUseCase: sl(),
+        getProfileUseCase: sl(),
         updateProfileUseCase: sl(),
-        logoutUseCase: sl<profile.LogoutUseCase>(),
+        logoutUseCase: sl(),
         logoutAllDevicesUseCase: sl(),
         deleteAccountUseCase: sl(),
         getAddressesUseCase: sl(),
         createAddressUseCase: sl(),
         getGovernoratesUseCase: sl(),
         getCentersUseCase: sl(),
+        updateAddressUseCase: sl(),
+        deleteAddressUseCase: sl(),
       ));
   sl.registerLazySingleton(() => SettingsBloc(
         storage: StorageService.instance,
@@ -96,6 +99,7 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(() => LoginUseCase(sl()));
   sl.registerLazySingleton(() => GoogleLoginUseCase(sl()));
   sl.registerLazySingleton(() => GetProfileUseCase(sl()));
+  sl.registerLazySingleton(() => GetCachedUserUseCase(sl()));
   sl.registerLazySingleton(() => GetSavedTokenUseCase(sl()));
   sl.registerLazySingleton(() => LogoutUseCase(sl()));
   sl.registerLazySingleton(() => SignupUseCase(sl()));
@@ -106,13 +110,13 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(() => ResetPasswordUseCase(sl()));
 
   // UseCases - Profile
-  sl.registerLazySingleton(() => profile.GetProfileUseCase(sl()));
   sl.registerLazySingleton(() => UpdateProfileUseCase(sl()));
-  sl.registerLazySingleton(() => profile.LogoutUseCase(sl()));
   sl.registerLazySingleton(() => LogoutAllDevicesUseCase(sl()));
   sl.registerLazySingleton(() => DeleteAccountUseCase(sl()));
   sl.registerLazySingleton(() => GetAddressesUseCase(sl()));
   sl.registerLazySingleton(() => CreateAddressUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateAddressUseCase(sl()));
+  sl.registerLazySingleton(() => DeleteAddressUseCase(sl()));
   sl.registerLazySingleton(() => GetGovernoratesUseCase(sl()));
   sl.registerLazySingleton(() => GetCentersUseCase(sl()));
 

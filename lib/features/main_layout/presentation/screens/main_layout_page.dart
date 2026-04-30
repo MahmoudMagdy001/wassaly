@@ -23,41 +23,44 @@ class MainLayoutPage extends StatelessWidget {
 
     return Scaffold(
       body: navigationShell,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.push(AppRoutes.cart),
-        backgroundColor: context.appColors.success,
-        foregroundColor: context.appColors.onSuccess,
-        shape: const CircleBorder(),
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            const Icon(Icons.shopping_cart_outlined),
-            Positioned(
-              top: -18.h,
-              right: -13.w,
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
-                decoration: BoxDecoration(
-                  color: context.colors.error,
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.white,
-                    width: 1.5.w,
+      floatingActionButton: navigationShell.currentIndex == 3
+          ? null
+          : FloatingActionButton(
+              onPressed: () => context.push(AppRoutes.cart),
+              backgroundColor: context.appColors.success,
+              foregroundColor: context.appColors.onSuccess,
+              shape: const CircleBorder(),
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  const Icon(Icons.shopping_cart_outlined),
+                  Positioned(
+                    top: -18.h,
+                    right: -13.w,
+                    child: Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
+                      decoration: BoxDecoration(
+                        color: context.colors.error,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 1.5.w,
+                        ),
+                      ),
+                      child: Text(
+                        '2',
+                        style: tt.bodySmall?.copyWith(
+                          color: context.colors.onError,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
                   ),
-                ),
-                child: Text(
-                  '2',
-                  style: tt.bodySmall?.copyWith(
-                    color: context.colors.onError,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
       // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: NavigationBar(
         selectedIndex: navigationShell.currentIndex,

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../shared/enums/snack_bar_type.dart';
 import '../theme/color_schemes.dart';
 import '../theme/theme.dart';
-import '../shared/enums/snack_bar_type.dart';
 
 extension ContextExtension on BuildContext {
   // ── Theme shortcuts ──────────────────────────────────────────────────────
@@ -15,7 +15,8 @@ extension ContextExtension on BuildContext {
 
   /// Semantic/custom colors (success, warning, info).
   AppColorsExtension get appColors =>
-      theme.extension<AppColorsExtension>() ?? (isDarkMode ? AppPalettes.dark : AppPalettes.light);
+      theme.extension<AppColorsExtension>() ??
+      (isDarkMode ? AppPalettes.dark : AppPalettes.light);
 
   /// Design tokens (spacing, border radii, elevation defaults).
   AppDesignTokens get designTokens =>
@@ -97,6 +98,61 @@ extension ContextExtension on BuildContext {
     );
   }
 
+  /// Shows a confirmation dialog with proper theme colors and localization.
+  ///
+  /// ```dart
+  /// final confirmed = await context.showConfirmationDialog(
+  ///   title: 'delete_title'.tr(),
+  ///   message: 'delete_message'.tr(),
+  ///   confirmText: 'delete'.tr(),
+  ///   cancelText: 'cancel'.tr(),
+  /// );
+  /// if (confirmed == true) {
+  ///   // Perform action
+  /// }
+  /// ```
+  Future<bool?> showConfirmationDialog({
+    required String title,
+    required String message,
+    required String confirmText,
+    required String cancelText,
+    bool isDangerous = false,
+  }) {
+    return showAppDialog<bool>(
+      builder: (dialogContext) {
+        final dialogCs = dialogContext.theme.colorScheme;
+        return AlertDialog.adaptive(
+          title: Text(
+            title,
+            style: TextStyle(color: dialogCs.onSurface),
+          ),
+          content: Text(
+            message,
+            style: TextStyle(color: dialogCs.onSurfaceVariant),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => dialogContext.pop(false),
+              child: Text(
+                cancelText,
+                style: TextStyle(color: dialogCs.onSurface),
+              ),
+            ),
+            TextButton(
+              onPressed: () => dialogContext.pop(true),
+              child: Text(
+                confirmText,
+                style: TextStyle(
+                  color: isDangerous ? dialogCs.error : dialogCs.primary,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   /// Shows a snackbar with a colour driven by [SnackBarType].
   ///
   /// ```dart
@@ -110,8 +166,8 @@ extension ContextExtension on BuildContext {
     final bg = switch (type) {
       SnackBarType.success => appColors.success,
       SnackBarType.warning => appColors.warning,
-      SnackBarType.error   => colors.error,
-      SnackBarType.info    => colors.inverseSurface,
+      SnackBarType.error => colors.error,
+      SnackBarType.info => colors.inverseSurface,
     };
     ScaffoldMessenger.of(this)
       ..clearSnackBars()
@@ -127,11 +183,11 @@ extension ContextExtension on BuildContext {
   // ── Routing shortcuts ────────────────────────────────────────────────────
   String get currentRoute {
     final router = GoRouter.of(this);
-    final RouteMatch lastMatch = router.routerDelegate.currentConfiguration.last;
+    final RouteMatch lastMatch =
+        router.routerDelegate.currentConfiguration.last;
     final RouteMatchList matchList = lastMatch is ImperativeRouteMatch
         ? lastMatch.matches
         : router.routerDelegate.currentConfiguration;
     return matchList.uri.toString();
   }
-
 }

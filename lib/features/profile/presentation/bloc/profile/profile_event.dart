@@ -11,6 +11,10 @@ class ProfileFetched extends ProfileEvent {
   const ProfileFetched();
 }
 
+class ProfileRefreshRequested extends ProfileEvent {
+  const ProfileRefreshRequested();
+}
+
 class ProfileUpdated extends ProfileEvent {
   final String fullName;
   final String phone;
@@ -70,6 +74,35 @@ class AddressCreated extends ProfileEvent {
 
   @override
   List<Object?> get props => [title, address, governorateId, centerId];
+}
+
+class AddressUpdated extends ProfileEvent {
+  final String addressId;
+  final String title;
+  final String address;
+  final String governorateId;
+  final String centerId;
+
+  const AddressUpdated({
+    required this.addressId,
+    required this.title,
+    required this.address,
+    required this.governorateId,
+    required this.centerId,
+  });
+
+  @override
+  List<Object?> get props =>
+      [addressId, title, address, governorateId, centerId];
+}
+
+class AddressDeleted extends ProfileEvent {
+  final String addressId;
+
+  const AddressDeleted({required this.addressId});
+
+  @override
+  List<Object?> get props => [addressId];
 }
 
 class GovernoratesFetched extends ProfileEvent {

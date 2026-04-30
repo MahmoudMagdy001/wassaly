@@ -12,14 +12,17 @@ class AddressModel extends AddressEntity {
   });
 
   factory AddressModel.fromJson(Map<String, dynamic> json) {
+    final governorate = json['governorate'] as Map<String, dynamic>?;
+    final center = json['center'] as Map<String, dynamic>?;
+
     return AddressModel(
       id: json['id'].toString(),
       title: json['title'] as String? ?? '',
       address: json['address'] as String? ?? '',
-      governorateId: json['governorate_id'].toString(),
-      governorateName: json['governorate_name'] as String? ?? '',
-      centerId: json['center_id'].toString(),
-      centerName: json['center_name'] as String? ?? '',
+      governorateId: governorate?['id']?.toString() ?? '',
+      governorateName: governorate?['name'] as String? ?? '',
+      centerId: center?['id']?.toString() ?? '',
+      centerName: center?['name'] as String? ?? '',
     );
   }
 
@@ -28,10 +31,15 @@ class AddressModel extends AddressEntity {
       'id': id,
       'title': title,
       'address': address,
-      'governorate_id': governorateId,
-      'governorate_name': governorateName,
-      'center_id': centerId,
-      'center_name': centerName,
+      'governorate': {
+        'id': governorateId,
+        'name': governorateName,
+      },
+      'center': {
+        'id': centerId,
+        'name': centerName,
+        'governorate_id': governorateId,
+      },
     };
   }
 }

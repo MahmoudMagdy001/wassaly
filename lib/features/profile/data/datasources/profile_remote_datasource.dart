@@ -6,8 +6,6 @@ import 'package:wassaly/features/profile/data/models/center_model.dart';
 import 'package:wassaly/features/profile/data/models/governorate_model.dart';
 
 abstract class ProfileRemoteDataSource {
-  Future<UserModel> getProfile();
-
   Future<UserModel> updateProfile({
     required String fullName,
     required String phone,
@@ -16,8 +14,6 @@ abstract class ProfileRemoteDataSource {
     String? currentPassword,
     String? passwordConfirmation,
   });
-
-  Future<void> logout();
 
   Future<void> logoutAllDevices();
 
@@ -37,37 +33,22 @@ abstract class ProfileRemoteDataSource {
   Future<List<CenterModel>> getCenters({
     required String governorateId,
   });
+
+  Future<AddressModel> updateAddress({
+    required String addressId,
+    required String title,
+    required String address,
+    required String governorateId,
+    required String centerId,
+  });
+
+  Future<void> deleteAddress({required String addressId});
 }
 
 class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   final DioService _dioService;
 
   const ProfileRemoteDataSourceImpl(this._dioService);
-
-  @override
-  Future<UserModel> getProfile() async {
-    final response = await _dioService.get('/api/show-profile');
-
-    return response.fold(
-      (failure) => throw failure,
-      (response) {
-        final responseData = response.data as Map<String, dynamic>;
-        final status = responseData['status'] as bool? ?? false;
-        final message = responseData['message'] as String? ?? '';
-
-        if (!status) {
-          throw ServerFailure(message);
-        }
-
-        final data = responseData['data'];
-        if (data == null) {
-          throw const ServerFailure('Invalid response data');
-        }
-
-        return UserModel.fromJson(data as Map<String, dynamic>);
-      },
-    );
-  }
 
   @override
   Future<UserModel> updateProfile({
@@ -115,24 +96,6 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
         }
 
         return UserModel.fromJson(data as Map<String, dynamic>);
-      },
-    );
-  }
-
-  @override
-  Future<void> logout() async {
-    final result = await _dioService.post('/api/logout');
-
-    return result.fold(
-      (failure) => throw failure,
-      (response) {
-        final responseData = response.data as Map<String, dynamic>?;
-        final status = responseData?['status'] as bool? ?? true;
-        final message = responseData?['message'] as String? ?? '';
-
-        if (!status && message.isNotEmpty) {
-          throw ServerFailure(message);
-        }
       },
     );
   }
@@ -263,6 +226,67 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
         return list
             .map((e) => GovernorateModel.fromJson(e as Map<String, dynamic>))
             .toList();
+      },
+    );
+  }
+
+  @override
+  Future<AddressModel> updateAddress({
+    required String addressId,
+    required String title,
+    required String address,
+    required String governorateId,
+    required String centerId,
+  }) async {
+    final result = await _dioService.post(
+      '/api/addresses/update',
+      data: {
+        'address_id': addressId,
+        'title': title,
+        'address': address,
+        'governorate_id': governorateId,
+        'center_id': centerId,
+      },
+    );
+
+    return result.fold(
+      (failure) => throw failure,
+      (response) {
+        final responseData = response.data as Map<String, dynamic>;
+        final status = responseData['status'] as bool? ?? false;
+        final message = responseData['message'] as String? ?? '';
+
+        if (!status) {
+          throw ServerFailure(message);
+        }
+
+        final data = responseData['data'];
+        if (data == null) {
+          throw const ServerFailure('Invalid response data');
+        }
+
+        return AddressModel.fromJson(data as Map<String, dynamic>);
+      },
+    );
+  }
+
+  @override
+  Future<void> deleteAddress({required String addressId}) async {
+    final result = await _dioService.delete(
+      '/api/addresses/delete',
+      queryParameters: {'address_id': addressId},
+    );
+
+    return result.fold(
+      (failure) => throw failure,
+      (response) {
+        final responseData = response.data as Map<String, dynamic>?;
+        final status = responseData?['status'] as bool? ?? true;
+        final message = responseData?['message'] as String? ?? '';
+
+        if (!status && message.isNotEmpty) {
+          throw ServerFailure(message);
+        }
       },
     );
   }

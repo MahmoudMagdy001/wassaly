@@ -1,5 +1,4 @@
 import 'package:wassaly/core/imports/imports.dart';
-import 'package:wassaly/core/injection/injection.dart';
 import 'package:wassaly/features/profile/presentation/bloc/profile/profile_bloc.dart';
 
 class AddressesPage extends StatelessWidget {
@@ -7,15 +6,23 @@ class AddressesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<ProfileBloc>()..add(const AddressesFetched()),
-      child: const _AddressesView(),
-    );
+    return const _AddressesView();
   }
 }
 
-class _AddressesView extends StatelessWidget {
+class _AddressesView extends StatefulWidget {
   const _AddressesView();
+
+  @override
+  State<_AddressesView> createState() => _AddressesViewState();
+}
+
+class _AddressesViewState extends State<_AddressesView> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<ProfileBloc>().add(const AddressesFetched());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +39,7 @@ class _AddressesView extends StatelessWidget {
             prev.addresses != curr.addresses,
         builder: (context, state) {
           if (state.addressStatus.isLoading) {
-            return const AppLoading();
+            return const _AddressSkeleton();
           }
 
           if (state.addressStatus.isFailure && state.addressError != null) {
@@ -114,140 +121,88 @@ class _AddressCard extends StatelessWidget {
             ? Icons.business_center_outlined
             : Icons.location_on_outlined;
     final iconBgColor = isHome
-        ? const Color(0xFFE8EAF6)
+        ? cs.secondaryContainer.withValues(alpha: 0.5)
         : isWork
-            ? const Color(0xFFE8F5E9)
+            ? cs.primaryContainer.withValues(alpha: 0.4)
             : cs.primaryContainer.withValues(alpha: 0.3);
     final iconColor = isHome
-        ? const Color(0xFF3F51B5)
+        ? cs.onSecondaryContainer
         : isWork
-            ? const Color(0xFF4CAF50)
+            ? cs.primary
             : cs.primary;
 
-    return Container(
-      padding: EdgeInsets.all(16.w),
-      decoration: BoxDecoration(
-        color: cs.surface,
-        borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: cs.shadow.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
+    return AppCard(
+      showShadow: true,
+      leading: Container(
+        width: 48.w,
+        height: 48.w,
+        decoration: BoxDecoration(
+          color: iconBgColor,
+          borderRadius: AppBorders.md,
+        ),
+        child: Icon(
+          iconData,
+          color: iconColor,
+          size: 24.r,
+        ),
       ),
+      title: address.title,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header row with icon and title
-          Row(
-            children: [
-              Container(
-                width: 48.w,
-                height: 48.w,
-                decoration: BoxDecoration(
-                  color: iconBgColor,
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Icon(
-                  iconData,
-                  color: iconColor,
-                  size: 24.r,
-                ),
-              ),
-              12.horizontalSpace,
-              Expanded(
-                child: Text(
-                  address.title,
-                  style: tt.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          12.verticalSpace,
-          // Address details
           Text(
-            '${address.address}, ${address.governorateName}, المملكة العربية السعودية',
+            '${address.address}, ${address.governorateName}, ${address.centerName}',
             style: tt.bodyMedium?.copyWith(
               color: cs.onSurfaceVariant,
             ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
-          16.verticalSpace,
-          // Action buttons
+          AppSpacing.md.verticalSpace,
           Row(
             children: [
-              // Delete button
               Expanded(
-                child: InkWell(
-                  onTap: () {
-                    // Show delete confirmation
+                child: AppButton(
+                  label: 'shared.delete'.tr(),
+                  color: cs.errorContainer,
+                  textColor: cs.error,
+                  height: ButtonSize.small,
+                  isFullWidth: true,
+                  prefixIcon:
+                      Icon(Icons.delete_outline, color: cs.error, size: 18.r),
+                  onPressed: () async {
+                    final confirmed = await context.showConfirmationDialog(
+                      title: 'profile.delete_address_title'.tr(),
+                      message: 'profile.delete_address_message'
+                          .tr(namedArgs: {'address': address.title}),
+                      confirmText: 'shared.delete'.tr(),
+                      cancelText: 'shared.cancel'.tr(),
+                      isDangerous: true,
+                    );
+
+                    if (confirmed ?? false) {
+                      context.read<ProfileBloc>().add(
+                            AddressDeleted(addressId: address.id),
+                          );
+                    }
                   },
-                  borderRadius: BorderRadius.circular(8.r),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 10.h),
-                    decoration: BoxDecoration(
-                      color: cs.errorContainer.withValues(alpha: 0.5),
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.delete_outline,
-                          color: cs.error,
-                          size: 18.r,
-                        ),
-                        4.horizontalSpace,
-                        Text(
-                          'shared.delete'.tr(),
-                          style: tt.bodyMedium?.copyWith(
-                            color: cs.error,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                 ),
               ),
-              12.horizontalSpace,
-              // Edit button
+              AppSpacing.ms.horizontalSpace,
               Expanded(
-                child: InkWell(
-                  onTap: () {
-                    // Navigate to edit address
+                child: AppButton(
+                  label: 'shared.edit'.tr(),
+                  variant: ButtonVariant.secondary,
+                  height: ButtonSize.small,
+                  isFullWidth: true,
+                  prefixIcon:
+                      Icon(Icons.edit_outlined, color: cs.primary, size: 18.r),
+                  onPressed: () {
+                    context.push(
+                      AppRoutes.addAddress,
+                      extra: address,
+                    );
                   },
-                  borderRadius: BorderRadius.circular(8.r),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 10.h),
-                    decoration: BoxDecoration(
-                      color: cs.primaryContainer.withValues(alpha: 0.3),
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.edit_outlined,
-                          color: cs.primary,
-                          size: 18.r,
-                        ),
-                        4.horizontalSpace,
-                        Text(
-                          'shared.edit'.tr(),
-                          style: tt.bodyMedium?.copyWith(
-                            color: cs.primary,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                 ),
               ),
             ],
@@ -256,4 +211,31 @@ class _AddressCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class _AddressSkeleton extends StatelessWidget {
+  const _AddressSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.separated(
+      padding: EdgeInsets.all(16.w),
+      itemCount: 3,
+      separatorBuilder: (_, __) => 16.verticalSpace,
+      itemBuilder: (context, index) {
+        return Skeletonizer(
+          enabled: true,
+          child: _AddressCard(address: _MockAddress()),
+        );
+      },
+    );
+  }
+}
+
+class _MockAddress {
+  final String title = 'Home Address';
+  final String address = '123 Main Street, Building 4';
+  final String governorateName = 'Cairo';
+  final String centerName = 'Nasr City';
+  final int id = 0;
 }

@@ -1,6 +1,5 @@
 import 'package:wassaly/core/imports/core_imports.dart';
 import 'package:wassaly/core/imports/packages_imports.dart';
-import 'package:wassaly/core/injection/injection.dart';
 import 'package:wassaly/features/profile/presentation/bloc/settings/settings_bloc.dart';
 
 /// A wrapper that listens to SettingsBloc and applies theme/language changes globally.
@@ -14,26 +13,23 @@ class SettingsListenerWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<SettingsBloc>()..add(const SettingsInitialized()),
-      child: BlocListener<SettingsBloc, SettingsState>(
-        listenWhen: (prev, curr) => prev.language != curr.language,
-        listener: (context, state) {
-          // Apply language change using EasyLocalization
-          final newLocale = Locale(state.language);
-          if (context.locale != newLocale) {
-            context.setLocale(newLocale);
-          }
+    return BlocListener<SettingsBloc, SettingsState>(
+      listenWhen: (prev, curr) => prev.language != curr.language,
+      listener: (context, state) {
+        // Apply language change using EasyLocalization
+        final newLocale = Locale(state.language);
+        if (context.locale != newLocale) {
+          context.setLocale(newLocale);
+        }
+      },
+      child: BlocBuilder<SettingsBloc, SettingsState>(
+        buildWhen: (prev, curr) =>
+            prev.isDarkMode != curr.isDarkMode ||
+            prev.language != curr.language,
+        builder: (context, state) {
+          final themeMode = state.isDarkMode ? ThemeMode.dark : ThemeMode.light;
+          return builder(context, themeMode);
         },
-        child: BlocBuilder<SettingsBloc, SettingsState>(
-          buildWhen: (prev, curr) =>
-              prev.isDarkMode != curr.isDarkMode ||
-              prev.language != curr.language,
-          builder: (context, state) {
-            final themeMode = state.isDarkMode ? ThemeMode.dark : ThemeMode.light;
-            return builder(context, themeMode);
-          },
-        ),
       ),
     );
   }

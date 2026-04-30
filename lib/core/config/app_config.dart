@@ -19,7 +19,8 @@ class AppConfig {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Accept-Language': 'ar',
+          'Accept-Language':
+              StorageService.instance.getString('app_language') ?? 'ar',
         },
       ),
     );
@@ -30,6 +31,9 @@ class AppConfig {
 
     // Add auth token interceptor
     _addAuthInterceptor();
+
+    // Add language interceptor
+    _addLanguageInterceptor();
 
     // Add pretty logger for detailed request/response logging
     dio.interceptors.add(PrettyDioLogger(
@@ -86,6 +90,20 @@ class AppConfig {
     ];
 
     return publicPaths.any((publicPath) => path.contains(publicPath));
+  }
+
+  /// Adds an interceptor to set Accept-Language header based on app language
+  static void _addLanguageInterceptor() {
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          final language =
+              StorageService.instance.getString('app_language') ?? 'ar';
+          options.headers['Accept-Language'] = language;
+          return handler.next(options);
+        },
+      ),
+    );
   }
 
   static String _getBaseUrl() {

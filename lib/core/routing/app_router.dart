@@ -1,5 +1,7 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wassaly/core/imports/core_imports.dart';
+import 'package:wassaly/core/injection/injection.dart';
 import 'package:wassaly/features/auth/presentation/screens/auth_callback_page.dart';
 import 'package:wassaly/features/auth/presentation/screens/forgot_password_page.dart';
 import 'package:wassaly/features/auth/presentation/screens/login_page.dart';
@@ -12,12 +14,13 @@ import 'package:wassaly/features/category/presentation/screens/category_page.dar
 import 'package:wassaly/features/favorite/presentation/screens/favorite_page.dart';
 import 'package:wassaly/features/home/presentation/screens/home_page.dart';
 import 'package:wassaly/features/main_layout/presentation/screens/main_layout_page.dart';
+import 'package:wassaly/features/profile/domain/entities/address_entity.dart';
+import 'package:wassaly/features/profile/presentation/bloc/profile/profile_bloc.dart';
+import 'package:wassaly/features/profile/presentation/screens/add_address_page.dart';
+import 'package:wassaly/features/profile/presentation/screens/addresses_page.dart';
+import 'package:wassaly/features/profile/presentation/screens/edit_profile_page.dart';
+import 'package:wassaly/features/profile/presentation/screens/privacy_policy_page.dart';
 import 'package:wassaly/features/profile/presentation/screens/profile_page.dart';
-
-import '../../features/profile/presentation/screens/add_address_page.dart';
-import '../../features/profile/presentation/screens/addresses_page.dart';
-import '../../features/profile/presentation/screens/edit_profile_page.dart';
-import '../../features/profile/presentation/screens/language_page.dart';
 
 final GoRouter appRouter = GoRouter(
   navigatorKey: rootNavigatorKey,
@@ -112,7 +115,49 @@ final GoRouter appRouter = GoRouter(
             GoRoute(
               path: AppRoutes.profile,
               name: 'profile',
-              builder: (context, state) => const ProfilePage(),
+              builder: (context, state) => BlocProvider.value(
+                value: sl<ProfileBloc>()..add(const ProfileFetched()),
+                child: const ProfilePage(),
+              ),
+              routes: [
+                GoRoute(
+                  path: AppRoutes.editProfile
+                      .replaceFirst('${AppRoutes.profile}/', ''),
+                  name: 'editProfile',
+                  builder: (context, state) => BlocProvider.value(
+                    value: sl<ProfileBloc>(),
+                    child: const EditProfilePage(),
+                  ),
+                ),
+                GoRoute(
+                  path: AppRoutes.addresses
+                      .replaceFirst('${AppRoutes.profile}/', ''),
+                  name: 'addresses',
+                  builder: (context, state) => BlocProvider.value(
+                    value: sl<ProfileBloc>(),
+                    child: const AddressesPage(),
+                  ),
+                  routes: [
+                    GoRoute(
+                      path: AppRoutes.addAddress
+                          .replaceFirst('${AppRoutes.addresses}/', ''),
+                      name: 'addAddress',
+                      builder: (context, state) => BlocProvider.value(
+                        value: sl<ProfileBloc>(),
+                        child: AddAddressPage(
+                          address: state.extra as AddressEntity?,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                GoRoute(
+                  path: AppRoutes.privacyPolicy
+                      .replaceFirst('${AppRoutes.profile}/', ''),
+                  name: 'privacyPolicy',
+                  builder: (context, state) => const PrivacyPolicyPage(),
+                ),
+              ],
             ),
           ],
         ),
@@ -177,26 +222,6 @@ final GoRouter appRouter = GoRouter(
           avatar: queryParams['avatar'],
         );
       },
-    ),
-    GoRoute(
-      path: AppRoutes.editProfile,
-      name: 'editProfile',
-      builder: (context, state) => const EditProfilePage(),
-    ),
-    GoRoute(
-      path: AppRoutes.addresses,
-      name: 'addresses',
-      builder: (context, state) => const AddressesPage(),
-    ),
-    GoRoute(
-      path: AppRoutes.addAddress,
-      name: 'addAddress',
-      builder: (context, state) => const AddAddressPage(),
-    ),
-    GoRoute(
-      path: AppRoutes.language,
-      name: 'language',
-      builder: (context, state) => const LanguagePage(),
     ),
   ],
 );

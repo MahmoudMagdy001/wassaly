@@ -60,7 +60,6 @@ class AppCard extends StatelessWidget {
               left: AppSpacing.md,
               right: AppSpacing.md,
               top: AppSpacing.md,
-              bottom: AppSpacing.sm,
             ),
             child: Row(
               children: [
