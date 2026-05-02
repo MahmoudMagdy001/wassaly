@@ -6,6 +6,8 @@ import 'package:wassaly/features/auth/presentation/widgets/login/create_account_
 import 'package:wassaly/features/auth/presentation/widgets/login/login_form.dart';
 import 'package:wassaly/features/auth/presentation/widgets/login/login_header.dart';
 
+import '../bloc/session/session_bloc.dart';
+
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
@@ -79,6 +81,8 @@ class _LoginViewState extends State<_LoginView> {
           previous.requiresVerification != current.requiresVerification,
       listener: (context, state) {
         if (state.user != null) {
+          // Update SessionBloc with the logged-in user so avatar appears immediately
+          context.read<SessionBloc>().add(SessionUserUpdated(state.user!));
           context.go(AppRoutes.home);
         }
         if (state.errorMessage != null) {

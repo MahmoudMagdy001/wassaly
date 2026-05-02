@@ -1,6 +1,5 @@
 import 'package:wassaly/core/imports/core_imports.dart';
 import 'package:wassaly/core/imports/packages_imports.dart';
-import 'package:wassaly/core/injection/injection.dart';
 import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
 
 class MainLayoutPage extends StatelessWidget {
@@ -64,10 +63,16 @@ class MainLayoutPage extends StatelessWidget {
               ),
             ),
       bottomNavigationBar: BlocBuilder<SessionBloc, SessionState>(
-        bloc: sl<SessionBloc>(),
-        buildWhen: (prev, curr) =>
-            (prev is SessionAuthenticated ? (prev).user.avatarUrl : null) !=
-            (curr is SessionAuthenticated ? (curr).user.avatarUrl : null),
+        buildWhen: (prev, curr) {
+          // Rebuild when state type changes (e.g., SessionLoading -> SessionAuthenticated)
+          if (prev.runtimeType != curr.runtimeType) return true;
+          // Rebuild when avatar URL changes
+          final prevAvatar =
+              prev is SessionAuthenticated ? prev.user.avatarUrl : null;
+          final currAvatar =
+              curr is SessionAuthenticated ? curr.user.avatarUrl : null;
+          return prevAvatar != currAvatar;
+        },
         builder: (context, state) {
           final avatarUrl =
               state is SessionAuthenticated ? state.user.avatarUrl : null;

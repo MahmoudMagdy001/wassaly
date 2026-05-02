@@ -3,6 +3,7 @@ import 'package:wassaly/core/imports/packages_imports.dart';
 import 'package:wassaly/core/injection/injection.dart';
 import 'package:wassaly/features/auth/data/datasources/auth_local_datasource.dart';
 import 'package:wassaly/features/auth/data/models/user_model.dart';
+import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
 
 class AuthCallbackPage extends StatefulWidget {
   final String? token;
@@ -65,6 +66,9 @@ class _AuthCallbackPageState extends State<AuthCallbackPage> {
       await _localDataSource.cacheUser(user);
 
       if (mounted) {
+        // Notify SessionBloc about the logged-in user so avatar appears immediately
+        sl<SessionBloc>().add(SessionUserUpdated(user));
+
         context.showSuccessSnackBar('auth.login_success'.tr());
         context.go(AppRoutes.home);
       }
