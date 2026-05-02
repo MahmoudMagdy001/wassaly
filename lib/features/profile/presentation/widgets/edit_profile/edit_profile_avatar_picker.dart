@@ -28,6 +28,68 @@ class _EditProfileAvatarPickerState extends State<EditProfileAvatarPicker> {
     );
   }
 
+  Future<void> _takePhoto() async {
+    final result = await MediaService.instance.pickImage(
+      source: ImageSource.camera,
+    );
+    result.fold(
+      (failure) => context.showErrorSnackBar(failure.message),
+      (file) => widget.onAvatarPicked(file),
+    );
+  }
+
+  void _showImageSourceBottomSheet() {
+    context.showAppBottomSheet<void>(
+      builder: (bottomSheetContext) {
+        final cs = bottomSheetContext.theme.colorScheme;
+        final tt = bottomSheetContext.theme.textTheme;
+        return SafeArea(
+          child: Padding(
+            padding: EdgeInsets.all(AppSpacing.lg),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'profile.choose_image_source'.tr(),
+                  style: tt.titleMedium?.copyWith(
+                    color: cs.onSurface,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                AppSpacing.lg.kH,
+                ListTile(
+                  leading: Icon(Icons.camera_alt, color: cs.primary),
+                  title: Text(
+                    'profile.camera'.tr(),
+                    style: tt.bodyLarge?.copyWith(color: cs.onSurface),
+                  ),
+                  onTap: () {
+                    bottomSheetContext.pop();
+                    _takePhoto();
+                  },
+                ),
+                const Divider(),
+                ListTile(
+                  leading: Icon(Icons.photo_library, color: cs.primary),
+                  title: Text(
+                    'profile.gallery'.tr(),
+                    style: tt.bodyLarge?.copyWith(color: cs.onSurface),
+                  ),
+                  onTap: () {
+                    bottomSheetContext.pop();
+                    _pickAvatar();
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final cs = context.theme.colorScheme;
@@ -73,7 +135,7 @@ class _EditProfileAvatarPickerState extends State<EditProfileAvatarPicker> {
               radius: 18.r,
               backgroundColor: cs.primary,
               child: IconButton(
-                onPressed: _pickAvatar,
+                onPressed: _showImageSourceBottomSheet,
                 icon: Icon(Icons.camera_alt_outlined,
                     size: 16.r, color: cs.onPrimary),
               ),

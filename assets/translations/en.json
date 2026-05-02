@@ -97,7 +97,11 @@
     "select_language": "Select Language",
     "general_settings": "General Settings",
     "support_and_privacy": "Support & Privacy",
-    "active": "Active"
+    "active": "Active",
+    "choose_image_source": "Choose Image Source",
+    "camera": "Camera",
+    "gallery": "Gallery",
+    "update_success": "Data updated successfully"
   },
   "auth": {
     "log_in": "Login",

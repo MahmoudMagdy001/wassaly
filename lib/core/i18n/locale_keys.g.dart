@@ -113,7 +113,11 @@ class CodegenLoader extends AssetLoader{
     "select_language": "اختيار اللغة",
     "general_settings": "الإعدادات العامة",
     "support_and_privacy": "الدعم والخصوصية",
-    "active": "مفعل"
+    "active": "مفعل",
+    "choose_image_source": "اختر مصدر الصورة",
+    "camera": "الكاميرا",
+    "gallery": "المعرض",
+    "update_success": "تم تحديث البيانات بنجاح"
   },
   "auth": {
     "log_in": "تسجيل الدخول",
@@ -325,7 +329,11 @@ static const Map<String,dynamic> _en = {
     "select_language": "Select Language",
     "general_settings": "General Settings",
     "support_and_privacy": "Support & Privacy",
-    "active": "Active"
+    "active": "Active",
+    "choose_image_source": "Choose Image Source",
+    "camera": "Camera",
+    "gallery": "Gallery",
+    "update_success": "Data updated successfully"
   },
   "auth": {
     "log_in": "Login",

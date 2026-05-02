@@ -151,7 +151,7 @@ class _AddressCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '${address.address}, ${address.governorateName}, ${address.centerName}',
+            '${address.address} , ${address.centerName} , ${address.governorateName}',
             style: tt.bodyMedium?.copyWith(
               color: cs.onSurfaceVariant,
             ),

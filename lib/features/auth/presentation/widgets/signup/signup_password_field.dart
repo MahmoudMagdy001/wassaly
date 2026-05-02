@@ -8,6 +8,7 @@ class SignupPasswordField extends StatelessWidget {
   final ValueChanged<bool> onToggleVisibility;
   final FormFieldValidator<String>? validator;
   final bool isConfirmPassword;
+  final FocusNode? focusNode;
 
   const SignupPasswordField({
     super.key,
@@ -16,6 +17,7 @@ class SignupPasswordField extends StatelessWidget {
     required this.onToggleVisibility,
     this.validator,
     this.isConfirmPassword = false,
+    this.focusNode,
   });
 
   @override
@@ -35,6 +37,7 @@ class SignupPasswordField extends StatelessWidget {
           borderRadius: BorderRadius.circular(12.r),
           child: AppTextField(
             controller: controller,
+            focusNode: focusNode,
             onChanged: onChanged,
             validator: validator,
             obscureText: !isVisible,

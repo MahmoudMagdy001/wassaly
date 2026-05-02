@@ -85,72 +85,78 @@ class _AddAddressViewState extends State<_AddAddressView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          _isEditing ? 'profile.edit_address'.tr() : 'profile.add_address'.tr(),
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      behavior: HitTestBehavior.translucent,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            _isEditing
+                ? 'profile.edit_address'.tr()
+                : 'profile.add_address'.tr(),
+          ),
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
-      body: BlocListener<ProfileBloc, ProfileState>(
-        listenWhen: (prev, curr) =>
-            prev.addressStatus != curr.addressStatus &&
-            curr.addressStatus.isDone,
-        listener: (context, state) {
-          if (state.addressStatus.isSuccess) {
-            context.showSuccessSnackBar(
-              _isEditing
-                  ? 'profile.address_updated'.tr()
-                  : 'profile.address_added'.tr(),
-            );
-            context.pop();
-          } else if (state.addressStatus.isFailure &&
-              state.addressError != null) {
-            context.showErrorSnackBar(state.addressError!);
-          }
-        },
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(AppSpacing.pagePadding),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                AppTextField(
-                  label: 'profile.address_title'.tr(),
-                  hint: 'profile.address_title_hint'.tr(),
-                  controller: _titleController,
-                  prefixIcon: const Icon(Icons.label_outline),
-                  validator: (v) =>
-                      v!.isEmpty ? 'profile.title_required'.tr() : null,
-                ),
-                AppSpacing.md.verticalSpace,
-                AppTextField(
-                  label: 'profile.address_details'.tr(),
-                  hint: 'profile.address_details_hint'.tr(),
-                  controller: _addressController,
-                  prefixIcon: const Icon(Icons.location_on_outlined),
-                  maxLines: 3,
-                  validator: (v) =>
-                      v!.isEmpty ? 'profile.address_required'.tr() : null,
-                ),
-                AppSpacing.md.verticalSpace,
-                _buildGovernorateDropdown(context),
-                AppSpacing.md.verticalSpace,
-                _buildCenterDropdown(context),
-                AppSpacing.xl.verticalSpace,
-                BlocBuilder<ProfileBloc, ProfileState>(
-                  buildWhen: (prev, curr) =>
-                      prev.addressStatus != curr.addressStatus,
-                  builder: (context, state) {
-                    return AppButton(
-                      label: 'profile.save_address'.tr(),
-                      isFullWidth: true,
-                      isLoading: state.addressStatus.isLoading,
-                      onPressed: _submit,
-                    );
-                  },
-                ),
-              ],
+        body: BlocListener<ProfileBloc, ProfileState>(
+          listenWhen: (prev, curr) =>
+              prev.addressStatus != curr.addressStatus &&
+              curr.addressStatus.isDone,
+          listener: (context, state) {
+            if (state.addressStatus.isSuccess) {
+              context.showSuccessSnackBar(
+                _isEditing
+                    ? 'profile.address_updated'.tr()
+                    : 'profile.address_added'.tr(),
+              );
+              context.pop();
+            } else if (state.addressStatus.isFailure &&
+                state.addressError != null) {
+              context.showErrorSnackBar(state.addressError!);
+            }
+          },
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(AppSpacing.pagePadding),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  AppTextField(
+                    label: 'profile.address_title'.tr(),
+                    hint: 'profile.address_title_hint'.tr(),
+                    controller: _titleController,
+                    prefixIcon: const Icon(Icons.label_outline),
+                    validator: (v) =>
+                        v!.isEmpty ? 'profile.title_required'.tr() : null,
+                  ),
+                  AppSpacing.md.verticalSpace,
+                  AppTextField(
+                    label: 'profile.address_details'.tr(),
+                    hint: 'profile.address_details_hint'.tr(),
+                    controller: _addressController,
+                    prefixIcon: const Icon(Icons.location_on_outlined),
+                    maxLines: 3,
+                    validator: (v) =>
+                        v!.isEmpty ? 'profile.address_required'.tr() : null,
+                  ),
+                  AppSpacing.md.verticalSpace,
+                  _buildGovernorateDropdown(context),
+                  AppSpacing.md.verticalSpace,
+                  _buildCenterDropdown(context),
+                  AppSpacing.xl.verticalSpace,
+                  BlocBuilder<ProfileBloc, ProfileState>(
+                    buildWhen: (prev, curr) =>
+                        prev.addressStatus != curr.addressStatus,
+                    builder: (context, state) {
+                      return AppButton(
+                        label: 'profile.save_address'.tr(),
+                        isFullWidth: true,
+                        isLoading: state.addressStatus.isLoading,
+                        onPressed: _submit,
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),

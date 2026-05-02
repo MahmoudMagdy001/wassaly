@@ -4,12 +4,18 @@ class EditProfilePasswordSection extends StatefulWidget {
   final TextEditingController currentPasswordController;
   final TextEditingController passwordController;
   final TextEditingController passwordConfirmationController;
+  final FocusNode? currentPasswordFocusNode;
+  final FocusNode? passwordFocusNode;
+  final FocusNode? passwordConfirmationFocusNode;
 
   const EditProfilePasswordSection({
     super.key,
     required this.currentPasswordController,
     required this.passwordController,
     required this.passwordConfirmationController,
+    this.currentPasswordFocusNode,
+    this.passwordFocusNode,
+    this.passwordConfirmationFocusNode,
   });
 
   @override
@@ -38,6 +44,7 @@ class _EditProfilePasswordSectionState
         AppTextField(
           label: 'profile.current_password'.tr(),
           controller: widget.currentPasswordController,
+          focusNode: widget.currentPasswordFocusNode,
           obscureText: _obscureCurrentPassword,
           prefixIcon: const Icon(Icons.lock_outline),
           suffixIcon: IconButton(
@@ -54,6 +61,7 @@ class _EditProfilePasswordSectionState
         AppTextField(
           label: 'auth.password'.tr(),
           controller: widget.passwordController,
+          focusNode: widget.passwordFocusNode,
           obscureText: _obscurePassword,
           prefixIcon: const Icon(Icons.lock_outline),
           suffixIcon: IconButton(
@@ -70,6 +78,7 @@ class _EditProfilePasswordSectionState
         AppTextField(
           label: 'auth.confirm_password'.tr(),
           controller: widget.passwordConfirmationController,
+          focusNode: widget.passwordConfirmationFocusNode,
           obscureText: _obscureConfirmPassword,
           prefixIcon: const Icon(Icons.lock_outline),
           suffixIcon: IconButton(

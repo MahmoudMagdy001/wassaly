@@ -93,16 +93,55 @@ class _EditProfileViewState extends State<_EditProfileView> {
         ));
   }
 
-  void _showDeleteAccountDialog() {
-    context
-        .showConfirmationDialog(
-      title: 'profile.delete_account_title'.tr(),
-      message: 'profile.delete_account_message'.tr(),
-      confirmText: 'profile.delete_account_confirm'.tr(),
-      cancelText: 'shared.cancel'.tr(),
-      isDangerous: true,
-    )
-        .then((confirmed) {
+  void _showDeleteAccountBottomSheet() {
+    context.showAppBottomSheet<bool>(
+      builder: (bottomSheetContext) {
+        final cs = bottomSheetContext.theme.colorScheme;
+        final tt = bottomSheetContext.theme.textTheme;
+        return SafeArea(
+          child: Padding(
+            padding: EdgeInsets.all(AppSpacing.lg),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Icon(
+                  Icons.warning_rounded,
+                  color: cs.error,
+                  size: 48.sp,
+                ),
+                AppSpacing.md.kH,
+                Text(
+                  'profile.delete_account_title'.tr(),
+                  style: tt.headlineSmall?.copyWith(
+                    color: cs.onSurface,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                AppSpacing.sm.kH,
+                Text(
+                  'profile.delete_account_message'.tr(),
+                  style: tt.bodyMedium?.copyWith(
+                    color: cs.onSurfaceVariant,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                AppSpacing.xl.kH,
+                AppButton(
+                  label: 'profile.delete_account_confirm'.tr(),
+                  onPressed: () {
+                    bottomSheetContext.pop(true);
+                  },
+                  variant: ButtonVariant.danger,
+                  isFullWidth: true,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    ).then((confirmed) {
       if (confirmed ?? false) {
         _deleteAccount();
       }
@@ -180,7 +219,7 @@ class _EditProfileViewState extends State<_EditProfileView> {
                 AppSpacing.md.kH,
                 AppButton(
                   label: 'profile.delete_account'.tr(),
-                  onPressed: _showDeleteAccountDialog,
+                  onPressed: _showDeleteAccountBottomSheet,
                   variant: ButtonVariant.danger,
                   isFullWidth: true,
                   prefixIcon: const Icon(Icons.delete_forever),

@@ -71,6 +71,7 @@ class AppTextField extends StatelessWidget {
 
     if (isIOS) {
       return CupertinoTextField(
+        onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
         controller: controller,
         placeholder: hint,
         keyboardType: keyboardType,
@@ -86,7 +87,7 @@ class AppTextField extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: fillColor ?? cs.surfaceContainerHighest.withValues(alpha: 0.5),
-          borderRadius: const BorderRadius.all(Radius.circular(12)),
+          borderRadius: BorderRadius.all(Radius.circular(12.r)),
         ),
         padding: contentPadding ??
             EdgeInsets.symmetric(
@@ -156,12 +157,12 @@ class AppTextField extends StatelessWidget {
               horizontal: 16.w,
               vertical: 12.h,
             ),
-        border: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12)),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12.r)),
           borderSide: BorderSide.none,
         ),
-        enabledBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12)),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12.r)),
           borderSide: BorderSide.none,
         ),
         focusedBorder: OutlineInputBorder(

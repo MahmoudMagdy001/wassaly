@@ -97,7 +97,11 @@
     "select_language": "اختيار اللغة",
     "general_settings": "الإعدادات العامة",
     "support_and_privacy": "الدعم والخصوصية",
-    "active": "مفعل"
+    "active": "مفعل",
+    "choose_image_source": "اختر مصدر الصورة",
+    "camera": "الكاميرا",
+    "gallery": "المعرض",
+    "update_success": "تم تحديث البيانات بنجاح"
   },
   "auth": {
     "log_in": "تسجيل الدخول",

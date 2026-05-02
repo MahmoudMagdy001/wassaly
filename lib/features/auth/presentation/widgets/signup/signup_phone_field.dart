@@ -5,12 +5,14 @@ class SignupPhoneField extends StatelessWidget {
   final TextEditingController controller;
   final ValueChanged<String> onChanged;
   final FormFieldValidator<String>? validator;
+  final FocusNode? focusNode;
 
   const SignupPhoneField({
     super.key,
     required this.controller,
     required this.onChanged,
     this.validator,
+    this.focusNode,
   });
 
   @override
@@ -21,6 +23,7 @@ class SignupPhoneField extends StatelessWidget {
       borderRadius: BorderRadius.circular(12.r),
       child: AppTextField(
         controller: controller,
+        focusNode: focusNode,
         onChanged: onChanged,
         validator: validator,
         keyboardType: TextInputType.phone,
