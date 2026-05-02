@@ -1,4 +1,5 @@
-import '../../imports/imports.dart';
+import 'package:wassaly/core/imports/core_imports.dart';
+import 'package:wassaly/core/imports/packages_imports.dart';
 
 /// A fully themed button supporting all [ButtonVariant]s and [ButtonSize]s.
 ///

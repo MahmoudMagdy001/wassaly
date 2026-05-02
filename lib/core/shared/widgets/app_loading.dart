@@ -1,4 +1,5 @@
-import '../../imports/imports.dart';
+import 'package:wassaly/core/imports/core_imports.dart';
+import 'package:wassaly/core/imports/packages_imports.dart';
 
 /// Centered loading indicator using the primary colour from the theme.
 ///
@@ -25,6 +26,8 @@ class AppLoading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = context.theme.colorScheme;
+    final isIOS = context.isIOS;
+
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -32,10 +35,15 @@ class AppLoading extends StatelessWidget {
           SizedBox(
             width: size,
             height: size,
-            child: CircularProgressIndicator(
-              strokeWidth: strokeWidth,
-              color: cs.primary,
-            ),
+            child: isIOS
+                ? CupertinoActivityIndicator(
+                    color: cs.primary,
+                    radius: size / 2,
+                  )
+                : CircularProgressIndicator(
+                    strokeWidth: strokeWidth,
+                    color: cs.primary,
+                  ),
           ),
           if (message != null) ...[
             16.verticalSpace,

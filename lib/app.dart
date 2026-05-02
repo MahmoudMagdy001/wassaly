@@ -24,10 +24,7 @@ class App extends StatelessWidget {
       supportedLocales: context.supportedLocales,
       locale: context.locale,
       builder: (context, child) {
-        Widget current = child!;
-        current = SkeletonWrapper(child: current);
-        current = SessionListenerWrapper(child: current);
-        return current;
+        return SessionListenerWrapper(child: child!);
       },
     );
   }

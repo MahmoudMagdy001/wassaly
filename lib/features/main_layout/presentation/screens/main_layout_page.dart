@@ -1,5 +1,7 @@
 import 'package:wassaly/core/imports/core_imports.dart';
 import 'package:wassaly/core/imports/packages_imports.dart';
+import 'package:wassaly/core/injection/injection.dart';
+import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
 
 class MainLayoutPage extends StatelessWidget {
   const MainLayoutPage({
@@ -61,35 +63,92 @@ class MainLayoutPage extends StatelessWidget {
                 ],
               ),
             ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: navigationShell.currentIndex,
-        onDestinationSelected: _onTap,
-        backgroundColor: cs.surface,
-        indicatorColor: cs.primaryContainer,
-        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-        destinations: [
-          NavigationDestination(
-            icon: const Icon(Icons.home_outlined),
-            selectedIcon: const Icon(Icons.home_rounded),
-            label: 'nav.nav_home'.tr(),
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.category_outlined),
-            selectedIcon: const Icon(Icons.category_rounded),
-            label: 'nav.nav_category'.tr(),
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.favorite_outline),
-            selectedIcon: const Icon(Icons.favorite_rounded),
-            label: 'nav.nav_favorite'.tr(),
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.person_outline),
-            selectedIcon: const Icon(Icons.person_rounded),
-            label: 'nav.nav_profile'.tr(),
-          ),
-        ],
+      bottomNavigationBar: BlocBuilder<SessionBloc, SessionState>(
+        bloc: sl<SessionBloc>(),
+        buildWhen: (prev, curr) =>
+            (prev is SessionAuthenticated ? (prev).user.avatarUrl : null) !=
+            (curr is SessionAuthenticated ? (curr).user.avatarUrl : null),
+        builder: (context, state) {
+          final avatarUrl =
+              state is SessionAuthenticated ? state.user.avatarUrl : null;
+
+          return BottomNavigationBar(
+            currentIndex: navigationShell.currentIndex,
+            onTap: _onTap,
+            backgroundColor: cs.surface,
+            selectedItemColor: cs.primary,
+            unselectedItemColor: cs.onSurfaceVariant,
+            type: BottomNavigationBarType.fixed,
+            showUnselectedLabels: true,
+            items: [
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.home_outlined),
+                activeIcon: const Icon(Icons.home_rounded),
+                label: 'nav.nav_home'.tr(),
+              ),
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.category_outlined),
+                activeIcon: const Icon(Icons.category_rounded),
+                label: 'nav.nav_category'.tr(),
+              ),
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.favorite_outline),
+                activeIcon: const Icon(Icons.favorite_rounded),
+                label: 'nav.nav_favorite'.tr(),
+              ),
+              BottomNavigationBarItem(
+                icon: avatarUrl != null && avatarUrl.isNotEmpty
+                    ? SizedBox(
+                        width: 26.w,
+                        height: 22.h,
+                        child: ClipOval(
+                          child: CachedNetworkImage(
+                            imageUrl: avatarUrl,
+                            fit: BoxFit.cover,
+                            placeholder: (_, __) => Container(
+                              color: cs.surface,
+                            ),
+                            errorWidget: (_, __, ___) => Icon(
+                              Icons.person_outline,
+                              size: 20.r,
+                            ),
+                          ),
+                        ),
+                      )
+                    : const Icon(Icons.person_outline),
+                activeIcon: avatarUrl != null && avatarUrl.isNotEmpty
+                    ? SizedBox(
+                        width: 26.w,
+                        height: 22.h,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: cs.primary,
+                              width: 2.w,
+                            ),
+                          ),
+                          child: ClipOval(
+                            child: CachedNetworkImage(
+                              imageUrl: avatarUrl,
+                              fit: BoxFit.cover,
+                              placeholder: (_, __) => Container(
+                                color: cs.surface,
+                              ),
+                              errorWidget: (_, __, ___) => Icon(
+                                Icons.person_rounded,
+                                size: 20.w,
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    : const Icon(Icons.person_rounded),
+                label: 'nav.nav_profile'.tr(),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

@@ -1,4 +1,5 @@
-import '../../imports/imports.dart';
+import 'package:wassaly/core/imports/core_imports.dart';
+import 'package:wassaly/core/imports/packages_imports.dart';
 
 /// A themed card widget with consistent padding, radius, and optional header.
 ///
@@ -102,7 +103,9 @@ class AppCard extends StatelessWidget {
       ],
     );
 
-    return Container(
+    final isIOS = context.isIOS;
+
+    final cardWidget = Container(
       margin: margin,
       decoration: BoxDecoration(
         color: cardColor,
@@ -112,13 +115,23 @@ class AppCard extends StatelessWidget {
         boxShadow: showShadow ? AppShadows.card : AppShadows.none,
       ),
       clipBehavior: Clip.antiAlias,
-      child: onTap != null
-          ? InkWell(
-              onTap: onTap,
-              borderRadius: AppBorders.card,
-              child: content,
-            )
-          : content,
+      child: content,
+    );
+
+    if (onTap == null) return cardWidget;
+
+    if (isIOS) {
+      return GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.translucent,
+        child: cardWidget,
+      );
+    }
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: AppBorders.card,
+      child: cardWidget,
     );
   }
 }

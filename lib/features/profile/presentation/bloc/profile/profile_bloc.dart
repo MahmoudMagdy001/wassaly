@@ -125,6 +125,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       },
       (user) {
         // Update user silently - UI will reflect changes
+        // Also sync with SessionBloc for bottom nav avatar
+        _sessionBloc.add(SessionUserUpdated(user));
         emit(state.copyWith(
           user: user,
           clearError: true,
@@ -155,11 +157,15 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         actionStatus: AppStatus.failure,
         actionError: failure.message,
       )),
-      (user) => emit(state.copyWith(
-        actionStatus: AppStatus.success,
-        user: user,
-        clearActionError: true,
-      )),
+      (user) {
+        // Update session with new user data (for bottom nav avatar update)
+        _sessionBloc.add(SessionUserUpdated(user));
+        emit(state.copyWith(
+          actionStatus: AppStatus.success,
+          user: user,
+          clearActionError: true,
+        ));
+      },
     );
   }
 

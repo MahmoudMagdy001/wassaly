@@ -5,6 +5,11 @@
     "delete": "Delete",
     "edit": "Edit"
   },
+  "errors": {
+    "no_internet": "No internet connection. Please check your connection and try again.",
+    "try_again": "Try Again",
+    "something_went_wrong": "Something went wrong"
+  },
   "home": {
     "home_title": "Home",
     "welcome_home": "Welcome!",

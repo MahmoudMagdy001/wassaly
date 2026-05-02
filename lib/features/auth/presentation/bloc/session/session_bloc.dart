@@ -27,6 +27,7 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
     on<SessionLoginRequested>(_onSessionLoginRequested);
     on<SessionCheckRequested>(_onSessionCheckRequested);
     on<SessionLogoutRequested>(_onSessionLogoutRequested);
+    on<SessionUserUpdated>(_onSessionUserUpdated);
   }
 
   Future<void> _onSessionLoginRequested(
@@ -93,5 +94,12 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
     await _logoutUseCase();
 
     emit(const SessionUnauthenticated());
+  }
+
+  void _onSessionUserUpdated(
+    SessionUserUpdated event,
+    Emitter<SessionState> emit,
+  ) {
+    emit(SessionAuthenticated(event.user));
   }
 }

@@ -5,6 +5,11 @@
     "delete": "حذف",
     "edit": "تعديل"
   },
+  "errors": {
+    "no_internet": "لا يوجد اتصال بالإنترنت. يرجى التحقق من اتصالك والمحاولة مرة أخرى.",
+    "try_again": "حاول مرة أخرى",
+    "something_went_wrong": "حدث خطأ ما"
+  },
   "home": {
     "home_title": "الرئيسية",
     "welcome_home": "مرحباً بك!",

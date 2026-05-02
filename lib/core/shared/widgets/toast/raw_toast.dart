@@ -1,4 +1,5 @@
-import '../../../imports/imports.dart';
+import 'package:wassaly/core/imports/core_imports.dart';
+import 'package:wassaly/core/imports/packages_imports.dart';
 
 class RawToast extends StatefulWidget {
   final Widget child;
@@ -106,4 +107,3 @@ class RawToastState extends State<RawToast> {
     );
   }
 }
-
