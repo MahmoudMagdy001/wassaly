@@ -75,11 +75,6 @@ final GoRouter appRouter = GoRouter(
       name: 'splash',
       builder: (context, state) => const SplashPage(),
     ),
-    GoRoute(
-      path: AppRoutes.onboarding,
-      name: 'onboarding',
-      builder: (context, state) => const OnboardingPage(),
-    ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) => MainLayoutPage(
         navigationShell: navigationShell,

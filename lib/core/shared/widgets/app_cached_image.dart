@@ -65,34 +65,50 @@ class AppCachedImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Adjust sizing for screenutil if enabled
-    final double? adjustedWidth = width?.w;
-    final double? adjustedHeight = height?.h;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Adjust sizing for screenutil if enabled
+        final double? adjustedWidth = width?.w;
+        final double? adjustedHeight = height?.h;
 
-    Widget imageContent = CachedNetworkImage(
-      imageUrl: imageUrl,
-      cacheKey: cacheKey,
-      width: adjustedWidth,
-      height: adjustedHeight,
-      fit: fit,
-      color: color,
-      colorBlendMode: colorBlendMode,
-      alignment: alignment,
-      fadeInDuration: fadeInDuration ?? const Duration(milliseconds: 500),
-      placeholder: (context, url) =>
-          placeholder ?? _buildDefaultPlaceholder(context),
-      errorWidget: (context, url, error) =>
-          errorWidget ?? _buildDefaultErrorWidget(context),
+        // Use provided dimensions or fall back to constraints
+        final double effectiveWidth = adjustedWidth ?? constraints.maxWidth;
+        final double effectiveHeight = adjustedHeight ?? constraints.maxHeight;
+
+        Widget imageContent = CachedNetworkImage(
+          imageUrl: imageUrl,
+          cacheKey: cacheKey,
+          width: adjustedWidth,
+          height: adjustedHeight,
+          memCacheWidth:
+              (effectiveWidth.isFinite) ? effectiveWidth.toInt() : null,
+          memCacheHeight:
+              (effectiveHeight.isFinite) ? effectiveHeight.toInt() : null,
+          maxWidthDiskCache:
+              (effectiveWidth.isFinite) ? effectiveWidth.toInt() : null,
+          maxHeightDiskCache:
+              (effectiveHeight.isFinite) ? effectiveHeight.toInt() : null,
+          fit: fit,
+          color: color,
+          colorBlendMode: colorBlendMode,
+          alignment: alignment,
+          fadeInDuration: fadeInDuration ?? const Duration(milliseconds: 500),
+          placeholder: (context, url) =>
+              placeholder ?? _buildDefaultPlaceholder(context),
+          errorWidget: (context, url, error) =>
+              errorWidget ?? _buildDefaultErrorWidget(context),
+        );
+
+        if (borderRadius != null) {
+          imageContent = ClipRRect(
+            borderRadius: borderRadius!,
+            child: imageContent,
+          );
+        }
+
+        return imageContent;
+      },
     );
-
-    if (borderRadius != null) {
-      imageContent = ClipRRect(
-        borderRadius: borderRadius!,
-        child: imageContent,
-      );
-    }
-
-    return imageContent;
   }
 
   Widget _buildDefaultPlaceholder(BuildContext context) {

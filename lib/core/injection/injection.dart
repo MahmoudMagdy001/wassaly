@@ -38,6 +38,14 @@ import '../../features/profile/domain/usecases/update_address_usecase.dart';
 import '../../features/profile/domain/usecases/update_profile_usecase.dart';
 import '../../features/profile/presentation/bloc/profile/profile_bloc.dart';
 import '../../features/profile/presentation/bloc/settings/settings_bloc.dart';
+import '../../features/home/data/datasources/home_remote_datasource.dart';
+import '../../features/home/data/repositories/home_repository_impl.dart';
+import '../../features/home/domain/repositories/home_repository.dart';
+import '../../features/home/domain/usecases/get_banners_usecase.dart';
+import '../../features/home/domain/usecases/get_categories_usecase.dart';
+import '../../features/home/domain/usecases/get_popular_services_usecase.dart';
+import '../../features/home/domain/usecases/get_products_usecase.dart';
+import '../../features/home/presentation/bloc/home_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -77,6 +85,12 @@ Future<void> initDependencies() async {
       ));
   sl.registerLazySingleton(() => SettingsBloc(
         storage: StorageService.instance,
+      ));
+  sl.registerFactory(() => HomeBloc(
+        getBannersUseCase: sl(),
+        getCategoriesUseCase: sl(),
+        getPopularServicesUseCase: sl(),
+        getProductsUseCase: sl(),
       ));
 
   sl.registerFactoryParam<OtpVerificationBloc, String, VerificationType>(
@@ -121,11 +135,19 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(() => GetGovernoratesUseCase(sl()));
   sl.registerLazySingleton(() => GetCentersUseCase(sl()));
 
+  // UseCases - Home
+  sl.registerLazySingleton(() => GetBannersUseCase(sl()));
+  sl.registerLazySingleton(() => GetCategoriesUseCase(sl()));
+  sl.registerLazySingleton(() => GetPopularServicesUseCase(sl()));
+  sl.registerLazySingleton(() => GetProductsUseCase(sl()));
+
   // Repositories
   sl.registerLazySingleton<AuthRepository>(
       () => AuthRepositoryImpl(sl(), sl()));
   sl.registerLazySingleton<ProfileRepository>(
       () => ProfileRepositoryImpl(sl(), sl()));
+  sl.registerLazySingleton<HomeRepository>(
+      () => HomeRepositoryImpl(sl()));
 
   // DataSources
   sl.registerLazySingleton<AuthRemoteDataSource>(
@@ -134,4 +156,6 @@ Future<void> initDependencies() async {
       SecureStorageService.instance, StorageService.instance));
   sl.registerLazySingleton<ProfileRemoteDataSource>(
       () => ProfileRemoteDataSourceImpl(DioService.instance));
+  sl.registerLazySingleton<HomeRemoteDataSource>(
+      () => HomeRemoteDataSourceImpl(DioService.instance));
 }

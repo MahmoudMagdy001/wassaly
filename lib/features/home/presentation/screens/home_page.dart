@@ -1,11 +1,25 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/core/imports/core_imports.dart';
+import 'package:wassaly/core/imports/packages_imports.dart';
+import 'package:wassaly/core/injection/injection.dart';
+
+import '../bloc/home_bloc.dart';
+import '../bloc/home_event.dart';
+import '../bloc/home_state.dart';
+import '../widgets/widgets.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const _HomeView();
+    return BlocProvider(
+      create: (context) => sl<HomeBloc>()
+        ..add(GetBannersEvent())
+        ..add(GetCategoriesEvent())
+        ..add(GetPopularServicesEvent())
+        ..add(GetProductsEvent()),
+      child: const _HomeView(),
+    );
   }
 }
 
@@ -14,32 +28,94 @@ class _HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = context.theme.colorScheme;
+    final tt = context.theme.textTheme;
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'home.home_title'.tr(),
-          style: context.typography.titleLarge,
-        ),
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.home,
-              size: 80.r,
-              color: context.theme.colorScheme.primary,
+      backgroundColor: cs.surface,
+      body: RefreshIndicator(
+        onRefresh: () async {
+          final bloc = context.read<HomeBloc>();
+          final startTime = DateTime.now();
+
+          bloc.add(GetBannersEvent());
+          bloc.add(GetCategoriesEvent());
+          bloc.add(GetPopularServicesEvent());
+          bloc.add(GetProductsEvent());
+
+          // Wait for all sections to finish loading
+          await bloc.stream.firstWhere((state) =>
+              state.status != HomeStatus.loading &&
+              state.categoriesStatus != HomeStatus.loading &&
+              state.popularServicesStatus != HomeStatus.loading &&
+              state.productsStatus != HomeStatus.loading);
+
+          // Ensure visibility
+          final elapsed = DateTime.now().difference(startTime);
+          if (elapsed < const Duration(seconds: 1)) {
+            await Future<void>.delayed(const Duration(seconds: 1) - elapsed);
+          }
+        },
+        color: cs.primary,
+        backgroundColor: cs.surface,
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
+          slivers: [
+            // Sliver AppBar
+            SliverAppBar(
+              floating: true,
+              snap: true,
+              backgroundColor: cs.surface,
+              elevation: 0,
+              centerTitle: true,
+              title: Text(
+                'Wasally',
+                style: tt.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: cs.primary,
+                ),
+              ),
+              actions: [
+                IconButton(
+                  icon: Icon(Icons.search, color: cs.primary),
+                  onPressed: () {
+                    // TODO: Navigate to search
+                  },
+                ),
+              ],
             ),
-            20.verticalSpace,
-            Text(
-              'home.home_title'.tr(),
-              style: context.typography.headlineMedium,
+            // Banner
+            const SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.only(top: 8),
+                child: HomeBanner(),
+              ),
             ),
-            10.verticalSpace,
-            Text(
-              'home.home_subtitle'.tr(),
-              style: context.typography.bodyLarge,
+            // Spacing
+            SliverToBoxAdapter(
+              child: AppSpacing.md.verticalSpace,
+            ),
+            // Popular Services
+            const PopularServicesSection(),
+
+            // Main Categories
+            const SliverToBoxAdapter(
+              child: MainCategoriesSection(),
+            ),
+
+            // Spacing
+            SliverToBoxAdapter(
+              child: AppSpacing.sm.verticalSpace,
+            ),
+
+            // Products
+            const ProductsSection(),
+
+            // Bottom spacing
+            SliverToBoxAdapter(
+              child: AppSpacing.xl.verticalSpace,
             ),
           ],
         ),
