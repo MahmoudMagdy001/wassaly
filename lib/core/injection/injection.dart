@@ -20,10 +20,23 @@ import 'package:wassaly/features/auth/presentation/bloc/otp_verification/otp_ver
 import 'package:wassaly/features/auth/presentation/bloc/reset_password/reset_password_bloc.dart';
 import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
 import 'package:wassaly/features/auth/presentation/bloc/signup/signup_bloc.dart';
+import 'package:wassaly/features/sub_category/data/datasources/sub_category_remote_datasource.dart';
+import 'package:wassaly/features/sub_category/data/repositories/sub_category_repository_impl.dart';
+import 'package:wassaly/features/sub_category/domain/repositories/sub_category_repository.dart';
+import 'package:wassaly/features/sub_category/domain/usecases/get_sub_category_detail_usecase.dart';
+import 'package:wassaly/features/sub_category/presentation/bloc/sub_category_bloc.dart';
 
 import '../../features/auth/domain/usecases/get_cached_user_usecase.dart';
 import '../../features/auth/domain/usecases/google_login_usecase.dart';
 import '../../features/auth/presentation/bloc/google_login/google_login_bloc.dart';
+import '../../features/home/data/datasources/home_remote_datasource.dart';
+import '../../features/home/data/repositories/home_repository_impl.dart';
+import '../../features/home/domain/repositories/home_repository.dart';
+import '../../features/home/domain/usecases/get_banners_usecase.dart';
+import '../../features/home/domain/usecases/get_categories_usecase.dart';
+import '../../features/home/domain/usecases/get_popular_services_usecase.dart';
+import '../../features/home/domain/usecases/get_products_usecase.dart';
+import '../../features/home/presentation/bloc/home_bloc.dart';
 import '../../features/profile/data/datasources/profile_remote_datasource.dart';
 import '../../features/profile/data/repositories/profile_repository_impl.dart';
 import '../../features/profile/domain/repositories/profile_repository.dart';
@@ -38,14 +51,6 @@ import '../../features/profile/domain/usecases/update_address_usecase.dart';
 import '../../features/profile/domain/usecases/update_profile_usecase.dart';
 import '../../features/profile/presentation/bloc/profile/profile_bloc.dart';
 import '../../features/profile/presentation/bloc/settings/settings_bloc.dart';
-import '../../features/home/data/datasources/home_remote_datasource.dart';
-import '../../features/home/data/repositories/home_repository_impl.dart';
-import '../../features/home/domain/repositories/home_repository.dart';
-import '../../features/home/domain/usecases/get_banners_usecase.dart';
-import '../../features/home/domain/usecases/get_categories_usecase.dart';
-import '../../features/home/domain/usecases/get_popular_services_usecase.dart';
-import '../../features/home/domain/usecases/get_products_usecase.dart';
-import '../../features/home/presentation/bloc/home_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -91,6 +96,9 @@ Future<void> initDependencies() async {
         getCategoriesUseCase: sl(),
         getPopularServicesUseCase: sl(),
         getProductsUseCase: sl(),
+      ));
+  sl.registerFactory(() => SubCategoryBloc(
+        getSubCategoryDetailUseCase: sl(),
       ));
 
   sl.registerFactoryParam<OtpVerificationBloc, String, VerificationType>(
@@ -141,13 +149,17 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(() => GetPopularServicesUseCase(sl()));
   sl.registerLazySingleton(() => GetProductsUseCase(sl()));
 
+  // UseCases - SubCategory
+  sl.registerLazySingleton(() => GetSubCategoryDetailUseCase(sl()));
+
   // Repositories
   sl.registerLazySingleton<AuthRepository>(
       () => AuthRepositoryImpl(sl(), sl()));
   sl.registerLazySingleton<ProfileRepository>(
       () => ProfileRepositoryImpl(sl(), sl()));
-  sl.registerLazySingleton<HomeRepository>(
-      () => HomeRepositoryImpl(sl()));
+  sl.registerLazySingleton<HomeRepository>(() => HomeRepositoryImpl(sl()));
+  sl.registerLazySingleton<SubCategoryRepository>(
+      () => SubCategoryRepositoryImpl(sl()));
 
   // DataSources
   sl.registerLazySingleton<AuthRemoteDataSource>(
@@ -158,4 +170,6 @@ Future<void> initDependencies() async {
       () => ProfileRemoteDataSourceImpl(DioService.instance));
   sl.registerLazySingleton<HomeRemoteDataSource>(
       () => HomeRemoteDataSourceImpl(DioService.instance));
+  sl.registerLazySingleton<SubCategoryRemoteDataSource>(
+      () => SubCategoryRemoteDataSourceImpl(DioService.instance));
 }

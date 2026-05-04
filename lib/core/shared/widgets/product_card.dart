@@ -1,8 +1,18 @@
 import 'package:wassaly/core/imports/core_imports.dart';
 import 'package:wassaly/core/imports/packages_imports.dart';
 
-import '../../domain/entities/product_entity.dart';
+import '../../../features/home/domain/entities/product_entity.dart';
 
+/// A reusable product card widget for displaying product information.
+///
+/// Used across the app in grids, lists, and other product displays.
+/// Features:
+/// - Product image with cached loading
+/// - Favorite toggle button
+/// - Discount badge
+/// - Rating display
+/// - Price with original price strikethrough when discounted
+/// - Action callbacks for tap, favorite, and add to cart
 class ProductCard extends StatelessWidget {
   const ProductCard({
     super.key,
@@ -72,7 +82,7 @@ class ProductCard extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                         color: cs.onSurface,
                       ),
-                      maxLines: 1,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                     AppSpacing.xxs.verticalSpace,
@@ -136,7 +146,7 @@ class ProductCard extends StatelessWidget {
               imageUrl: product.image,
               fit: BoxFit.cover,
               borderRadius: BorderRadius.vertical(
-                top: Radius.circular(12.r),
+                top: Radius.circular(9.r),
               ),
             ),
           ),
@@ -212,8 +222,6 @@ class ProductCard extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // Add to cart button
-
         // Price column
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -249,7 +257,7 @@ class ProductCard extends StatelessWidget {
               borderRadius: AppBorders.sm,
             ),
             child: Icon(
-              Icons.shopping_cart_outlined,
+              Icons.remove_red_eye,
               size: 18.r,
               color: cs.onPrimary,
             ),

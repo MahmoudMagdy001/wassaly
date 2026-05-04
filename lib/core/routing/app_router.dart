@@ -20,9 +20,10 @@ import 'package:wassaly/features/profile/presentation/screens/add_address_page.d
 import 'package:wassaly/features/profile/presentation/screens/addresses_page.dart';
 import 'package:wassaly/features/profile/presentation/screens/edit_profile_page.dart';
 import 'package:wassaly/features/profile/presentation/screens/profile_page.dart';
+import 'package:wassaly/features/profile/presentation/screens/terms_of_service_page.dart';
+import 'package:wassaly/features/sub_category/presentation/screens/sub_category_page.dart';
 
 import '../../features/profile/presentation/screens/privacy_policy_page.dart';
-import '../../features/profile/presentation/screens/terms_of_service_page.dart';
 
 final GoRouter appRouter = GoRouter(
   navigatorKey: rootNavigatorKey,
@@ -223,6 +224,20 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.termsOfService,
       name: 'termsOfService',
       builder: (context, state) => const TermsOfServicePage(),
+    ),
+    GoRoute(
+      path: AppRoutes.subCategory,
+      name: 'subCategory',
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        final subCategory = extra?['subCategory'];
+        if (subCategory == null) {
+          return const Scaffold(
+            body: Center(child: Text('Invalid sub-category')),
+          );
+        }
+        return SubCategoryPage(subCategory: subCategory);
+      },
     ),
   ],
 );

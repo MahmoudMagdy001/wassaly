@@ -29,7 +29,6 @@ class _HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = context.theme.colorScheme;
-    final tt = context.theme.textTheme;
 
     return Scaffold(
       backgroundColor: cs.surface,
@@ -59,9 +58,6 @@ class _HomeView extends StatelessWidget {
         color: cs.primary,
         backgroundColor: cs.surface,
         child: CustomScrollView(
-          physics: const BouncingScrollPhysics(
-            parent: AlwaysScrollableScrollPhysics(),
-          ),
           slivers: [
             // Sliver AppBar
             SliverAppBar(
@@ -70,12 +66,10 @@ class _HomeView extends StatelessWidget {
               backgroundColor: cs.surface,
               elevation: 0,
               centerTitle: true,
-              title: Text(
-                'Wasally',
-                style: tt.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: cs.primary,
-                ),
+              title: CommonImage(
+                imageUrl: 'assets/images/logo.png',
+                width: 80.w,
+                height: 50.h,
               ),
               actions: [
                 IconButton(

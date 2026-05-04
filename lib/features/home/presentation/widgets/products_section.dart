@@ -7,7 +7,6 @@ import '../../domain/entities/review_entity.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_event.dart';
 import '../bloc/home_state.dart';
-import 'product_card.dart';
 
 class ProductsSection extends StatelessWidget {
   const ProductsSection({super.key});
@@ -61,43 +60,28 @@ class ProductsSection extends StatelessWidget {
             ),
 
             // Grid
-            SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 8.w),
-              sliver: SliverGrid(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 6.h,
-                  crossAxisSpacing: 6.w,
-                  childAspectRatio: 0.59,
-                ),
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    // Trigger load more when reaching the end
-                    if (index >= products.length - 1 &&
-                        state.products.hasMore) {
-                      context.read<HomeBloc>().add(LoadMoreProductsEvent());
-                    }
-
-                    final product = products[index];
-                    return ProductCard(
-                      product: product,
-                      onTap: () {
-                        // TODO: Navigate to product details
-                      },
-                      onFavoriteTap: () {
-                        // TODO: Toggle favorite
-                      },
-                      onAddToCartTap: () {
-                        // TODO: Add to cart
-                      },
-                    ).animate().fadeIn(
-                          delay: Duration(milliseconds: 50 * (index % 4)),
-                          duration: const Duration(milliseconds: 300),
-                        );
-                  },
-                  childCount: products.length,
-                ),
-              ),
+            SliverProductGrid<ProductEntity>(
+              items: products,
+              hasMore: state.products.hasMore,
+              onLoadMore: () {
+                context.read<HomeBloc>().add(LoadMoreProductsEvent());
+              },
+              itemBuilder: (context, product, index, wrapAnimation) {
+                return wrapAnimation(
+                  ProductCard(
+                    product: product,
+                    onTap: () {
+                      // TODO: Navigate to product details
+                    },
+                    onFavoriteTap: () {
+                      // TODO: Toggle favorite
+                    },
+                    onAddToCartTap: () {
+                      // TODO: Add to cart
+                    },
+                  ),
+                );
+              },
             ),
 
             // Load more indicator
@@ -150,25 +134,16 @@ class ProductsSection extends StatelessWidget {
         SliverToBoxAdapter(
           child: AppSpacing.xs.verticalSpace,
         ),
-        SliverPadding(
-          padding: EdgeInsets.symmetric(horizontal: 8.w),
-          sliver: Skeletonizer.sliver(
-            enabled: true,
-            child: SliverGrid(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 6.h,
-                crossAxisSpacing: 6.w,
-                childAspectRatio: 0.59,
-              ),
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  return ProductCard(product: dummyProducts[index]);
-                },
-                childCount: dummyProducts.length,
-              ),
-            ),
-          ),
+        SliverProductGrid<ProductEntity>(
+          items: dummyProducts,
+          animateItems: false,
+          itemBuilder: (context, product, index, wrapAnimation) {
+            return Skeletonizer(
+              ignoreContainers: true,
+              enabled: true,
+              child: ProductCard(product: product),
+            );
+          },
         ),
       ],
     );

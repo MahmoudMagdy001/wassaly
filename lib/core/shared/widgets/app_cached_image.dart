@@ -114,6 +114,7 @@ class AppCachedImage extends StatelessWidget {
   Widget _buildDefaultPlaceholder(BuildContext context) {
     if (useSkeleton) {
       return Skeletonizer(
+        ignoreContainers: true,
         enabled: true,
         child: Container(
           width: width,

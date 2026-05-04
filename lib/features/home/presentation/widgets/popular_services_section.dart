@@ -106,6 +106,10 @@ class PopularServicesSection extends StatelessWidget {
                     return ServiceItem(
                       name: service.name,
                       imageUrl: service.image,
+                      onTap: () => context.push(
+                        AppRoutes.subCategory,
+                        extra: {'subCategory': service},
+                      ),
                     );
                   },
                 ),
