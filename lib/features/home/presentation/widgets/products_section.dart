@@ -76,7 +76,7 @@ class ProductsSection extends StatelessWidget {
                       // TODO: Toggle favorite
                     },
                     onOpenProductTap: () {
-                      // TODO: Add to cart
+                      // TODO: open product
                     },
                   ),
                 );
@@ -122,7 +122,7 @@ class ProductsSection extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 12.w),
             child: Text(
-              'منتجات مختارة',
+              'home.selected_products'.tr(),
               style: tt.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: cs.primary,

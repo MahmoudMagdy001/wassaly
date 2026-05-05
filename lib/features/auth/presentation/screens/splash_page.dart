@@ -218,10 +218,9 @@ class _SplashViewState extends State<_SplashView>
                     child: Transform.translate(
                       offset: Offset(0, _contentSlide.value),
                       child: Text(
-                        'توصيل سريع وموثوق',
+                        'auth.splash_subtitle'.tr(),
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 14.sp,
+                        style: context.theme.textTheme.bodyMedium?.copyWith(
                           color:
                               context.colors.onPrimary.withValues(alpha: 0.9),
                           fontWeight: FontWeight.w500,

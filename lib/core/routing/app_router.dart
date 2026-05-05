@@ -1,5 +1,4 @@
 import 'package:wassaly/core/imports/imports.dart';
-import 'package:wassaly/core/injection/injection.dart';
 import 'package:wassaly/features/auth/presentation/screens/auth_callback_page.dart';
 import 'package:wassaly/features/auth/presentation/screens/forgot_password_page.dart';
 import 'package:wassaly/features/auth/presentation/screens/login_page.dart';
@@ -152,8 +151,8 @@ final GoRouter appRouter = GoRouter(
         final extra = state.extra as Map<String, dynamic>?;
         final category = extra?['category'];
         if (category == null) {
-          return const Scaffold(
-            body: Center(child: Text('Invalid category')),
+          return Scaffold(
+            body: Center(child: Text('errors.invalid_category'.tr())),
           );
         }
         return CategoryPage(category: category);
@@ -236,8 +235,8 @@ final GoRouter appRouter = GoRouter(
         final extra = state.extra as Map<String, dynamic>?;
         final subCategory = extra?['subCategory'];
         if (subCategory == null) {
-          return const Scaffold(
-            body: Center(child: Text('Invalid sub-category')),
+          return Scaffold(
+            body: Center(child: Text('errors.invalid_sub_category'.tr())),
           );
         }
         return SubCategoryPage(subCategory: subCategory);

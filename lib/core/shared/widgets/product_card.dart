@@ -245,11 +245,10 @@ class _ProductCardState extends State<ProductCard> {
                           ),
                           2.horizontalSpace,
                           Text(
-                            widget.product.averageRating.toStringAsFixed(1),
+                            '${widget.product.averageRating.toStringAsFixed(1)} (${widget.product.reviewCount})',
                             style: tt.labelSmall?.copyWith(
                               fontWeight: FontWeight.w600,
                               color: cs.onSurface,
-                              fontSize: 10.sp,
                             ),
                           ),
                         ],
@@ -369,15 +368,15 @@ class _ProductCardState extends State<ProductCard> {
           children: [
             if (hasDiscount)
               Text(
-                '${originalPrice.toStringAsFixed(0)} ${'ج.م'.tr()}',
+                '${originalPrice.toStringAsFixed(0)} ${'shared.currency_egp'.tr()}',
                 style: tt.labelSmall?.copyWith(
                   color: cs.onSurfaceVariant,
                   decoration: TextDecoration.lineThrough,
-                  decorationColor: cs.onSurfaceVariant,
+                  decorationColor: cs.error,
                 ),
               ),
             Text(
-              '${(hasDiscount ? discountedPrice : originalPrice).toStringAsFixed(0)} ${'ج.م'.tr()}',
+              '${(hasDiscount ? discountedPrice : originalPrice).toStringAsFixed(0)} ${'shared.currency_egp'.tr()}',
               style: tt.titleSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: cs.onSurface,

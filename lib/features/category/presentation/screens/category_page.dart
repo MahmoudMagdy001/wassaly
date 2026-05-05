@@ -1,5 +1,4 @@
 import 'package:wassaly/core/imports/imports.dart';
-import 'package:wassaly/core/injection/injection.dart';
 import 'package:wassaly/features/home/domain/entities/category_entity.dart';
 import 'package:wassaly/features/home/presentation/widgets/category_card.dart';
 
@@ -160,10 +159,10 @@ class _CategoryView extends StatelessWidget {
                   ),
                 ),
                 if (subCategories.isEmpty)
-                  const SliverFillRemaining(
+                  SliverFillRemaining(
                     hasScrollBody: false,
                     child: AppEmptyState(
-                      title: 'لا توجد أقسام فرعية',
+                      title: 'home.no_sub_categories'.tr(),
                       icon: Icons.folder_open_outlined,
                     ),
                   )

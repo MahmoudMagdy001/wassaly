@@ -14,7 +14,7 @@ class App extends StatelessWidget {
 
   Widget _buildMaterialApp(BuildContext context, ThemeMode themeMode) {
     return MaterialApp.router(
-      title: 'وصّلي',
+      title: 'app.title'.tr(),
       debugShowCheckedModeBanner: false,
       theme: buildLightTheme(primaryColorHex: '#093773'),
       darkTheme: buildDarkTheme(primaryColorHex: '#093773'),

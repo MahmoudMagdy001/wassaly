@@ -45,9 +45,8 @@ class SocialButton extends StatelessWidget {
           else ...[
             Text(
               label,
-              style: TextStyle(
+              style: context.theme.textTheme.bodyMedium?.copyWith(
                 color: foregroundColor,
-                fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),

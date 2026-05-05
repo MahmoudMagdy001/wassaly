@@ -1,6 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
-import 'package:wassaly/core/injection/injection.dart';
 import 'package:wassaly/features/auth/presentation/bloc/google_login/google_login_bloc.dart';
+import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
 
 class GoogleLoginButton extends StatefulWidget {
   const GoogleLoginButton({super.key});
@@ -55,6 +55,7 @@ class _GoogleLoginButtonState extends State<GoogleLoginButton>
             previous.errorMessage != current.errorMessage,
         listener: (context, state) {
           if (state.user != null) {
+            sl<SessionBloc>().add(SessionUserUpdated(state.user!));
             context.go(AppRoutes.home);
           }
           if (state.errorMessage != null) {

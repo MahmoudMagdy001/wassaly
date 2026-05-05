@@ -1,5 +1,4 @@
 import 'package:wassaly/core/imports/imports.dart';
-import 'package:wassaly/core/injection/injection.dart';
 import 'package:wassaly/features/auth/presentation/bloc/signup/signup_bloc.dart';
 import 'package:wassaly/features/auth/presentation/widgets/signup/login_link.dart';
 import 'package:wassaly/features/auth/presentation/widgets/signup/signup_form.dart';
@@ -116,7 +115,7 @@ class _SignupViewState extends State<_SignupView> {
           previous.errorMessage != current.errorMessage,
       listener: (context, state) {
         if (state.isRegistered) {
-          context.showSuccessSnackBar('تم ارسال كود التحقق بنجاح');
+          context.showSuccessSnackBar('auth.otp_sent_success'.tr());
           context.push(
             AppRoutes.otpVerification,
             extra: {

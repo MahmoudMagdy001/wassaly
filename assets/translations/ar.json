@@ -1,19 +1,33 @@
 {
+  "app": {
+    "title": "وصّلي"
+  },
   "shared": {
     "get_started": "ابدأ الآن",
     "cancel": "إلغاء",
     "delete": "حذف",
-    "edit": "تعديل"
+    "edit": "تعديل",
+    "done": "تم",
+    "currency_egp": "ج.م"
   },
   "errors": {
     "no_internet": "لا يوجد اتصال بالإنترنت. يرجى التحقق من اتصالك والمحاولة مرة أخرى.",
     "try_again": "حاول مرة أخرى",
-    "something_went_wrong": "حدث خطأ ما"
+    "something_went_wrong": "حدث خطأ ما",
+    "invalid_category": "قسم غير صالح",
+    "invalid_sub_category": "قسم فرعي غير صالح"
   },
   "home": {
     "home_title": "الرئيسية",
     "welcome_home": "مرحباً بك!",
-    "home_subtitle": "مرحباً بك في تطبيق وصّلي"
+    "home_subtitle": "مرحباً بك في تطبيق وصّلي",
+    "popular_services": "خدمات شائعة",
+    "selected_products": "منتجات مختارة",
+    "main_categories": "الأقسام الرئيسية",
+    "services": "الخدمات",
+    "browse_now": "تصفح الآن",
+    "no_services_products": "لا توجد خدمات أو منتجات",
+    "no_sub_categories": "لا توجد أقسام فرعية"
   },
   "nav": {
     "nav_home": "الرئيسية",
@@ -21,6 +35,11 @@
     "nav_cart": "السلة",
     "nav_favorite": "المفضلة",
     "nav_profile": "حسابي"
+  },
+  "search": {
+    "search_hint": "ابحث عن منتجات وخدمات",
+    "no_results_found": "لم يتم العثور على نتائج",
+    "try_different_search": "جرب البحث بكلمات مختلفة"
   },
   "category": {
     "category_title": "الأقسام",
@@ -162,7 +181,11 @@
     "complete_in_browser": "يرجى إكمال تسجيل الدخول في المتصفح",
     "logging_in": "جاري تسجيل الدخول...",
     "login_success": "تم تسجيل الدخول بنجاح",
-    "login_failed": "فشل تسجيل الدخول"
+    "login_failed": "فشل تسجيل الدخول",
+    "terms_required": "يجب أن توافق على الشروط والأحكام للمتابعة",
+    "splash_subtitle": "توصيل سريع وموثوق",
+    "otp_sent_success": "تم ارسال كود التحقق بنجاح",
+    "account_not_active": "غير مفعل"
   },
   "privacy_policy": {
     "title": "سياسة الخصوصية",

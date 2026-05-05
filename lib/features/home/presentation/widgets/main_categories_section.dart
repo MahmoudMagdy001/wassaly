@@ -61,7 +61,7 @@ class MainCategoriesSection extends StatelessWidget {
         children: [
           // Header
           Text(
-            'الأقسام الرئيسية',
+            'home.main_categories'.tr(),
             style: tt.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: cs.primary,

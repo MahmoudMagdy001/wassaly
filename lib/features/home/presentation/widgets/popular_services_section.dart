@@ -38,7 +38,7 @@ class PopularServicesSection extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 12.w),
                     child: Text(
-                      'خدمات شائعة',
+                      'home.popular_services'.tr(),
                       style: tt.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: cs.primary,
@@ -85,7 +85,7 @@ class PopularServicesSection extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 12.w),
                 child: Text(
-                  'خدمات شائعة',
+                  'home.popular_services'.tr(),
                   style: tt.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: cs.primary,

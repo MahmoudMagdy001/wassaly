@@ -22,7 +22,7 @@ class ServicesSection extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
             child: Text(
-              'الخدمات',
+              'home.services'.tr(),
               style: tt.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: cs.primary,

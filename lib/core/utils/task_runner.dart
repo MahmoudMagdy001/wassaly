@@ -8,46 +8,51 @@ DateTime? _lastNetworkErrorToastTime;
 /// A reusable generic function to handle potential exceptions in async tasks
 /// and map them to the [Either] type matching [FutureEither<T>].
 ///
-/// If [requiresNetwork] is `true` and [isNetworkAvailable] returns `false`,
-/// the [action] will not be executed and a [NetworkFailure] will be returned.
+/// If [requiresNetwork] is `true` and the action fails with a connection error,
+/// a secondary connectivity check is performed to distinguish between
+/// "no internet" and "server down" scenarios.
 FutureEither<T> runTask<T>(
   Future<T> Function() action, {
   bool requiresNetwork = false,
 }) async {
-  if (requiresNetwork) {
-    final hasNetwork = await InternetConnectionService().hasConnection();
-
-    if (!hasNetwork) {
-      AppLogger.warning('Network unavailable for task');
-
-      // Only show toast if 3 seconds have passed since last network error toast
-      final now = DateTime.now();
-      final shouldShowToast = _lastNetworkErrorToastTime == null ||
-          now.difference(_lastNetworkErrorToastTime!) >
-              const Duration(seconds: 3);
-
-      if (shouldShowToast) {
-        showGlobalToast(
-          message: 'errors.no_internet'.tr(),
-          status: 'warning',
-        );
-        _lastNetworkErrorToastTime = now;
-      }
-
-      return left(
-        NetworkFailure('errors.no_internet'.tr()),
-      );
-    }
-  }
-
   try {
     final result = await action();
     return right(result);
+  } on DioException catch (e) {
+    if (requiresNetwork && _isConnectionError(e)) {
+      final hasNetwork = await InternetConnectionService().hasConnection();
+      if (!hasNetwork) {
+        AppLogger.warning('Network unavailable for task');
+        _showNetworkErrorToast();
+        return left(NetworkFailure('errors.no_internet'.tr()));
+      }
+    }
+    final errorMessage = AppErrorHandler.format(e);
+    return left(ServerFailure(errorMessage, error: e));
   } catch (error, stackTrace) {
     AppLogger.error('Task execution failed $error', [error, stackTrace]);
     final errorMessage = AppErrorHandler.format(error);
-
-    // Depending on logic, map error strings/types to specific Failure variants
     return left(ServerFailure(errorMessage, error: error));
+  }
+}
+
+bool _isConnectionError(DioException e) {
+  return e.type == DioExceptionType.connectionError ||
+      e.type == DioExceptionType.connectionTimeout ||
+      e.type == DioExceptionType.sendTimeout ||
+      e.type == DioExceptionType.receiveTimeout;
+}
+
+void _showNetworkErrorToast() {
+  final now = DateTime.now();
+  final shouldShowToast = _lastNetworkErrorToastTime == null ||
+      now.difference(_lastNetworkErrorToastTime!) > const Duration(seconds: 3);
+
+  if (shouldShowToast) {
+    showGlobalToast(
+      message: 'errors.no_internet'.tr(),
+      status: 'warning',
+    );
+    _lastNetworkErrorToastTime = now;
   }
 }

@@ -3,18 +3,31 @@
 // ignore_for_file: constant_identifier_names
 
 abstract class  LocaleKeys {
+  static const app_title = 'app.title';
+  static const app = 'app';
   static const shared_get_started = 'shared.get_started';
   static const shared_cancel = 'shared.cancel';
   static const shared_delete = 'shared.delete';
   static const shared_edit = 'shared.edit';
+  static const shared_done = 'shared.done';
+  static const shared_currency_egp = 'shared.currency_egp';
   static const shared = 'shared';
   static const errors_no_internet = 'errors.no_internet';
   static const errors_try_again = 'errors.try_again';
   static const errors_something_went_wrong = 'errors.something_went_wrong';
+  static const errors_invalid_category = 'errors.invalid_category';
+  static const errors_invalid_sub_category = 'errors.invalid_sub_category';
   static const errors = 'errors';
   static const home_home_title = 'home.home_title';
   static const home_welcome_home = 'home.welcome_home';
   static const home_home_subtitle = 'home.home_subtitle';
+  static const home_popular_services = 'home.popular_services';
+  static const home_selected_products = 'home.selected_products';
+  static const home_main_categories = 'home.main_categories';
+  static const home_services = 'home.services';
+  static const home_browse_now = 'home.browse_now';
+  static const home_no_services_products = 'home.no_services_products';
+  static const home_no_sub_categories = 'home.no_sub_categories';
   static const home = 'home';
   static const nav_nav_home = 'nav.nav_home';
   static const nav_nav_category = 'nav.nav_category';
@@ -22,6 +35,10 @@ abstract class  LocaleKeys {
   static const nav_nav_favorite = 'nav.nav_favorite';
   static const nav_nav_profile = 'nav.nav_profile';
   static const nav = 'nav';
+  static const search_search_hint = 'search.search_hint';
+  static const search_no_results_found = 'search.no_results_found';
+  static const search_try_different_search = 'search.try_different_search';
+  static const search = 'search';
   static const category_category_title = 'category.category_title';
   static const category_category_subtitle = 'category.category_subtitle';
   static const category = 'category';
@@ -151,6 +168,10 @@ abstract class  LocaleKeys {
   static const auth_logging_in = 'auth.logging_in';
   static const auth_login_success = 'auth.login_success';
   static const auth_login_failed = 'auth.login_failed';
+  static const auth_terms_required = 'auth.terms_required';
+  static const auth_splash_subtitle = 'auth.splash_subtitle';
+  static const auth_otp_sent_success = 'auth.otp_sent_success';
+  static const auth_account_not_active = 'auth.account_not_active';
   static const auth = 'auth';
   static const privacy_policy_title = 'privacy_policy.title';
   static const privacy_policy_last_updated = 'privacy_policy.last_updated';

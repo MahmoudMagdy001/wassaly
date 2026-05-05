@@ -1,5 +1,4 @@
 import 'package:wassaly/core/imports/imports.dart';
-import 'package:wassaly/core/injection/injection.dart';
 
 import '../bloc/home_bloc.dart';
 import '../bloc/home_event.dart';

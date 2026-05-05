@@ -1,5 +1,4 @@
 import 'package:wassaly/core/imports/imports.dart';
-import 'package:wassaly/core/injection/injection.dart';
 import 'package:wassaly/features/auth/data/datasources/auth_local_datasource.dart';
 import 'package:wassaly/features/auth/data/models/user_model.dart';
 import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';

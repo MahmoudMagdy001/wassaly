@@ -1,5 +1,4 @@
 import 'package:wassaly/core/imports/imports.dart';
-import 'package:wassaly/core/injection/injection.dart';
 import 'package:wassaly/features/search/presentation/bloc/search_bloc.dart';
 import 'package:wassaly/features/search/presentation/bloc/search_event.dart';
 import 'package:wassaly/features/search/presentation/bloc/search_state.dart';
@@ -84,7 +83,7 @@ class _SearchPageContent extends StatelessWidget {
           ),
           SizedBox(height: 16.h),
           Text(
-            'search_hint'.tr(),
+            'search.search_hint'.tr(),
             style: tt.bodyLarge?.copyWith(
               color: cs.onSurfaceVariant,
             ),
@@ -96,8 +95,8 @@ class _SearchPageContent extends StatelessWidget {
 
   Widget _buildEmptyState(BuildContext context) {
     return AppEmptyState(
-      title: 'no_results_found'.tr(),
-      subtitle: 'try_different_search'.tr(),
+      title: 'search.no_results_found'.tr(),
+      subtitle: 'search.try_different_search'.tr(),
       icon: Icons.search_off,
     );
   }

@@ -1,19 +1,33 @@
 {
+  "app": {
+    "title": "Wassaly"
+  },
   "shared": {
     "get_started": "Get Started",
     "cancel": "Cancel",
     "delete": "Delete",
-    "edit": "Edit"
+    "edit": "Edit",
+    "done": "Done",
+    "currency_egp": "EGP"
   },
   "errors": {
     "no_internet": "No internet connection. Please check your connection and try again.",
     "try_again": "Try Again",
-    "something_went_wrong": "Something went wrong"
+    "something_went_wrong": "Something went wrong",
+    "invalid_category": "Invalid category",
+    "invalid_sub_category": "Invalid sub-category"
   },
   "home": {
     "home_title": "Home",
     "welcome_home": "Welcome!",
-    "home_subtitle": "Welcome to Wasally App"
+    "home_subtitle": "Welcome to Wasally App",
+    "popular_services": "Popular Services",
+    "selected_products": "Selected Products",
+    "main_categories": "Main Categories",
+    "services": "Services",
+    "browse_now": "Browse Now",
+    "no_services_products": "No services or products",
+    "no_sub_categories": "No sub-categories"
   },
   "nav": {
     "nav_home": "Home",
@@ -21,6 +35,11 @@
     "nav_cart": "Cart",
     "nav_favorite": "Favorites",
     "nav_profile": "Profile"
+  },
+  "search": {
+    "search_hint": "Search for products and services",
+    "no_results_found": "No results found",
+    "try_different_search": "Try searching with different keywords"
   },
   "category": {
     "category_title": "Categories",
@@ -162,7 +181,11 @@
     "complete_in_browser": "Complete login in browser",
     "logging_in": "Logging in...",
     "login_success": "Login successful",
-    "login_failed": "Login failed"
+    "login_failed": "Login failed",
+    "terms_required": "You must accept the terms and conditions to continue",
+    "splash_subtitle": "Fast and reliable delivery",
+    "otp_sent_success": "Verification code sent successfully",
+    "account_not_active": "not active"
   },
   "privacy_policy": {
     "title": "Privacy Policy",

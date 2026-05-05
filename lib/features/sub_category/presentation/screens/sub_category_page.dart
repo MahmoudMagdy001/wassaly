@@ -1,5 +1,4 @@
 import 'package:wassaly/core/imports/imports.dart';
-import 'package:wassaly/core/injection/injection.dart';
 import 'package:wassaly/features/home/domain/entities/sub_category_entity.dart';
 
 import '../bloc/sub_category_bloc.dart';
@@ -117,10 +116,10 @@ class _SubCategoryView extends StatelessWidget {
                     detail != null &&
                     detail.services.isEmpty &&
                     state.products.data.isEmpty)
-                  const SliverFillRemaining(
+                  SliverFillRemaining(
                     hasScrollBody: false,
                     child: AppEmptyState(
-                      title: 'لا توجد خدمات أو منتجات',
+                      title: 'home.no_services_products'.tr(),
                       icon: Icons.folder_open_outlined,
                     ),
                   ),

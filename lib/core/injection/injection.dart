@@ -70,6 +70,7 @@ Future<void> initDependencies() async {
         loginUseCase: sl(),
         getSavedTokenUseCase: sl(),
         getProfileUseCase: sl(),
+        getCachedUserUseCase: sl(),
         logoutUseCase: sl(),
       ));
   sl.registerFactory(() => LoginBloc(
