@@ -17,7 +17,7 @@ class AvatarPickerWidget extends StatelessWidget {
 
     result.fold(
       (failure) {
-        context.showErrorSnackBar(failure.message);
+        context.showTypedSnackBar(failure.message, type: SnackBarType.error);
       },
       (file) {
         if (file != null) {

@@ -84,7 +84,8 @@ class _LoginViewState extends State<_LoginView> {
           context.go(AppRoutes.home);
         }
         if (state.errorMessage != null) {
-          context.showErrorSnackBar(state.errorMessage!);
+          context.showTypedSnackBar(state.errorMessage!,
+              type: SnackBarType.error);
         }
         if (state.requiresVerification && state.verificationEmail != null) {
           context.push(

@@ -81,13 +81,15 @@ class _OtpVerificationViewState extends State<_OtpVerificationView> {
       listener: (context, state) {
         if (state.verificationStatus ==
             OtpVerificationStatus.verifiedForRegister) {
-          context.showSuccessSnackBar('otp.verification_success'.tr());
+          context.showTypedSnackBar('otp.verification_success'.tr(),
+              type: SnackBarType.success);
           context.go(AppRoutes.login);
         }
 
         if (state.verificationStatus ==
             OtpVerificationStatus.verifiedForForgotPassword) {
-          context.showSuccessSnackBar('otp.verification_success'.tr());
+          context.showTypedSnackBar('otp.verification_success'.tr(),
+              type: SnackBarType.success);
           if (state.resetToken != null) {
             context.push(
               AppRoutes.resetPassword,
@@ -101,22 +103,26 @@ class _OtpVerificationViewState extends State<_OtpVerificationView> {
 
         if (state.verificationStatus ==
             OtpVerificationStatus.verifiedForLogin) {
-          context.showSuccessSnackBar('otp.verification_success'.tr());
+          context.showTypedSnackBar('otp.verification_success'.tr(),
+              type: SnackBarType.success);
           context.go(AppRoutes.login);
         }
 
         if (state.verificationStatus == OtpVerificationStatus.error &&
             state.errorMessage != null) {
-          context.showErrorSnackBar(state.errorMessage!.tr());
+          context.showTypedSnackBar(state.errorMessage!.tr(),
+              type: SnackBarType.error);
         }
 
         if (state.resendStatus == ResendOtpStatus.success) {
-          context.showSuccessSnackBar('otp.resend_success'.tr());
+          context.showTypedSnackBar('otp.resend_success'.tr(),
+              type: SnackBarType.success);
         }
 
         if (state.resendStatus == ResendOtpStatus.error &&
             state.errorMessage != null) {
-          context.showErrorSnackBar(state.errorMessage!.tr());
+          context.showTypedSnackBar(state.errorMessage!.tr(),
+              type: SnackBarType.error);
         }
       },
       child: Scaffold(

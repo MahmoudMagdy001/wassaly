@@ -22,7 +22,8 @@ class _EditProfileAvatarPickerState extends State<EditProfileAvatarPicker> {
       source: ImageSource.gallery,
     );
     result.fold(
-      (failure) => context.showErrorSnackBar(failure.message),
+      (failure) =>
+          context.showTypedSnackBar(failure.message, type: SnackBarType.error),
       (file) => widget.onAvatarPicked(file),
     );
   }
@@ -32,7 +33,8 @@ class _EditProfileAvatarPickerState extends State<EditProfileAvatarPicker> {
       source: ImageSource.camera,
     );
     result.fold(
-      (failure) => context.showErrorSnackBar(failure.message),
+      (failure) =>
+          context.showTypedSnackBar(failure.message, type: SnackBarType.error),
       (file) => widget.onAvatarPicked(file),
     );
   }

@@ -54,7 +54,8 @@ class _ResetPasswordView extends StatelessWidget {
       listener: (context, state) {
         // Handle success
         if (state.status == ResetPasswordStatus.success) {
-          context.showSuccessSnackBar('reset_password.success_message'.tr());
+          context.showTypedSnackBar('reset_password.success_message'.tr(),
+              type: SnackBarType.success);
           // Navigate to login and clear the navigation stack
           context.go(AppRoutes.login);
         }
@@ -62,7 +63,8 @@ class _ResetPasswordView extends StatelessWidget {
         // Handle error
         if (state.status == ResetPasswordStatus.error &&
             state.errorMessage != null) {
-          context.showErrorSnackBar(state.errorMessage!.tr());
+          context.showTypedSnackBar(state.errorMessage!.tr(),
+              type: SnackBarType.error);
         }
       },
       child: Scaffold(

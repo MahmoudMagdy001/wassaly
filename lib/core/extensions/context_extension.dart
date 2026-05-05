@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 
 import '../shared/enums/snack_bar_type.dart';
 import '../theme/color_schemes.dart';
-import '../theme/theme.dart';
 
 extension ContextExtension on BuildContext {
   // ── Theme shortcuts ──────────────────────────────────────────────────────
@@ -18,18 +17,11 @@ extension ContextExtension on BuildContext {
       theme.extension<AppColorsExtension>() ??
       (isDarkMode ? AppPalettes.dark : AppPalettes.light);
 
-  /// Design tokens (spacing, border radii, elevation defaults).
-  AppDesignTokens get designTokens =>
-      theme.extension<AppDesignTokens>() ?? AppDesignTokens.fallback;
-
   // ── MediaQuery shortcuts ─────────────────────────────────────────────────
   Size get mediaQuerySize => MediaQuery.sizeOf(this);
   Size get screenSize => mediaQuerySize;
   double get width => mediaQuerySize.width;
   double get height => mediaQuerySize.height;
-
-  /// Safe-area insets for the current view.
-  EdgeInsets get safeArea => MediaQuery.paddingOf(this);
 
   // ── Keyboard ──────────────────────────────────────────────────────────────
   bool get isKeyboardVisible => MediaQuery.viewInsetsOf(this).bottom > 0;
@@ -38,45 +30,6 @@ extension ContextExtension on BuildContext {
   // ── Platform ─────────────────────────────────────────────────────────────
   bool get isIOS => theme.platform == TargetPlatform.iOS;
   bool get isAndroid => theme.platform == TargetPlatform.android;
-
-  // ── Overlays ─────────────────────────────────────────────────────────────
-  void showSnackBar(
-    String message, {
-    SnackBarAction? action,
-    Duration duration = const Duration(seconds: 3),
-  }) {
-    ScaffoldMessenger.of(this)
-      ..clearSnackBars()
-      ..showSnackBar(
-        SnackBar(
-          content: Text(message),
-          action: action,
-          duration: duration,
-        ),
-      );
-  }
-
-  void showSuccessSnackBar(String message) {
-    ScaffoldMessenger.of(this)
-      ..clearSnackBars()
-      ..showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: appColors.success,
-        ),
-      );
-  }
-
-  void showErrorSnackBar(String message) {
-    ScaffoldMessenger.of(this)
-      ..clearSnackBars()
-      ..showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: colors.error,
-        ),
-      );
-  }
 
   Future<T?> showAppBottomSheet<T>({
     required WidgetBuilder builder,
@@ -98,66 +51,6 @@ extension ContextExtension on BuildContext {
     );
   }
 
-  /// Shows a confirmation dialog with proper theme colors and localization.
-  ///
-  /// ```dart
-  /// final confirmed = await context.showConfirmationDialog(
-  ///   title: 'delete_title'.tr(),
-  ///   message: 'delete_message'.tr(),
-  ///   confirmText: 'delete'.tr(),
-  ///   cancelText: 'cancel'.tr(),
-  /// );
-  /// if (confirmed == true) {
-  ///   // Perform action
-  /// }
-  /// ```
-  Future<bool?> showConfirmationDialog({
-    required String title,
-    required String message,
-    required String confirmText,
-    required String cancelText,
-    bool isDangerous = false,
-  }) {
-    return showAppDialog<bool>(
-      builder: (dialogContext) {
-        final dialogCs = dialogContext.theme.colorScheme;
-        return AlertDialog.adaptive(
-          title: Text(
-            title,
-            style: TextStyle(color: dialogCs.onSurface),
-          ),
-          content: Text(
-            message,
-            style: TextStyle(color: dialogCs.onSurfaceVariant),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => dialogContext.pop(false),
-              child: Text(
-                cancelText,
-                style: TextStyle(color: dialogCs.onSurface),
-              ),
-            ),
-            TextButton(
-              onPressed: () => dialogContext.pop(true),
-              child: Text(
-                confirmText,
-                style: TextStyle(
-                  color: isDangerous ? dialogCs.error : dialogCs.primary,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  /// Shows a snackbar with a colour driven by [SnackBarType].
-  ///
-  /// ```dart
-  /// context.showTypedSnackBar('Saved!', type: SnackBarType.success);
-  /// ```
   void showTypedSnackBar(
     String message, {
     SnackBarType type = SnackBarType.info,

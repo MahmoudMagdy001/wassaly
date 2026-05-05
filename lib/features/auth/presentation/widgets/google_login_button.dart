@@ -59,7 +59,8 @@ class _GoogleLoginButtonState extends State<GoogleLoginButton>
             context.go(AppRoutes.home);
           }
           if (state.errorMessage != null) {
-            context.showErrorSnackBar(state.errorMessage!);
+            context.showTypedSnackBar(state.errorMessage!,
+                type: SnackBarType.error);
           }
         },
         builder: (context, state) {

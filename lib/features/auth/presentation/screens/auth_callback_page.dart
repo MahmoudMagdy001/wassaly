@@ -42,7 +42,8 @@ class _AuthCallbackPageState extends State<AuthCallbackPage> {
 
     if (token == null || token.isEmpty || id == null || email == null) {
       if (mounted) {
-        context.showErrorSnackBar('auth.login_failed'.tr());
+        context.showTypedSnackBar('auth.login_failed'.tr(),
+            type: SnackBarType.error);
         context.go(AppRoutes.login);
       }
       return;
@@ -67,12 +68,14 @@ class _AuthCallbackPageState extends State<AuthCallbackPage> {
         // Notify SessionBloc about the logged-in user so avatar appears immediately
         sl<SessionBloc>().add(SessionUserUpdated(user));
 
-        context.showSuccessSnackBar('auth.login_success'.tr());
+        context.showTypedSnackBar('auth.login_success'.tr(),
+            type: SnackBarType.info);
         context.go(AppRoutes.home);
       }
     } catch (e) {
       if (mounted) {
-        context.showErrorSnackBar('auth.login_failed'.tr());
+        context.showTypedSnackBar('auth.login_failed'.tr(),
+            type: SnackBarType.error);
         context.go(AppRoutes.login);
       }
     }

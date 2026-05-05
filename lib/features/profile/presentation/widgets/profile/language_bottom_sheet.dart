@@ -44,16 +44,19 @@ class LanguageBottomSheet extends StatelessWidget {
                     subtitle: 'ar',
                     isSelected: state.language == 'ar',
                     onTap: () async {
+                      final currentContext = context;
                       if (state.language != 'ar') {
                         final confirmed =
-                            await _showLanguageChangeDialog(context);
-                        if (confirmed ?? false) {
-                          context
+                            await _showLanguageChangeDialog(currentContext);
+                        if ((confirmed ?? false) && currentContext.mounted) {
+                          currentContext
                               .read<SettingsBloc>()
                               .add(const LanguageToggled());
                         }
                       }
-                      context.pop();
+                      if (currentContext.mounted) {
+                        currentContext.pop();
+                      }
                     },
                   ),
                   16.verticalSpace,
@@ -62,16 +65,19 @@ class LanguageBottomSheet extends StatelessWidget {
                     subtitle: 'en',
                     isSelected: state.language == 'en',
                     onTap: () async {
+                      final currentContext = context;
                       if (state.language != 'en') {
                         final confirmed =
-                            await _showLanguageChangeDialog(context);
-                        if (confirmed ?? false) {
-                          context
+                            await _showLanguageChangeDialog(currentContext);
+                        if ((confirmed ?? false) && currentContext.mounted) {
+                          currentContext
                               .read<SettingsBloc>()
                               .add(const LanguageToggled());
                         }
                       }
-                      context.pop();
+                      if (currentContext.mounted) {
+                        currentContext.pop();
+                      }
                     },
                   ),
                 ],

@@ -34,11 +34,13 @@ class _ProfileView extends StatelessWidget {
             if (state.user == null) {
               context.go(AppRoutes.login);
             } else {
-              context.showSuccessSnackBar('profile.action_success'.tr());
+              context.showTypedSnackBar('profile.action_success'.tr(),
+                  type: SnackBarType.success);
             }
           } else if (state.actionStatus.isFailure &&
               state.actionError != null) {
-            context.showErrorSnackBar(state.actionError!);
+            context.showTypedSnackBar(state.actionError!,
+                type: SnackBarType.error);
           }
         },
         child: CustomScrollView(

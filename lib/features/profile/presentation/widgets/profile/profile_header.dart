@@ -17,36 +17,33 @@ class ProfileHeader extends StatelessWidget {
           children: [
             Stack(
               children: [
-                Hero(
-                  tag: 'profile_avatar',
-                  child: Container(
-                    width: 100.w,
-                    height: 100.w,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: cs.surface,
-                      border: Border.all(
-                        color: cs.primary,
-                        width: 3,
-                      ),
+                Container(
+                  width: 100.w,
+                  height: 100.w,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: cs.surface,
+                    border: Border.all(
+                      color: cs.primary,
+                      width: 3,
                     ),
-                    child: ClipOval(
-                      child: user?.avatarUrl != null
-                          ? CommonImage(
-                              imageUrl: user!.avatarUrl!,
-                              width: 100,
-                              height: 100,
-                              memCacheHeight: 100 * 3,
-                              fit: BoxFit.cover,
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(999)),
-                            )
-                          : Icon(
-                              Icons.person,
-                              size: 50.r,
-                              color: cs.primary,
-                            ),
-                    ),
+                  ),
+                  child: ClipOval(
+                    child: user?.avatarUrl != null
+                        ? CommonImage(
+                            imageUrl: user!.avatarUrl!,
+                            width: 100,
+                            height: 100,
+                            memCacheHeight: 100 * 3,
+                            fit: BoxFit.cover,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(999)),
+                          )
+                        : Icon(
+                            Icons.person,
+                            size: 50.r,
+                            color: cs.primary,
+                          ),
                   ),
                 ),
               ],

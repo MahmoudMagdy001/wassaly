@@ -57,11 +57,13 @@ class _AddAddressViewState extends State<_AddAddressView> {
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
     if (_selectedGovernorateId == null) {
-      context.showErrorSnackBar('profile.select_governorate'.tr());
+      context.showTypedSnackBar('profile.select_governorate'.tr(),
+          type: SnackBarType.error);
       return;
     }
     if (_selectedCenterId == null) {
-      context.showErrorSnackBar('profile.select_center'.tr());
+      context.showTypedSnackBar('profile.select_center'.tr(),
+          type: SnackBarType.error);
       return;
     }
 
@@ -103,15 +105,17 @@ class _AddAddressViewState extends State<_AddAddressView> {
               curr.addressStatus.isDone,
           listener: (context, state) {
             if (state.addressStatus.isSuccess) {
-              context.showSuccessSnackBar(
+              context.showTypedSnackBar(
                 _isEditing
                     ? 'profile.address_updated'.tr()
                     : 'profile.address_added'.tr(),
+                type: SnackBarType.success,
               );
               context.pop();
             } else if (state.addressStatus.isFailure &&
                 state.addressError != null) {
-              context.showErrorSnackBar(state.addressError!);
+              context.showTypedSnackBar(state.addressError!,
+                  type: SnackBarType.error);
             }
           },
           child: SingleChildScrollView(

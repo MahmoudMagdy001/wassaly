@@ -61,7 +61,8 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
           previous.errorMessage != current.errorMessage,
       listener: (context, state) {
         if (state.isSuccess) {
-          context.showSuccessSnackBar('auth.reset_link_sent'.tr());
+          context.showTypedSnackBar('auth.reset_link_sent'.tr(),
+              type: SnackBarType.success);
           context.push(
             AppRoutes.otpVerification,
             extra: {
@@ -71,7 +72,8 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
           );
         }
         if (state.errorMessage != null) {
-          context.showErrorSnackBar(state.errorMessage!);
+          context.showTypedSnackBar(state.errorMessage!,
+              type: SnackBarType.error);
         }
       },
       child: Scaffold(

@@ -74,7 +74,8 @@ class _EditProfileViewState extends State<_EditProfileView> {
 
     final password = _passwordController.text.trim();
     if (password.isNotEmpty && _currentPasswordController.text.isEmpty) {
-      context.showErrorSnackBar('profile.current_password_required'.tr());
+      context.showTypedSnackBar('profile.current_password_required'.tr(),
+          type: SnackBarType.error);
       return;
     }
 
@@ -181,12 +182,14 @@ class _EditProfileViewState extends State<_EditProfileView> {
                 context.go(AppRoutes.login);
               } else {
                 // Regular profile update
-                context.showSuccessSnackBar('profile.update_success'.tr());
+                context.showTypedSnackBar('profile.update_success'.tr(),
+                    type: SnackBarType.success);
                 context.pop();
               }
             } else if (state.actionStatus.isFailure &&
                 state.actionError != null) {
-              context.showErrorSnackBar(state.actionError!);
+              context.showTypedSnackBar(state.actionError!,
+                  type: SnackBarType.error);
             }
           }
           _previousActionStatus = state.actionStatus;
