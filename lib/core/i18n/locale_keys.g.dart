@@ -51,6 +51,34 @@ abstract class  LocaleKeys {
   static const favorite_no_favorites_subtitle = 'favorite.no_favorites_subtitle';
   static const favorite_removed_from_favorites = 'favorite.removed_from_favorites';
   static const favorite = 'favorite';
+  static const product_details_title = 'product_details.title';
+  static const product_details_description = 'product_details.description';
+  static const product_details_reviews = 'product_details.reviews';
+  static const product_details_brand = 'product_details.brand';
+  static const product_details_sub_category = 'product_details.sub_category';
+  static const product_details_offer = 'product_details.offer';
+  static const product_details_discount = 'product_details.discount';
+  static const product_details_related_products =
+      'product_details.related_products';
+  static const product_details_no_related_products =
+      'product_details.no_related_products';
+  static const product_details_show_more = 'product_details.show_more';
+  static const product_details_all_reviews = 'product_details.all_reviews';
+  static const product_details_add_review = 'product_details.add_review';
+  static const product_details_edit_review = 'product_details.edit_review';
+  static const product_details_review_comment_hint =
+      'product_details.review_comment_hint';
+  static const product_details_review_comment_required =
+      'product_details.review_comment_required';
+  static const product_details_review_created =
+      'product_details.review_created';
+  static const product_details_review_updated =
+      'product_details.review_updated';
+  static const product_details_review_options =
+      'product_details.review_options';
+  static const product_details_edit_time_expired =
+      'product_details.edit_time_expired';
+  static const product_details = 'product_details';
   static const profile_my_account = 'profile.my_account';
   static const profile_my_orders = 'profile.my_orders';
   static const profile_payment_methods = 'profile.payment_methods';

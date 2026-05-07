@@ -69,12 +69,6 @@ class ProductsSection extends StatelessWidget {
                 return wrapAnimation(
                   ProductCard(
                     product: product,
-                    onTap: () {
-                      // TODO: Navigate to product details
-                    },
-                    onOpenProductTap: () {
-                      // TODO: open product
-                    },
                   ),
                 );
               },

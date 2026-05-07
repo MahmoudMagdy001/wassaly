@@ -62,6 +62,13 @@ import '../../features/profile/domain/usecases/update_address_usecase.dart';
 import '../../features/profile/domain/usecases/update_profile_usecase.dart';
 import '../../features/profile/presentation/bloc/profile/profile_bloc.dart';
 import '../../features/profile/presentation/bloc/settings/settings_bloc.dart';
+import '../../features/product_details/data/datasources/product_details_remote_datasource.dart';
+import '../../features/product_details/data/repositories/product_details_repository_impl.dart';
+import '../../features/product_details/domain/repositories/product_details_repository.dart';
+import '../../features/product_details/domain/usecases/create_product_review_usecase.dart';
+import '../../features/product_details/domain/usecases/get_product_details_usecase.dart';
+import '../../features/product_details/domain/usecases/update_product_review_usecase.dart';
+import '../../features/product_details/presentation/bloc/product_details_bloc.dart';
 import '../../features/search/data/datasources/search_remote_datasource.dart';
 import '../../features/search/data/repositories/search_repository_impl.dart';
 import '../../features/search/domain/repositories/search_repository.dart';
@@ -127,6 +134,12 @@ Future<void> initDependencies() async {
         sl(),
         sl(),
       ));
+  sl.registerFactory(() => ProductDetailsBloc(
+        getProductDetailsUseCase: sl(),
+        getSubCategoryDetailUseCase: sl(),
+        createProductReviewUseCase: sl(),
+        updateProductReviewUseCase: sl(),
+      ));
 
   sl.registerFactoryParam<OtpVerificationBloc, String, VerificationType>(
     (email, verificationType) => OtpVerificationBloc(
@@ -188,6 +201,9 @@ Future<void> initDependencies() async {
   // UseCases - Favorite
   sl.registerLazySingleton(() => GetFavoritesUseCase(sl()));
   sl.registerLazySingleton(() => ToggleFavoriteUseCase(sl()));
+  sl.registerLazySingleton(() => GetProductDetailsUseCase(sl()));
+  sl.registerLazySingleton(() => CreateProductReviewUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateProductReviewUseCase(sl()));
 
   // Repositories
   sl.registerLazySingleton<AuthRepository>(
@@ -202,6 +218,8 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton<SearchRepository>(() => SearchRepositoryImpl(sl()));
   sl.registerLazySingleton<FavoriteRepository>(
       () => FavoriteRepositoryImpl(sl()));
+  sl.registerLazySingleton<ProductDetailsRepository>(
+      () => ProductDetailsRepositoryImpl(sl()));
 
   // DataSources
   sl.registerLazySingleton<AuthRemoteDataSource>(
@@ -220,4 +238,6 @@ Future<void> initDependencies() async {
       () => SearchRemoteDataSourceImpl(DioService.instance));
   sl.registerLazySingleton<FavoriteRemoteDataSource>(
       () => FavoriteRemoteDataSourceImpl(DioService.instance));
+  sl.registerLazySingleton<ProductDetailsRemoteDataSource>(
+      () => ProductDetailsRemoteDataSourceImpl(DioService.instance));
 }

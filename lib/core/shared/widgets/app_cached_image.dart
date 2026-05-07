@@ -139,14 +139,15 @@ class AppCachedImage extends StatelessWidget {
   }
 
   Widget _buildDefaultErrorWidget(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: width,
       height: height,
-      color: context.theme.colorScheme.errorContainer.withValues(alpha: 0.9),
-      child: Center(
-        child: Icon(
-          Icons.broken_image_outlined,
-          color: context.theme.colorScheme.error,
+      child: const Center(
+        child: ImageIcon(
+          AssetImage(
+            'assets/images/logo.png',
+          ),
+          size: 80,
         ),
       ),
     );

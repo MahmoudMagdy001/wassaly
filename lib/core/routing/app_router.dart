@@ -17,6 +17,7 @@ import 'package:wassaly/features/profile/presentation/screens/addresses_page.dar
 import 'package:wassaly/features/profile/presentation/screens/edit_profile_page.dart';
 import 'package:wassaly/features/profile/presentation/screens/profile_page.dart';
 import 'package:wassaly/features/profile/presentation/screens/terms_of_service_page.dart';
+import 'package:wassaly/features/product_details/presentation/screens/product_details_page.dart';
 import 'package:wassaly/features/sub_category/presentation/screens/sub_category_page.dart';
 
 import '../../features/category/presentation/screens/category_page.dart';
@@ -266,6 +267,22 @@ final GoRouter appRouter = GoRouter(
           );
         },
       ),
+    ),
+    GoRoute(
+      path: AppRoutes.productDetails,
+      name: 'productDetails',
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        final productId = extra?['productId'] as int? ?? 0;
+        if (productId <= 0) {
+          return Scaffold(
+            body: Center(
+              child: Text('errors.something_went_wrong'.tr()),
+            ),
+          );
+        }
+        return ProductDetailsPage(productId: productId);
+      },
     ),
   ],
 );

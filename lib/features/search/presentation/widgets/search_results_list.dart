@@ -29,12 +29,6 @@ class SearchResultsList extends StatelessWidget {
                 return wrapAnimation(
                   ProductCard(
                     product: product,
-                    onTap: () {
-                      // TODO: Navigate to product details
-                    },
-                    onOpenProductTap: () {
-                      // TODO: Open product
-                    },
                   ),
                 );
               },

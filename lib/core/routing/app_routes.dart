@@ -33,4 +33,7 @@ abstract final class AppRoutes {
 
   // Search
   static const String search = '/search';
+
+  // Product details
+  static const String productDetails = '/product-details';
 }

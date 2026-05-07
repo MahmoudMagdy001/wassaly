@@ -35,14 +35,21 @@ class SubCategoryRemoteDataSourceImpl implements SubCategoryRemoteDataSource {
         }
 
         final data = responseData['data'];
-        if (data == null || data is! List || data.isEmpty) {
+        if (data == null) {
           throw const ServerFailure('No data found');
         }
 
         final pagination = responseData['pagination'] as Map<String, dynamic>?;
+        final subCategoryData = data is List
+            ? (data.isEmpty ? null : data.first)
+            : data;
+
+        if (subCategoryData is! Map<String, dynamic>) {
+          throw const ServerFailure('No data found');
+        }
 
         return SubCategoryDetailModel.fromJson(
-          data.first as Map<String, dynamic>,
+          subCategoryData,
           pagination: pagination,
         );
       },

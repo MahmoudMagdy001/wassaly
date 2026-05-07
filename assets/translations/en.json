@@ -56,6 +56,27 @@
     "no_favorites_subtitle": "Add your favorite products here",
     "removed_from_favorites": "Removed from favorites"
   },
+  "product_details": {
+    "title": "Product Details",
+    "description": "Description",
+    "reviews": "Customer Reviews",
+    "brand": "Brand",
+    "sub_category": "Sub-category",
+    "offer": "Offer",
+    "discount": "Discount",
+    "related_products": "Similar Products",
+    "no_related_products": "No similar products found",
+    "show_more": "Show more",
+    "all_reviews": "All reviews",
+    "add_review": "Add review",
+    "edit_review": "Edit review",
+    "review_comment_hint": "Write your review",
+    "review_comment_required": "Please write your review",
+    "review_created": "Review added successfully",
+    "review_updated": "Review updated successfully",
+    "review_options": "Review options",
+    "edit_time_expired": "Edit time expired"
+  },
   "profile": {
     "my_account": "My Account",
     "my_orders": "My Orders",

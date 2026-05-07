@@ -56,6 +56,27 @@
     "no_favorites_subtitle": "اضف منتجاتك المفضلة هنا",
     "removed_from_favorites": "تمت إزالة العنصر من المفضلة"
   },
+  "product_details": {
+    "title": "تفاصيل المنتج",
+    "description": "الوصف",
+    "reviews": "آراء العملاء",
+    "brand": "العلامة التجارية",
+    "sub_category": "التصنيف",
+    "offer": "خصم",
+    "discount": "خصم",
+    "related_products": "منتجات مشابهة",
+    "no_related_products": "لا توجد منتجات مشابهة",
+    "show_more": "\u0639\u0631\u0636 \u0627\u0644\u0645\u0632\u064a\u062f",
+    "all_reviews": "\u0643\u0644 \u0627\u0644\u062a\u0642\u064a\u064a\u0645\u0627\u062a",
+    "add_review": "\u0625\u0636\u0627\u0641\u0629 \u062a\u0642\u064a\u064a\u0645",
+    "edit_review": "\u062a\u0639\u062f\u064a\u0644 \u0627\u0644\u062a\u0642\u064a\u064a\u0645",
+    "review_comment_hint": "\u0627\u0643\u062a\u0628 \u0631\u0623\u064a\u0643",
+    "review_comment_required": "\u0645\u0646 \u0641\u0636\u0644\u0643 \u0627\u0643\u062a\u0628 \u062a\u0639\u0644\u064a\u0642\u0643",
+    "review_created": "\u062a\u0645\u062a \u0625\u0636\u0627\u0641\u0629 \u0627\u0644\u062a\u0642\u064a\u064a\u0645 \u0628\u0646\u062c\u0627\u062d",
+    "review_updated": "\u062a\u0645 \u062a\u0639\u062f\u064a\u0644 \u0627\u0644\u062a\u0642\u064a\u064a\u0645 \u0628\u0646\u062c\u0627\u062d",
+    "review_options": "\u062e\u064a\u0627\u0631\u0627\u062a \u0627\u0644\u062a\u0642\u064a\u064a\u0645",
+    "edit_time_expired": "\u0627\u0646\u062a\u0647\u062a \u0645\u062f\u0629 \u0627\u0644\u062a\u0639\u062f\u064a\u0644"
+  },
   "profile": {
     "my_account": "حسابي",
     "my_orders": "طلباتي",

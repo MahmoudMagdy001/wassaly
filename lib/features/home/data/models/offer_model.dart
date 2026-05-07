@@ -9,7 +9,8 @@ class OfferModel extends OfferEntity {
   factory OfferModel.fromJson(Map<String, dynamic> json) {
     return OfferModel(
       id: json['id'] as int? ?? 0,
-      discountPercentage: json['discount_percentage'] as int? ?? 0,
+      discountPercentage:
+          int.tryParse(json['discount_percentage']?.toString() ?? '') ?? 0,
     );
   }
 }

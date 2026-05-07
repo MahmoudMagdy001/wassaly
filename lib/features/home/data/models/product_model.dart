@@ -19,7 +19,7 @@ class ProductModel extends ProductEntity {
       id: json['id'] as int? ?? 0,
       name: json['name'] as String? ?? '',
       image: json['image'] as String? ?? '',
-      price: json['price'] as String? ?? '0',
+      price: json['price']?.toString() ?? '0',
       description: json['description'] as String? ?? '',
       offers: (json['offers'] as List<dynamic>?)
               ?.map((e) => OfferModel.fromJson(e as Map<String, dynamic>))

@@ -118,7 +118,7 @@ class _MarqueeTextState extends State<_MarqueeText> {
 /// - Price with original price strikethrough when discounted
 /// - Auto-scrolling (marquee) on long-press — stays active until another card
 ///   is long-pressed, or the same card is long-pressed again to toggle off
-/// - Action callbacks for tap, favorite, and add to cart
+/// - Default product detail navigation, with optional action overrides
 class ProductCard extends StatefulWidget {
   const ProductCard({
     super.key,
@@ -176,6 +176,15 @@ class _ProductCardState extends State<ProductCard> {
     }
   }
 
+  void _openProductDetails() {
+    if (widget.product.id <= 0) return;
+
+    context.push(
+      AppRoutes.productDetails,
+      extra: {'productId': widget.product.id},
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final cs = context.theme.colorScheme;
@@ -186,7 +195,7 @@ class _ProductCardState extends State<ProductCard> {
     final discountedPrice = widget.product.discountedPrice;
 
     return GestureDetector(
-      onTap: widget.onTap,
+      onTap: widget.onTap ?? _openProductDetails,
       onLongPress: _onLongPress,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
@@ -415,7 +424,7 @@ class _ProductCardState extends State<ProductCard> {
 
         // Eye button
         GestureDetector(
-          onTap: widget.onOpenProductTap,
+          onTap: widget.onOpenProductTap ?? _openProductDetails,
           child: Container(
             padding: EdgeInsets.all(8.r),
             decoration: BoxDecoration(

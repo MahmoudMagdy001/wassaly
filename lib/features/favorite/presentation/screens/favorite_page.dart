@@ -13,8 +13,22 @@ class FavoritePage extends StatelessWidget {
   }
 }
 
-class _FavoriteView extends StatelessWidget {
+class _FavoriteView extends StatefulWidget {
   const _FavoriteView();
+
+  @override
+  State<_FavoriteView> createState() => _FavoriteViewState();
+}
+
+class _FavoriteViewState extends State<_FavoriteView> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final state = context.read<FavoriteBloc>().state;
+    if (state.status == FavoriteStatus.initial) {
+      context.read<FavoriteBloc>().add(const GetFavoritesEvent());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,9 +141,6 @@ class _FavoriteView extends StatelessWidget {
                         return wrapAnimation(
                           ProductCard(
                             product: product,
-                            onTap: () {
-                              // TODO: Navigate to product details
-                            },
                           ),
                         );
                       },
