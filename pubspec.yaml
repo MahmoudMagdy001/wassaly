@@ -27,7 +27,7 @@ dependencies:
 
   # Storage
   shared_preferences: ^2.5.4
-  flutter_secure_storage: ^10.0.0
+  flutter_secure_storage: ^10.1.0
 
   # Images & SVG
   cached_network_image: ^3.4.1

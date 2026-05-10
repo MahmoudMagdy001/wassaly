@@ -1,5 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
+import 'package:wassaly/features/cart/presentation/bloc/cart_bloc.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_bloc.dart';
 import 'package:wassaly/features/profile/presentation/bloc/settings/settings_bloc.dart';
 
@@ -23,6 +24,9 @@ class StateWrapper extends StatelessWidget {
       ),
       BlocProvider<FavoriteBloc>(
         create: (_) => sl<FavoriteBloc>(),
+      ),
+      BlocProvider<CartBloc>(
+        create: (_) => sl<CartBloc>(),
       ),
     ];
 

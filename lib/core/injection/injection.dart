@@ -35,6 +35,14 @@ import 'package:wassaly/features/sub_category/presentation/bloc/sub_category_blo
 import '../../features/auth/domain/usecases/get_cached_user_usecase.dart';
 import '../../features/auth/domain/usecases/google_login_usecase.dart';
 import '../../features/auth/presentation/bloc/google_login/google_login_bloc.dart';
+import '../../features/cart/data/datasources/cart_remote_datasource.dart';
+import '../../features/cart/data/repositories/cart_repository_impl.dart';
+import '../../features/cart/domain/repositories/cart_repository.dart';
+import '../../features/cart/domain/usecases/add_to_cart_usecase.dart';
+import '../../features/cart/domain/usecases/get_cart_items_usecase.dart';
+import '../../features/cart/domain/usecases/remove_from_cart_usecase.dart';
+import '../../features/cart/domain/usecases/update_quantity_usecase.dart';
+import '../../features/cart/presentation/bloc/cart_bloc.dart';
 import '../../features/category/data/datasources/category_remote_datasource.dart';
 import '../../features/category/data/repositories/category_repository_impl.dart';
 import '../../features/category/domain/repositories/category_repository.dart';
@@ -48,6 +56,13 @@ import '../../features/home/domain/usecases/get_categories_usecase.dart';
 import '../../features/home/domain/usecases/get_popular_services_usecase.dart';
 import '../../features/home/domain/usecases/get_products_usecase.dart';
 import '../../features/home/presentation/bloc/home_bloc.dart';
+import '../../features/product_details/data/datasources/product_details_remote_datasource.dart';
+import '../../features/product_details/data/repositories/product_details_repository_impl.dart';
+import '../../features/product_details/domain/repositories/product_details_repository.dart';
+import '../../features/product_details/domain/usecases/create_product_review_usecase.dart';
+import '../../features/product_details/domain/usecases/get_product_details_usecase.dart';
+import '../../features/product_details/domain/usecases/update_product_review_usecase.dart';
+import '../../features/product_details/presentation/bloc/product_details_bloc.dart';
 import '../../features/profile/data/datasources/profile_remote_datasource.dart';
 import '../../features/profile/data/repositories/profile_repository_impl.dart';
 import '../../features/profile/domain/repositories/profile_repository.dart';
@@ -62,13 +77,6 @@ import '../../features/profile/domain/usecases/update_address_usecase.dart';
 import '../../features/profile/domain/usecases/update_profile_usecase.dart';
 import '../../features/profile/presentation/bloc/profile/profile_bloc.dart';
 import '../../features/profile/presentation/bloc/settings/settings_bloc.dart';
-import '../../features/product_details/data/datasources/product_details_remote_datasource.dart';
-import '../../features/product_details/data/repositories/product_details_repository_impl.dart';
-import '../../features/product_details/domain/repositories/product_details_repository.dart';
-import '../../features/product_details/domain/usecases/create_product_review_usecase.dart';
-import '../../features/product_details/domain/usecases/get_product_details_usecase.dart';
-import '../../features/product_details/domain/usecases/update_product_review_usecase.dart';
-import '../../features/product_details/presentation/bloc/product_details_bloc.dart';
 import '../../features/search/data/datasources/search_remote_datasource.dart';
 import '../../features/search/data/repositories/search_repository_impl.dart';
 import '../../features/search/domain/repositories/search_repository.dart';
@@ -140,6 +148,12 @@ Future<void> initDependencies() async {
         createProductReviewUseCase: sl(),
         updateProductReviewUseCase: sl(),
       ));
+  sl.registerLazySingleton(() => CartBloc(
+        getCartItemsUseCase: sl(),
+        addToCartUseCase: sl(),
+        removeFromCartUseCase: sl(),
+        updateQuantityUseCase: sl(),
+      ));
 
   sl.registerFactoryParam<OtpVerificationBloc, String, VerificationType>(
     (email, verificationType) => OtpVerificationBloc(
@@ -205,6 +219,12 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(() => CreateProductReviewUseCase(sl()));
   sl.registerLazySingleton(() => UpdateProductReviewUseCase(sl()));
 
+  // UseCases - Cart
+  sl.registerLazySingleton(() => GetCartItemsUseCase(sl()));
+  sl.registerLazySingleton(() => AddToCartUseCase(sl()));
+  sl.registerLazySingleton(() => RemoveFromCartUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateQuantityUseCase(sl()));
+
   // Repositories
   sl.registerLazySingleton<AuthRepository>(
       () => AuthRepositoryImpl(sl(), sl()));
@@ -220,6 +240,7 @@ Future<void> initDependencies() async {
       () => FavoriteRepositoryImpl(sl()));
   sl.registerLazySingleton<ProductDetailsRepository>(
       () => ProductDetailsRepositoryImpl(sl()));
+  sl.registerLazySingleton<CartRepository>(() => CartRepositoryImpl(sl()));
 
   // DataSources
   sl.registerLazySingleton<AuthRemoteDataSource>(
@@ -240,4 +261,6 @@ Future<void> initDependencies() async {
       () => FavoriteRemoteDataSourceImpl(DioService.instance));
   sl.registerLazySingleton<ProductDetailsRemoteDataSource>(
       () => ProductDetailsRemoteDataSourceImpl(DioService.instance));
+  sl.registerLazySingleton<CartRemoteDataSource>(() =>
+      CartRemoteDataSourceImpl(DioService.instance, StorageService.instance));
 }

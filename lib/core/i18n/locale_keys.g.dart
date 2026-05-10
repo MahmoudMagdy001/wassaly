@@ -44,6 +44,19 @@ abstract class  LocaleKeys {
   static const category = 'category';
   static const cart_cart_title = 'cart.cart_title';
   static const cart_cart_subtitle = 'cart.cart_subtitle';
+  static const cart_empty_title = 'cart.empty_title';
+  static const cart_empty_subtitle = 'cart.empty_subtitle';
+  static const cart_continue_shopping = 'cart.continue_shopping';
+  static const cart_delete = 'cart.delete';
+  static const cart_remove_item_title = 'cart.remove_item_title';
+  static const cart_remove_item_message = 'cart.remove_item_message';
+  static const cart_error_loading_cart = 'cart.error_loading_cart';
+  static const cart_total_price = 'cart.total_price';
+  static const cart_subtotal = 'cart.subtotal';
+  static const cart_delivery = 'cart.delivery';
+  static const cart_total = 'cart.total';
+  static const cart_checkout = 'cart.checkout';
+  static const cart_items = 'cart.items';
   static const cart = 'cart';
   static const favorite_favorite_title = 'favorite.favorite_title';
   static const favorite_favorite_subtitle = 'favorite.favorite_subtitle';
@@ -58,26 +71,18 @@ abstract class  LocaleKeys {
   static const product_details_sub_category = 'product_details.sub_category';
   static const product_details_offer = 'product_details.offer';
   static const product_details_discount = 'product_details.discount';
-  static const product_details_related_products =
-      'product_details.related_products';
-  static const product_details_no_related_products =
-      'product_details.no_related_products';
+  static const product_details_related_products = 'product_details.related_products';
+  static const product_details_no_related_products = 'product_details.no_related_products';
   static const product_details_show_more = 'product_details.show_more';
   static const product_details_all_reviews = 'product_details.all_reviews';
   static const product_details_add_review = 'product_details.add_review';
   static const product_details_edit_review = 'product_details.edit_review';
-  static const product_details_review_comment_hint =
-      'product_details.review_comment_hint';
-  static const product_details_review_comment_required =
-      'product_details.review_comment_required';
-  static const product_details_review_created =
-      'product_details.review_created';
-  static const product_details_review_updated =
-      'product_details.review_updated';
-  static const product_details_review_options =
-      'product_details.review_options';
-  static const product_details_edit_time_expired =
-      'product_details.edit_time_expired';
+  static const product_details_review_comment_hint = 'product_details.review_comment_hint';
+  static const product_details_review_comment_required = 'product_details.review_comment_required';
+  static const product_details_review_created = 'product_details.review_created';
+  static const product_details_review_updated = 'product_details.review_updated';
+  static const product_details_review_options = 'product_details.review_options';
+  static const product_details_edit_time_expired = 'product_details.edit_time_expired';
   static const product_details = 'product_details';
   static const profile_my_account = 'profile.my_account';
   static const profile_my_orders = 'profile.my_orders';

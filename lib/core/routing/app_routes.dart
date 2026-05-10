@@ -36,4 +36,7 @@ abstract final class AppRoutes {
 
   // Product details
   static const String productDetails = '/product-details';
+
+  // Checkout
+  static const String checkout = '/checkout';
 }

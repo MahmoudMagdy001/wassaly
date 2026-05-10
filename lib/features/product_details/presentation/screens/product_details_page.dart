@@ -30,52 +30,53 @@ class _ProductDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = context.theme.colorScheme;
+    return BlocConsumer<ProductDetailsBloc, ProductDetailsState>(
+      listenWhen: (previous, current) =>
+          previous.reviewActionStatus != current.reviewActionStatus,
+      listener: (context, state) {
+        if (state.reviewActionStatus == ReviewActionStatus.success ||
+            state.reviewActionStatus == ReviewActionStatus.failure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.reviewActionMessage)),
+          );
+        }
+      },
+      buildWhen: (previous, current) =>
+          previous.status != current.status ||
+          previous.product != current.product ||
+          previous.relatedProductsStatus != current.relatedProductsStatus ||
+          previous.relatedProducts != current.relatedProducts,
+      builder: (context, state) {
+        // Ensure the page always provides a Scaffold so background and
+        // ScaffoldMessenger (SnackBar) work correctly while loading/errors.
+        Widget body;
 
-    return Scaffold(
-      backgroundColor: cs.surface,
-      body: BlocConsumer<ProductDetailsBloc, ProductDetailsState>(
-        listenWhen: (previous, current) =>
-            previous.reviewActionStatus != current.reviewActionStatus,
-        listener: (context, state) {
-          if (state.reviewActionStatus == ReviewActionStatus.success ||
-              state.reviewActionStatus == ReviewActionStatus.failure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.reviewActionMessage)),
-            );
-          }
-        },
-        buildWhen: (previous, current) =>
-            previous.status != current.status ||
-            previous.product != current.product ||
-            previous.relatedProductsStatus != current.relatedProductsStatus ||
-            previous.relatedProducts != current.relatedProducts,
-        builder: (context, state) {
-          if (state.status == ProductDetailsStatus.loading ||
-              state.status == ProductDetailsStatus.initial) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (state.status == ProductDetailsStatus.failure ||
-              state.product == null) {
-            return AppErrorWidget(
-              title: 'errors.something_went_wrong'.tr(),
-              message: state.errorMessage,
-              onRetry: () {
-                context.read<ProductDetailsBloc>().add(
-                      FetchProductDetailsEvent(productId),
-                    );
-              },
-            );
-          }
-
-          return ProductDetailsContent(
+        if (state.status == ProductDetailsStatus.loading ||
+            state.status == ProductDetailsStatus.initial) {
+          body = const Center(child: CircularProgressIndicator());
+        } else if (state.status == ProductDetailsStatus.failure ||
+            state.product == null) {
+          body = AppErrorWidget(
+            title: 'errors.something_went_wrong'.tr(),
+            message: state.errorMessage,
+            onRetry: () {
+              context.read<ProductDetailsBloc>().add(
+                    FetchProductDetailsEvent(productId),
+                  );
+            },
+          );
+        } else {
+          body = ProductDetailsContent(
             product: state.product!,
             relatedProductsStatus: state.relatedProductsStatus,
             relatedProducts: state.relatedProducts,
           );
-        },
-      ),
+        }
+
+        return Scaffold(
+          body: SafeArea(child: body),
+        );
+      },
     );
   }
 }

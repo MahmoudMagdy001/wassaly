@@ -47,7 +47,20 @@
   },
   "cart": {
     "cart_title": "Cart",
-    "cart_subtitle": "Your cart is empty"
+    "cart_subtitle": "Your cart is empty",
+    "empty_title": "Cart is Empty",
+    "empty_subtitle": "Add some products to your cart",
+    "continue_shopping": "Continue Shopping",
+    "delete": "Delete",
+    "remove_item_title": "Remove Product",
+    "remove_item_message": "Are you sure you want to remove this product from cart?",
+    "error_loading_cart": "Failed to load cart",
+    "total_price": "Total",
+    "subtotal": "Subtotal",
+    "delivery": "Delivery Fee",
+    "total": "Total",
+    "checkout": "Checkout",
+    "items": "items"
   },
   "favorite": {
     "favorite_title": "Favorites",

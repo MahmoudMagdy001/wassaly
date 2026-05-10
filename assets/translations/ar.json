@@ -47,7 +47,20 @@
   },
   "cart": {
     "cart_title": "السلة",
-    "cart_subtitle": "سلة التسوق فارغة"
+    "cart_subtitle": "سلة التسوق فارغة",
+    "empty_title": "السلة فارغة",
+    "empty_subtitle": "أضف بعض المنتجات إلى سلتك",
+    "continue_shopping": "متابعة التسوق",
+    "delete": "حذف",
+    "remove_item_title": "حذف المنتج",
+    "remove_item_message": "هل أنت متأكد من حذف هذا المنتج من السلة؟",
+    "error_loading_cart": "فشل في تحميل السلة",
+    "total_price": "الإجمالي",
+    "subtotal": "المجموع الفرعي",
+    "delivery": "رسوم التوصيل",
+    "total": "الإجمالي",
+    "checkout": "إتمام الطلب",
+    "items": "قطع"
   },
   "favorite": {
     "favorite_title": "المفضلة",

@@ -21,10 +21,6 @@ class ProductReviewsPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: cs.surface,
-      appBar: AppBar(
-        title: Text('product_details.all_reviews'.tr()),
-        backgroundColor: cs.surface,
-      ),
       body: BlocConsumer<ProductDetailsBloc, ProductDetailsState>(
         listenWhen: (previous, current) =>
             previous.reviewActionStatus != current.reviewActionStatus,
@@ -41,21 +37,42 @@ class ProductReviewsPage extends StatelessWidget {
           final reviews = state.product?.reviews ?? const [];
           final currentUserId = _currentUserId(context);
 
-          return ListView.builder(
-            padding: EdgeInsets.all(16.r),
-            itemCount: reviews.length,
-            itemBuilder: (context, index) {
-              final review = reviews[index];
-              final isMine = currentUserId != null &&
-                  review.user.id.toString() == currentUserId;
+          return CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                floating: true,
+                snap: true,
+                backgroundColor: cs.surface,
+                foregroundColor: cs.primary,
+                elevation: 0,
+                centerTitle: true,
+                title: Text(
+                  'product_details.all_reviews'.tr(),
+                  style: context.theme.textTheme.titleLarge?.copyWith(
+                    color: cs.primary,
+                  ),
+                ),
+              ),
+              SliverPadding(
+                padding: EdgeInsets.all(8.r),
+                sliver: SliverList.separated(
+                  itemCount: reviews.length,
+                  separatorBuilder: (_, __) => 2.verticalSpace,
+                  itemBuilder: (context, index) {
+                    final review = reviews[index];
+                    final isMine = currentUserId != null &&
+                        review.user.id.toString() == currentUserId;
 
-              return ProductReviewCard(
-                review: review,
-                isCurrentUserReview: isMine,
-                canEdit: isMine && _canEditReview(review.createdAt),
-                onEdit: () => _showReviewSheet(context, review),
-              );
-            },
+                    return ProductReviewCard(
+                      review: review,
+                      isCurrentUserReview: isMine,
+                      canEdit: isMine && _canEditReview(review.createdAt),
+                      onEdit: () => _showReviewSheet(context, review),
+                    );
+                  },
+                ),
+              ),
+            ],
           );
         },
       ),

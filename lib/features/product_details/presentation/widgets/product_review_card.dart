@@ -33,22 +33,7 @@ class ProductReviewCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              CircleAvatar(
-                radius: 16.r,
-                backgroundColor: cs.primaryContainer,
-                backgroundImage: review.user.avatar != null
-                    ? NetworkImage(review.user.avatar!)
-                    : null,
-                child: review.user.avatar == null
-                    ? Text(
-                        review.user.name.isNotEmpty
-                            ? review.user.name.characters.first
-                            : '?',
-                        style: tt.labelLarge
-                            ?.copyWith(color: cs.onPrimaryContainer),
-                      )
-                    : null,
-              ),
+              _buildAvatar(cs, tt),
               8.horizontalSpace,
               Expanded(
                 child: Text(
@@ -102,6 +87,41 @@ class ProductReviewCard extends StatelessWidget {
             style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildAvatar(ColorScheme cs, TextTheme tt) {
+    final hasAvatar =
+        review.user.avatar != null && review.user.avatar!.isNotEmpty;
+
+    if (hasAvatar) {
+      return ClipOval(
+        child: CommonImage(
+          width: 32.w,
+          height: 24.h,
+          memCacheHeight: 32 * 3,
+          imageUrl: review.user.avatar!,
+        ),
+      );
+    }
+
+    return Container(
+      width: 32.w,
+      height: 32.h,
+      decoration: BoxDecoration(
+        color: cs.primary.withValues(alpha: 0.15),
+        shape: BoxShape.circle,
+      ),
+      alignment: Alignment.center,
+      child: Text(
+        review.user.name.isNotEmpty
+            ? review.user.name.trim()[0].toUpperCase()
+            : '?',
+        style: tt.titleSmall?.copyWith(
+          color: cs.primary,
+          fontWeight: FontWeight.w700,
+        ),
       ),
     );
   }
