@@ -42,7 +42,7 @@ class _AuthCallbackPageState extends State<AuthCallbackPage> {
 
     if (token == null || token.isEmpty || id == null || email == null) {
       if (mounted) {
-        context.showTypedSnackBar('auth.login_failed'.tr(),
+        context.showTypedSnackBar(context.l10n.auth_login_failed,
             type: SnackBarType.error);
         context.go(AppRoutes.login);
       }
@@ -68,13 +68,13 @@ class _AuthCallbackPageState extends State<AuthCallbackPage> {
         // Notify SessionBloc about the logged-in user so avatar appears immediately
         sl<SessionBloc>().add(SessionUserUpdated(user));
 
-        context.showTypedSnackBar('auth.login_success'.tr(),
+        context.showTypedSnackBar(context.l10n.auth_login_success,
             type: SnackBarType.info);
         context.go(AppRoutes.home);
       }
     } catch (e) {
       if (mounted) {
-        context.showTypedSnackBar('auth.login_failed'.tr(),
+        context.showTypedSnackBar(context.l10n.auth_login_failed,
             type: SnackBarType.error);
         context.go(AppRoutes.login);
       }
@@ -95,7 +95,7 @@ class _AuthCallbackPageState extends State<AuthCallbackPage> {
             ),
             20.verticalSpace,
             Text(
-              'auth.logging_in'.tr(),
+              context.l10n.auth_logging_in,
               style: context.theme.textTheme.bodyLarge?.copyWith(
                 color: cs.onSurface,
               ),

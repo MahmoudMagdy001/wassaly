@@ -1,22 +1,20 @@
 import 'dart:math';
 
-import 'package:easy_localization/easy_localization.dart';
-import 'package:equatable/equatable.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wassaly/core/imports/imports.dart';
 
 import '../../../../../features/cart/domain/entities/cart_item_entity.dart';
 import '../../../../../features/cart/domain/entities/coupon_entity.dart';
 import '../../../../../features/cart/domain/entities/order_entity.dart';
 import '../../../../../features/cart/domain/entities/place_order_params.dart';
 import '../../../../../features/cart/domain/usecases/apply_coupon_usecase.dart';
-import '../../../../../features/cart/domain/usecases/place_order_usecase.dart';
-import '../../../../../features/cart/domain/usecases/get_user_data_usecase.dart';
 import '../../../../../features/cart/domain/usecases/get_user_addresses_usecase.dart';
+import '../../../../../features/cart/domain/usecases/get_user_data_usecase.dart';
+import '../../../../../features/cart/domain/usecases/place_order_usecase.dart';
+import '../../../../../features/profile/domain/entities/address_entity.dart';
 import '../../../../../features/profile/domain/entities/center_entity.dart';
 import '../../../../../features/profile/domain/entities/governorate_entity.dart';
 import '../../../../../features/profile/domain/usecases/get_centers_usecase.dart';
 import '../../../../../features/profile/domain/usecases/get_governorates_usecase.dart';
-import '../../../../../features/profile/domain/entities/address_entity.dart';
 import '../cart_state.dart';
 
 part 'checkout_event.dart';
@@ -58,14 +56,17 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
   // ─── Pure Calculation Helpers ────────────────────────────────────────────────
 
   double _calculateSubtotal(List<CartItemEntity> items) => items.fold(
-      0, (sum, item) => sum + (double.tryParse(item.price) ?? 0.0) * item.quantity);
+      0,
+      (sum, item) =>
+          sum + (double.tryParse(item.price) ?? 0.0) * item.quantity);
 
   double _calculateProductDiscounts(List<CartItemEntity> items) =>
       items.fold(0, (sum, item) {
         final originalPrice = double.tryParse(item.price) ?? 0.0;
         final hasOffer = item.offers != null && item.offers!.isNotEmpty;
         final discountedPrice = hasOffer
-            ? originalPrice * (1 - (item.offers!.first.discountPercentage / 100))
+            ? originalPrice *
+                (1 - (item.offers!.first.discountPercentage / 100))
             : originalPrice;
         return sum + ((originalPrice - discountedPrice) * item.quantity);
       });
@@ -268,8 +269,8 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
       (coupon) {
         final discount =
             _calculateDiscount(coupon, state.subtotal - state.productDiscounts);
-        final total = _calculateTotal(
-            state.subtotal, state.productDiscounts, state.shippingFee, discount);
+        final total = _calculateTotal(state.subtotal, state.productDiscounts,
+            state.shippingFee, discount);
         emit(state.copyWith(
           isApplyingCoupon: false,
           appliedCoupon: coupon,
@@ -302,19 +303,19 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
   ) async {
     // Validate form
     final nameError = state.customerName.trim().isEmpty
-        ? 'checkout.validation.name_required'.tr()
+        ? rootContext!.l10n.checkout_validation_name_required
         : null;
     final phoneError = state.customerPhone.trim().isEmpty
-        ? 'checkout.validation.phone_required'.tr()
+        ? rootContext!.l10n.checkout_validation_phone_required
         : null;
     final addressError = state.customerAddress.trim().isEmpty
-        ? 'checkout.validation.address_required'.tr()
+        ? rootContext!.l10n.checkout_validation_address_required
         : null;
     final governorateError = state.selectedGovernorateId == null
-        ? 'checkout.validation.governorate_required'.tr()
+        ? rootContext!.l10n.checkout_validation_governorate_required
         : null;
     final centerError = state.selectedCenterId == null
-        ? 'checkout.validation.center_required'.tr()
+        ? rootContext!.l10n.checkout_validation_center_required
         : null;
 
     if (nameError != null ||

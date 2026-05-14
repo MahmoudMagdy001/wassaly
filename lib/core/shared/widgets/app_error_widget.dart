@@ -1,4 +1,9 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../extensions/context_extension.dart';
+import '../../routing/global_navigator.dart';
+import '../../utils/failure.dart';
 
 /// Displays an error state with consistent UI based on Failure type.
 ///
@@ -17,7 +22,7 @@ class AppErrorWidget extends StatelessWidget {
     this.message,
     this.onRetry,
     this.icon = Icons.error_outline_rounded,
-  })  : title = title ?? 'errors.something_went_wrong'.tr(),
+  })  : title = title ?? rootContext?.l10n.errors_something_went_wrong,
         failure = const UnknownFailure('Unknown error'),
         customMessage = null,
         showRetryButton = true;
@@ -29,7 +34,7 @@ class AppErrorWidget extends StatelessWidget {
     this.message,
     this.onRetry,
     this.icon = Icons.error_outline_rounded,
-  })  : title = title ?? 'errors.something_went_wrong'.tr(),
+  })  : title = title ?? rootContext?.l10n.errors_something_went_wrong,
         failure = const UnknownFailure('Unknown error'),
         customMessage = null,
         showRetryButton = true;
@@ -119,13 +124,13 @@ class AppErrorWidget extends StatelessWidget {
   }
 
   Widget _buildErrorMessage(BuildContext context) {
-    final title = _getErrorTitle();
-    final message = customMessage ?? _getErrorMessage();
+    final titleText = title ?? _getErrorTitle(context);
+    final messageText = customMessage ?? _getErrorMessage(context);
 
     return Column(
       children: [
         Text(
-          title,
+          titleText,
           style: context.theme.textTheme.headlineSmall?.copyWith(
             fontWeight: FontWeight.bold,
             color: context.theme.colorScheme.onSurface,
@@ -135,7 +140,7 @@ class AppErrorWidget extends StatelessWidget {
         ),
         16.h.verticalSpace,
         Text(
-          message,
+          messageText,
           style: context.theme.textTheme.bodyMedium?.copyWith(
             color: context.theme.colorScheme.onSurface.withValues(alpha: 0.6),
             fontSize: 14.sp,
@@ -162,7 +167,7 @@ class AppErrorWidget extends StatelessWidget {
           ),
         ),
         child: Text(
-          'retry'.tr(),
+          context.l10n.retry,
           style: context.theme.textTheme.bodyMedium?.copyWith(
             color: context.theme.colorScheme.primary,
             fontWeight: FontWeight.w500,
@@ -172,39 +177,39 @@ class AppErrorWidget extends StatelessWidget {
     );
   }
 
-  String _getErrorTitle() {
+  String _getErrorTitle(BuildContext context) {
     // Respect explicit legacy title if provided
     if (title != null) return title!;
 
     switch (failure.runtimeType) {
       case const (NetworkFailure):
-        return 'errors.no_internet_title'.tr();
+        return context.l10n.errors_no_internet_title;
       case const (NotFoundFailure):
-        return 'errors.not_found_title'.tr();
+        return context.l10n.errors_not_found_title;
       case const (ServerFailure):
-        return 'errors.server_error_title'.tr();
+        return context.l10n.errors_server_error_title;
       case const (CacheFailure):
-        return 'errors.cache_error_title'.tr();
+        return context.l10n.errors_cache_error_title;
       default:
-        return 'errors.error_occurred_title'.tr();
+        return context.l10n.errors_error_occurred_title;
     }
   }
 
-  String _getErrorMessage() {
+  String _getErrorMessage(BuildContext context) {
     // Respect explicit legacy message if provided
     if (message != null && message!.isNotEmpty) return message!;
 
     switch (failure.runtimeType) {
       case const (NetworkFailure):
-        return 'errors.no_internet_message'.tr();
+        return context.l10n.errors_no_internet_message;
       case const (NotFoundFailure):
-        return 'errors.not_found_message'.tr();
+        return context.l10n.errors_not_found_message;
       case const (ServerFailure):
-        return 'errors.server_error_message'.tr();
+        return context.l10n.errors_server_error_message;
       case const (CacheFailure):
-        return 'errors.cache_error_message'.tr();
+        return context.l10n.errors_cache_error_message;
       default:
-        return 'errors.error_occurred_message'.tr();
+        return context.l10n.errors_error_occurred_message;
     }
   }
 }

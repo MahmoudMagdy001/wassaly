@@ -19,15 +19,15 @@ class App extends StatelessWidget {
       BuildContext context, ThemeMode themeMode, String language) {
     return MaterialApp.router(
       key: ValueKey(language),
-      title: 'app.title'.tr(),
+      onGenerateTitle: (context) => context.l10n.app_title,
       debugShowCheckedModeBanner: false,
       theme: buildLightTheme(primaryColorHex: '#093773'),
       darkTheme: buildDarkTheme(primaryColorHex: '#093773'),
       themeMode: themeMode,
       routerConfig: appRouter,
-      localizationsDelegates: context.localizationDelegates,
-      supportedLocales: context.supportedLocales,
-      locale: context.locale,
+      localizationsDelegates: S.localizationsDelegates,
+      supportedLocales: S.supportedLocales,
+      locale: Locale(language),
       builder: (context, child) {
         return BlocListener<FavoriteBloc, FavoriteState>(
           listenWhen: (previous, current) =>

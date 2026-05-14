@@ -73,7 +73,7 @@ class SignupForm extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  'auth.name'.tr(),
+                  context.l10n.auth_name,
                   textAlign: TextAlign.start,
                   style: tt.bodyMedium?.copyWith(
                     color: cs.primary,
@@ -86,14 +86,14 @@ class SignupForm extends StatelessWidget {
                   onChanged: onNameChanged,
                   validator: (value) {
                     if (value.isNullOrEmpty) {
-                      return 'auth.name_required'.tr();
+                      return context.l10n.auth_name_required;
                     }
                     return null;
                   },
                 ),
                 16.verticalSpace,
                 Text(
-                  'auth.phone'.tr(),
+                  context.l10n.auth_phone,
                   textAlign: TextAlign.start,
                   style: tt.bodyMedium?.copyWith(
                     color: cs.primary,
@@ -106,17 +106,17 @@ class SignupForm extends StatelessWidget {
                   onChanged: onPhoneChanged,
                   validator: (value) {
                     if (value.isNullOrEmpty) {
-                      return 'auth.phone_required'.tr();
+                      return context.l10n.auth_phone_required;
                     }
                     if (!value!.isValidPhoneNumber) {
-                      return 'auth.phone_invalid'.tr();
+                      return context.l10n.auth_phone_invalid;
                     }
                     return null;
                   },
                 ),
                 16.verticalSpace,
                 Text(
-                  'auth.email'.tr(),
+                  context.l10n.auth_email,
                   textAlign: TextAlign.start,
                   style: tt.bodyMedium?.copyWith(
                     color: cs.primary,
@@ -129,17 +129,17 @@ class SignupForm extends StatelessWidget {
                   onChanged: onEmailChanged,
                   validator: (value) {
                     if (value.isNullOrEmpty) {
-                      return 'auth.email_required'.tr();
+                      return context.l10n.auth_email_required;
                     }
                     if (!value!.isValidEmail) {
-                      return 'auth.email_invalid'.tr();
+                      return context.l10n.auth_email_invalid;
                     }
                     return null;
                   },
                 ),
                 16.verticalSpace,
                 Text(
-                  'auth.password'.tr(),
+                  context.l10n.auth_password,
                   textAlign: TextAlign.start,
                   style: tt.bodyMedium?.copyWith(
                     color: cs.primary,
@@ -153,17 +153,17 @@ class SignupForm extends StatelessWidget {
                   onToggleVisibility: onTogglePasswordVisibility,
                   validator: (value) {
                     if (value.isNullOrEmpty) {
-                      return 'auth.password_required'.tr();
+                      return context.l10n.auth_password_required;
                     }
                     if (value!.length < 6) {
-                      return 'auth.password_too_short'.tr();
+                      return context.l10n.auth_password_too_short;
                     }
                     return null;
                   },
                 ),
                 16.verticalSpace,
                 Text(
-                  'auth.confirm_password'.tr(),
+                  context.l10n.auth_confirm_password,
                   textAlign: TextAlign.start,
                   style: tt.bodyMedium?.copyWith(
                     color: cs.primary,
@@ -178,10 +178,10 @@ class SignupForm extends StatelessWidget {
                   isConfirmPassword: true,
                   validator: (value) {
                     if (value.isNullOrEmpty) {
-                      return 'auth.confirm_password_required'.tr();
+                      return context.l10n.auth_confirm_password_required;
                     }
                     if (value != passwordController.text) {
-                      return 'auth.passwords_do_not_match'.tr();
+                      return context.l10n.auth_passwords_do_not_match;
                     }
                     return null;
                   },
@@ -198,7 +198,7 @@ class SignupForm extends StatelessWidget {
                       previous.isTermsAccepted != current.isTermsAccepted,
                   builder: (context, state) {
                     return AppButton(
-                      label: 'auth.create_account_button'.tr(),
+                      label: context.l10n.auth_create_account_button,
                       onPressed: (state.isLoading || !state.isTermsAccepted)
                           ? null
                           : onSignup,

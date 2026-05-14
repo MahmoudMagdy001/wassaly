@@ -21,7 +21,7 @@ class LanguageBottomSheet extends StatelessWidget {
               child: Row(
                 children: [
                   Text(
-                    'profile.language'.tr(),
+                    context.l10n.profile_language,
                     style: tt.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: cs.onSurface,
@@ -40,7 +40,7 @@ class LanguageBottomSheet extends StatelessWidget {
               child: Column(
                 children: [
                   _LanguageOption(
-                    title: 'profile.arabic'.tr(),
+                    title: context.l10n.profile_arabic,
                     subtitle: 'ar',
                     isSelected: state.language == 'ar',
                     onTap: () async {
@@ -61,7 +61,7 @@ class LanguageBottomSheet extends StatelessWidget {
                   ),
                   16.verticalSpace,
                   _LanguageOption(
-                    title: 'profile.english'.tr(),
+                    title: context.l10n.profile_english,
                     subtitle: 'en',
                     isSelected: state.language == 'en',
                     onTap: () async {
@@ -98,14 +98,14 @@ class LanguageBottomSheet extends StatelessWidget {
     return await showAppDialog<bool>(
       child: AlertDialog(
         title: Text(
-          'profile.language_change_title'.tr(),
+          context.l10n.profile_language_change_title,
           style: tt.titleLarge?.copyWith(
             fontWeight: FontWeight.bold,
             color: cs.onSurface,
           ),
         ),
         content: Text(
-          'profile.language_change_message'.tr(),
+          context.l10n.profile_language_change_message,
           style: tt.bodyMedium?.copyWith(
             color: cs.onSurface,
           ),
@@ -114,14 +114,14 @@ class LanguageBottomSheet extends StatelessWidget {
           TextButton(
             onPressed: () => context.pop(false),
             child: Text(
-              'profile.language_change_cancel'.tr(),
+              context.l10n.profile_language_change_cancel,
               style: TextStyle(
                 color: cs.onSurface,
               ),
             ),
           ),
           AppButton(
-              label: 'profile.language_change_confirm'.tr(),
+              label: context.l10n.profile_language_change_confirm,
               onPressed: () => context.pop(true)),
         ],
       ),

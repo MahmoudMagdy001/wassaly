@@ -76,10 +76,10 @@ class _HomeView extends StatelessWidget {
                               onRetry: () => _refreshAllSections(context),
                             )
                           : AppErrorWidget(
-                              title: 'errors.no_internet_title'.tr(),
+                              title: context.l10n.errors_no_internet_title,
                               message: state.errorMessage.isNotEmpty
                                   ? state.errorMessage
-                                  : 'errors.no_internet_message'.tr(),
+                                  : context.l10n.errors_no_internet_message,
                               onRetry: () => _refreshAllSections(context),
                               icon: Icons.wifi_off_rounded,
                             ),

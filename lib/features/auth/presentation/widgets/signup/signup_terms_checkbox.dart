@@ -38,7 +38,7 @@ class SignupTermsCheckbox extends StatelessWidget {
               child: Wrap(
                 children: [
                   Text(
-                    'auth.agree_to'.tr(),
+                    context.l10n.auth_agree_to,
                     style: tt.bodySmall?.copyWith(
                       color: cs.onSurfaceVariant,
                     ),
@@ -46,7 +46,7 @@ class SignupTermsCheckbox extends StatelessWidget {
                   GestureDetector(
                     onTap: onTermsPressed,
                     child: Text(
-                      'auth.terms_of_service'.tr(),
+                      context.l10n.auth_terms_of_service,
                       style: tt.bodySmall?.copyWith(
                         color: cs.primary,
                         fontWeight: FontWeight.bold,
@@ -54,7 +54,7 @@ class SignupTermsCheckbox extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    ' ${'auth.and'.tr()} ',
+                    ' ${context.l10n.auth_and} ',
                     style: tt.bodySmall?.copyWith(
                       color: cs.onSurfaceVariant,
                     ),
@@ -62,7 +62,7 @@ class SignupTermsCheckbox extends StatelessWidget {
                   GestureDetector(
                     onTap: onPrivacyPressed,
                     child: Text(
-                      'auth.privacy_policy'.tr(),
+                      context.l10n.auth_privacy_policy,
                       style: tt.bodySmall?.copyWith(
                         color: cs.primary,
                         fontWeight: FontWeight.bold,

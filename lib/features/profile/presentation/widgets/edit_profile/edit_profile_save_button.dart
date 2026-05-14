@@ -15,7 +15,7 @@ class EditProfileSaveButton extends StatelessWidget {
       buildWhen: (prev, curr) => prev.actionStatus != curr.actionStatus,
       builder: (context, state) {
         return AppButton(
-          label: 'profile.save_changes'.tr(),
+          label: context.l10n.profile_save_changes,
           isFullWidth: true,
           isLoading: state.actionStatus.isLoading,
           onPressed: onPressed,

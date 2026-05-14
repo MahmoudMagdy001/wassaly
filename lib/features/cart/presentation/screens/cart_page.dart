@@ -41,7 +41,7 @@ class _CartPageState extends State<CartPage> {
               // ─── AppBar ────────────────────────────────────────────────────────────
               SliverAppBar(
                 title: Text(
-                  'cart.cart_title'.tr(),
+                  context.l10n.cart_cart_title,
                   style: context.typography.titleLarge?.copyWith(
                     color: cs.primary,
                   ),
@@ -68,10 +68,10 @@ class _CartPageState extends State<CartPage> {
                                 .add(const LoadCartItemsEvent()),
                           )
                         : AppErrorWidget(
-                            title: 'errors.error_occurred_title'.tr(),
+                            title: context.l10n.errors_error_occurred_title,
                             message: state.errorMessage.isNotEmpty
                                 ? state.errorMessage
-                                : 'errors.error_occurred_message'.tr(),
+                                : context.l10n.errors_error_occurred_message,
                             onRetry: () => context
                                 .read<CartBloc>()
                                 .add(const LoadCartItemsEvent()),
@@ -175,7 +175,7 @@ class _CartPageState extends State<CartPage> {
 
             // Title
             Text(
-              'cart.empty_title'.tr(),
+              context.l10n.cart_empty_title,
               style: tt.headlineSmall?.copyWith(
                 fontWeight: FontWeight.w900,
                 color: cs.onSurface,
@@ -191,7 +191,7 @@ class _CartPageState extends State<CartPage> {
 
             // Subtitle
             Text(
-              'cart.empty_subtitle'.tr(),
+              context.l10n.cart_empty_subtitle,
               style: tt.bodyLarge?.copyWith(
                 color: cs.onSurfaceVariant.withValues(alpha: 0.7),
                 height: 1.5,
@@ -256,16 +256,16 @@ class _CartPageState extends State<CartPage> {
         children: [
           // Price Summary Section
           _SummaryRow(
-            label: 'cart.subtotal'.tr(),
+            label: context.l10n.cart_subtotal,
             value:
-                '${totalOriginalPrice.toStringAsFixed(0)} ${'shared.currency_egp'.tr()}',
+                '${totalOriginalPrice.toStringAsFixed(0)} ${context.l10n.shared_currency_egp}',
           ),
           if (productOffersDiscount > 0) ...[
             8.verticalSpace,
             _SummaryRow(
-              label: 'cart.product_offers'.tr(),
+              label: context.l10n.cart_product_offers,
               value:
-                  '- ${productOffersDiscount.toStringAsFixed(0)} ${'shared.currency_egp'.tr()}',
+                  '- ${productOffersDiscount.toStringAsFixed(0)} ${context.l10n.shared_currency_egp}',
               valueColor: Colors.green,
             ),
           ],
@@ -273,8 +273,8 @@ class _CartPageState extends State<CartPage> {
           AppDivider(color: cs.outline.withValues(alpha: 0.3), height: 1),
           12.verticalSpace,
           _SummaryRow(
-            label: 'cart.total'.tr(),
-            value: '${total.toStringAsFixed(0)} ${'shared.currency_egp'.tr()}',
+            label: context.l10n.cart_total,
+            value: '${total.toStringAsFixed(0)} ${context.l10n.shared_currency_egp}',
             isBold: true,
             valueColor: cs.primary,
           ),
@@ -290,7 +290,7 @@ class _CartPageState extends State<CartPage> {
                 ),
               ),
               child: Text(
-                'cart.checkout'.tr(),
+                context.l10n.cart_checkout,
                 style: tt.titleMedium?.copyWith(
                   color: cs.onPrimary,
                   fontWeight: FontWeight.bold,

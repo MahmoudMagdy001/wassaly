@@ -74,7 +74,7 @@ class _EditProfileViewState extends State<_EditProfileView> {
 
     final password = _passwordController.text.trim();
     if (password.isNotEmpty && _currentPasswordController.text.isEmpty) {
-      context.showTypedSnackBar('profile.current_password_required'.tr(),
+      context.showTypedSnackBar(context.l10n.profile_current_password_required,
           type: SnackBarType.error);
       return;
     }
@@ -113,7 +113,7 @@ class _EditProfileViewState extends State<_EditProfileView> {
                 ),
                 16.verticalSpace,
                 Text(
-                  'profile.delete_account_title'.tr(),
+                  context.l10n.profile_delete_account_title,
                   style: tt.headlineSmall?.copyWith(
                     color: cs.onSurface,
                     fontWeight: FontWeight.bold,
@@ -122,7 +122,7 @@ class _EditProfileViewState extends State<_EditProfileView> {
                 ),
                 8.verticalSpace,
                 Text(
-                  'profile.delete_account_message'.tr(),
+                  context.l10n.profile_delete_account_message,
                   style: tt.bodyMedium?.copyWith(
                     color: cs.onSurfaceVariant,
                   ),
@@ -130,7 +130,7 @@ class _EditProfileViewState extends State<_EditProfileView> {
                 ),
                 16.verticalSpace,
                 AppButton(
-                  label: 'profile.delete_account_confirm'.tr(),
+                  label: context.l10n.profile_delete_account_confirm,
                   onPressed: () {
                     bottomSheetContext.pop(true);
                   },
@@ -157,7 +157,7 @@ class _EditProfileViewState extends State<_EditProfileView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('profile.edit_profile'.tr()),
+        title: Text(context.l10n.profile_edit_profile),
         centerTitle: true,
       ),
       body: BlocListener<ProfileBloc, ProfileState>(
@@ -182,7 +182,7 @@ class _EditProfileViewState extends State<_EditProfileView> {
                 context.go(AppRoutes.login);
               } else {
                 // Regular profile update
-                context.showTypedSnackBar('profile.update_success'.tr(),
+                context.showTypedSnackBar(context.l10n.profile_update_success,
                     type: SnackBarType.success);
                 context.pop();
               }
@@ -221,7 +221,7 @@ class _EditProfileViewState extends State<_EditProfileView> {
                 EditProfileSaveButton(onPressed: _submit),
                 8.verticalSpace,
                 AppButton(
-                  label: 'profile.delete_account'.tr(),
+                  label: context.l10n.profile_delete_account,
                   onPressed: _showDeleteAccountBottomSheet,
                   variant: ButtonVariant.danger,
                   isFullWidth: true,

@@ -1,4 +1,5 @@
 import '../../../../core/imports/imports.dart';
+import '../../../home/domain/entities/sub_category_entity.dart';
 
 abstract class CategoryEvent extends Equatable {
   const CategoryEvent();
@@ -23,4 +24,13 @@ class LoadMoreSubCategoriesEvent extends CategoryEvent {
 
   @override
   List<Object?> get props => [categoryId];
+}
+
+class SelectSubCategoryEvent extends CategoryEvent {
+  final SubCategoryEntity subCategory;
+
+  const SelectSubCategoryEvent(this.subCategory);
+
+  @override
+  List<Object?> get props => [subCategory];
 }

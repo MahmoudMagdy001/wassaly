@@ -34,7 +34,7 @@ class _ProfileView extends StatelessWidget {
             if (state.user == null) {
               context.go(AppRoutes.login);
             } else {
-              context.showTypedSnackBar('profile.action_success'.tr(),
+              context.showTypedSnackBar(context.l10n.profile_action_success,
                   type: SnackBarType.success);
             }
           } else if (state.actionStatus.isFailure &&

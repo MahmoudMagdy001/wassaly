@@ -115,7 +115,7 @@ class _SignupViewState extends State<_SignupView> {
           previous.errorMessage != current.errorMessage,
       listener: (context, state) {
         if (state.isRegistered) {
-          context.showTypedSnackBar('auth.otp_sent_success'.tr(),
+          context.showTypedSnackBar(context.l10n.auth_otp_sent_success,
               type: SnackBarType.success);
           context.push(
             AppRoutes.otpVerification,

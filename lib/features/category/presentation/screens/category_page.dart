@@ -1,6 +1,8 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/home/domain/entities/category_entity.dart';
-import 'package:wassaly/features/home/presentation/widgets/category_card.dart';
+import 'package:wassaly/features/sub_category/presentation/bloc/sub_category_bloc.dart';
+import 'package:wassaly/features/sub_category/presentation/bloc/sub_category_event.dart';
+import 'package:wassaly/features/sub_category/presentation/screens/sub_category_page.dart';
 
 import '../bloc/category_bloc.dart';
 import '../bloc/category_event.dart';
@@ -36,18 +38,27 @@ class _CategoryView extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: cs.surface,
+      appBar: AppBar(
+        backgroundColor: cs.surface,
+        elevation: 0,
+        centerTitle: true,
+        foregroundColor: cs.primary,
+        title: Text(
+          category.name,
+          style: tt.titleLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: cs.primary,
+          ),
+        ),
+      ),
       body: BlocBuilder<CategoryBloc, CategoryState>(
-        buildWhen: (previous, current) =>
-            previous.status != current.status ||
-            previous.isLoadingMore != current.isLoadingMore ||
-            previous.subCategories != current.subCategories,
         builder: (context, state) {
           if (state.status == CategoryStatus.failure) {
             return AppErrorWidget(
-              title: 'errors.error_occurred_title'.tr(),
+              title: context.l10n.errors_error_occurred_title,
               message: state.errorMessage.isNotEmpty
                   ? state.errorMessage
-                  : 'errors.error_occurred_message'.tr(),
+                  : context.l10n.errors_error_occurred_message,
               onRetry: () {
                 context.read<CategoryBloc>().add(
                       FetchCategoryDetailEvent(category.id),
@@ -60,156 +71,164 @@ class _CategoryView extends StatelessWidget {
               state.status == CategoryStatus.initial;
 
           if (isLoading) {
-            return RefreshIndicator(
-              onRefresh: () async {
-                final bloc = context.read<CategoryBloc>();
-                final startTime = DateTime.now();
-
-                bloc.add(FetchCategoryDetailEvent(category.id));
-
-                await bloc.stream.firstWhere(
-                  (state) => state.status != CategoryStatus.loading,
-                );
-
-                final elapsed = DateTime.now().difference(startTime);
-                if (elapsed < const Duration(seconds: 1)) {
-                  await Future<void>.delayed(
-                      const Duration(seconds: 1) - elapsed);
-                }
-              },
-              color: cs.primary,
-              backgroundColor: cs.surface,
-              child: CustomScrollView(
-                slivers: [
-                  SliverAppBar(
-                    backgroundColor: cs.surface,
-                    elevation: 0,
-                    centerTitle: true,
-                    floating: true,
-                    foregroundColor: cs.primary,
-                    title: Text(
-                      category.name,
-                      style: tt.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: cs.primary,
-                      ),
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: EdgeInsets.all(16.w),
-                    sliver: SliverGrid(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 12.h,
-                        crossAxisSpacing: 12.w,
-                        childAspectRatio: 1.4,
-                      ),
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) => const Skeletonizer(
-                          ignoreContainers: true,
-                          enabled: true,
-                          child: CategoryCard(
-                            title: 'Sub Category',
-                            imageUrl:
-                                'https://scontent.fcai19-3.fna.fbcdn.net/v/t39.30808-6/480274848_1231537592319102_5348312428938549056_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=lqftgNLcJvUQ7kNvwGt14yl&_nc_oc=AdpgIXfg1Rck4FX6b5O8YswgcdRmZVaAGlWpYkhannm5uA8dYGErmddT2YOEV16UWxE&_nc_zt=23&_nc_ht=scontent.fcai19-3.fna&_nc_gid=Pdj2W7Et4JiExbswPUz3Sg&_nc_ss=7b2a8&oh=00_Af7OvJ0bECoot380m6aLddMhHCeX92jagLSvXBu9ainTtA&oe=69FE5FFA',
-                          ),
-                        ),
-                        childCount: 2,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
+            return const AppLoading();
           }
 
           final subCategories = state.subCategories.data;
 
-          return RefreshIndicator(
-            onRefresh: () async {
-              final bloc = context.read<CategoryBloc>();
-              final startTime = DateTime.now();
+          if (subCategories.isEmpty) {
+            return AppEmptyState(
+              title: context.l10n.home_no_sub_categories,
+              icon: Icons.folder_open_outlined,
+            );
+          }
 
-              bloc.add(FetchCategoryDetailEvent(category.id));
-
-              await bloc.stream.firstWhere(
-                (state) => state.status != CategoryStatus.loading,
-              );
-
-              final elapsed = DateTime.now().difference(startTime);
-              if (elapsed < const Duration(seconds: 1)) {
-                await Future<void>.delayed(
-                    const Duration(seconds: 1) - elapsed);
-              }
-            },
-            color: cs.primary,
-            backgroundColor: cs.surface,
-            child: CustomScrollView(
-              slivers: [
-                SliverAppBar(
-                  backgroundColor: cs.surface,
-                  elevation: 0,
-                  centerTitle: true,
-                  floating: true,
-                  foregroundColor: cs.primary,
-                  title: Text(
-                    category.name,
-                    style: tt.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: cs.primary,
+          return Row(
+            children: [
+              // Left Side: Categories List
+              Container(
+                width: 90.w,
+                decoration: BoxDecoration(
+                  color: cs.surface,
+                  border: BorderDirectional(
+                    end: BorderSide(
+                      color: cs.outlineVariant.withValues(alpha: 0.3),
+                      width: 1,
                     ),
                   ),
                 ),
-                if (subCategories.isEmpty)
-                  SliverFillRemaining(
-                    hasScrollBody: false,
-                    child: AppEmptyState(
-                      title: 'home.no_sub_categories'.tr(),
-                      icon: Icons.folder_open_outlined,
-                    ),
-                  )
-                else
-                  SliverPadding(
-                    padding: EdgeInsets.all(16.w),
-                    sliver: SliverGrid(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 12.h,
-                        crossAxisSpacing: 12.w,
-                        childAspectRatio: 1.4,
-                      ),
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          if (index < subCategories.length) {
-                            final subCategory = subCategories[index];
-                            return CategoryCard(
-                              title: subCategory.name,
-                              imageUrl: subCategory.image,
-                              onTap: () => context.push(
-                                AppRoutes.subCategory,
-                                extra: {'subCategory': subCategory},
+                child: ListView.separated(
+                  padding: EdgeInsets.symmetric(vertical: 8.h),
+                  itemCount: subCategories.length,
+                  separatorBuilder: (context, index) => 8.verticalSpace,
+                  itemBuilder: (context, index) {
+                    final item = subCategories[index];
+                    final isSelected = state.selectedSubCategory?.id == item.id;
+
+                    return GestureDetector(
+                      onTap: () {
+                        context
+                            .read<CategoryBloc>()
+                            .add(SelectSubCategoryEvent(item));
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 4.w, vertical: 12.h),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? cs.primary.withValues(alpha: 0.08)
+                              : Colors.transparent,
+                        ),
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          alignment: Alignment.center,
+                          children: [
+                            // Selection Indicator
+                            if (isSelected)
+                              PositionedDirectional(
+                                start: -4.w,
+                                top: 0,
+                                bottom: 0,
+                                child: Container(
+                                  width: 4.w,
+                                  decoration: BoxDecoration(
+                                    color: cs.primary,
+                                    borderRadius: BorderRadiusDirectional.only(
+                                      topEnd: Radius.circular(4.r),
+                                      bottomEnd: Radius.circular(4.r),
+                                    ),
+                                  ),
+                                ),
                               ),
-                            );
-                          }
-
-                          if (state.hasMoreSubCategories) {
-                            context.read<CategoryBloc>().add(
-                                  LoadMoreSubCategoriesEvent(category.id),
-                                );
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-
-                          return const SizedBox.shrink();
-                        },
-                        childCount: subCategories.length +
-                            (state.hasMoreSubCategories ? 1 : 0),
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  height: 54.r,
+                                  width: 54.r,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: cs.surface,
+                                    border: Border.all(
+                                      color: isSelected
+                                          ? cs.primary
+                                          : cs.outlineVariant.withValues(
+                                              alpha: 0.5,
+                                            ),
+                                      width: isSelected ? 2 : 1,
+                                    ),
+                                    boxShadow: isSelected
+                                        ? [
+                                            BoxShadow(
+                                              color: cs.primary.withValues(
+                                                alpha: 0.2,
+                                              ),
+                                              blurRadius: 8,
+                                              offset: const Offset(0, 4),
+                                            )
+                                          ]
+                                        : null,
+                                  ),
+                                  child: ClipOval(
+                                    child: CommonImage(
+                                      imageUrl: item.image,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                8.verticalSpace,
+                                Text(
+                                  item.name,
+                                  textAlign: TextAlign.center,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: tt.labelSmall?.copyWith(
+                                    color: isSelected
+                                        ? cs.primary
+                                        : cs.onSurfaceVariant,
+                                    fontWeight: isSelected
+                                        ? FontWeight.bold
+                                        : FontWeight.w500,
+                                    fontSize: 11.sp,
+                                    height: 1.2,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ),
-              ],
-            ),
+                    );
+                  },
+                ),
+              ),
+
+              // Right Side: SubCategory Detail View
+              Expanded(
+                child: state.selectedSubCategory == null
+                    ? const SizedBox.shrink()
+                    : KeyedSubtree(
+                        key: ValueKey(state.selectedSubCategory!.id),
+                        child: BlocProvider(
+                          create: (context) => sl<SubCategoryBloc>()
+                            ..add(FetchSubCategoryDetailEvent(
+                                state.selectedSubCategory!.id)),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: SubCategoryDetailView(
+                                  subCategory: state.selectedSubCategory!,
+                                  showAppBar: false,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+              ),
+            ],
           );
         },
       ),

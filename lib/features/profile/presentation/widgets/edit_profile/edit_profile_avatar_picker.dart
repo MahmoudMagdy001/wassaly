@@ -52,7 +52,7 @@ class _EditProfileAvatarPickerState extends State<EditProfileAvatarPicker> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  'profile.choose_image_source'.tr(),
+                  context.l10n.profile_choose_image_source,
                   style: tt.titleMedium?.copyWith(
                     color: cs.onSurface,
                     fontWeight: FontWeight.bold,
@@ -63,7 +63,7 @@ class _EditProfileAvatarPickerState extends State<EditProfileAvatarPicker> {
                 ListTile(
                   leading: Icon(Icons.camera_alt, color: cs.primary),
                   title: Text(
-                    'profile.camera'.tr(),
+                    context.l10n.profile_camera,
                     style: tt.bodyLarge?.copyWith(color: cs.onSurface),
                   ),
                   onTap: () {
@@ -75,7 +75,7 @@ class _EditProfileAvatarPickerState extends State<EditProfileAvatarPicker> {
                 ListTile(
                   leading: Icon(Icons.photo_library, color: cs.primary),
                   title: Text(
-                    'profile.gallery'.tr(),
+                    context.l10n.profile_gallery,
                     style: tt.bodyLarge?.copyWith(color: cs.onSurface),
                   ),
                   onTap: () {

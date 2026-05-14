@@ -55,7 +55,7 @@ class CheckoutOrderSummarySection extends StatelessWidget {
                             ),
                             4.verticalSpace,
                             Text(
-                              'x${item.quantity}  •  ${item.unitPrice.toStringAsFixed(0)} ${'shared.currency_egp'.tr()}',
+                              'x${item.quantity}  •  ${item.unitPrice.toStringAsFixed(0)} ${context.l10n.shared_currency_egp}',
                               style: tt.bodySmall?.copyWith(
                                 color: cs.onSurfaceVariant,
                               ),
@@ -63,7 +63,7 @@ class CheckoutOrderSummarySection extends StatelessWidget {
                             if (item.offers != null && item.offers!.isNotEmpty) ...[
                               2.verticalSpace,
                               Text(
-                                '${'shared.save'.tr()} ${(item.unitPrice * (item.offers!.first.discountPercentage / 100) * item.quantity).toStringAsFixed(0)} ${'shared.currency_egp'.tr()} (${item.offers!.first.discountPercentage}% OFF)',
+                                '${context.l10n.shared_save} ${(item.unitPrice * (item.offers!.first.discountPercentage / 100) * item.quantity).toStringAsFixed(0)} ${context.l10n.shared_currency_egp} (${item.offers!.first.discountPercentage}% OFF)',
                                 style: tt.labelSmall?.copyWith(
                                   color: Colors.green,
                                   fontWeight: FontWeight.w600,
@@ -74,7 +74,7 @@ class CheckoutOrderSummarySection extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        '${item.totalPrice.toStringAsFixed(0)} ${'shared.currency_egp'.tr()}',
+                        '${item.totalPrice.toStringAsFixed(0)} ${context.l10n.shared_currency_egp}',
                         style: tt.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                           color: cs.primary,
@@ -91,16 +91,16 @@ class CheckoutOrderSummarySection extends StatelessWidget {
 
             // Subtotal
             _SummaryRow(
-              label: 'checkout.subtotal'.tr(),
+              label: context.l10n.checkout_subtotal,
               value:
-                  '${state.subtotal.toStringAsFixed(0)} ${'shared.currency_egp'.tr()}',
+                  '${state.subtotal.toStringAsFixed(0)} ${context.l10n.shared_currency_egp}',
             ),
             if (state.productDiscounts > 0) ...[
               8.verticalSpace,
               _SummaryRow(
-                label: 'cart.product_offers'.tr(),
+                label: context.l10n.cart_product_offers,
                 value:
-                    '- ${state.productDiscounts.toStringAsFixed(0)} ${'shared.currency_egp'.tr()}',
+                    '- ${state.productDiscounts.toStringAsFixed(0)} ${context.l10n.shared_currency_egp}',
                 valueColor: Colors.green,
               ),
             ],
@@ -108,18 +108,18 @@ class CheckoutOrderSummarySection extends StatelessWidget {
 
             // Shipping
             _SummaryRow(
-              label: 'checkout.shipping'.tr(),
+              label: context.l10n.checkout_shipping,
               value:
-                  '${state.shippingFee.toStringAsFixed(0)} ${'shared.currency_egp'.tr()}',
+                  '${state.shippingFee.toStringAsFixed(0)} ${context.l10n.shared_currency_egp}',
             ),
 
             // Discount (only when coupon applied)
             if (state.appliedCoupon != null) ...[
               8.verticalSpace,
               _SummaryRow(
-                label: 'checkout.discount'.tr(),
+                label: context.l10n.checkout_discount,
                 value:
-                    '- ${state.discountAmount.toStringAsFixed(0)} ${'shared.currency_egp'.tr()}',
+                    '- ${state.discountAmount.toStringAsFixed(0)} ${context.l10n.shared_currency_egp}',
                 valueColor: cs.primary,
               ),
             ],
@@ -130,9 +130,9 @@ class CheckoutOrderSummarySection extends StatelessWidget {
 
             // Total
             _SummaryRow(
-              label: 'checkout.total'.tr(),
+              label: context.l10n.checkout_total,
               value:
-                  '${state.total.toStringAsFixed(0)} ${'shared.currency_egp'.tr()}',
+                  '${state.total.toStringAsFixed(0)} ${context.l10n.shared_currency_egp}',
               isBold: true,
               valueColor: cs.primary,
             ),

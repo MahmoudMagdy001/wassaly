@@ -17,7 +17,7 @@ class OtpVerificationHeader extends StatelessWidget {
       children: [
         60.verticalSpace,
         Text(
-          'auth.otp_verification_title'.tr(),
+          context.l10n.auth_otp_verification_title,
           style: tt.headlineMedium?.copyWith(
             fontSize: 28.sp,
             fontWeight: FontWeight.w700,
@@ -37,7 +37,7 @@ class OtpVerificationHeader extends StatelessWidget {
                 height: 1.5,
               ),
               children: [
-                TextSpan(text: 'otp.otp_sent_to'.tr()),
+                TextSpan(text: context.l10n.otp_otp_sent_to),
                 TextSpan(
                   text: ' $email',
                   style: TextStyle(

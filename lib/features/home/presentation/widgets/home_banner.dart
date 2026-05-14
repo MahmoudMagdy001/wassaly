@@ -183,7 +183,7 @@ class _HomeBannerState extends State<HomeBanner> {
                 ),
                 8.verticalSpace,
                 AppButton(
-                  label: 'home.browse_now'.tr(),
+                  label: context.l10n.home_browse_now,
                   onPressed: () {
                     // TODO: Navigate or perform action based on type
                   },

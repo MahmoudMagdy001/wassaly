@@ -1,4 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
+
 import '../../domain/entities/order_entity.dart';
 
 class OrderCard extends StatelessWidget {
@@ -34,11 +35,11 @@ class OrderCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'order.total_price'.tr(),
+                context.l10n.order_total_price,
                 style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
               ),
               Text(
-                '${order.totalPrice} ${'common.currency'.tr()}',
+                '${order.totalPrice} ${context.l10n.common_currency}',
                 style: tt.titleSmall?.copyWith(
                   color: cs.primary,
                   fontWeight: FontWeight.bold,
@@ -51,7 +52,7 @@ class OrderCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'order.items_count'.tr(),
+                context.l10n.order_items_count,
                 style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
               ),
               Text(
@@ -65,7 +66,7 @@ class OrderCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'order.date'.tr(),
+                context.l10n.order_date,
                 style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
               ),
               Text(
@@ -78,12 +79,12 @@ class OrderCard extends StatelessWidget {
           const AppDivider(),
           12.verticalSpace,
           Text(
-            'order.payment_method'.tr(),
+            context.l10n.order_payment_method,
             style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
           ),
           4.verticalSpace,
           Text(
-            order.paymentMethod.tr(),
+            order.paymentMethod,
             style: tt.bodyMedium,
           ),
         ],
@@ -118,7 +119,7 @@ class OrderCard extends StatelessWidget {
         border: Border.all(color: color, width: 1),
       ),
       child: Text(
-        status.tr(),
+        status,
         style: tt.labelSmall?.copyWith(
           color: color,
           fontWeight: FontWeight.bold,

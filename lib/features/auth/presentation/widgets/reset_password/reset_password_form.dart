@@ -50,20 +50,20 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
 
   String? _validateNewPassword(String? value, ResetPasswordState state) {
     if (value == null || value.isEmpty) {
-      return 'auth.password_required'.tr();
+      return context.l10n.auth_password_required;
     }
     if (value.length < 8) {
-      return state.newPasswordError?.tr();
+      return state.newPasswordError;
     }
     return null;
   }
 
   String? _validateConfirmPassword(String? value, ResetPasswordState state) {
     if (value == null || value.isEmpty) {
-      return 'auth.confirm_password_required'.tr();
+      return context.l10n.auth_confirm_password_required;
     }
     if (value != state.password) {
-      return state.confirmPasswordError?.tr();
+      return state.confirmPasswordError;
     }
     return null;
   }
@@ -88,7 +88,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
             children: [
               // New Password Field
               Text(
-                'auth.password'.tr(),
+                context.l10n.auth_password,
                 style: context.theme.textTheme.labelLarge?.copyWith(
                   fontWeight: FontWeight.w500,
                   color: cs.onSurface,
@@ -96,7 +96,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
               ),
               8.verticalSpace,
               AppTextField(
-                hint: 'reset_password.new_password_hint'.tr(),
+                hint: context.l10n.reset_password_new_password_hint,
                 obscureText: !state.isNewPasswordVisible,
                 onChanged: _onNewPasswordChanged,
                 onFieldSubmitted: (_) =>
@@ -144,7 +144,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
 
               // Confirm Password Field
               Text(
-                'auth.confirm_password'.tr(),
+                context.l10n.auth_confirm_password,
                 style: context.theme.textTheme.labelLarge?.copyWith(
                   fontWeight: FontWeight.w500,
                   color: cs.onSurface,
@@ -152,7 +152,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
               ),
               8.verticalSpace,
               AppTextField(
-                hint: 'reset_password.confirm_password_hint'.tr(),
+                hint: context.l10n.reset_password_confirm_password_hint,
                 obscureText: !state.isConfirmPasswordVisible,
                 onChanged: _onConfirmPasswordChanged,
                 onFieldSubmitted: (_) => _onSubmit(),
@@ -185,7 +185,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
 
               // Submit Button
               AppButton(
-                label: 'reset_password.reset_button'.tr(),
+                label: context.l10n.reset_password_reset_button,
                 onPressed: state.canSubmit ? _onSubmit : null,
                 isLoading: state.status == ResetPasswordStatus.loading,
                 isFullWidth: true,

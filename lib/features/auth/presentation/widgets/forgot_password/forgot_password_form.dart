@@ -30,10 +30,10 @@ class ForgotPasswordForm extends StatelessWidget {
             onChanged: onEmailChanged,
             validator: (value) {
               if (value.isNullOrEmpty) {
-                return 'auth.email_required'.tr();
+                return context.l10n.auth_email_required;
               }
               if (!value!.isValidEmail && !value.isValidPhoneNumber) {
-                return 'auth.email_invalid'.tr();
+                return context.l10n.auth_email_invalid;
               }
               return null;
             },
@@ -44,7 +44,7 @@ class ForgotPasswordForm extends StatelessWidget {
                 previous.isLoading != current.isLoading,
             builder: (context, state) {
               return AppButton(
-                label: 'auth.send_code'.tr(),
+                label: context.l10n.auth_send_code,
                 onPressed: state.isLoading ? null : onSubmit,
                 isLoading: state.isLoading,
                 variant: ButtonVariant.success,

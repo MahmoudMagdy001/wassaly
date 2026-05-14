@@ -32,7 +32,7 @@ class _AddressesViewState extends State<_AddressesView> {
       appBar: AppBar(
         foregroundColor: cs.primary,
         title: Text(
-          'profile.saved_addresses'.tr(),
+          context.l10n.profile_saved_addresses,
           style: context.typography.titleLarge?.copyWith(
             color: cs.primary,
           ),
@@ -51,10 +51,10 @@ class _AddressesViewState extends State<_AddressesView> {
           if (state.addressStatus.isFailure && state.addressError != null) {
             return Center(
               child: AppErrorWidget(
-                title: 'errors.error_occurred_title'.tr(),
+                title: context.l10n.errors_error_occurred_title,
                 message: state.addressError?.isNotEmpty ?? false
                     ? state.addressError
-                    : 'errors.error_occurred_message'.tr(),
+                    : context.l10n.errors_error_occurred_message,
                 onRetry: () =>
                     context.read<ProfileBloc>().add(const AddressesFetched()),
               ),
@@ -64,9 +64,9 @@ class _AddressesViewState extends State<_AddressesView> {
           if (state.addresses.isEmpty) {
             return AppEmptyState(
               icon: Icons.location_on_outlined,
-              title: 'profile.no_addresses'.tr(),
-              subtitle: 'profile.add_address_hint'.tr(),
-              actionLabel: 'profile.add_address'.tr(),
+              title: context.l10n.profile_no_addresses,
+              subtitle: context.l10n.profile_add_address_hint,
+              actionLabel: context.l10n.profile_add_address,
               onAction: () => context.push(AppRoutes.addAddress),
             );
           }
@@ -90,7 +90,7 @@ class _AddressesViewState extends State<_AddressesView> {
                 child: SizedBox(
                   width: double.infinity,
                   child: AppButton(
-                    label: 'profile.add_new_address'.tr(),
+                    label: context.l10n.profile_add_new_address,
                     isFullWidth: true,
                     prefixIcon: Icon(
                       Icons.add_location_alt_outlined,
@@ -173,7 +173,7 @@ class _AddressCard extends StatelessWidget {
             children: [
               Expanded(
                 child: AppButton(
-                  label: 'shared.delete'.tr(),
+                  label: context.l10n.shared_delete,
                   color: cs.errorContainer,
                   textColor: cs.error,
                   height: ButtonSize.small,
@@ -198,7 +198,7 @@ class _AddressCard extends StatelessWidget {
               16.horizontalSpace,
               Expanded(
                 child: AppButton(
-                  label: 'shared.edit'.tr(),
+                  label: context.l10n.shared_edit,
                   variant: ButtonVariant.secondary,
                   height: ButtonSize.small,
                   isFullWidth: true,
@@ -263,7 +263,7 @@ class _DeleteAddressDialog extends StatelessWidget {
             ),
             16.verticalSpace,
             Text(
-              'profile.delete_address_title'.tr(),
+              context.l10n.profile_delete_address_title,
               style: tt.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: cs.onSurface,
@@ -272,8 +272,7 @@ class _DeleteAddressDialog extends StatelessWidget {
             ),
             8.verticalSpace,
             Text(
-              'profile.delete_address_message'
-                  .tr(namedArgs: {'address': addressTitle}),
+              'profile.delete_address_message',
               style: tt.bodyMedium?.copyWith(
                 color: cs.onSurfaceVariant,
               ),
@@ -284,7 +283,7 @@ class _DeleteAddressDialog extends StatelessWidget {
               children: [
                 Expanded(
                   child: AppButton(
-                    label: 'shared.cancel'.tr(),
+                    label: context.l10n.shared_cancel,
                     variant: ButtonVariant.ghost,
                     isFullWidth: false,
                     onPressed: () => Navigator.of(context).pop(false),
@@ -294,7 +293,7 @@ class _DeleteAddressDialog extends StatelessWidget {
                 Expanded(
                   child: AppButton(
                     isFullWidth: true,
-                    label: 'shared.delete'.tr(),
+                    label: context.l10n.shared_delete,
                     variant: ButtonVariant.danger,
                     onPressed: () => Navigator.of(context).pop(true),
                   ),

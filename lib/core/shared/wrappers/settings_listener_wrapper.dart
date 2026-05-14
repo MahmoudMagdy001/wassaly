@@ -16,11 +16,6 @@ class SettingsListenerWrapper extends StatelessWidget {
     return BlocListener<SettingsBloc, SettingsState>(
       listenWhen: (prev, curr) => prev.language != curr.language,
       listener: (context, state) {
-        // Apply language change using EasyLocalization
-        final newLocale = Locale(state.language);
-        if (context.locale != newLocale) {
-          context.setLocale(newLocale);
-        }
         // Navigate to splash to re-initialize the entire app with new language
         WidgetsBinding.instance.addPostFrameCallback((_) {
           appRouter.go(AppRoutes.splash);

@@ -25,7 +25,9 @@ import 'package:wassaly/features/favorite/data/datasources/favorite_remote_datas
 import 'package:wassaly/features/favorite/data/repositories/favorite_repository_impl.dart';
 import 'package:wassaly/features/favorite/domain/repositories/favorite_repository.dart';
 import 'package:wassaly/features/favorite/domain/usecases/get_favorites_usecase.dart';
+import 'package:wassaly/features/favorite/domain/usecases/get_service_favorites_usecase.dart';
 import 'package:wassaly/features/favorite/domain/usecases/toggle_favorite_usecase.dart';
+import 'package:wassaly/features/favorite/domain/usecases/toggle_service_favorite_usecase.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_bloc.dart';
 import 'package:wassaly/features/sub_category/data/datasources/sub_category_remote_datasource.dart';
 import 'package:wassaly/features/sub_category/data/repositories/sub_category_repository_impl.dart';
@@ -96,6 +98,22 @@ import '../../features/orders/data/repositories/orders_repository_impl.dart';
 import '../../features/orders/domain/repositories/orders_repository.dart';
 import '../../features/orders/domain/usecases/get_orders_usecase.dart';
 import '../../features/orders/presentation/bloc/orders_bloc.dart';
+import '../../features/service_details/data/datasources/service_details_remote_datasource.dart';
+import '../../features/service_details/data/repositories/service_details_repository_impl.dart';
+import '../../features/service_details/domain/repositories/service_details_repository.dart';
+import '../../features/service_details/domain/usecases/get_service_details_usecase.dart';
+import '../../features/service_details/domain/usecases/toggle_service_favorite_usecase.dart' as detail_favorite;
+import '../../features/service_details/presentation/bloc/service_details_bloc.dart';
+import '../../features/service_booking/data/datasources/booking_remote_datasource.dart';
+import '../../features/service_booking/data/repositories/booking_repository_impl.dart';
+import '../../features/service_booking/domain/repositories/booking_repository.dart';
+import '../../features/service_booking/domain/usecases/create_booking_usecase.dart';
+import '../../features/service_booking/presentation/bloc/service_booking_bloc.dart';
+import '../../features/provider_details/data/datasources/provider_details_remote_datasource.dart';
+import '../../features/provider_details/data/repositories/provider_details_repository_impl.dart';
+import '../../features/provider_details/domain/repositories/provider_details_repository.dart';
+import '../../features/provider_details/domain/usecases/get_provider_details_usecase.dart';
+import '../../features/provider_details/presentation/cubit/provider_details_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -156,6 +174,8 @@ void initDependencies() {
   sl.registerLazySingleton(() => FavoriteBloc(
         sl(),
         sl(),
+        sl(),
+        sl(),
       ));
   sl.registerFactory(() => ProductDetailsBloc(
         getProductDetailsUseCase: sl(),
@@ -200,6 +220,26 @@ void initDependencies() {
     ),
   );
 
+  // Service Details
+  sl.registerFactory(() => ServiceDetailsBloc(
+        getServiceDetailsUseCase: sl(),
+        toggleServiceFavoriteUseCase: sl(),
+      ));
+
+  // Service Booking
+  sl.registerFactory(() => ServiceBookingBloc(
+        createBookingUseCase: sl(),
+        getGovernoratesUseCase: sl(),
+        getCentersUseCase: sl(),
+        getUserDataUseCase: sl(),
+        getUserAddressesUseCase: sl(),
+      ));
+
+  // Provider Details
+  sl.registerFactory(() => ProviderDetailsCubit(
+        getProviderDetailsUseCase: sl(),
+      ));
+
   // UseCases - Auth
   sl.registerLazySingleton(() => LoginUseCase(sl()));
   sl.registerLazySingleton(() => GoogleLoginUseCase(sl()));
@@ -242,7 +282,9 @@ void initDependencies() {
 
   // UseCases - Favorite
   sl.registerLazySingleton(() => GetFavoritesUseCase(sl()));
+  sl.registerLazySingleton(() => GetServiceFavoritesUseCase(sl()));
   sl.registerLazySingleton(() => ToggleFavoriteUseCase(sl()));
+  sl.registerLazySingleton(() => ToggleServiceFavoriteUseCase(sl()));
   sl.registerLazySingleton(() => GetProductDetailsUseCase(sl()));
   sl.registerLazySingleton(() => CreateProductReviewUseCase(sl()));
   sl.registerLazySingleton(() => UpdateProductReviewUseCase(sl()));
@@ -264,6 +306,16 @@ void initDependencies() {
   // UseCases - Orders
   sl.registerLazySingleton(() => GetOrdersUseCase(sl()));
 
+  // UseCases - Service Details
+  sl.registerLazySingleton(() => GetServiceDetailsUseCase(sl()));
+  sl.registerLazySingleton(() => detail_favorite.ToggleServiceFavoriteUseCase(sl()));
+
+  // UseCases - Service Booking
+  sl.registerLazySingleton(() => CreateBookingUseCase(sl()));
+
+  // UseCases - Provider Details
+  sl.registerLazySingleton(() => GetProviderDetailsUseCase(sl()));
+
   // Repositories
   sl.registerLazySingleton<AuthRepository>(
       () => AuthRepositoryImpl(sl(), sl(), sl(), sl()));
@@ -284,6 +336,13 @@ void initDependencies() {
 
   sl.registerLazySingleton<OrdersRepository>(
       () => OrdersRepositoryImpl(sl()));
+
+  sl.registerLazySingleton<ServiceDetailsRepository>(
+      () => ServiceDetailsRepositoryImpl(sl()));
+  sl.registerLazySingleton<BookingRepository>(
+      () => BookingRepositoryImpl(sl()));
+  sl.registerLazySingleton<ProviderDetailsRepository>(
+      () => ProviderDetailsRepositoryImpl(sl()));
 
   // DataSources
   sl.registerLazySingleton<AuthRemoteDataSource>(
@@ -313,4 +372,11 @@ void initDependencies() {
 
   sl.registerLazySingleton<OrdersRemoteDataSource>(
       () => OrdersRemoteDataSourceImpl(DioService.instance));
+
+  sl.registerLazySingleton<ServiceDetailsRemoteDataSource>(
+      () => ServiceDetailsRemoteDataSourceImpl(DioService.instance));
+  sl.registerLazySingleton<BookingRemoteDataSource>(
+      () => BookingRemoteDataSourceImpl(DioService.instance));
+  sl.registerLazySingleton<ProviderDetailsRemoteDataSource>(
+      () => ProviderDetailsRemoteDataSourceImpl(DioService.instance));
 }

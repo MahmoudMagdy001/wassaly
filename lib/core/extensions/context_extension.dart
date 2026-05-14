@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../shared/enums/snack_bar_type.dart';
 import '../theme/color_schemes.dart';
 
 extension ContextExtension on BuildContext {
+  S get l10n => S.of(this)!;
   // ── Theme shortcuts ──────────────────────────────────────────────────────
   ThemeData get theme => Theme.of(this);
   TextTheme get typography => theme.textTheme;
@@ -22,6 +24,9 @@ extension ContextExtension on BuildContext {
   Size get screenSize => mediaQuerySize;
   double get width => mediaQuerySize.width;
   double get height => mediaQuerySize.height;
+  double get bottomPadding => MediaQuery.paddingOf(this).bottom;
+
+  bool get isArabic => Localizations.localeOf(this).languageCode == 'ar';
 
   // ── Keyboard ──────────────────────────────────────────────────────────────
   bool get isKeyboardVisible => MediaQuery.viewInsetsOf(this).bottom > 0;

@@ -59,7 +59,7 @@ class ProductReviewCard extends StatelessWidget {
               if (isCurrentUserReview) ...[
                 4.horizontalSpace,
                 PopupMenuButton<String>(
-                  tooltip: 'product_details.review_options'.tr(),
+                  tooltip: context.l10n.product_details_review_options,
                   icon: Icon(
                     Icons.more_vert_rounded,
                     size: 20.r,
@@ -72,8 +72,8 @@ class ProductReviewCard extends StatelessWidget {
                       enabled: canEdit,
                       child: Text(
                         canEdit
-                            ? 'shared.edit'.tr()
-                            : 'product_details.edit_time_expired'.tr(),
+                            ? context.l10n.shared_edit
+                            : context.l10n.product_details_edit_time_expired,
                       ),
                     ),
                   ],

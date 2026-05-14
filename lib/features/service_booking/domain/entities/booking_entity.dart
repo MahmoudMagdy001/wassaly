@@ -1,0 +1,114 @@
+import 'package:wassaly/core/imports/packages_imports.dart';
+
+class BookingProviderEntity extends Equatable {
+  final int id;
+  final String name;
+  final String? avatar;
+
+  const BookingProviderEntity({
+    required this.id,
+    required this.name,
+    this.avatar,
+  });
+
+  @override
+  List<Object?> get props => [id, name, avatar];
+}
+
+class BookingServiceEntity extends Equatable {
+  final int id;
+  final String name;
+  final num price;
+
+  const BookingServiceEntity({
+    required this.id,
+    required this.name,
+    required this.price,
+  });
+
+  @override
+  List<Object?> get props => [id, name, price];
+}
+
+class BookingEntity extends Equatable {
+  final int id;
+  final String status;
+  final String problemDescription;
+  final BookingServiceEntity service;
+  final BookingProviderEntity provider;
+  final String day;
+  final String time;
+  final String createdAt;
+
+  const BookingEntity({
+    required this.id,
+    required this.status,
+    required this.problemDescription,
+    required this.service,
+    required this.provider,
+    required this.day,
+    required this.time,
+    required this.createdAt,
+  });
+
+  @override
+  List<Object?> get props => [
+        id,
+        status,
+        problemDescription,
+        service,
+        provider,
+        day,
+        time,
+        createdAt,
+      ];
+}
+
+class BookingParams extends Equatable {
+  final int serviceId;
+  final int availableDayId;
+  final int availableTimeId;
+  final String problemDescription;
+  final String customerName;
+  final String customerPhone;
+  final String customerEmail;
+  final String governorateId;
+  final String centerId;
+
+  const BookingParams({
+    required this.serviceId,
+    required this.availableDayId,
+    required this.availableTimeId,
+    required this.problemDescription,
+    required this.customerName,
+    required this.customerPhone,
+    required this.customerEmail,
+    required this.governorateId,
+    required this.centerId,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'service_id': serviceId,
+        'available_day_id': availableDayId,
+        'available_time_id': availableTimeId,
+        'problem_description': problemDescription,
+        'customer_name': customerName,
+        'customer_phone': customerPhone,
+        'customer_email': customerEmail,
+        'governorate_id': governorateId,
+        'center_id': centerId,
+      };
+
+  @override
+  List<Object?> get props => [
+        serviceId,
+        availableDayId,
+        availableTimeId,
+        problemDescription,
+        customerName,
+        customerPhone,
+        customerEmail,
+        governorateId,
+        centerId,
+      ];
+}

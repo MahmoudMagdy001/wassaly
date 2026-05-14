@@ -135,7 +135,7 @@ class ProductDetailsBloc extends Bloc<ProductDetailsEvent, ProductDetailsState> 
         await _refreshProductAfterReviewAction(
           productId: event.productId,
           emit: emit,
-          successMessage: 'product_details.review_created'.tr(),
+          successMessage: rootContext!.l10n.product_details_review_created,
         );
       },
     );
@@ -173,7 +173,7 @@ class ProductDetailsBloc extends Bloc<ProductDetailsEvent, ProductDetailsState> 
         await _refreshProductAfterReviewAction(
           productId: event.productId,
           emit: emit,
-          successMessage: 'product_details.review_updated'.tr(),
+          successMessage: rootContext!.l10n.product_details_review_updated,
         );
       },
     );

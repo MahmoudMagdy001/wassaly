@@ -80,13 +80,41 @@ class _CheckoutFormSectionState extends State<CheckoutFormSection> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Contact Info
+              Text(
+                context.l10n.checkout_contact_info,
+                style: context.theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              12.verticalSpace,
+              AppTextField(
+                label: context.l10n.checkout_customer_name,
+                hint: context.l10n.checkout_customer_name_hint,
+                controller: _nameController,
+                onChanged: (v) => context
+                    .read<CheckoutBloc>()
+                    .add(CheckoutFormChanged(customerName: v)),
+              ),
+              16.verticalSpace,
+              AppTextField(
+                label: context.l10n.checkout_customer_phone,
+                hint: context.l10n.checkout_customer_phone_hint,
+                controller: _phoneController,
+                keyboardType: TextInputType.phone,
+                onChanged: (v) => context
+                    .read<CheckoutBloc>()
+                    .add(CheckoutFormChanged(customerPhone: v)),
+              ),
+              24.verticalSpace,
+
               // Saved Addresses
               if (state.addresses.isNotEmpty || state.isLoadingAddresses) ...[
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'checkout.saved_addresses'.tr(),
+                      context.l10n.checkout_saved_addresses,
                       style: context.theme.textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -104,7 +132,7 @@ class _CheckoutFormSectionState extends State<CheckoutFormSection> {
                         }
                       },
                       icon: Icon(Icons.add, size: 18.r),
-                      label: Text('cart.add_new_address'.tr()),
+                      label: Text(context.l10n.cart_add_new_address),
                       style: TextButton.styleFrom(
                         padding: EdgeInsets.zero,
                         minimumSize: Size.zero,
@@ -238,13 +266,13 @@ class _CheckoutFormSectionState extends State<CheckoutFormSection> {
                   child: Column(
                     children: [
                       Text(
-                        'cart.no_addresses'.tr(),
+                        context.l10n.cart_no_addresses,
                         style:
                             tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
                       ),
                       12.verticalSpace,
                       AppButton(
-                        label: 'cart.add_new_address'.tr(),
+                        label: context.l10n.cart_add_new_address,
                         height: ButtonSize.small,
                         prefixIcon: const Icon(Icons.add),
                         onPressed: () async {
@@ -263,8 +291,6 @@ class _CheckoutFormSectionState extends State<CheckoutFormSection> {
                   ),
                 ),
               ],
-
-              // Hide form fields if an address is selected
             ],
           );
         },

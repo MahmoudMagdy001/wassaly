@@ -10,6 +10,8 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
+  flutter_localizations:
+    sdk: flutter
 
   # Navigation
   go_router: ^17.2.3
@@ -27,7 +29,7 @@ dependencies:
 
   # Storage
   shared_preferences: ^2.5.4
-  flutter_secure_storage: ^10.1.0
+  flutter_secure_storage: ^10.2.0
 
   # Images & SVG
   cached_network_image: ^3.4.1
@@ -63,14 +65,11 @@ dependencies:
   app_links: ^7.0.0
 
   # Localization
-  easy_localization: ^3.0.8
+  intl: ^0.20.2
   pinput: ^6.0.2
   system_asset_picker: ^0.0.2
   carousel_slider: ^5.1.2
   marquee: ^2.3.0
-
-
-
 
 dev_dependencies:
   flutter_test:
@@ -80,13 +79,13 @@ dev_dependencies:
   # Code Generation
 
 flutter:
+  generate: true
   uses-material-design: true
 
   assets:
     - assets/
     - assets/icons/
     - assets/images/
-    - assets/translations/
     - .env
 
   fonts:

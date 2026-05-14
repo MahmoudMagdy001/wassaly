@@ -65,7 +65,7 @@ class _GoogleLoginButtonState extends State<GoogleLoginButton>
         },
         builder: (context, state) {
           return AppButton(
-            label: 'auth.login_with_google'.tr(),
+            label: context.l10n.auth_login_with_google,
             onPressed: state.isLoading
                 ? null
                 : () {

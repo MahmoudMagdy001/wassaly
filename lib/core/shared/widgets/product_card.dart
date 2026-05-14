@@ -298,7 +298,7 @@ class _ProductCardState extends State<ProductCard> {
             child: CommonImage(
               memCacheHeight: 140 * 3,
               imageUrl: widget.product.image,
-              fit: BoxFit.cover,
+              fit: BoxFit.contain,
               borderRadius: BorderRadius.vertical(
                 top: Radius.circular(9.r),
               ),
@@ -403,7 +403,7 @@ class _ProductCardState extends State<ProductCard> {
           children: [
             if (hasDiscount)
               Text(
-                '${originalPrice.toStringAsFixed(0)} ${'shared.currency_egp'.tr()}',
+                '${originalPrice.toStringAsFixed(0)} ${context.l10n.shared_currency_egp}',
                 style: tt.labelSmall?.copyWith(
                   color: cs.onSurfaceVariant,
                   decoration: TextDecoration.lineThrough,
@@ -411,7 +411,7 @@ class _ProductCardState extends State<ProductCard> {
                 ),
               ),
             Text(
-              '${(hasDiscount ? discountedPrice : originalPrice).toStringAsFixed(0)} ${'shared.currency_egp'.tr()}',
+              '${(hasDiscount ? discountedPrice : originalPrice).toStringAsFixed(0)} ${context.l10n.shared_currency_egp}',
               style: tt.titleSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: cs.onSurface,

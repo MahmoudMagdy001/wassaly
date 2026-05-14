@@ -39,7 +39,7 @@ class ProductDetailsContent extends StatelessWidget {
             elevation: 0,
             centerTitle: true,
             title: Text(
-              'product_details.title'.tr(),
+              context.l10n.product_details_title,
               style: tt.titleLarge?.copyWith(
                 color: cs.primary,
               ),

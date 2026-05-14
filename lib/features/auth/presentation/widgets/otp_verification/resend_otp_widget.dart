@@ -27,7 +27,7 @@ class ResendOtpWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'otp.didnt_receive_code'.tr(),
+                  context.l10n.otp_didnt_receive_code,
                   style: tt.bodyMedium?.copyWith(
                     fontSize: 14.sp,
                     color: cs.onSurfaceVariant,
@@ -50,7 +50,7 @@ class ResendOtpWidget extends StatelessWidget {
                           ),
                         )
                       : Text(
-                          'otp.resend_code'.tr(),
+                          context.l10n.otp_resend_code,
                           style: tt.bodyMedium?.copyWith(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w600,
@@ -65,8 +65,7 @@ class ResendOtpWidget extends StatelessWidget {
             if (state.isTimerRunning) ...[
               4.verticalSpace,
               Text(
-                'otp.retry_after'
-                    .tr(namedArgs: {'timer': state.formattedTimer}),
+                context.l10n.otp_retry_after(state.timerSeconds),
                 style: tt.bodySmall?.copyWith(
                   fontSize: 12.sp,
                   color: cs.onSurfaceVariant,

@@ -24,8 +24,8 @@ class ProfileStatsCard extends StatelessWidget {
             color: cs.primary,
           ),
         ),
-        title: 'profile.my_orders'.tr(),
-        subtitle: 'profile.orders_count'.plural(3, args: [3.toString()]),
+        title: context.l10n.profile_my_orders,
+        subtitle: 'profile.orders_count',
         trailing: Icon(
           Icons.chevron_right,
           color: cs.onSurfaceVariant,

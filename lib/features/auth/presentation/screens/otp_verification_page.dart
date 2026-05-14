@@ -81,14 +81,14 @@ class _OtpVerificationViewState extends State<_OtpVerificationView> {
       listener: (context, state) {
         if (state.verificationStatus ==
             OtpVerificationStatus.verifiedForRegister) {
-          context.showTypedSnackBar('otp.verification_success'.tr(),
+          context.showTypedSnackBar(context.l10n.otp_verification_success,
               type: SnackBarType.success);
           context.go(AppRoutes.login);
         }
 
         if (state.verificationStatus ==
             OtpVerificationStatus.verifiedForForgotPassword) {
-          context.showTypedSnackBar('otp.verification_success'.tr(),
+          context.showTypedSnackBar(context.l10n.otp_verification_success,
               type: SnackBarType.success);
           if (state.resetToken != null) {
             context.push(
@@ -103,25 +103,25 @@ class _OtpVerificationViewState extends State<_OtpVerificationView> {
 
         if (state.verificationStatus ==
             OtpVerificationStatus.verifiedForLogin) {
-          context.showTypedSnackBar('otp.verification_success'.tr(),
+          context.showTypedSnackBar(context.l10n.otp_verification_success,
               type: SnackBarType.success);
           context.go(AppRoutes.login);
         }
 
         if (state.verificationStatus == OtpVerificationStatus.error &&
             state.errorMessage != null) {
-          context.showTypedSnackBar(state.errorMessage!.tr(),
+          context.showTypedSnackBar(state.errorMessage!,
               type: SnackBarType.error);
         }
 
         if (state.resendStatus == ResendOtpStatus.success) {
-          context.showTypedSnackBar('otp.resend_success'.tr(),
+          context.showTypedSnackBar(context.l10n.otp_resend_success,
               type: SnackBarType.success);
         }
 
         if (state.resendStatus == ResendOtpStatus.error &&
             state.errorMessage != null) {
-          context.showTypedSnackBar(state.errorMessage!.tr(),
+          context.showTypedSnackBar(state.errorMessage!,
               type: SnackBarType.error);
         }
       },
@@ -150,7 +150,7 @@ class _OtpVerificationViewState extends State<_OtpVerificationView> {
                       previous.verificationStatus != current.verificationStatus,
                   builder: (context, state) {
                     return AppButton(
-                      label: 'otp.verify_now'.tr(),
+                      label: context.l10n.otp_verify_now,
                       onPressed: state.canVerify ? _onVerifyPressed : null,
                       isLoading: state.verificationStatus ==
                           OtpVerificationStatus.loading,

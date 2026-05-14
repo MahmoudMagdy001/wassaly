@@ -17,7 +17,7 @@ class ForgotPasswordLink extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          'auth.password'.tr(),
+          context.l10n.auth_password,
           style: tt.bodyMedium?.copyWith(
             color: cs.primary,
             fontWeight: FontWeight.w900,
@@ -31,7 +31,7 @@ class ForgotPasswordLink extends StatelessWidget {
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
           child: Text(
-            'auth.forgot_password'.tr(),
+            context.l10n.auth_forgot_password,
             style: tt.bodySmall?.copyWith(
               color: cs.onSurfaceVariant,
             ),

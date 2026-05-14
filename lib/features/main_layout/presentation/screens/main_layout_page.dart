@@ -127,7 +127,7 @@ class _MainLayoutPageState extends State<MainLayoutPage> {
                 BottomNavigationBarItem(
                   icon: const Icon(Icons.home_outlined),
                   activeIcon: const Icon(Icons.home_rounded),
-                  label: 'nav.nav_home'.tr(),
+                  label: context.l10n.nav_nav_home,
                 ),
                 BottomNavigationBarItem(
                   icon: BlocBuilder<CartBloc, CartState>(
@@ -162,12 +162,12 @@ class _MainLayoutPageState extends State<MainLayoutPage> {
                       child: const Icon(Icons.shopping_cart_rounded),
                     ),
                   ),
-                  label: 'nav.nav_cart'.tr(),
+                  label: context.l10n.nav_nav_cart,
                 ),
                 BottomNavigationBarItem(
                   icon: const Icon(Icons.favorite_outline),
                   activeIcon: const Icon(Icons.favorite_rounded),
-                  label: 'nav.nav_favorite'.tr(),
+                  label: context.l10n.nav_nav_favorite,
                 ),
                 BottomNavigationBarItem(
                   icon: avatarUrl != null && avatarUrl.isNotEmpty
@@ -190,7 +190,7 @@ class _MainLayoutPageState extends State<MainLayoutPage> {
                           borderRadius: BorderRadius.circular(16.r),
                         )
                       : const Icon(Icons.person_rounded),
-                  label: 'nav.nav_profile'.tr(),
+                  label: context.l10n.nav_nav_profile,
                 ),
               ],
             );

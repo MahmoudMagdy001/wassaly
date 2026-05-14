@@ -22,7 +22,7 @@ class ProductsSection extends StatelessWidget {
       builder: (context, state) {
         if (state.productsStatus == HomeStatus.loading ||
             state.productsStatus == HomeStatus.initial) {
-          return _buildSkeleton(cs, tt);
+          return _buildSkeleton(context, cs, tt);
         } else if (state.productsStatus == HomeStatus.failure &&
             state.products.data.isEmpty) {
           return const SliverToBoxAdapter(
@@ -47,7 +47,7 @@ class ProductsSection extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'home.selected_products'.tr(),
+                      context.l10n.home_selected_products,
                       style: tt.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: cs.primary,
@@ -90,7 +90,7 @@ class ProductsSection extends StatelessWidget {
     );
   }
 
-  Widget _buildSkeleton(ColorScheme cs, TextTheme tt) {
+  Widget _buildSkeleton(BuildContext context, ColorScheme cs, TextTheme tt) {
     final dummyProducts = List.generate(
       4,
       (index) => const ProductEntity(
@@ -113,7 +113,7 @@ class ProductsSection extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 12.w),
             child: Text(
-              'home.selected_products'.tr(),
+              context.l10n.home_selected_products,
               style: tt.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: cs.primary,

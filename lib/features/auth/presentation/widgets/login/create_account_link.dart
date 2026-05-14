@@ -17,7 +17,7 @@ class CreateAccountLink extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          'auth.dont_have_account'.tr(),
+          context.l10n.auth_dont_have_account,
           style: tt.bodySmall?.copyWith(
             color: cs.onSurfaceVariant,
           ),
@@ -25,7 +25,7 @@ class CreateAccountLink extends StatelessWidget {
         TextButton(
           onPressed: onCreateAccount,
           child: Text(
-            'auth.sign_up'.tr(),
+            context.l10n.auth_sign_up,
             style: tt.bodyMedium?.copyWith(
               color: cs.primary,
               fontWeight: FontWeight.w700,

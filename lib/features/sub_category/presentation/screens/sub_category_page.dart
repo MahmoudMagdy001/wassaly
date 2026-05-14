@@ -19,69 +19,76 @@ class SubCategoryPage extends StatelessWidget {
     return BlocProvider(
       create: (context) => sl<SubCategoryBloc>()
         ..add(FetchSubCategoryDetailEvent(subCategory.id)),
-      child: _SubCategoryView(subCategory: subCategory),
+      child: Scaffold(
+        backgroundColor: context.theme.colorScheme.surface,
+        body: SubCategoryDetailView(subCategory: subCategory),
+      ),
     );
   }
 }
 
-class _SubCategoryView extends StatelessWidget {
+class SubCategoryDetailView extends StatelessWidget {
   final SubCategoryEntity subCategory;
+  final bool showAppBar;
 
-  const _SubCategoryView({required this.subCategory});
+  const SubCategoryDetailView({
+    super.key,
+    required this.subCategory,
+    this.showAppBar = true,
+  });
 
   @override
   Widget build(BuildContext context) {
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
 
-    return Scaffold(
-      backgroundColor: cs.surface,
-      body: BlocBuilder<SubCategoryBloc, SubCategoryState>(
-        buildWhen: (previous, current) =>
-            previous.status != current.status ||
-            previous.isLoadingMore != current.isLoadingMore ||
-            previous.products != current.products,
-        builder: (context, state) {
-          if (state.status == SubCategoryStatus.failure) {
-            return AppErrorWidget(
-              title: 'errors.error_occurred_title'.tr(),
-              message: state.errorMessage.isNotEmpty
-                  ? state.errorMessage
-                  : 'errors.error_occurred_message'.tr(),
-              onRetry: () {
-                context.read<SubCategoryBloc>().add(
-                      FetchSubCategoryDetailEvent(subCategory.id),
-                    );
-              },
-            );
-          }
-
-          final detail = state.subCategory;
-          final isLoading = state.status == SubCategoryStatus.loading ||
-              state.status == SubCategoryStatus.initial;
-
-          return RefreshIndicator(
-            onRefresh: () async {
-              final bloc = context.read<SubCategoryBloc>();
-              final startTime = DateTime.now();
-
-              bloc.add(FetchSubCategoryDetailEvent(subCategory.id));
-
-              await bloc.stream.firstWhere(
-                (state) => state.status != SubCategoryStatus.loading,
-              );
-
-              final elapsed = DateTime.now().difference(startTime);
-              if (elapsed < const Duration(seconds: 1)) {
-                await Future<void>.delayed(
-                    const Duration(seconds: 1) - elapsed);
-              }
+    return BlocBuilder<SubCategoryBloc, SubCategoryState>(
+      buildWhen: (previous, current) =>
+          previous.status != current.status ||
+          previous.isLoadingMore != current.isLoadingMore ||
+          previous.products != current.products ||
+          previous.subCategory != current.subCategory,
+      builder: (context, state) {
+        if (state.status == SubCategoryStatus.failure) {
+          return AppErrorWidget(
+            title: context.l10n.errors_error_occurred_title,
+            message: state.errorMessage.isNotEmpty
+                ? state.errorMessage
+                : context.l10n.errors_error_occurred_message,
+            onRetry: () {
+              context.read<SubCategoryBloc>().add(
+                    FetchSubCategoryDetailEvent(subCategory.id),
+                  );
             },
-            color: cs.primary,
-            backgroundColor: cs.surface,
-            child: CustomScrollView(
-              slivers: [
-                // SliverAppBar
+          );
+        }
+
+        final detail = state.subCategory;
+        final isLoading = state.status == SubCategoryStatus.loading ||
+            state.status == SubCategoryStatus.initial;
+
+        return RefreshIndicator(
+          onRefresh: () async {
+            final bloc = context.read<SubCategoryBloc>();
+            final startTime = DateTime.now();
+
+            bloc.add(FetchSubCategoryDetailEvent(subCategory.id));
+
+            await bloc.stream.firstWhere(
+              (state) => state.status != SubCategoryStatus.loading,
+            );
+
+            final elapsed = DateTime.now().difference(startTime);
+            if (elapsed < const Duration(seconds: 1)) {
+              await Future<void>.delayed(const Duration(seconds: 1) - elapsed);
+            }
+          },
+          color: cs.primary,
+          backgroundColor: cs.surface,
+          child: CustomScrollView(
+            slivers: [
+              // SliverAppBar
+              if (showAppBar)
                 SliverAppBar(
                   backgroundColor: cs.surface,
                   elevation: 0,
@@ -97,39 +104,40 @@ class _SubCategoryView extends StatelessWidget {
                   ),
                 ),
 
-                // Services Section
-                if (!isLoading && detail != null && detail.services.isNotEmpty)
-                  ServicesSection(services: detail.services),
+              // Services Section
 
-                // Products Section
-                if (!isLoading && state.products.data.isNotEmpty)
-                  ProductsSection(
-                    products: state.products.data,
-                    hasMore: state.hasMoreProducts,
-                    isLoadingMore: state.isLoadingMore,
-                    subCategoryId: subCategory.id,
+              if (!isLoading && detail != null && detail.services.isNotEmpty)
+                ServicesSection(services: detail.services),
+
+              // Products Section
+              if (!isLoading && state.products.data.isNotEmpty)
+                ProductsSection(
+                  products: state.products.data,
+                  hasMore: state.hasMoreProducts,
+                  isLoadingMore: state.isLoadingMore,
+                  subCategoryId: subCategory.id,
+                ),
+
+              // Products Skeleton
+              if (isLoading) const ProductsSkeleton(),
+
+              // Empty state if no data
+              if (!isLoading &&
+                  detail != null &&
+                  detail.services.isEmpty &&
+                  state.products.data.isEmpty)
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: AppEmptyState(
+                    title: context.l10n.home_no_services_products,
+                    icon: Icons.folder_open_outlined,
                   ),
-
-                // Products Skeleton
-                if (isLoading) const ProductsSkeleton(),
-
-                // Empty state if no data
-                if (!isLoading &&
-                    detail != null &&
-                    detail.services.isEmpty &&
-                    state.products.data.isEmpty)
-                  SliverFillRemaining(
-                    hasScrollBody: false,
-                    child: AppEmptyState(
-                      title: 'home.no_services_products'.tr(),
-                      icon: Icons.folder_open_outlined,
-                    ),
-                  ),
-              ],
-            ),
-          );
-        },
-      ),
+                ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
+

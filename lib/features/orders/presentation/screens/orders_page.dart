@@ -46,7 +46,7 @@ class _OrdersPageState extends State<OrdersPage> {
       create: (context) => sl<OrdersBloc>()..add(const GetOrdersEvent()),
       child: Scaffold(
         appBar: AppTopBar(
-          title: 'profile.my_orders'.tr(),
+          title: context.l10n.profile_my_orders,
         ),
         body: BlocBuilder<OrdersBloc, OrdersState>(
           builder: (context, state) {
@@ -59,10 +59,10 @@ class _OrdersPageState extends State<OrdersPage> {
                 state.orders.data.isEmpty) {
               return Center(
                 child: AppErrorWidget(
-                  title: 'errors.error_occurred_title'.tr(),
+                  title: context.l10n.errors_error_occurred_title,
                   message: state.errorMessage.isNotEmpty
                       ? state.errorMessage
-                      : 'errors.error_occurred_message'.tr(),
+                      : context.l10n.errors_error_occurred_message,
                   onRetry: () =>
                       context.read<OrdersBloc>().add(const GetOrdersEvent()),
                 ),
@@ -71,8 +71,8 @@ class _OrdersPageState extends State<OrdersPage> {
 
             if (state.orders.data.isEmpty) {
               return AppEmptyState(
-                title: 'order.no_orders_title'.tr(),
-                subtitle: 'order.no_orders_msg'.tr(),
+                title: context.l10n.order_no_orders_title,
+                subtitle: context.l10n.order_no_orders_msg,
               );
             }
 

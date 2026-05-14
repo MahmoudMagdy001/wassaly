@@ -55,8 +55,8 @@ class _ProductReviewFormSheetState extends State<ProductReviewFormSheet> {
         children: [
           Text(
             _isEdit
-                ? 'product_details.edit_review'.tr()
-                : 'product_details.add_review'.tr(),
+                ? context.l10n.product_details_edit_review
+                : context.l10n.product_details_add_review,
             style: tt.titleLarge?.copyWith(
               color: cs.primary,
               fontWeight: FontWeight.w700,
@@ -86,7 +86,7 @@ class _ProductReviewFormSheetState extends State<ProductReviewFormSheet> {
             minLines: 3,
             maxLines: 5,
             decoration: InputDecoration(
-              hintText: 'product_details.review_comment_hint'.tr(),
+              hintText: context.l10n.product_details_review_comment_hint,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
               ),
@@ -97,7 +97,7 @@ class _ProductReviewFormSheetState extends State<ProductReviewFormSheet> {
             width: double.infinity,
             child: FilledButton(
               onPressed: _submit,
-              child: Text('profile.save_changes'.tr()),
+              child: Text(context.l10n.profile_save_changes),
             ),
           ),
         ],
@@ -109,7 +109,7 @@ class _ProductReviewFormSheetState extends State<ProductReviewFormSheet> {
     final comment = _commentController.text.trim();
     if (comment.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('product_details.review_comment_required'.tr())),
+        SnackBar(content: Text(context.l10n.product_details_review_comment_required)),
       );
       return;
     }

@@ -40,4 +40,14 @@ abstract final class AppRoutes {
 
   // Checkout
   static const String checkout = '/checkout';
+
+  // Service details
+  static const String serviceDetails = '/service-details';
+
+  // Service booking
+  static const String serviceBooking = '/service-booking';
+  static const String bookingSuccess = '/booking-success';
+
+  // Provider details
+  static const String providerDetails = '/provider-details';
 }

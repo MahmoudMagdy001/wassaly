@@ -23,7 +23,7 @@ class BackToLoginLink extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            'auth.back_to_login'.tr(),
+            context.l10n.auth_back_to_login,
             style: tt.bodyLarge?.copyWith(
               color: cs.primary,
               fontWeight: FontWeight.w600,

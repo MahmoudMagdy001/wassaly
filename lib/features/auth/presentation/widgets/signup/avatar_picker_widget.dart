@@ -45,7 +45,7 @@ class AvatarPickerWidget extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'auth.select_image_source'.tr(),
+                  context.l10n.auth_select_image_source,
                   style: tt.titleMedium?.copyWith(
                     fontWeight: FontWeight.w700,
                     color: cs.primary,
@@ -57,7 +57,7 @@ class AvatarPickerWidget extends StatelessWidget {
                     Expanded(
                       child: _SourceButton(
                         icon: Icons.camera_alt_outlined,
-                        label: 'auth.camera'.tr(),
+                        label: context.l10n.auth_camera,
                         onTap: () {
                           context.pop();
                           _pickImage(context, ImageSource.camera);
@@ -68,7 +68,7 @@ class AvatarPickerWidget extends StatelessWidget {
                     Expanded(
                       child: _SourceButton(
                         icon: Icons.photo_library_outlined,
-                        label: 'auth.gallery'.tr(),
+                        label: context.l10n.auth_gallery,
                         onTap: () {
                           context.pop();
                           _pickImage(context, ImageSource.gallery);
@@ -190,8 +190,8 @@ class AvatarPickerWidget extends StatelessWidget {
         8.verticalSpace,
         Text(
           avatarFile == null
-              ? 'auth.add_avatar'.tr()
-              : 'auth.change_avatar'.tr(),
+              ? context.l10n.auth_add_avatar
+              : context.l10n.auth_change_avatar,
           style: tt.bodySmall?.copyWith(
             color: cs.onSurfaceVariant,
           ),

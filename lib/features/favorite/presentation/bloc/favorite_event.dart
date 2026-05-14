@@ -11,6 +11,10 @@ class GetFavoritesEvent extends FavoriteEvent {
   const GetFavoritesEvent();
 }
 
+class GetServiceFavoritesEvent extends FavoriteEvent {
+  const GetServiceFavoritesEvent();
+}
+
 /// Toggles the favorite status of a single product.
 ///
 /// [expectedIsFavorite] is the UI's current belief about the product's
@@ -29,6 +33,20 @@ class ToggleFavoriteEvent extends FavoriteEvent {
   @override
   List<Object?> get props => [productId, expectedIsFavorite];
 }
+
+class ToggleServiceFavoriteEvent extends FavoriteEvent {
+  final int serviceId;
+  final bool expectedIsFavorite;
+
+  const ToggleServiceFavoriteEvent(
+    this.serviceId, {
+    required this.expectedIsFavorite,
+  });
+
+  @override
+  List<Object?> get props => [serviceId, expectedIsFavorite];
+}
+
 class ClearFavoritesEvent extends FavoriteEvent {
   const ClearFavoritesEvent();
 }

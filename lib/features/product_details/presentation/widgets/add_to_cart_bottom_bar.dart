@@ -134,7 +134,7 @@ class _AddToCartBottomBarState extends State<AddToCartBottomBar> {
                     ),
                     suffixIcon: !isInCart && !isAdding
                         ? Text(
-                            '• ${price.toStringAsFixed(0)} ${'shared.currency_egp'.tr()}',
+                            '• ${price.toStringAsFixed(0)} ${context.l10n.shared_currency_egp}',
                             style: tt.bodySmall?.copyWith(
                               color: cs.onPrimary,
                             ),

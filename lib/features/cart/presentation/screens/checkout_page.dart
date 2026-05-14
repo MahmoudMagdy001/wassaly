@@ -19,8 +19,9 @@ class CheckoutPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: cs.surface,
       appBar: AppBar(
+        foregroundColor: cs.primary,
         title: Text(
-          'checkout.title'.tr(),
+          context.l10n.checkout_title,
           style: tt.titleLarge?.copyWith(color: cs.primary),
         ),
         centerTitle: true,
@@ -42,7 +43,7 @@ class CheckoutPage extends StatelessWidget {
             context.pop();
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('checkout.order_success'.tr()),
+                content: Text(context.l10n.checkout_order_success),
                 backgroundColor: cs.primary,
               ),
             );
@@ -68,9 +69,9 @@ class CheckoutPage extends StatelessWidget {
               state.governorates.isEmpty) {
             return Center(
               child: AppErrorWidget(
-                title: 'errors.error_occurred_title'.tr(),
-                message:
-                    state.errorMessage ?? 'errors.error_occurred_message'.tr(),
+                title: context.l10n.errors_error_occurred_title,
+                message: state.errorMessage ??
+                    context.l10n.errors_error_occurred_message,
                 onRetry: () {
                   final cartState = context.read<CheckoutBloc>().state;
                   context.read<CheckoutBloc>().add(
@@ -93,21 +94,21 @@ class CheckoutPage extends StatelessWidget {
                       delegate: SliverChildListDelegate([
                         // ─── Shipping Address Form ────────────────────────────
                         AppCard(
-                          title: 'checkout.shipping_address'.tr(),
+                          title: context.l10n.checkout_shipping_address,
                           child: const CheckoutFormSection(),
                         ),
                         16.verticalSpace,
 
                         // ─── Coupon Section ───────────────────────────────────
                         AppCard(
-                          title: 'checkout.coupon_code'.tr(),
+                          title: context.l10n.checkout_coupon_code,
                           child: const CheckoutCouponSection(),
                         ),
                         16.verticalSpace,
 
                         // ─── Order Summary ────────────────────────────────────
                         AppCard(
-                          title: 'checkout.order_summary'.tr(),
+                          title: context.l10n.checkout_order_summary,
                           child: const CheckoutOrderSummarySection(),
                         ),
                       ]),
@@ -135,7 +136,7 @@ class CheckoutPage extends StatelessWidget {
                     ],
                   ),
                   child: AppButton(
-                    label: 'checkout.complete_order'.tr(),
+                    label: context.l10n.checkout_complete_order,
                     isFullWidth: true,
                     height: ButtonSize.large,
                     isLoading: isSubmitting,

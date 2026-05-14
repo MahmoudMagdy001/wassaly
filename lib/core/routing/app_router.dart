@@ -23,6 +23,12 @@ import 'package:wassaly/features/profile/presentation/screens/profile_page.dart'
 import 'package:wassaly/features/profile/presentation/screens/terms_of_service_page.dart';
 import 'package:wassaly/features/orders/presentation/screens/orders_page.dart';
 import 'package:wassaly/features/sub_category/presentation/screens/sub_category_page.dart';
+import 'package:wassaly/features/service_details/presentation/screens/service_details_page.dart';
+import 'package:wassaly/features/service_booking/presentation/screens/service_booking_page.dart';
+import 'package:wassaly/features/service_booking/presentation/screens/booking_success_page.dart';
+import 'package:wassaly/features/provider_details/presentation/screens/provider_details_page.dart';
+import 'package:wassaly/features/service_booking/domain/entities/booking_entity.dart';
+import 'package:wassaly/features/service_details/domain/entities/service_detail_entity.dart';
 
 import '../../features/category/presentation/screens/category_page.dart';
 import '../../features/profile/presentation/screens/privacy_policy_page.dart';
@@ -128,7 +134,7 @@ final GoRouter appRouter = GoRouter(
         final category = extra?['category'];
         if (category == null) {
           return Scaffold(
-            body: Center(child: Text('errors.invalid_category'.tr())),
+            body: Center(child: Text(context.l10n.errors_invalid_category)),
           );
         }
         return CategoryPage(category: category);
@@ -207,7 +213,7 @@ final GoRouter appRouter = GoRouter(
         final subCategory = extra?['subCategory'];
         if (subCategory == null) {
           return Scaffold(
-            body: Center(child: Text('errors.invalid_sub_category'.tr())),
+            body: Center(child: Text(context.l10n.errors_invalid_sub_category)),
           );
         }
         return SubCategoryPage(subCategory: subCategory);
@@ -243,7 +249,7 @@ final GoRouter appRouter = GoRouter(
         if (productId <= 0) {
           return Scaffold(
             body: Center(
-              child: Text('errors.something_went_wrong'.tr()),
+              child: Text(context.l10n.errors_something_went_wrong),
             ),
           );
         }
@@ -258,7 +264,7 @@ final GoRouter appRouter = GoRouter(
         if (cartState == null) {
           return Scaffold(
             body: Center(
-              child: Text('errors.something_went_wrong'.tr()),
+              child: Text(context.l10n.errors_something_went_wrong),
             ),
           );
         }
@@ -267,6 +273,69 @@ final GoRouter appRouter = GoRouter(
             ..add(CheckoutInitialized(cartState: cartState)),
           child: const CheckoutPage(),
         );
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.serviceDetails,
+      name: 'serviceDetails',
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        final serviceId = extra?['serviceId'] as int? ?? 0;
+        if (serviceId <= 0) {
+          return Scaffold(
+            body: Center(child: Text(context.l10n.errors_something_went_wrong)),
+          );
+        }
+        return ServiceDetailsPage(serviceId: serviceId);
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.serviceBooking,
+      name: 'serviceBooking',
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        final service = extra?['service'] as ServiceDetailEntity?;
+        final selectedDay = extra?['selectedDay'] as ServiceAvailableDayEntity?;
+        final selectedTime = extra?['selectedTime'] as ServiceAvailableTimeEntity?;
+
+        if (service == null) {
+          return Scaffold(
+            body: Center(child: Text(context.l10n.errors_something_went_wrong)),
+          );
+        }
+        return ServiceBookingPage(
+          service: service,
+          selectedDay: selectedDay,
+          selectedTime: selectedTime,
+        );
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.bookingSuccess,
+      name: 'bookingSuccess',
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        final booking = extra?['booking'] as BookingEntity?;
+        if (booking == null) {
+          return Scaffold(
+            body: Center(child: Text(context.l10n.errors_something_went_wrong)),
+          );
+        }
+        return BookingSuccessPage(booking: booking);
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.providerDetails,
+      name: 'providerDetails',
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        final providerId = extra?['providerId'] as int? ?? 0;
+        if (providerId <= 0) {
+          return Scaffold(
+            body: Center(child: Text(context.l10n.errors_something_went_wrong)),
+          );
+        }
+        return ProviderDetailsPage(providerId: providerId);
       },
     ),
   ],

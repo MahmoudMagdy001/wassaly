@@ -1,4 +1,4 @@
-import '../../../../../core/imports/imports.dart';
+import 'package:wassaly/core/imports/imports.dart';
 
 class EditProfilePasswordSection extends StatefulWidget {
   final TextEditingController currentPasswordController;
@@ -37,12 +37,12 @@ class _EditProfilePasswordSectionState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'profile.change_password'.tr(),
+          context.l10n.profile_change_password,
           style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600),
         ),
         16.verticalSpace,
         AppTextField(
-          label: 'profile.current_password'.tr(),
+          label: context.l10n.profile_current_password,
           controller: widget.currentPasswordController,
           focusNode: widget.currentPasswordFocusNode,
           obscureText: _obscureCurrentPassword,
@@ -59,7 +59,7 @@ class _EditProfilePasswordSectionState
         ),
         16.verticalSpace,
         AppTextField(
-          label: 'auth.password'.tr(),
+          label: context.l10n.auth_password,
           controller: widget.passwordController,
           focusNode: widget.passwordFocusNode,
           obscureText: _obscurePassword,
@@ -76,7 +76,7 @@ class _EditProfilePasswordSectionState
         ),
         16.verticalSpace,
         AppTextField(
-          label: 'auth.confirm_password'.tr(),
+          label: context.l10n.auth_confirm_password,
           controller: widget.passwordConfirmationController,
           focusNode: widget.passwordConfirmationFocusNode,
           obscureText: _obscureConfirmPassword,
@@ -93,7 +93,7 @@ class _EditProfilePasswordSectionState
           validator: (v) {
             final password = widget.passwordController.text;
             if (password.isNotEmpty && v != password) {
-              return 'auth.passwords_do_not_match'.tr();
+              return context.l10n.auth_passwords_do_not_match;
             }
             return null;
           },

@@ -47,7 +47,7 @@ class ProductReviewsPage extends StatelessWidget {
                 elevation: 0,
                 centerTitle: true,
                 title: Text(
-                  'product_details.all_reviews'.tr(),
+                  context.l10n.product_details_all_reviews,
                   style: context.theme.textTheme.titleLarge?.copyWith(
                     color: cs.primary,
                   ),

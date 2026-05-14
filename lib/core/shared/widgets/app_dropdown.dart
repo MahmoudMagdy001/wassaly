@@ -79,7 +79,7 @@ class AppDropdown<T> extends StatelessWidget {
                   children: [
                     CupertinoButton(
                       child: Text(
-                        'done'.tr(),
+                        context.l10n.done,
                         style: tt.labelLarge?.copyWith(
                           color: cs.primary,
                           fontWeight: FontWeight.w600,

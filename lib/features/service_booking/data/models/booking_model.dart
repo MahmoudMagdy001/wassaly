@@ -1,0 +1,79 @@
+import '../../domain/entities/booking_entity.dart';
+
+class BookingProviderModel extends BookingProviderEntity {
+  const BookingProviderModel({
+    required super.id,
+    required super.name,
+    super.avatar,
+  });
+
+  factory BookingProviderModel.fromJson(Map<String, dynamic> json) {
+    return BookingProviderModel(
+      id: json['id'] as int,
+      name: (json['title'] ?? json['name'] ?? '') as String,
+      avatar: (json['cover'] ?? json['avatar']) as String?,
+    );
+  }
+}
+
+class BookingServiceModel extends BookingServiceEntity {
+  const BookingServiceModel({
+    required super.id,
+    required super.name,
+    required super.price,
+  });
+
+  factory BookingServiceModel.fromJson(Map<String, dynamic> json) {
+    return BookingServiceModel(
+      id: json['id'] as int,
+      name: (json['service'] ?? json['name'] ?? '') as String,
+      price: json['price'] as num,
+    );
+  }
+}
+
+class BookingModel extends BookingEntity {
+  const BookingModel({
+    required super.id,
+    required super.status,
+    required super.problemDescription,
+    required super.service,
+    required super.provider,
+    required super.day,
+    required super.time,
+    required super.createdAt,
+  });
+
+  factory BookingModel.fromJson(Map<String, dynamic> json) {
+    // Handle available_day object
+    String dayStr = '';
+    if (json['available_day'] is Map) {
+      final dayMap = json['available_day'] as Map<String, dynamic>;
+      dayStr = (dayMap['name_ar'] ?? dayMap['name_en'] ?? '') as String;
+    } else if (json['day'] is String) {
+      dayStr = json['day'] as String;
+    }
+
+    // Handle available_time object
+    String timeStr = '';
+    if (json['available_time'] is Map) {
+      final timeMap = json['available_time'] as Map<String, dynamic>;
+      timeStr = (timeMap['time'] ?? '') as String;
+    } else if (json['time'] is String) {
+      timeStr = json['time'] as String;
+    }
+
+    return BookingModel(
+      id: json['id'] as int,
+      status: (json['status'] ?? 'pending') as String,
+      problemDescription: json['problem_description'] as String? ?? '',
+      service: BookingServiceModel.fromJson(
+          json['service'] as Map<String, dynamic>),
+      provider: BookingProviderModel.fromJson(
+          json['provider'] as Map<String, dynamic>),
+      day: dayStr,
+      time: timeStr,
+      createdAt: (json['created_at'] ?? '') as String,
+    );
+  }
+}

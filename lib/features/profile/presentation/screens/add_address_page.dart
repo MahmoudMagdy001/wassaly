@@ -57,12 +57,12 @@ class _AddAddressViewState extends State<_AddAddressView> {
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
     if (_selectedGovernorateId == null) {
-      context.showTypedSnackBar('profile.select_governorate'.tr(),
+      context.showTypedSnackBar(context.l10n.profile_select_governorate,
           type: SnackBarType.error);
       return;
     }
     if (_selectedCenterId == null) {
-      context.showTypedSnackBar('profile.select_center'.tr(),
+      context.showTypedSnackBar(context.l10n.profile_select_center,
           type: SnackBarType.error);
       return;
     }
@@ -96,8 +96,8 @@ class _AddAddressViewState extends State<_AddAddressView> {
           foregroundColor: cs.primary,
           title: Text(
             _isEditing
-                ? 'profile.edit_address'.tr()
-                : 'profile.add_address'.tr(),
+                ? context.l10n.profile_edit_address
+                : context.l10n.profile_add_address,
             style: context.typography.titleLarge?.copyWith(
               color: cs.primary,
             ),
@@ -112,8 +112,8 @@ class _AddAddressViewState extends State<_AddAddressView> {
             if (state.addressStatus.isSuccess) {
               context.showTypedSnackBar(
                 _isEditing
-                    ? 'profile.address_updated'.tr()
-                    : 'profile.address_added'.tr(),
+                    ? context.l10n.profile_address_updated
+                    : context.l10n.profile_address_added,
                 type: SnackBarType.success,
               );
               // Return true to indicate successful address creation
@@ -131,22 +131,22 @@ class _AddAddressViewState extends State<_AddAddressView> {
               child: Column(
                 children: [
                   AppTextField(
-                    label: 'profile.address_title'.tr(),
-                    hint: 'profile.address_title_hint'.tr(),
+                    label: context.l10n.profile_address_title,
+                    hint: context.l10n.profile_address_title_hint,
                     controller: _titleController,
                     prefixIcon: const Icon(Icons.label_outline),
                     validator: (v) =>
-                        v!.isEmpty ? 'profile.title_required'.tr() : null,
+                        v!.isEmpty ? context.l10n.profile_title_required : null,
                   ),
                   16.verticalSpace,
                   AppTextField(
-                    label: 'profile.address_details'.tr(),
-                    hint: 'profile.address_details_hint'.tr(),
+                    label: context.l10n.profile_address_details,
+                    hint: context.l10n.profile_address_details_hint,
                     controller: _addressController,
                     prefixIcon: const Icon(Icons.location_on_outlined),
                     maxLines: 3,
                     validator: (v) =>
-                        v!.isEmpty ? 'profile.address_required'.tr() : null,
+                        v!.isEmpty ? context.l10n.profile_address_required : null,
                   ),
                   16.verticalSpace,
                   _buildGovernorateDropdown(context),
@@ -158,7 +158,7 @@ class _AddAddressViewState extends State<_AddAddressView> {
                         prev.addressStatus != curr.addressStatus,
                     builder: (context, state) {
                       return AppButton(
-                        label: 'profile.save_address'.tr(),
+                        label: context.l10n.profile_save_address,
                         isFullWidth: true,
                         isLoading: state.addressStatus.isLoading,
                         onPressed: _submit,
@@ -183,7 +183,7 @@ class _AddAddressViewState extends State<_AddAddressView> {
         if (state.governorateStatus.isFailure &&
             state.governorateError != null) {
           return AppDropdown<String>(
-            label: 'profile.governorate'.tr(),
+            label: context.l10n.profile_governorate,
             prefixIcon: const Icon(Icons.map_outlined),
             value: null,
             items: const [],
@@ -196,7 +196,7 @@ class _AddAddressViewState extends State<_AddAddressView> {
         }
 
         return AppDropdown<String>(
-          label: 'profile.governorate'.tr(),
+          label: context.l10n.profile_governorate,
           prefixIcon: const Icon(Icons.map_outlined),
           value: _selectedGovernorateId,
           menuMaxHeight: 300.h,
@@ -220,7 +220,7 @@ class _AddAddressViewState extends State<_AddAddressView> {
                   }
                 },
           validator: (v) =>
-              v == null ? 'profile.select_governorate'.tr() : null,
+              v == null ? context.l10n.profile_select_governorate : null,
           enabled: !state.governorateStatus.isLoading,
           suffixIcon: state.governorateStatus.isLoading
               ? SizedBox(
@@ -248,7 +248,7 @@ class _AddAddressViewState extends State<_AddAddressView> {
         final isDisabled = !hasGovernorate || isLoading;
 
         return AppDropdown<String>(
-          label: 'profile.center'.tr(),
+          label: context.l10n.profile_center,
           prefixIcon: const Icon(Icons.location_city_outlined),
           value: _selectedCenterId,
           enabled: !isDisabled && state.centers.isNotEmpty,
@@ -268,7 +268,7 @@ class _AddAddressViewState extends State<_AddAddressView> {
                     _selectedCenterId = value;
                   });
                 },
-          validator: (v) => v == null ? 'profile.select_center'.tr() : null,
+          validator: (v) => v == null ? context.l10n.profile_select_center : null,
           suffixIcon: isLoading
               ? SizedBox(
                   width: 12.w,

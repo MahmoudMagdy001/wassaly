@@ -23,6 +23,8 @@ class ProductsSection extends StatelessWidget {
     return SliverMainAxisGroup(
       slivers: [
         SliverProductGrid<ProductEntity>(
+          padding: EdgeInsets.zero,
+          childAspectRatio: 0.49,
           items: products,
           hasMore: hasMore && !isLoadingMore,
           onLoadMore: () {

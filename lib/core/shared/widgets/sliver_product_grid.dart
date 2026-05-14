@@ -102,9 +102,7 @@ class SliverProductGrid<T> extends StatelessWidget {
             // Wrap with a keyed widget so Flutter preserves state across
             // list mutations (e.g. favorite removal) instead of rebuilding.
             final key = itemKey?.call(item);
-            return key != null
-                ? KeyedSubtree(key: key, child: child)
-                : child;
+            return key != null ? KeyedSubtree(key: key, child: child) : child;
           },
           childCount: items.length,
           findChildIndexCallback: itemKey != null

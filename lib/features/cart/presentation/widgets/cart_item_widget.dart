@@ -43,7 +43,7 @@ class CartItemWidget extends StatelessWidget {
                     ),
                     16.verticalSpace,
                     Text(
-                      'cart.remove_item_title'.tr(),
+                      context.l10n.cart_remove_item_title,
                       style: tt.headlineSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: cs.onSurface,
@@ -52,7 +52,7 @@ class CartItemWidget extends StatelessWidget {
                     ),
                     8.verticalSpace,
                     Text(
-                      'cart.remove_item_message'.tr(),
+                      context.l10n.cart_remove_item_message,
                       style: tt.bodyMedium?.copyWith(
                         color: cs.onSurfaceVariant,
                       ),
@@ -63,7 +63,7 @@ class CartItemWidget extends StatelessWidget {
                       children: [
                         Expanded(
                           child: AppButton(
-                            label: 'shared.cancel'.tr(),
+                            label: context.l10n.shared_cancel,
                             variant: ButtonVariant.ghost,
                             isFullWidth: false,
                             onPressed: () => Navigator.of(ctx).pop(false),
@@ -73,7 +73,7 @@ class CartItemWidget extends StatelessWidget {
                         Expanded(
                           child: AppButton(
                             isFullWidth: true,
-                            label: 'shared.delete'.tr(),
+                            label: context.l10n.shared_delete,
                             variant: ButtonVariant.danger,
                             onPressed: () => Navigator.of(ctx).pop(true),
                           ),
@@ -87,12 +87,12 @@ class CartItemWidget extends StatelessWidget {
           ),
         );
       },
-      background: _buildDismissBackground(cs),
+      background: _buildDismissBackground(context, cs),
       child: _buildCard(context, cs, tt),
     );
   }
 
-  Widget _buildDismissBackground(ColorScheme cs) {
+  Widget _buildDismissBackground(BuildContext context, ColorScheme cs) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 4.h),
       decoration: BoxDecoration(
@@ -107,7 +107,7 @@ class CartItemWidget extends StatelessWidget {
           Icon(Icons.delete_outline_rounded, color: cs.error, size: 28.r),
           4.verticalSpace,
           Text(
-            'cart.delete'.tr(),
+            context.l10n.cart_delete,
             style: TextStyle(
               color: cs.error,
               fontSize: 12.sp,
@@ -160,7 +160,7 @@ class CartItemWidget extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 6.verticalSpace,
-                _buildPriceSection(cs, tt),
+                _buildPriceSection(context, cs, tt),
                 10.verticalSpace,
                 Row(
                   children: [
@@ -211,7 +211,7 @@ class CartItemWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildPriceSection(ColorScheme cs, TextTheme tt) {
+  Widget _buildPriceSection(BuildContext context, ColorScheme cs, TextTheme tt) {
     final hasOffer = item.offers != null && item.offers!.isNotEmpty;
     final originalPrice = double.tryParse(item.price) ?? 0.0;
     final discountedPrice = hasOffer
@@ -243,7 +243,7 @@ class CartItemWidget extends StatelessWidget {
               ),
               4.horizontalSpace,
               Text(
-                'shared.currency_egp'.tr(),
+                context.l10n.shared_currency_egp,
                 style: tt.labelSmall?.copyWith(color: cs.primary),
               ),
               8.horizontalSpace,
@@ -271,7 +271,7 @@ class CartItemWidget extends StatelessWidget {
               ),
               4.horizontalSpace,
               Text(
-                'shared.currency_egp'.tr(),
+                context.l10n.shared_currency_egp,
                 style: tt.labelSmall?.copyWith(color: cs.primary),
               ),
             ],
@@ -282,14 +282,14 @@ class CartItemWidget extends StatelessWidget {
         Row(
           children: [
             Text(
-              'cart.total_price'.tr(),
+              context.l10n.cart_total_price,
               style: tt.bodySmall?.copyWith(
                 color: cs.onSurface.withValues(alpha: 0.7),
               ),
             ),
             4.horizontalSpace,
             Text(
-              '${item.totalPrice.toStringAsFixed(0)} ${'shared.currency_egp'.tr()}',
+              '${item.totalPrice.toStringAsFixed(0)} ${context.l10n.shared_currency_egp}',
               style: tt.bodyMedium?.copyWith(
                 color: cs.onSurface,
                 fontWeight: FontWeight.w600,
@@ -297,7 +297,7 @@ class CartItemWidget extends StatelessWidget {
             ),
             8.horizontalSpace,
             Text(
-              '(${item.quantity} ${'cart.items'.tr()})',
+              '(${item.quantity} ${context.l10n.cart_items})',
               style: tt.bodySmall?.copyWith(
                 color: cs.onSurface.withValues(alpha: 0.5),
               ),

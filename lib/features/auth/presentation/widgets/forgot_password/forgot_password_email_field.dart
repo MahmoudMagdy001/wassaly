@@ -23,7 +23,7 @@ class ForgotPasswordEmailField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'auth.email_or_phone'.tr(),
+          context.l10n.auth_email_or_phone,
           style: tt.bodyMedium?.copyWith(
             color: cs.onSurface,
             fontWeight: FontWeight.w500,

@@ -47,10 +47,10 @@ class _SearchPageContent extends StatelessWidget {
 
                   if (state.status == SearchStatus.failure) {
                     return AppErrorWidget(
-                      title: 'errors.error_occurred_title'.tr(),
+                      title: context.l10n.errors_error_occurred_title,
                       message: state.errorMessage.isNotEmpty
                           ? state.errorMessage
-                          : 'errors.error_occurred_message'.tr(),
+                          : context.l10n.errors_error_occurred_message,
                       onRetry: () {
                         context.read<SearchBloc>().add(const SearchSubmitted());
                       },
@@ -86,7 +86,7 @@ class _SearchPageContent extends StatelessWidget {
           ),
           SizedBox(height: 16.h),
           Text(
-            'search.search_hint'.tr(),
+            context.l10n.search_search_hint,
             style: tt.bodyLarge?.copyWith(
               color: cs.onSurfaceVariant,
             ),
@@ -98,8 +98,8 @@ class _SearchPageContent extends StatelessWidget {
 
   Widget _buildEmptyState(BuildContext context) {
     return AppEmptyState(
-      title: 'search.no_results_found'.tr(),
-      subtitle: 'search.try_different_search'.tr(),
+      title: context.l10n.search_no_results_found,
+      subtitle: context.l10n.search_try_different_search,
       icon: Icons.search_off,
     );
   }

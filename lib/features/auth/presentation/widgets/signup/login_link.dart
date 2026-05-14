@@ -17,7 +17,7 @@ class LoginLink extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          'auth.already_have_account'.tr(),
+          context.l10n.auth_already_have_account,
           style: tt.bodySmall?.copyWith(
             color: cs.onSurfaceVariant,
           ),
@@ -25,7 +25,7 @@ class LoginLink extends StatelessWidget {
         TextButton(
           onPressed: onLogin,
           child: Text(
-            'auth.log_in'.tr(),
+            context.l10n.auth_log_in,
             style: tt.bodyMedium?.copyWith(
               color: cs.primary,
               fontWeight: FontWeight.w700,

@@ -13,32 +13,20 @@ class ServicesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = context.theme.colorScheme;
-    final tt = context.theme.textTheme;
-
     return SliverMainAxisGroup(
       slivers: [
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-            child: Text(
-              'home.services'.tr(),
-              style: tt.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: cs.primary,
-              ),
-            ),
-          ),
-        ),
         SliverProductGrid<ServiceEntity>(
+          padding: EdgeInsets.zero,
+          childAspectRatio: 0.51,
           items: services,
           itemBuilder: (context, service, index, wrapAnimation) {
             return wrapAnimation(
               ServiceCard(
                 service: service,
-                onTap: () {
-                  // TODO: Navigate to service detail
-                },
+                onTap: () => context.push(
+                  AppRoutes.serviceDetails,
+                  extra: {'serviceId': service.id},
+                ),
               ),
             );
           },

@@ -59,8 +59,8 @@ class _CheckoutCouponSectionState extends State<CheckoutCouponSection> {
               children: [
                 Expanded(
                   child: AppTextField(
-                    label: 'checkout.coupon_code'.tr(),
-                    hint: 'checkout.coupon_code'.tr(),
+                    label: '${context.l10n.checkout_coupon_code} (${context.l10n.shared_optional})',
+                    hint: '${context.l10n.checkout_coupon_code} (${context.l10n.shared_optional})',
                     controller: _couponController,
                     enabled: !isSubmitting && !hasCoupon,
                     keyboardType: TextInputType.text,
@@ -74,7 +74,7 @@ class _CheckoutCouponSectionState extends State<CheckoutCouponSection> {
                 8.horizontalSpace,
                 if (!hasCoupon)
                   AppButton(
-                    label: 'checkout.apply_coupon'.tr(),
+                    label: context.l10n.checkout_apply_coupon,
                     isLoading: state.isApplyingCoupon,
                     onPressed: isSubmitting || state.isApplyingCoupon
                         ? null
@@ -89,7 +89,7 @@ class _CheckoutCouponSectionState extends State<CheckoutCouponSection> {
                   )
                 else
                   AppButton(
-                    label: 'checkout.remove_coupon'.tr(),
+                    label: context.l10n.checkout_remove_coupon,
                     variant: ButtonVariant.outline,
                     onPressed: isSubmitting
                         ? null

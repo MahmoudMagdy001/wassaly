@@ -88,7 +88,6 @@ class _SplashViewState extends State<_SplashView>
   Future<void> _initializeServices() async {
     try {
       // الحاجات اللي كانت في AppBootstrap / main
-      await EasyLocalization.ensureInitialized();
       await dotenv.load(fileName: '.env');
       await StorageService.instance.init();
       await AppConfig.init();
@@ -216,7 +215,7 @@ class _SplashViewState extends State<_SplashView>
                     child: Transform.translate(
                       offset: Offset(0, _contentSlide.value),
                       child: Text(
-                        'auth.splash_subtitle'.tr(),
+                        context.l10n.auth_splash_subtitle,
                         textAlign: TextAlign.center,
                         style: context.theme.textTheme.bodyMedium?.copyWith(
                           color:

@@ -28,7 +28,7 @@ class RelatedProductsSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'product_details.related_products'.tr(),
+          context.l10n.product_details_related_products,
           style: tt.titleLarge?.copyWith(
             fontWeight: FontWeight.bold,
             color: cs.primary,
@@ -46,7 +46,7 @@ class RelatedProductsSection extends StatelessWidget {
             height: 70.h,
             child: Center(
               child: Text(
-                'product_details.no_related_products'.tr(),
+                context.l10n.product_details_no_related_products,
                 style: tt.bodyMedium?.copyWith(
                   color: cs.onSurfaceVariant,
                 ),

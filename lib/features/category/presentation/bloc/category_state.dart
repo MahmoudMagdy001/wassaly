@@ -9,6 +9,7 @@ class CategoryState extends Equatable {
   final CategoryStatus status;
   final CategoryDetailEntity? categoryDetail;
   final PaginatedResponse<SubCategoryEntity> subCategories;
+  final SubCategoryEntity? selectedSubCategory;
   final String errorMessage;
   final bool isLoadingMore;
 
@@ -16,6 +17,7 @@ class CategoryState extends Equatable {
     this.status = CategoryStatus.initial,
     this.categoryDetail,
     this.subCategories = const PaginatedResponse(data: []),
+    this.selectedSubCategory,
     this.errorMessage = '',
     this.isLoadingMore = false,
   });
@@ -27,6 +29,7 @@ class CategoryState extends Equatable {
     CategoryStatus? status,
     CategoryDetailEntity? categoryDetail,
     PaginatedResponse<SubCategoryEntity>? subCategories,
+    SubCategoryEntity? selectedSubCategory,
     String? errorMessage,
     bool? isLoadingMore,
   }) {
@@ -34,6 +37,7 @@ class CategoryState extends Equatable {
       status: status ?? this.status,
       categoryDetail: categoryDetail ?? this.categoryDetail,
       subCategories: subCategories ?? this.subCategories,
+      selectedSubCategory: selectedSubCategory ?? this.selectedSubCategory,
       errorMessage: errorMessage ?? this.errorMessage,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
     );
@@ -44,7 +48,9 @@ class CategoryState extends Equatable {
         status,
         categoryDetail,
         subCategories,
+        selectedSubCategory,
         errorMessage,
         isLoadingMore,
       ];
 }
+

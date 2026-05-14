@@ -59,10 +59,10 @@ class _ProductDetailsView extends StatelessWidget {
         } else if (state.status == ProductDetailsStatus.failure ||
             state.product == null) {
           body = AppErrorWidget(
-            title: 'errors.error_occurred_title'.tr(),
+            title: context.l10n.errors_error_occurred_title,
             message: state.errorMessage.isNotEmpty
                 ? state.errorMessage
-                : 'errors.error_occurred_message'.tr(),
+                : context.l10n.errors_error_occurred_message,
             onRetry: () {
               context.read<ProductDetailsBloc>().add(
                     FetchProductDetailsEvent(productId),

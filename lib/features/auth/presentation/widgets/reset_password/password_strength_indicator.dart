@@ -20,15 +20,15 @@ class PasswordStrengthIndicator extends StatelessWidget {
   String _getStrengthLabel(BuildContext context) {
     switch (strength) {
       case 0:
-        return 'reset_password.strength_very_weak'.tr();
+        return context.l10n.reset_password_strength_very_weak;
       case 1:
-        return 'reset_password.strength_weak'.tr();
+        return context.l10n.reset_password_strength_weak;
       case 2:
-        return 'reset_password.strength_fair'.tr();
+        return context.l10n.reset_password_strength_fair;
       case 3:
-        return 'reset_password.strength_good'.tr();
+        return context.l10n.reset_password_strength_good;
       case 4:
-        return 'reset_password.strength_strong'.tr();
+        return context.l10n.reset_password_strength_strong;
       default:
         return '';
     }
