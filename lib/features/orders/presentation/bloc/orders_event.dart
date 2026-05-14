@@ -11,6 +11,10 @@ class GetOrdersEvent extends OrdersEvent {
   const GetOrdersEvent();
 }
 
+class GetServiceBookingsEvent extends OrdersEvent {
+  const GetServiceBookingsEvent();
+}
+
 class LoadMoreOrdersEvent extends OrdersEvent {
   const LoadMoreOrdersEvent();
 }

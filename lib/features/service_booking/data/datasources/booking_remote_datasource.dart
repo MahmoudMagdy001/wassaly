@@ -4,6 +4,7 @@ import '../models/booking_model.dart';
 
 abstract class BookingRemoteDataSource {
   Future<BookingModel> createBooking(BookingParams params);
+  Future<List<BookingModel>> getMyBookings();
 }
 
 class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
@@ -31,6 +32,29 @@ class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
 
         final data = responseData['data'] as Map<String, dynamic>? ?? {};
         return BookingModel.fromJson(data);
+      },
+    );
+  }
+
+  @override
+  Future<List<BookingModel>> getMyBookings() async {
+    final result = await _dioService.get('/api/my-bookings');
+
+    return result.fold(
+      (failure) => throw failure,
+      (response) {
+        final responseData = response.data as Map<String, dynamic>;
+        final status = responseData['status'] as bool? ?? false;
+        final message = responseData['message'] as String? ?? '';
+
+        if (!status) {
+          throw ServerFailure(message);
+        }
+
+        final data = responseData['data'] as List<dynamic>? ?? [];
+        return data
+            .map((e) => BookingModel.fromJson(e as Map<String, dynamic>))
+            .toList();
       },
     );
   }

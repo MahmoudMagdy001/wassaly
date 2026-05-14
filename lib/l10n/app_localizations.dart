@@ -2035,6 +2035,36 @@ abstract class S {
   /// **'Total Price'**
   String get order_total_price;
 
+  /// No description provided for @order_products.
+  ///
+  /// In en, this message translates to:
+  /// **'Products'**
+  String get order_products;
+
+  /// No description provided for @order_services.
+  ///
+  /// In en, this message translates to:
+  /// **'Services'**
+  String get order_services;
+
+  /// No description provided for @order_status_pending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get order_status_pending;
+
+  /// No description provided for @order_status_completed.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get order_status_completed;
+
+  /// No description provided for @order_status_cancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get order_status_cancelled;
+
   /// No description provided for @no_cached_user.
   ///
   /// In en, this message translates to:

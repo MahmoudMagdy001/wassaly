@@ -13,8 +13,9 @@ class OrderCard extends StatelessWidget {
     final tt = context.theme.textTheme;
 
     return AppCard(
-      margin: EdgeInsets.only(bottom: 16.h),
-      padding: EdgeInsets.all(16.r),
+      showShadow: true,
+      margin: EdgeInsets.only(bottom: 10.h),
+      padding: EdgeInsets.all(12.r),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -27,7 +28,7 @@ class OrderCard extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              _buildStatusBadge(context, order.status),
+              _StatusBadge(status: order.status),
             ],
           ),
           12.verticalSpace,
@@ -91,40 +92,66 @@ class OrderCard extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildStatusBadge(BuildContext context, String status) {
+class _StatusBadge extends StatelessWidget {
+  final String status;
+
+  const _StatusBadge({required this.status});
+
+  @override
+  Widget build(BuildContext context) {
     final cs = context.theme.colorScheme;
-    final tt = context.theme.textTheme;
+    final normalizedStatus = status.trim().toLowerCase();
 
-    Color color;
-    switch (status.toLowerCase()) {
-      case 'pending':
-        color = Colors.orange;
-        break;
-      case 'completed':
-        color = Colors.green;
-        break;
-      case 'cancelled':
-        color = Colors.red;
-        break;
-      default:
-        color = cs.outline;
-    }
+    final statusConfig = {
+      'pending':
+          _StatusConfig(Colors.orange, context.l10n.order_status_pending),
+      'waiting':
+          _StatusConfig(Colors.orange, context.l10n.order_status_pending),
+      'قيد الانتظار':
+          _StatusConfig(Colors.orange, context.l10n.order_status_pending),
+      'completed':
+          _StatusConfig(Colors.green, context.l10n.order_status_completed),
+      'confirmed':
+          _StatusConfig(Colors.green, context.l10n.order_status_completed),
+      'delivered':
+          _StatusConfig(Colors.green, context.l10n.order_status_completed),
+      'success':
+          _StatusConfig(Colors.green, context.l10n.order_status_completed),
+      'مكتمل': _StatusConfig(Colors.green, context.l10n.order_status_completed),
+      'تم': _StatusConfig(Colors.green, context.l10n.order_status_completed),
+      'cancelled':
+          _StatusConfig(Colors.red, context.l10n.order_status_cancelled),
+      'rejected':
+          _StatusConfig(Colors.red, context.l10n.order_status_cancelled),
+      'failed': _StatusConfig(Colors.red, context.l10n.order_status_cancelled),
+      'ملغي': _StatusConfig(Colors.red, context.l10n.order_status_cancelled),
+    };
+
+    final config =
+        statusConfig[normalizedStatus] ?? _StatusConfig(cs.primary, status);
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: color, width: 1),
+        color: config.color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(4.r),
       ),
       child: Text(
-        status,
-        style: tt.labelSmall?.copyWith(
-          color: color,
+        config.label,
+        style: TextStyle(
+          color: config.color,
+          fontSize: 10.sp,
           fontWeight: FontWeight.bold,
         ),
       ),
     );
   }
+}
+
+class _StatusConfig {
+  final Color color;
+  final String label;
+  _StatusConfig(this.color, this.label);
 }

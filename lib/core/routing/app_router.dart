@@ -104,7 +104,11 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.orders,
       name: 'orders',
-      builder: (context, state) => const OrdersPage(),
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        final initialIndex = extra?['initialIndex'] as int? ?? 0;
+        return OrdersPage(initialIndex: initialIndex);
+      },
     ),
     GoRoute(
       path: AppRoutes.addresses,

@@ -1032,6 +1032,21 @@ class SAr extends S {
   String get order_total_price => 'السعر الإجمالي';
 
   @override
+  String get order_products => 'المنتجات';
+
+  @override
+  String get order_services => 'الخدمات';
+
+  @override
+  String get order_status_pending => 'قيد الانتظار';
+
+  @override
+  String get order_status_completed => 'مكتمل';
+
+  @override
+  String get order_status_cancelled => 'ملغي';
+
+  @override
   String get no_cached_user => 'لم يتم العثور على بيانات المستخدم';
 
   @override

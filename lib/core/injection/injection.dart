@@ -108,6 +108,7 @@ import '../../features/service_booking/data/datasources/booking_remote_datasourc
 import '../../features/service_booking/data/repositories/booking_repository_impl.dart';
 import '../../features/service_booking/domain/repositories/booking_repository.dart';
 import '../../features/service_booking/domain/usecases/create_booking_usecase.dart';
+import '../../features/service_booking/domain/usecases/get_my_bookings_usecase.dart';
 import '../../features/service_booking/presentation/bloc/service_booking_bloc.dart';
 import '../../features/provider_details/data/datasources/provider_details_remote_datasource.dart';
 import '../../features/provider_details/data/repositories/provider_details_repository_impl.dart';
@@ -192,6 +193,7 @@ void initDependencies() {
 
   sl.registerFactory(() => OrdersBloc(
         getOrdersUseCase: sl(),
+        getMyBookingsUseCase: sl(),
       ));
 
   sl.registerFactory(() => CheckoutBloc(
@@ -312,6 +314,7 @@ void initDependencies() {
 
   // UseCases - Service Booking
   sl.registerLazySingleton(() => CreateBookingUseCase(sl()));
+  sl.registerLazySingleton(() => GetMyBookingsUseCase(sl()));
 
   // UseCases - Provider Details
   sl.registerLazySingleton(() => GetProviderDetailsUseCase(sl()));

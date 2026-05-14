@@ -1,4 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/features/orders/presentation/bloc/orders_bloc.dart';
+import 'package:wassaly/features/orders/presentation/bloc/orders_event.dart';
 import 'package:wassaly/features/profile/presentation/bloc/profile/profile_bloc.dart';
 import 'package:wassaly/features/profile/presentation/widgets/profile/profile_app_bar.dart';
 import 'package:wassaly/features/profile/presentation/widgets/profile/profile_logout_button.dart';
@@ -13,7 +15,16 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const _ProfileView();
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => sl<OrdersBloc>()
+            ..add(const GetOrdersEvent())
+            ..add(const GetServiceBookingsEvent()),
+        ),
+      ],
+      child: const _ProfileView(),
+    );
   }
 }
 

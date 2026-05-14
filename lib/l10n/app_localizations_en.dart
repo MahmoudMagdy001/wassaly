@@ -1036,6 +1036,21 @@ class SEn extends S {
   String get order_total_price => 'Total Price';
 
   @override
+  String get order_products => 'Products';
+
+  @override
+  String get order_services => 'Services';
+
+  @override
+  String get order_status_pending => 'Pending';
+
+  @override
+  String get order_status_completed => 'Completed';
+
+  @override
+  String get order_status_cancelled => 'Cancelled';
+
+  @override
   String get no_cached_user => 'No user data found';
 
   @override

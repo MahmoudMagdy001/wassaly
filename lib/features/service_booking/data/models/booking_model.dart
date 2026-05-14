@@ -5,6 +5,9 @@ class BookingProviderModel extends BookingProviderEntity {
     required super.id,
     required super.name,
     super.avatar,
+    super.description,
+    super.rating,
+    super.reviewsCount,
   });
 
   factory BookingProviderModel.fromJson(Map<String, dynamic> json) {
@@ -12,6 +15,9 @@ class BookingProviderModel extends BookingProviderEntity {
       id: json['id'] as int,
       name: (json['title'] ?? json['name'] ?? '') as String,
       avatar: (json['cover'] ?? json['avatar']) as String?,
+      description: json['service_description'] as String?,
+      rating: (json['average_rating'] as num?)?.toDouble(),
+      reviewsCount: json['reviews_count'] as int?,
     );
   }
 }
@@ -20,6 +26,8 @@ class BookingServiceModel extends BookingServiceEntity {
   const BookingServiceModel({
     required super.id,
     required super.name,
+    super.image,
+    super.description,
     required super.price,
   });
 
@@ -27,6 +35,8 @@ class BookingServiceModel extends BookingServiceEntity {
     return BookingServiceModel(
       id: json['id'] as int,
       name: (json['service'] ?? json['name'] ?? '') as String,
+      image: (json['image'] ?? json['cover']) as String?,
+      description: json['description'] as String?,
       price: json['price'] as num,
     );
   }
@@ -42,6 +52,11 @@ class BookingModel extends BookingEntity {
     required super.day,
     required super.time,
     required super.createdAt,
+    required super.customerName,
+    required super.customerPhone,
+    super.customerEmail,
+    super.governorate,
+    super.center,
   });
 
   factory BookingModel.fromJson(Map<String, dynamic> json) {
@@ -74,6 +89,11 @@ class BookingModel extends BookingEntity {
       day: dayStr,
       time: timeStr,
       createdAt: (json['created_at'] ?? '') as String,
+      customerName: (json['customer_name'] ?? '') as String,
+      customerPhone: (json['customer_phone'] ?? '') as String,
+      customerEmail: json['customer_email'] as String?,
+      governorate: json['governorate'] != null ? json['governorate']['name'] : null,
+      center: json['center'] != null ? json['center']['name'] : null,
     );
   }
 }

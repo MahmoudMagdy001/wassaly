@@ -4,30 +4,40 @@ class BookingProviderEntity extends Equatable {
   final int id;
   final String name;
   final String? avatar;
+  final String? description;
+  final double? rating;
+  final int? reviewsCount;
 
   const BookingProviderEntity({
     required this.id,
     required this.name,
     this.avatar,
+    this.description,
+    this.rating,
+    this.reviewsCount,
   });
 
   @override
-  List<Object?> get props => [id, name, avatar];
+  List<Object?> get props => [id, name, avatar, description, rating, reviewsCount];
 }
 
 class BookingServiceEntity extends Equatable {
   final int id;
   final String name;
+  final String? image;
+  final String? description;
   final num price;
 
   const BookingServiceEntity({
     required this.id,
     required this.name,
+    this.image,
+    this.description,
     required this.price,
   });
 
   @override
-  List<Object?> get props => [id, name, price];
+  List<Object?> get props => [id, name, image, description, price];
 }
 
 class BookingEntity extends Equatable {
@@ -39,6 +49,11 @@ class BookingEntity extends Equatable {
   final String day;
   final String time;
   final String createdAt;
+  final String customerName;
+  final String customerPhone;
+  final String? customerEmail;
+  final String? governorate;
+  final String? center;
 
   const BookingEntity({
     required this.id,
@@ -49,6 +64,11 @@ class BookingEntity extends Equatable {
     required this.day,
     required this.time,
     required this.createdAt,
+    required this.customerName,
+    required this.customerPhone,
+    this.customerEmail,
+    this.governorate,
+    this.center,
   });
 
   @override
@@ -61,6 +81,11 @@ class BookingEntity extends Equatable {
         day,
         time,
         createdAt,
+        customerName,
+        customerPhone,
+        customerEmail,
+        governorate,
+        center,
       ];
 }
 
