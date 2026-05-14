@@ -44,8 +44,10 @@ class _CategoryView extends StatelessWidget {
         builder: (context, state) {
           if (state.status == CategoryStatus.failure) {
             return AppErrorWidget(
-              title: 'errors.something_went_wrong'.tr(),
-              message: state.errorMessage,
+              title: 'errors.error_occurred_title'.tr(),
+              message: state.errorMessage.isNotEmpty
+                  ? state.errorMessage
+                  : 'errors.error_occurred_message'.tr(),
               onRetry: () {
                 context.read<CategoryBloc>().add(
                       FetchCategoryDetailEvent(category.id),

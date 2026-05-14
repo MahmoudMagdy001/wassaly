@@ -15,6 +15,14 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
   ) : super(const FavoriteState()) {
     on<GetFavoritesEvent>(_onGetFavorites);
     on<ToggleFavoriteEvent>(_onToggleFavorite);
+    on<ClearFavoritesEvent>(_onClearFavorites);
+  }
+
+  void _onClearFavorites(
+    ClearFavoritesEvent event,
+    Emitter<FavoriteState> emit,
+  ) {
+    emit(const FavoriteState());
   }
 
   Future<void> _onGetFavorites(
@@ -28,7 +36,7 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
       status: state.status == FavoriteStatus.initial
           ? FavoriteStatus.loading
           : FavoriteStatus.refreshing,
-      errorMessage: null,
+      failure: null,
     ));
 
     final result = await getFavoritesUseCase();
@@ -36,7 +44,7 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
     result.fold(
       (failure) => emit(state.copyWith(
         status: FavoriteStatus.error,
-        errorMessage: failure.message,
+        failure: failure,
       )),
       (favorites) {
         emit(state.copyWith(
@@ -96,7 +104,7 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
       favoriteIds: optimisticIds,
       favorites: optimisticFavorites,
       togglingIds: {...state.togglingIds, event.productId},
-      errorMessage: null,
+      failure: null,
     ));
 
     debugPrint(
@@ -137,7 +145,7 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
           favoriteIds: rollbackIds,
           favorites: rollbackFavorites,
           togglingIds: rollbackToggling,
-          errorMessage: failure.message,
+          failure: failure,
         ));
 
         debugPrint(
@@ -156,7 +164,7 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
 
         emit(state.copyWith(
           togglingIds: updatedToggling,
-          errorMessage: null,
+          failure: null,
         ));
 
         debugPrint(

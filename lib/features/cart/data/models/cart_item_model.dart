@@ -26,6 +26,23 @@ class CartItemModel {
     required this.totalPrice,
   });
 
+  factory CartItemModel.fromEntity(CartItemEntity entity) {
+    return CartItemModel(
+      id: entity.id,
+      productId: entity.productId,
+      productName: entity.productName,
+      productImage: entity.productImage,
+      price: entity.price,
+      productDescription: entity.productDescription,
+      offers: entity.offers
+          ?.map((offer) => OfferModel.fromEntity(offer))
+          .toList(),
+      quantity: entity.quantity,
+      unitPrice: entity.unitPrice,
+      totalPrice: entity.totalPrice,
+    );
+  }
+
   factory CartItemModel.fromJson(Map<String, dynamic> json) {
     final product = json['product'] as Map<String, dynamic>?;
     final offersList = product?['offers'] as List<dynamic>?;

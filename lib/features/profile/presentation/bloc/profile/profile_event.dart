@@ -117,3 +117,6 @@ class CentersFetched extends ProfileEvent {
   @override
   List<Object?> get props => [governorateId];
 }
+class ProfileReset extends ProfileEvent {
+  const ProfileReset();
+}

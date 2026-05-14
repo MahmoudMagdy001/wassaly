@@ -30,7 +30,13 @@ class _AddressesViewState extends State<_AddressesView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('profile.saved_addresses'.tr()),
+        foregroundColor: cs.primary,
+        title: Text(
+          'profile.saved_addresses'.tr(),
+          style: context.typography.titleLarge?.copyWith(
+            color: cs.primary,
+          ),
+        ),
         centerTitle: true,
       ),
       body: BlocBuilder<ProfileBloc, ProfileState>(
@@ -43,11 +49,15 @@ class _AddressesViewState extends State<_AddressesView> {
           }
 
           if (state.addressStatus.isFailure && state.addressError != null) {
-            return AppErrorWidget(
-              title: 'profile.addresses_error'.tr(),
-              message: state.addressError,
-              onRetry: () =>
-                  context.read<ProfileBloc>().add(const AddressesFetched()),
+            return Center(
+              child: AppErrorWidget(
+                title: 'errors.error_occurred_title'.tr(),
+                message: state.addressError?.isNotEmpty ?? false
+                    ? state.addressError
+                    : 'errors.error_occurred_message'.tr(),
+                onRetry: () =>
+                    context.read<ProfileBloc>().add(const AddressesFetched()),
+              ),
             );
           }
 

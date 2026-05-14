@@ -38,6 +38,7 @@ class GoogleLoginBloc extends Bloc<GoogleLoginEvent, GoogleLoginState> {
     AppLogger.info('🔍 GoogleLoginBloc: Starting to listen for deep links...');
     _deepLinkSubscription = DeepLinkService.instance.callbackStream.listen(
       (callbackData) {
+        if (isClosed) return;
         AppLogger.info(
             '🔍 GoogleLoginBloc: Received callback data: $callbackData');
         if (callbackData != null) {
@@ -47,6 +48,7 @@ class GoogleLoginBloc extends Bloc<GoogleLoginEvent, GoogleLoginState> {
         }
       },
       onError: (error) {
+        if (isClosed) return;
         AppLogger.error('🔍 GoogleLoginBloc: Deep link error: $error');
         add(GoogleLoginDeepLinkError('Deep link error: $error'));
       },

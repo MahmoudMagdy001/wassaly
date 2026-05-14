@@ -87,15 +87,20 @@ class _AddAddressViewState extends State<_AddAddressView> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = context.theme.colorScheme;
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       behavior: HitTestBehavior.translucent,
       child: Scaffold(
         appBar: AppBar(
+          foregroundColor: cs.primary,
           title: Text(
             _isEditing
                 ? 'profile.edit_address'.tr()
                 : 'profile.add_address'.tr(),
+            style: context.typography.titleLarge?.copyWith(
+              color: cs.primary,
+            ),
           ),
           centerTitle: true,
         ),
@@ -111,7 +116,8 @@ class _AddAddressViewState extends State<_AddAddressView> {
                     : 'profile.address_added'.tr(),
                 type: SnackBarType.success,
               );
-              context.pop();
+              // Return true to indicate successful address creation
+              context.pop(true);
             } else if (state.addressStatus.isFailure &&
                 state.addressError != null) {
               context.showTypedSnackBar(state.addressError!,

@@ -6,10 +6,14 @@ import 'package:wassaly/features/auth/presentation/screens/otp_verification_page
 import 'package:wassaly/features/auth/presentation/screens/reset_password_page.dart';
 import 'package:wassaly/features/auth/presentation/screens/signup_page.dart';
 import 'package:wassaly/features/auth/presentation/screens/splash_page.dart';
+import 'package:wassaly/features/cart/presentation/bloc/cart_state.dart';
+import 'package:wassaly/features/cart/presentation/bloc/checkout/checkout_bloc.dart';
 import 'package:wassaly/features/cart/presentation/screens/cart_page.dart';
+import 'package:wassaly/features/cart/presentation/screens/checkout_page.dart';
 import 'package:wassaly/features/favorite/presentation/screens/favorite_page.dart';
 import 'package:wassaly/features/home/presentation/screens/home_page.dart';
 import 'package:wassaly/features/main_layout/presentation/screens/main_layout_page.dart';
+import 'package:wassaly/features/product_details/presentation/screens/product_details_page.dart';
 import 'package:wassaly/features/profile/domain/entities/address_entity.dart';
 import 'package:wassaly/features/profile/presentation/bloc/profile/profile_bloc.dart';
 import 'package:wassaly/features/profile/presentation/screens/add_address_page.dart';
@@ -17,7 +21,7 @@ import 'package:wassaly/features/profile/presentation/screens/addresses_page.dar
 import 'package:wassaly/features/profile/presentation/screens/edit_profile_page.dart';
 import 'package:wassaly/features/profile/presentation/screens/profile_page.dart';
 import 'package:wassaly/features/profile/presentation/screens/terms_of_service_page.dart';
-import 'package:wassaly/features/product_details/presentation/screens/product_details_page.dart';
+import 'package:wassaly/features/orders/presentation/screens/orders_page.dart';
 import 'package:wassaly/features/sub_category/presentation/screens/sub_category_page.dart';
 
 import '../../features/category/presentation/screens/category_page.dart';
@@ -29,45 +33,7 @@ final GoRouter appRouter = GoRouter(
   initialLocation: AppRoutes.splash,
   // Handle deep links for Google OAuth callbacks
   redirect: (context, state) {
-    final uri = state.uri;
-
-    // Convert wasly://auth/callback deep links to web routes
-    if (uri.scheme == 'wasly' &&
-        uri.host == 'auth' &&
-        uri.path == '/callback') {
-      // Fix HTML encoding in query parameters (&amp; -> &)
-      final String fixedQuery = uri.query.replaceAll('&amp;', '&');
-      final fixedUri =
-          Uri.parse('${uri.scheme}://${uri.host}${uri.path}?$fixedQuery');
-
-      // Build web route with query parameters
-      final queryParams = <String, String>{};
-      if (fixedUri.queryParameters['token'] != null) {
-        queryParams['token'] = fixedUri.queryParameters['token']!;
-      }
-      if (fixedUri.queryParameters['user_id'] != null) {
-        queryParams['id'] = fixedUri.queryParameters['user_id']!;
-      }
-      if (fixedUri.queryParameters['full_name'] != null) {
-        queryParams['full_name'] = fixedUri.queryParameters['full_name']!;
-      }
-      if (fixedUri.queryParameters['email'] != null) {
-        queryParams['email'] = fixedUri.queryParameters['email']!;
-      }
-      if (fixedUri.queryParameters['avatar'] != null) {
-        queryParams['avatar'] = fixedUri.queryParameters['avatar']!;
-      }
-
-      final webUri = Uri(
-        path: AppRoutes.authCallback,
-        queryParameters: queryParams.isNotEmpty ? queryParams : null,
-      );
-
-      AppLogger.info(' Converting deep link to web route: $uri -> $webUri');
-      return webUri.toString();
-    }
-
-    return null; // No redirect needed
+    return DeepLinkService.instance.getRouteForDeepLink(state.uri);
   },
   routes: <RouteBase>[
     GoRoute(
@@ -116,41 +82,41 @@ final GoRouter appRouter = GoRouter(
                 value: sl<ProfileBloc>()..add(const ProfileFetched()),
                 child: const ProfilePage(),
               ),
-              routes: [
-                GoRoute(
-                  path: AppRoutes.editProfile
-                      .replaceFirst('${AppRoutes.profile}/', ''),
-                  name: 'editProfile',
-                  builder: (context, state) => BlocProvider.value(
-                    value: sl<ProfileBloc>(),
-                    child: const EditProfilePage(),
-                  ),
-                ),
-                GoRoute(
-                  path: AppRoutes.addresses
-                      .replaceFirst('${AppRoutes.profile}/', ''),
-                  name: 'addresses',
-                  builder: (context, state) => BlocProvider.value(
-                    value: sl<ProfileBloc>(),
-                    child: const AddressesPage(),
-                  ),
-                  routes: [
-                    GoRoute(
-                      path: AppRoutes.addAddress
-                          .replaceFirst('${AppRoutes.addresses}/', ''),
-                      name: 'addAddress',
-                      builder: (context, state) => BlocProvider.value(
-                        value: sl<ProfileBloc>(),
-                        child: AddAddressPage(
-                          address: state.extra as AddressEntity?,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
             ),
           ],
+        ),
+      ],
+    ),
+    GoRoute(
+      path: AppRoutes.editProfile,
+      name: 'editProfile',
+      builder: (context, state) => BlocProvider.value(
+        value: sl<ProfileBloc>(),
+        child: const EditProfilePage(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.orders,
+      name: 'orders',
+      builder: (context, state) => const OrdersPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.addresses,
+      name: 'addresses',
+      builder: (context, state) => BlocProvider.value(
+        value: sl<ProfileBloc>(),
+        child: const AddressesPage(),
+      ),
+      routes: [
+        GoRoute(
+          path: AppRoutes.addAddress.replaceFirst('${AppRoutes.addresses}/', ''),
+          name: 'addAddress',
+          builder: (context, state) => BlocProvider.value(
+            value: sl<ProfileBloc>(),
+            child: AddAddressPage(
+              address: state.extra as AddressEntity?,
+            ),
+          ),
         ),
       ],
     ),
@@ -282,6 +248,25 @@ final GoRouter appRouter = GoRouter(
           );
         }
         return ProductDetailsPage(productId: productId);
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.checkout,
+      name: 'checkout',
+      builder: (context, state) {
+        final cartState = state.extra as CartState?;
+        if (cartState == null) {
+          return Scaffold(
+            body: Center(
+              child: Text('errors.something_went_wrong'.tr()),
+            ),
+          );
+        }
+        return BlocProvider(
+          create: (_) => sl<CheckoutBloc>()
+            ..add(CheckoutInitialized(cartState: cartState)),
+          child: const CheckoutPage(),
+        );
       },
     ),
   ],

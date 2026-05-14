@@ -17,47 +17,124 @@ class _CartPageState extends State<CartPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<CartBloc>().add(const LoadCartItemsEvent());
+      final cartBloc = context.read<CartBloc>();
+      final state = cartBloc.state;
+
+      // Load cart items if needed
+      if (state.items.isEmpty && !state.isLoading) {
+        cartBloc.add(const LoadCartItemsEvent());
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final cs = context.theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: context.theme.colorScheme.surfaceContainerHighest,
-      appBar: AppBar(
-        title: Text(
-          'cart.cart_title'.tr(),
-          style: context.typography.titleLarge,
-        ),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: context.theme.colorScheme.surface,
-      ),
+      backgroundColor: cs.surface,
       body: BlocBuilder<CartBloc, CartState>(
-        buildWhen: (previous, current) =>
-            previous.status != current.status ||
-            previous.items != current.items,
         builder: (context, state) {
-          if (state.isLoading) {
-            return const Center(child: AppLoading());
-          }
-
-          if (state.isError) {
-            return Center(
-              child: AppErrorWidget(
-                message: state.errorMessage ?? 'cart.error_loading_cart'.tr(),
-                onRetry: () =>
-                    context.read<CartBloc>().add(const LoadCartItemsEvent()),
+          return CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              // ─── AppBar ────────────────────────────────────────────────────────────
+              SliverAppBar(
+                title: Text(
+                  'cart.cart_title'.tr(),
+                  style: context.typography.titleLarge?.copyWith(
+                    color: cs.primary,
+                  ),
+                ),
+                centerTitle: true,
+                elevation: 0,
+                backgroundColor: cs.surface,
+                floating: true,
               ),
-            );
-          }
 
-          if (state.items.isEmpty) {
-            return _buildEmptyCart(context);
-          }
+              // ─── Content ───────────────────────────────────────────────────────────
+              if (state.isLoading && state.items.isEmpty)
+                const SliverFillRemaining(
+                  child: Center(child: AppLoading()),
+                )
+              else if (state.isError && state.items.isEmpty)
+                SliverFillRemaining(
+                  child: Center(
+                    child: state.failure != null
+                        ? AppErrorWidget.failure(
+                            failure: state.failure!,
+                            onRetry: () => context
+                                .read<CartBloc>()
+                                .add(const LoadCartItemsEvent()),
+                          )
+                        : AppErrorWidget(
+                            title: 'errors.error_occurred_title'.tr(),
+                            message: state.errorMessage.isNotEmpty
+                                ? state.errorMessage
+                                : 'errors.error_occurred_message'.tr(),
+                            onRetry: () => context
+                                .read<CartBloc>()
+                                .add(const LoadCartItemsEvent()),
+                          ),
+                  ),
+                )
+              else if (state.items.isEmpty)
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: _buildEmptyCart(context),
+                )
+              else ...[
+                // Cart Items List
+                SliverPadding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final item = state.items[index];
+                        return CartItemWidget(
+                          item: item,
+                          onRemove: () => context
+                              .read<CartBloc>()
+                              .add(RemoveFromCartEvent(item.id)),
+                          onQuantityIncrease: () =>
+                              context.read<CartBloc>().add(
+                                    UpdateQuantityEvent(
+                                      cartItemId: item.id,
+                                      quantity: item.quantity + 1,
+                                    ),
+                                  ),
+                          onQuantityDecrease: () {
+                            if (item.quantity > 1) {
+                              context.read<CartBloc>().add(
+                                    UpdateQuantityEvent(
+                                      cartItemId: item.id,
+                                      quantity: item.quantity - 1,
+                                    ),
+                                  );
+                            } else {
+                              context.read<CartBloc>().add(
+                                    RemoveFromCartEvent(item.id),
+                                  );
+                            }
+                          },
+                        );
+                      },
+                      childCount: state.items.length,
+                    ),
+                  ),
+                ),
 
-          return _buildCartContent(context, state);
+                // Order Summary
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 32.h),
+                    child: _buildOrderSummary(context, state),
+                  ),
+                ),
+              ],
+            ],
+          );
         },
       ),
     );
@@ -70,79 +147,66 @@ class _CartPageState extends State<CartPage> {
     final tt = context.theme.textTheme;
 
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          24.verticalSpace,
-          Text(
-            'cart.empty_title'.tr(),
-            style: tt.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
-          ),
-          8.verticalSpace,
-          Text(
-            'cart.empty_subtitle'.tr(),
-            style: tt.bodyMedium?.copyWith(
-              color: cs.onSurface.withValues(alpha: 0.5),
-            ),
-            textAlign: TextAlign.center,
-          ),
-          32.verticalSpace,
-          FilledButton.icon(
-            onPressed: () => context.pop(),
-            icon: const Icon(Icons.arrow_back_rounded),
-            label: Text('cart.continue_shopping'.tr()),
-            style: FilledButton.styleFrom(
-              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 14.h),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14.r),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 40.w),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Icon with a soft background
+            Container(
+              padding: EdgeInsets.all(30.r),
+              decoration: BoxDecoration(
+                color: cs.primary.withValues(alpha: 0.05),
+                shape: BoxShape.circle,
               ),
-            ),
-          ),
-        ],
+              child: Icon(
+                Icons.shopping_basket_outlined,
+                size: 80.r,
+                color: cs.primary.withValues(alpha: 0.4),
+              ),
+            )
+                .animate()
+                .scale(
+                    duration: const Duration(milliseconds: 600),
+                    curve: Curves.easeOutBack)
+                .fadeIn(),
+
+            32.verticalSpace,
+
+            // Title
+            Text(
+              'cart.empty_title'.tr(),
+              style: tt.headlineSmall?.copyWith(
+                fontWeight: FontWeight.w900,
+                color: cs.onSurface,
+                letterSpacing: -0.5,
+              ),
+              textAlign: TextAlign.center,
+            )
+                .animate()
+                .slideY(begin: 0.2, duration: const Duration(milliseconds: 400))
+                .fadeIn(),
+
+            12.verticalSpace,
+
+            // Subtitle
+            Text(
+              'cart.empty_subtitle'.tr(),
+              style: tt.bodyLarge?.copyWith(
+                color: cs.onSurfaceVariant.withValues(alpha: 0.7),
+                height: 1.5,
+              ),
+              textAlign: TextAlign.center,
+            )
+                .animate()
+                .slideY(
+                    begin: 0.3,
+                    delay: const Duration(milliseconds: 100),
+                    duration: const Duration(milliseconds: 400))
+                .fadeIn(),
+          ],
+        ),
       ),
-    );
-  }
-
-  // ─── Cart Content ────────────────────────────────────────────────────────────
-
-  Widget _buildCartContent(BuildContext context, CartState state) {
-    return ListView.builder(
-      padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
-      itemCount: state.items.length + 1, // +1 for the summary
-      itemBuilder: (context, index) {
-        // If this is the last item, show the summary
-        if (index == state.items.length) {
-          return _buildOrderSummary(context, state);
-        }
-
-        // Otherwise show cart item
-        final item = state.items[index];
-        return CartItemWidget(
-          item: item,
-          onRemove: () =>
-              context.read<CartBloc>().add(RemoveFromCartEvent(item.id)),
-          onQuantityIncrease: () => context.read<CartBloc>().add(
-                UpdateQuantityEvent(
-                  cartItemId: item.id,
-                  quantity: item.quantity + 1,
-                ),
-              ),
-          onQuantityDecrease: () {
-            if (item.quantity > 1) {
-              context.read<CartBloc>().add(
-                    UpdateQuantityEvent(
-                      cartItemId: item.id,
-                      quantity: item.quantity - 1,
-                    ),
-                  );
-            } else {
-              context.read<CartBloc>().add(
-                    RemoveFromCartEvent(item.id),
-                  );
-            }
-          },
-        );
-      },
     );
   }
 
@@ -152,11 +216,27 @@ class _CartPageState extends State<CartPage> {
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
 
-    final subtotal = state.items.fold<double>(
+    final totalOriginalPrice = state.items.fold<double>(
       0,
-      (sum, item) => sum + item.totalPrice,
+      (sum, item) => sum + (double.tryParse(item.price) ?? 0.0) * item.quantity,
     );
-    final total = subtotal;
+
+    final totalAfterProductOffers = state.items.fold<double>(
+      0,
+      (sum, item) {
+        final originalPrice = double.tryParse(item.price) ?? 0.0;
+        final hasOffer = item.offers != null && item.offers!.isNotEmpty;
+        final discountedPrice = hasOffer
+            ? originalPrice *
+                (1 - (item.offers!.first.discountPercentage / 100))
+            : originalPrice;
+        return sum + (discountedPrice * item.quantity);
+      },
+    );
+
+    final productOffersDiscount = totalOriginalPrice - totalAfterProductOffers;
+
+    final total = totalAfterProductOffers.clamp(0.0, double.infinity);
 
     return Container(
       padding: EdgeInsets.all(16.w),
@@ -172,12 +252,23 @@ class _CartPageState extends State<CartPage> {
         ],
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Price Summary Section
           _SummaryRow(
             label: 'cart.subtotal'.tr(),
             value:
-                '${subtotal.toStringAsFixed(0)} ${'shared.currency_egp'.tr()}',
+                '${totalOriginalPrice.toStringAsFixed(0)} ${'shared.currency_egp'.tr()}',
           ),
+          if (productOffersDiscount > 0) ...[
+            8.verticalSpace,
+            _SummaryRow(
+              label: 'cart.product_offers'.tr(),
+              value:
+                  '- ${productOffersDiscount.toStringAsFixed(0)} ${'shared.currency_egp'.tr()}',
+              valueColor: Colors.green,
+            ),
+          ],
           12.verticalSpace,
           AppDivider(color: cs.outline.withValues(alpha: 0.3), height: 1),
           12.verticalSpace,
@@ -191,7 +282,7 @@ class _CartPageState extends State<CartPage> {
           SizedBox(
             width: double.infinity,
             child: FilledButton(
-              onPressed: () => context.push(AppRoutes.checkout),
+              onPressed: () => context.push(AppRoutes.checkout, extra: state),
               style: FilledButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 16.h),
                 shape: RoundedRectangleBorder(

@@ -1,258 +1,696 @@
 // DO NOT EDIT. This is code generated via package:easy_localization/generate.dart
 
-// ignore_for_file: constant_identifier_names
+// ignore_for_file: prefer_single_quotes, avoid_renaming_method_parameters, constant_identifier_names
 
-abstract class  LocaleKeys {
-  static const app_title = 'app.title';
-  static const app = 'app';
-  static const shared_get_started = 'shared.get_started';
-  static const shared_cancel = 'shared.cancel';
-  static const shared_delete = 'shared.delete';
-  static const shared_edit = 'shared.edit';
-  static const shared_done = 'shared.done';
-  static const shared_currency_egp = 'shared.currency_egp';
-  static const shared = 'shared';
-  static const errors_no_internet = 'errors.no_internet';
-  static const errors_try_again = 'errors.try_again';
-  static const errors_something_went_wrong = 'errors.something_went_wrong';
-  static const errors_invalid_category = 'errors.invalid_category';
-  static const errors_invalid_sub_category = 'errors.invalid_sub_category';
-  static const errors = 'errors';
-  static const home_home_title = 'home.home_title';
-  static const home_welcome_home = 'home.welcome_home';
-  static const home_home_subtitle = 'home.home_subtitle';
-  static const home_popular_services = 'home.popular_services';
-  static const home_selected_products = 'home.selected_products';
-  static const home_main_categories = 'home.main_categories';
-  static const home_services = 'home.services';
-  static const home_browse_now = 'home.browse_now';
-  static const home_no_services_products = 'home.no_services_products';
-  static const home_no_sub_categories = 'home.no_sub_categories';
-  static const home = 'home';
-  static const nav_nav_home = 'nav.nav_home';
-  static const nav_nav_category = 'nav.nav_category';
-  static const nav_nav_cart = 'nav.nav_cart';
-  static const nav_nav_favorite = 'nav.nav_favorite';
-  static const nav_nav_profile = 'nav.nav_profile';
-  static const nav = 'nav';
-  static const search_search_hint = 'search.search_hint';
-  static const search_no_results_found = 'search.no_results_found';
-  static const search_try_different_search = 'search.try_different_search';
-  static const search = 'search';
-  static const category_category_title = 'category.category_title';
-  static const category_category_subtitle = 'category.category_subtitle';
-  static const category = 'category';
-  static const cart_cart_title = 'cart.cart_title';
-  static const cart_cart_subtitle = 'cart.cart_subtitle';
-  static const cart_empty_title = 'cart.empty_title';
-  static const cart_empty_subtitle = 'cart.empty_subtitle';
-  static const cart_continue_shopping = 'cart.continue_shopping';
-  static const cart_delete = 'cart.delete';
-  static const cart_remove_item_title = 'cart.remove_item_title';
-  static const cart_remove_item_message = 'cart.remove_item_message';
-  static const cart_error_loading_cart = 'cart.error_loading_cart';
-  static const cart_total_price = 'cart.total_price';
-  static const cart_subtotal = 'cart.subtotal';
-  static const cart_delivery = 'cart.delivery';
-  static const cart_total = 'cart.total';
-  static const cart_checkout = 'cart.checkout';
-  static const cart_items = 'cart.items';
-  static const cart = 'cart';
-  static const favorite_favorite_title = 'favorite.favorite_title';
-  static const favorite_favorite_subtitle = 'favorite.favorite_subtitle';
-  static const favorite_no_favorites = 'favorite.no_favorites';
-  static const favorite_no_favorites_subtitle = 'favorite.no_favorites_subtitle';
-  static const favorite_removed_from_favorites = 'favorite.removed_from_favorites';
-  static const favorite = 'favorite';
-  static const product_details_title = 'product_details.title';
-  static const product_details_description = 'product_details.description';
-  static const product_details_reviews = 'product_details.reviews';
-  static const product_details_brand = 'product_details.brand';
-  static const product_details_sub_category = 'product_details.sub_category';
-  static const product_details_offer = 'product_details.offer';
-  static const product_details_discount = 'product_details.discount';
-  static const product_details_related_products = 'product_details.related_products';
-  static const product_details_no_related_products = 'product_details.no_related_products';
-  static const product_details_show_more = 'product_details.show_more';
-  static const product_details_all_reviews = 'product_details.all_reviews';
-  static const product_details_add_review = 'product_details.add_review';
-  static const product_details_edit_review = 'product_details.edit_review';
-  static const product_details_review_comment_hint = 'product_details.review_comment_hint';
-  static const product_details_review_comment_required = 'product_details.review_comment_required';
-  static const product_details_review_created = 'product_details.review_created';
-  static const product_details_review_updated = 'product_details.review_updated';
-  static const product_details_review_options = 'product_details.review_options';
-  static const product_details_edit_time_expired = 'product_details.edit_time_expired';
-  static const product_details = 'product_details';
-  static const profile_my_account = 'profile.my_account';
-  static const profile_my_orders = 'profile.my_orders';
-  static const profile_payment_methods = 'profile.payment_methods';
-  static const profile_notifications = 'profile.notifications';
-  static const profile_privacy_policy = 'profile.privacy_policy';
-  static const profile_help_center = 'profile.help_center';
-  static const profile_personal_info = 'profile.personal_info';
-  static const profile_saved_addresses = 'profile.saved_addresses';
-  static const profile_add_new_address = 'profile.add_new_address';
-  static const profile_orders_count = 'profile.orders_count';
-  static const profile_manage = 'profile.manage';
-  static const profile_settings = 'profile.settings';
-  static const profile_security = 'profile.security';
-  static const profile_language = 'profile.language';
-  static const profile_theme = 'profile.theme';
-  static const profile_dark = 'profile.dark';
-  static const profile_light = 'profile.light';
-  static const profile_arabic = 'profile.arabic';
-  static const profile_english = 'profile.english';
-  static const profile_language_change_title = 'profile.language_change_title';
-  static const profile_language_change_message = 'profile.language_change_message';
-  static const profile_language_change_confirm = 'profile.language_change_confirm';
-  static const profile_language_change_cancel = 'profile.language_change_cancel';
-  static const profile_logout = 'profile.logout';
-  static const profile_logout_all_devices = 'profile.logout_all_devices';
-  static const profile_delete_account = 'profile.delete_account';
-  static const profile_edit_profile = 'profile.edit_profile';
-  static const profile_change_password = 'profile.change_password';
-  static const profile_current_password = 'profile.current_password';
-  static const profile_save_changes = 'profile.save_changes';
-  static const profile_action_success = 'profile.action_success';
-  static const profile_logout_title = 'profile.logout_title';
-  static const profile_logout_message = 'profile.logout_message';
-  static const profile_logout_choice_message = 'profile.logout_choice_message';
-  static const profile_logout_this_device = 'profile.logout_this_device';
-  static const profile_logout_all_title = 'profile.logout_all_title';
-  static const profile_logout_all_message = 'profile.logout_all_message';
-  static const profile_delete_account_title = 'profile.delete_account_title';
-  static const profile_delete_account_message = 'profile.delete_account_message';
-  static const profile_delete_account_confirm = 'profile.delete_account_confirm';
-  static const profile_delete_address_title = 'profile.delete_address_title';
-  static const profile_delete_address_message = 'profile.delete_address_message';
-  static const profile_add_address = 'profile.add_address';
-  static const profile_save_address = 'profile.save_address';
-  static const profile_address_added = 'profile.address_added';
-  static const profile_address_updated = 'profile.address_updated';
-  static const profile_edit_address = 'profile.edit_address';
-  static const profile_address_title = 'profile.address_title';
-  static const profile_address_title_hint = 'profile.address_title_hint';
-  static const profile_address_details = 'profile.address_details';
-  static const profile_address_details_hint = 'profile.address_details_hint';
-  static const profile_governorate = 'profile.governorate';
-  static const profile_center = 'profile.center';
-  static const profile_select_governorate = 'profile.select_governorate';
-  static const profile_select_center = 'profile.select_center';
-  static const profile_title_required = 'profile.title_required';
-  static const profile_address_required = 'profile.address_required';
-  static const profile_current_password_required = 'profile.current_password_required';
-  static const profile_no_addresses = 'profile.no_addresses';
-  static const profile_add_address_hint = 'profile.add_address_hint';
-  static const profile_addresses_error = 'profile.addresses_error';
-  static const profile_select_language = 'profile.select_language';
-  static const profile_general_settings = 'profile.general_settings';
-  static const profile_support_and_privacy = 'profile.support_and_privacy';
-  static const profile_active = 'profile.active';
-  static const profile_choose_image_source = 'profile.choose_image_source';
-  static const profile_camera = 'profile.camera';
-  static const profile_gallery = 'profile.gallery';
-  static const profile_update_success = 'profile.update_success';
-  static const profile = 'profile';
-  static const auth_log_in = 'auth.log_in';
-  static const auth_log_in_subtitle = 'auth.log_in_subtitle';
-  static const auth_email_or_phone = 'auth.email_or_phone';
-  static const auth_email = 'auth.email';
-  static const auth_email_placeholder = 'auth.email_placeholder';
-  static const auth_email_required = 'auth.email_required';
-  static const auth_email_invalid = 'auth.email_invalid';
-  static const auth_password = 'auth.password';
-  static const auth_password_required = 'auth.password_required';
-  static const auth_password_too_short = 'auth.password_too_short';
-  static const auth_forgot_password = 'auth.forgot_password';
-  static const auth_remember_me = 'auth.remember_me';
-  static const auth_login_button = 'auth.login_button';
-  static const auth_dont_have_account = 'auth.dont_have_account';
-  static const auth_sign_up = 'auth.sign_up';
-  static const auth_sign_up_google = 'auth.sign_up_google';
-  static const auth_sign_up_facebook = 'auth.sign_up_facebook';
-  static const auth_or_login_with = 'auth.or_login_with';
-  static const auth_login_with_google = 'auth.login_with_google';
-  static const auth_create_account = 'auth.create_account';
-  static const auth_create_account_subtitle = 'auth.create_account_subtitle';
-  static const auth_name = 'auth.name';
-  static const auth_name_placeholder = 'auth.name_placeholder';
-  static const auth_name_required = 'auth.name_required';
-  static const auth_confirm_password = 'auth.confirm_password';
-  static const auth_confirm_password_required = 'auth.confirm_password_required';
-  static const auth_passwords_do_not_match = 'auth.passwords_do_not_match';
-  static const auth_create_account_button = 'auth.create_account_button';
-  static const auth_already_have_account = 'auth.already_have_account';
-  static const auth_sign_in = 'auth.sign_in';
-  static const auth_phone = 'auth.phone';
-  static const auth_phone_required = 'auth.phone_required';
-  static const auth_phone_invalid = 'auth.phone_invalid';
-  static const auth_agree_to = 'auth.agree_to';
-  static const auth_terms_of_service = 'auth.terms_of_service';
-  static const auth_and = 'auth.and';
-  static const auth_privacy_policy = 'auth.privacy_policy';
-  static const auth_or_continue_with = 'auth.or_continue_with';
-  static const auth_forgot_password_title = 'auth.forgot_password_title';
-  static const auth_forgot_password_subtitle = 'auth.forgot_password_subtitle';
-  static const auth_send_code = 'auth.send_code';
-  static const auth_back_to_login = 'auth.back_to_login';
-  static const auth_reset_link_sent = 'auth.reset_link_sent';
-  static const auth_otp_verification_title = 'auth.otp_verification_title';
-  static const auth_otp_verification_subtitle = 'auth.otp_verification_subtitle';
-  static const auth_add_avatar = 'auth.add_avatar';
-  static const auth_change_avatar = 'auth.change_avatar';
-  static const auth_select_image_source = 'auth.select_image_source';
-  static const auth_camera = 'auth.camera';
-  static const auth_gallery = 'auth.gallery';
-  static const auth_complete_in_browser = 'auth.complete_in_browser';
-  static const auth_logging_in = 'auth.logging_in';
-  static const auth_login_success = 'auth.login_success';
-  static const auth_login_failed = 'auth.login_failed';
-  static const auth_terms_required = 'auth.terms_required';
-  static const auth_splash_subtitle = 'auth.splash_subtitle';
-  static const auth_otp_sent_success = 'auth.otp_sent_success';
-  static const auth_account_not_active = 'auth.account_not_active';
-  static const auth = 'auth';
-  static const privacy_policy_title = 'privacy_policy.title';
-  static const privacy_policy_last_updated = 'privacy_policy.last_updated';
-  static const privacy_policy_last_updated_date = 'privacy_policy.last_updated_date';
-  static const privacy_policy_introduction_title = 'privacy_policy.introduction.title';
-  static const privacy_policy_introduction_content = 'privacy_policy.introduction.content';
-  static const privacy_policy_introduction = 'privacy_policy.introduction';
-  static const privacy_policy_data_collection_title = 'privacy_policy.data_collection.title';
-  static const privacy_policy_data_collection_content = 'privacy_policy.data_collection.content';
-  static const privacy_policy_data_collection = 'privacy_policy.data_collection';
-  static const privacy_policy_data_usage_title = 'privacy_policy.data_usage.title';
-  static const privacy_policy_data_usage_content = 'privacy_policy.data_usage.content';
-  static const privacy_policy_data_usage = 'privacy_policy.data_usage';
-  static const privacy_policy_data_sharing_title = 'privacy_policy.data_sharing.title';
-  static const privacy_policy_data_sharing_content = 'privacy_policy.data_sharing.content';
-  static const privacy_policy_data_sharing = 'privacy_policy.data_sharing';
-  static const privacy_policy_data_security_title = 'privacy_policy.data_security.title';
-  static const privacy_policy_data_security_content = 'privacy_policy.data_security.content';
-  static const privacy_policy_data_security = 'privacy_policy.data_security';
-  static const privacy_policy_user_rights_title = 'privacy_policy.user_rights.title';
-  static const privacy_policy_user_rights_content = 'privacy_policy.user_rights.content';
-  static const privacy_policy_user_rights = 'privacy_policy.user_rights';
-  static const privacy_policy_third_party_title = 'privacy_policy.third_party.title';
-  static const privacy_policy_third_party_content = 'privacy_policy.third_party.content';
-  static const privacy_policy_third_party = 'privacy_policy.third_party';
-  static const privacy_policy_children_privacy_title = 'privacy_policy.children_privacy.title';
-  static const privacy_policy_children_privacy_content = 'privacy_policy.children_privacy.content';
-  static const privacy_policy_children_privacy = 'privacy_policy.children_privacy';
-  static const privacy_policy_international_transfers_title = 'privacy_policy.international_transfers.title';
-  static const privacy_policy_international_transfers_content = 'privacy_policy.international_transfers.content';
-  static const privacy_policy_international_transfers = 'privacy_policy.international_transfers';
-  static const privacy_policy_changes_title = 'privacy_policy.changes.title';
-  static const privacy_policy_changes_content = 'privacy_policy.changes.content';
-  static const privacy_policy_changes = 'privacy_policy.changes';
-  static const privacy_policy_contact_title = 'privacy_policy.contact.title';
-  static const privacy_policy_contact_content = 'privacy_policy.contact.content';
-  static const privacy_policy_contact = 'privacy_policy.contact';
-  static const privacy_policy_footer_note = 'privacy_policy.footer.note';
-  static const privacy_policy_footer = 'privacy_policy.footer';
-  static const privacy_policy_google_privacy = 'privacy_policy.google_privacy';
-  static const privacy_policy_google_terms = 'privacy_policy.google_terms';
-  static const privacy_policy = 'privacy_policy';
+import 'dart:ui';
 
+import 'package:easy_localization/easy_localization.dart' show AssetLoader;
+
+class CodegenLoader extends AssetLoader{
+  const CodegenLoader();
+
+  @override
+  Future<Map<String, dynamic>?> load(String path, Locale locale) {
+    return Future.value(mapLocales[locale.toString()]);
+  }
+
+  static const Map<String,dynamic> _ar = {
+  "app": {
+    "title": "وصّلي"
+  },
+  "shared": {
+    "get_started": "ابدأ الآن",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "done": "تم",
+    "currency_egp": "ج.م"
+  },
+  "errors": {
+    "no_internet_title": "no_internet",
+    "no_internet_message": "لا يوجد اتصال بالإنترنت. يرجى التحقق من اتصالك والمحاولة مرة أخرى.",
+    "not_found_title": "not_found",
+    "not_found_message": "الخدمة غير متاحة حالياً، يرجى المحاولة مرة أخرى لاحقاً.",
+    "server_error_title": "server_error",
+    "server_error_message": "حدث خطأ في الخادم. يرجى المحاولة مرة أخرى لاحقاً.",
+    "cache_error_title": "cache_error",
+    "cache_error_message": "حدث خطأ في التخزين المؤقت. يرجى المحاولة مرة أخرى.",
+    "error_occurred_title": "error_occurred",
+    "error_occurred_message": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+    "error_title": "error_occurred",
+    "unknown_error": "حدث خطأ غير معروف",
+    "try_again": "حاول مرة أخرى",
+    "something_went_wrong": "حدث خطأ ما",
+    "invalid_category": "قسم غير صالح",
+    "invalid_sub_category": "قسم فرعي غير صالح"
+  },
+  "home": {
+    "home_title": "الرئيسية",
+    "welcome_home": "مرحباً بك!",
+    "home_subtitle": "مرحباً بك في تطبيق وصّلي",
+    "popular_services": "خدمات شائعة",
+    "selected_products": "منتجات مختارة",
+    "main_categories": "الأقسام الرئيسية",
+    "services": "الخدمات",
+    "browse_now": "تصفح الآن",
+    "no_services_products": "لا توجد خدمات أو منتجات",
+    "no_sub_categories": "لا توجد أقسام فرعية"
+  },
+  "nav": {
+    "nav_home": "الرئيسية",
+    "nav_category": "الأقسام",
+    "nav_cart": "السلة",
+    "nav_favorite": "المفضلة",
+    "nav_profile": "حسابي"
+  },
+  "search": {
+    "search_hint": "ابحث عن منتجات وخدمات",
+    "no_results_found": "لم يتم العثور على نتائج",
+    "try_different_search": "جرب البحث بكلمات مختلفة"
+  },
+  "category": {
+    "category_title": "الأقسام",
+    "category_subtitle": "استكشف أقسام منتجاتنا"
+  },
+  "cart": {
+    "cart_title": "السلة",
+    "cart_subtitle": "سلة التسوق فارغة",
+    "empty_title": "السلة فارغة",
+    "empty_subtitle": "أضف بعض المنتجات إلى سلتك",
+    "continue_shopping": "متابعة التسوق",
+    "delete": "حذف",
+    "remove_item_title": "حذف المنتج",
+    "remove_item_message": "هل أنت متأكد من حذف هذا المنتج من السلة؟",
+    "error_loading_cart": "فشل في تحميل السلة",
+    "total_price": "الإجمالي",
+    "subtotal": "المجموع الفرعي",
+    "product_offers": "عروض المنتجات",
+    "coupon_discount": "خصم الكوبون",
+    "total_discounts": "مجموع الخصومات",
+    "delivery": "رسوم التوصيل",
+    "total": "الإجمالي",
+    "checkout": "إتمام الطلب",
+    "items": "قطع",
+    "user_info": "معلومات الطلب",
+    "name": "الاسم",
+    "name_hint": "أدخل الاسم الكامل",
+    "phone": "رقم الهاتف",
+    "phone_hint": "أدخل رقم الهاتف",
+    "name_required": "الاسم مطلوب",
+    "phone_required": "رقم الهاتف مطلوب",
+    "delivery_address": "عنوان التوصيل",
+    "loading_addresses": "جاري تحميل العناوين...",
+    "no_addresses": "لا توجد عناوين محفوظة",
+    "add_new_address": "إضافة عنوان جديد",
+    "shipping": "رسوم الشحن",
+    "save_info": "حفظ المعلومات",
+    "save": "وفر"
+  },
+  "favorite": {
+    "favorite_title": "المفضلة",
+    "favorite_subtitle": "ستظهر عناصرك المفضلة هنا",
+    "no_favorites": "لا توجد عناصر مفضلة",
+    "no_favorites_subtitle": "اضف منتجاتك المفضلة هنا",
+    "removed_from_favorites": "تمت إزالة العنصر من المفضلة"
+  },
+  "product_details": {
+    "title": "تفاصيل المنتج",
+    "description": "الوصف",
+    "reviews": "آراء العملاء",
+    "brand": "العلامة التجارية",
+    "sub_category": "التصنيف",
+    "offer": "خصم",
+    "discount": "خصم",
+    "related_products": "منتجات مشابهة",
+    "no_related_products": "لا توجد منتجات مشابهة",
+    "show_more": "عرض المزيد",
+    "all_reviews": "كل التقييمات",
+    "add_review": "إضافة تقييم",
+    "edit_review": "تعديل التقييم",
+    "review_comment_hint": "اكتب رأيك",
+    "review_comment_required": "من فضلك اكتب تعليقك",
+    "review_created": "تمت إضافة التقييم بنجاح",
+    "review_updated": "تم تعديل التقييم بنجاح",
+    "review_options": "خيارات التقييم",
+    "edit_time_expired": "انتهت مدة التعديل"
+  },
+  "profile": {
+    "my_account": "حسابي",
+    "my_orders": "طلباتي",
+    "payment_methods": "طرق الدفع",
+    "notifications": "الإشعارات",
+    "privacy_policy": "سياسة الخصوصية",
+    "help_center": "مركز المساعدة",
+    "personal_info": "المعلومات الشخصية",
+    "saved_addresses": "العناوين المحفوظة",
+    "add_new_address": "إضافة عنوان جديد",
+    "orders_count": {
+      "zero": "لا توجد طلبات",
+      "one": "طلب واحد",
+      "two": "طلبان",
+      "few": "{} طلبات",
+      "many": "{} طلب",
+      "other": "{} طلب"
+    },
+    "manage": "إدارة",
+    "settings": "الإعدادات",
+    "security": "الأمان",
+    "language": "اللغة",
+    "theme": "السمة",
+    "dark": "داكن",
+    "light": "فاتح",
+    "arabic": "العربية",
+    "english": "الإنجليزية",
+    "language_change_title": "تغيير اللغة",
+    "language_change_message": "سيتم إعادة تشغيل التطبيق بالكامل لتطبيق تغيير اللغة. هل تريد المتابعة؟",
+    "language_change_confirm": "نعم، تغيير اللغة",
+    "language_change_cancel": "إلغاء",
+    "logout": "تسجيل الخروج",
+    "logout_all_devices": "تسجيل الخروج من جميع الأجهزة",
+    "delete_account": "حذف الحساب",
+    "edit_profile": "تعديل الملف الشخصي",
+    "change_password": "تغيير كلمة المرور",
+    "current_password": "كلمة المرور الحالية",
+    "save_changes": "حفظ التغييرات",
+    "action_success": "تمت العملية بنجاح",
+    "logout_title": "تسجيل الخروج",
+    "logout_message": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
+    "logout_choice_message": "اختر كيف تريد تسجيل الخروج:",
+    "logout_this_device": "تسجيل الخروج من هذا الجهاز",
+    "logout_all_title": "تسجيل الخروج من جميع الأجهزة",
+    "logout_all_message": "سيتم تسجيل خروجك من جميع الأجهزة. هل أنت متأكد؟",
+    "delete_account_title": "حذف الحساب",
+    "delete_account_message": "لا يمكن التراجع عن هذا الإجراء. سيتم حذف جميع بياناتك نهائيًا. هل أنت متأكد؟",
+    "delete_account_confirm": "حذف الحساب",
+    "delete_address_title": "حذف العنوان",
+    "delete_address_message": "هل أنت متأكد أنك تريد حذف عنوان {address}؟",
+    "add_address": "إضافة عنوان",
+    "save_address": "حفظ العنوان",
+    "address_added": "تمت إضافة العنوان بنجاح",
+    "address_updated": "تم تعديل العنوان بنجاح",
+    "edit_address": "تعديل العنوان",
+    "address_title": "عنوان العنوان",
+    "address_title_hint": "المنزل، العمل، إلخ",
+    "address_details": "تفاصيل العنوان",
+    "address_details_hint": "الشارع، المبنى، الطابق",
+    "governorate": "المحافظة",
+    "center": "المدينة/المركز",
+    "select_governorate": "يرجى اختيار المحافظة",
+    "select_center": "يرجى اختيار المدينة",
+    "title_required": "العنوان مطلوب",
+    "address_required": "تفاصيل العنوان مطلوبة",
+    "current_password_required": "كلمة المرور الحالية مطلوبة لتغيير كلمة المرور",
+    "no_addresses": "لا توجد عناوين بعد",
+    "add_address_hint": "أضف عنوانك الأول للبدء",
+    "addresses_error": "فشل في تحميل العناوين",
+    "select_language": "اختيار اللغة",
+    "general_settings": "الإعدادات العامة",
+    "support_and_privacy": "الدعم والخصوصية",
+    "active": "مفعل",
+    "choose_image_source": "اختر مصدر الصورة",
+    "camera": "الكاميرا",
+    "gallery": "المعرض",
+    "update_success": "تم تحديث البيانات بنجاح"
+  },
+  "auth": {
+    "log_in": "تسجيل الدخول",
+    "log_in_subtitle": "مرحباً بعودتك إلى وصّلي",
+    "email_or_phone": "البريد الإلكتروني أو رقم الهاتف",
+    "email": "البريد الإلكتروني",
+    "email_placeholder": "أدخل بياناتك",
+    "email_required": "البريد الإلكتروني مطلوب",
+    "email_invalid": "أدخل بريدًا إلكترونيًا صالحًا",
+    "password": "كلمة المرور",
+    "password_required": "كلمة المرور مطلوبة",
+    "password_too_short": "يجب أن تكون كلمة المرور 6 أحرف على الأقل",
+    "forgot_password": "هل نسيت كلمة المرور؟",
+    "remember_me": "تذكرني",
+    "login_button": "تسجيل الدخول",
+    "dont_have_account": "ليس لديك حساب؟",
+    "sign_up": "إنشاء حساب",
+    "sign_up_google": "متابعة بواسطة جوجل",
+    "sign_up_facebook": "متابعة بواسطة فيسبوك",
+    "or_login_with": "أو سجل عبر",
+    "login_with_google": "متابعة بواسطة جوجل",
+    "create_account": "إنشاء حساب",
+    "create_account_subtitle": "ابدأ رحلتك معنا",
+    "name": "الاسم الكامل",
+    "name_placeholder": "أدخل اسمك الكامل",
+    "name_required": "الاسم الكامل مطلوب",
+    "confirm_password": "تأكيد كلمة المرور",
+    "confirm_password_required": "تأكيد كلمة المرور مطلوب",
+    "passwords_do_not_match": "كلمات المرور غير متطابقة",
+    "create_account_button": "إنشاء الحساب",
+    "already_have_account": "لديك حساب بالفعل؟",
+    "sign_in": "تسجيل الدخول",
+    "phone": "رقم الهاتف",
+    "phone_required": "رقم الهاتف مطلوب",
+    "phone_invalid": "أدخل رقم هاتف صحيح",
+    "agree_to": "أوافق على",
+    "terms_of_service": "شروط الخدمة",
+    "and": "و",
+    "privacy_policy": "سياسة الخصوصية",
+    "or_continue_with": "أو المتابعة عبر",
+    "forgot_password_title": "نسيت كلمة المرور؟",
+    "forgot_password_subtitle": "أدخل بريدك الإلكتروني أو رقم هاتفك وسنرسل لك رمز إعادة التعيين",
+    "send_code": "إرسال الرمز",
+    "back_to_login": "العودة لتسجيل الدخول",
+    "reset_link_sent": "تم إرسال رابط إعادة التعيين إلى بريدك الإلكتروني",
+    "otp_verification_title": "تأكيد الرمز",
+    "otp_verification_subtitle": "أدخل الرمز المرسل إلى بريدك الإلكتروني",
+    "add_avatar": "إضافة صورة",
+    "change_avatar": "تغيير الصورة",
+    "select_image_source": "اختر مصدر الصورة",
+    "camera": "الكاميرا",
+    "gallery": "المعرض",
+    "complete_in_browser": "يرجى إكمال تسجيل الدخول في المتصفح",
+    "logging_in": "جاري تسجيل الدخول...",
+    "login_success": "تم تسجيل الدخول بنجاح",
+    "login_failed": "فشل تسجيل الدخول",
+    "terms_required": "يجب أن توافق على الشروط والأحكام للمتابعة",
+    "splash_subtitle": "توصيل سريع وموثوق",
+    "otp_sent_success": "تم ارسال كود التحقق بنجاح",
+    "account_not_active": "غير مفعل"
+  },
+  "checkout": {
+    "title": "إتمام الطلب",
+    "shipping_address": "عنوان الشحن",
+    "saved_addresses": "العناوين المحفوظة",
+    "customer_name": "اسم العميل",
+    "customer_phone": "رقم الهاتف",
+    "customer_address": "عنوان العميل",
+    "governorate": "المحافظة",
+    "region": "المنطقة",
+    "center": "المدينة/المركز",
+    "coupon_code": "كود الخصم",
+    "order_summary": "ملخص الطلب",
+    "complete_order": "إتمام الطلب",
+    "subtotal": "المجموع الفرعي",
+    "shipping": "الشحن",
+    "discount": "الخصم",
+    "total": "الإجمالي الإجمالي",
+    "order_success": "تم تقديم الطلب بنجاح!",
+    "validation": {
+      "name_required": "الاسم مطلوب",
+      "phone_required": "رقم الهاتف مطلوب",
+      "address_required": "العنوان مطلوب",
+      "governorate_required": "المحافظة مطلوبة",
+      "center_required": "المدينة مطلوبة"
+    }
+  },
+  "privacy_policy": {
+    "title": "سياسة الخصوصية",
+    "last_updated": "اخر تحديث",
+    "last_updated_date": "30 ديسمبر 2024",
+    "introduction": {
+      "title": "مقدمة",
+      "content": "تعتبر Wassaly ('نحن'، 'لنا'، أو 'نا') ملتزمه بحماية خصوصيتك. توضح سياسة الخصوصية هذه كيف نجمع، نستخدم، نكشف، ونحمي معلوماتك عند استخدامك لتطبيقنا المحمول والخدمات ذات الصلة."
+    },
+    "data_collection": {
+      "title": "المعلومات التي نجمعها",
+      "content": "نجمع المعلومات التي تقدمها مباشرة لنا، مثل عند إنشاء حساب، تحديث ملفك الشخصي، استخدام خدماتنا، أو الاتصال بنا للحصول على الدعم. تشمل هذه المعلومات: الاسم، عنوان البريد الإلكتروني، رقم الهاتف، معلومات الملف الشخصي، معلومات الدفع، بيانات الموقع، واستخدام البيانات."
+    },
+    "data_usage": {
+      "title": "كيف نستخدم معلوماتك",
+      "content": "نستخدم المعلومات التي نجمعها لتقديم خدماتنا، معالجة المعاملات وإرسال المعلومات ذات الصلة، إرسال الإشعارات الفنية ورسائل الدعم، التواصل معك حول المنتجات والخدمات والعروض الترويجية، ورصد وتحليل الاتجاهات والاستخدام."
+    },
+    "data_sharing": {
+      "title": "مشاركة المعلومات",
+      "content": "لا نبيع، لا نتبادل، ولا ننقل معلوماتك الشخصية إلى أطراف ثالثة دون موافقتك، باستثناء ما هو موضح في هذه السياسة. قد نشارك المعلومات مع: مقدمي الخدمات الذين يساعدون في تشغيل تطبيقنا، معالجات الدفع، وعندما يطلب القانون أو لحماية حقوقنا."
+    },
+    "data_security": {
+      "title": "أمان البيانات",
+      "content": "ننفذ الإجراءات الفنية والتنظيمية المناسبة لحماية معلوماتك الشخصية من الوصول غير المصرح به، التعديل، الإفصاح، أو التدمير. ومع ذلك، لا يوجد طريقة لنقل البيانات عبر الإنترنت تكون آمنة بنسبة 100%."
+    },
+    "user_rights": {
+      "title": "حقوقك",
+      "content": "لديك الحق في: الوصول إلى معلوماتك الشخصية وتحديثها، طلب حذف حسابك وبياناتك، إلغاء الاشتراك في الاتصالات التسويقية، وطلب نسخة من بياناتك. للقيام بهذه الحقوق، اتصل بنا باستخدام المعلومات أدناه."
+    },
+    "third_party": {
+      "title": "خدمات الطرف الثالث",
+      "content": "قد يحتوي تطبيقنا على روابط لمواقع وخدمات الطرف الثالث. نحن لا نتحمل مسؤولية ممارسات الخصوصية لهذه الأطراف الثالثة. نشجعك على مراجعة سياسات الخصوصية الخاصة بهم."
+    },
+    "children_privacy": {
+      "title": "خصوصية الأطفال",
+      "content": "خدماتنا ليست مخصصة للأطفال دون سن 13. نحن لا نجمع معلومات شخصية من الأطفال دون سن 13. إذا كنت تعتقد أننا قد جمعنا مثل هذه المعلومات، يرجى الاتصال بنا على الفور."
+    },
+    "international_transfers": {
+      "title": "نقل البيانات الدولية",
+      "content": "قد يتم نقل معلوماتك إلى الدول الأخرى ومعالجتها. نحن نضمن اتخاذ الإجراءات المناسبة لحماية بياناتك وفقًا لقوانين حماية البيانات المعمول بها."
+    },
+    "changes": {
+      "title": "التغييرات على هذه السياسة",
+      "content": "قد نحدث هذه سياسة الخصوصية من وقت لآخر. سنخبرك بأي تغييرات من خلال نشر السياسة الجديدة في التطبيق وتحديث تاريخ 'اخر تحديث'. استمرار استخدامك للتطبيق بعد مثل هذه التغييرات يشكل قبولًا."
+    },
+    "contact": {
+      "title": "اتصل بنا",
+      "content": "إذا كان لديك أي أسئلة حول سياسة الخصوصية هذه، يرجى الاتصال بنا على: privacy@wassaly.com أو من خلال مركز الدعم داخل التطبيق."
+    },
+    "footer": {
+      "note": "باستخدام Wassaly، أنت تقر بأنك قد قرأت وفهمت سياسة الخصوصية هذه."
+    },
+    "google_privacy": "سياسة الخصوصية لجوجل",
+    "google_terms": "شروط الخدمة لجوجل"
+  }
+};
+static const Map<String,dynamic> _en = {
+  "app": {
+    "title": "Wassaly"
+  },
+  "shared": {
+    "get_started": "Get Started",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "done": "Done",
+    "currency_egp": "EGP"
+  },
+  "errors": {
+    "no_internet_title": "no_internet",
+    "no_internet_message": "No internet connection. Please check your connection and try again.",
+    "not_found_title": "not_found",
+    "not_found_message": "The service is currently unavailable, please try again later.",
+    "server_error_title": "server_error",
+    "server_error_message": "A server error occurred. Please try again later.",
+    "cache_error_title": "cache_error",
+    "cache_error_message": "A cache error occurred. Please try again.",
+    "error_occurred_title": "error_occurred",
+    "error_occurred_message": "Something went wrong. Please try again.",
+    "error_title": "error_occurred",
+    "unknown_error": "An unknown error occurred",
+    "try_again": "Try Again",
+    "something_went_wrong": "Something went wrong",
+    "invalid_category": "Invalid category",
+    "invalid_sub_category": "Invalid sub-category"
+  },
+  "home": {
+    "home_title": "Home",
+    "welcome_home": "Welcome!",
+    "home_subtitle": "Welcome to Wasally App",
+    "popular_services": "Popular Services",
+    "selected_products": "Selected Products",
+    "main_categories": "Main Categories",
+    "services": "Services",
+    "browse_now": "Browse Now",
+    "no_services_products": "No services or products",
+    "no_sub_categories": "No sub-categories"
+  },
+  "nav": {
+    "nav_home": "Home",
+    "nav_category": "Categories",
+    "nav_cart": "Cart",
+    "nav_favorite": "Favorites",
+    "nav_profile": "Profile"
+  },
+  "search": {
+    "search_hint": "Search for products and services",
+    "no_results_found": "No results found",
+    "try_different_search": "Try searching with different keywords"
+  },
+  "category": {
+    "category_title": "Categories",
+    "category_subtitle": "Explore our product categories"
+  },
+  "cart": {
+    "cart_title": "Cart",
+    "cart_subtitle": "Your cart is empty",
+    "empty_title": "Cart is Empty",
+    "empty_subtitle": "Add some products to your cart",
+    "continue_shopping": "Continue Shopping",
+    "delete": "Delete",
+    "remove_item_title": "Remove Product",
+    "remove_item_message": "Are you sure you want to remove this product from cart?",
+    "error_loading_cart": "Failed to load cart",
+    "total_price": "Total",
+    "subtotal": "Subtotal",
+    "product_offers": "Product Offers",
+    "coupon_discount": "Coupon Discount",
+    "total_discounts": "Total Discounts",
+    "delivery": "Delivery Fee",
+    "total": "Total",
+    "checkout": "Checkout",
+    "items": "items",
+    "user_info": "Order Information",
+    "name": "Name",
+    "name_hint": "Enter full name",
+    "phone": "Phone",
+    "phone_hint": "Enter phone number",
+    "name_required": "Name is required",
+    "phone_required": "Phone is required",
+    "delivery_address": "Delivery Address",
+    "loading_addresses": "Loading addresses...",
+    "no_addresses": "No saved addresses",
+    "add_new_address": "Add New Address",
+    "shipping": "Shipping",
+    "save_info": "Save Information",
+    "save": "Save"
+  },
+  "favorite": {
+    "favorite_title": "Favorites",
+    "favorite_subtitle": "Your favorite items will appear here",
+    "no_favorites": "No favorites yet",
+    "no_favorites_subtitle": "Add your favorite products here",
+    "removed_from_favorites": "Removed from favorites"
+  },
+  "product_details": {
+    "title": "Product Details",
+    "description": "Description",
+    "reviews": "Customer Reviews",
+    "brand": "Brand",
+    "sub_category": "Sub-category",
+    "offer": "Offer",
+    "discount": "Discount",
+    "related_products": "Similar Products",
+    "no_related_products": "No similar products found",
+    "show_more": "Show more",
+    "all_reviews": "All reviews",
+    "add_review": "Add review",
+    "edit_review": "Edit review",
+    "review_comment_hint": "Write your review",
+    "review_comment_required": "Please write your review",
+    "review_created": "Review added successfully",
+    "review_updated": "Review updated successfully",
+    "review_options": "Review options",
+    "edit_time_expired": "Edit time expired"
+  },
+  "profile": {
+    "my_account": "My Account",
+    "my_orders": "My Orders",
+    "payment_methods": "Payment Methods",
+    "notifications": "Notifications",
+    "privacy_policy": "Privacy Policy",
+    "help_center": "Help Center",
+    "personal_info": "Personal Information",
+    "saved_addresses": "Saved Addresses",
+    "add_new_address": "Add New Address",
+    "orders_count": {
+      "zero": "No orders",
+      "one": "1 order",
+      "two": "2 orders",
+      "few": "{} orders",
+      "many": "{} orders",
+      "other": "{} orders"
+    },
+    "manage": "Manage",
+    "settings": "Settings",
+    "security": "Security",
+    "language": "Language",
+    "theme": "Theme",
+    "dark": "Dark",
+    "light": "Light",
+    "arabic": "Arabic",
+    "english": "English",
+    "language_change_title": "Change Language",
+    "language_change_message": "The app will restart completely to apply the language change. Do you want to continue?",
+    "language_change_confirm": "Yes, Change Language",
+    "language_change_cancel": "Cancel",
+    "logout": "Logout",
+    "logout_all_devices": "Logout from All Devices",
+    "delete_account": "Delete Account",
+    "edit_profile": "Edit Profile",
+    "change_password": "Change Password",
+    "current_password": "Current Password",
+    "save_changes": "Save Changes",
+    "action_success": "Action completed successfully",
+    "logout_title": "Logout",
+    "logout_message": "Are you sure you want to logout?",
+    "logout_choice_message": "Choose how you want to logout:",
+    "logout_this_device": "Logout from This Device",
+    "logout_all_title": "Logout from All Devices",
+    "logout_all_message": "You will be logged out from all devices. Are you sure?",
+    "delete_account_title": "Delete Account",
+    "delete_account_message": "This action cannot be undone. All your data will be permanently deleted. Are you sure?",
+    "delete_account_confirm": "Delete Account",
+    "delete_address_title": "Delete Address",
+    "delete_address_message": "Are you sure you want to delete address {address}?",
+    "add_address": "Add Address",
+    "save_address": "Save Address",
+    "address_added": "Address added successfully",
+    "address_updated": "Address updated successfully",
+    "edit_address": "Edit Address",
+    "address_title": "Address Title",
+    "address_title_hint": "Home, Work, etc",
+    "address_details": "Address Details",
+    "address_details_hint": "Street, Building, Floor",
+    "governorate": "Governorate",
+    "center": "City/Center",
+    "select_governorate": "Please select a governorate",
+    "select_center": "Please select a city",
+    "title_required": "Title is required",
+    "address_required": "Address is required",
+    "current_password_required": "Current password is required to change password",
+    "no_addresses": "No addresses yet",
+    "add_address_hint": "Add your first address to get started",
+    "addresses_error": "Failed to load addresses",
+    "select_language": "Select Language",
+    "general_settings": "General Settings",
+    "support_and_privacy": "Support & Privacy",
+    "active": "Active",
+    "choose_image_source": "Choose Image Source",
+    "camera": "Camera",
+    "gallery": "Gallery",
+    "update_success": "Data updated successfully"
+  },
+  "auth": {
+    "log_in": "Login",
+    "log_in_subtitle": "Welcome back to Wasally",
+    "email_or_phone": "Email or Phone",
+    "email": "Email",
+    "email_placeholder": "Enter your details",
+    "email_required": "Email is required",
+    "email_invalid": "Enter a valid email",
+    "password": "Password",
+    "password_required": "Password is required",
+    "password_too_short": "Password must be at least 6 characters",
+    "forgot_password": "Forgot password?",
+    "remember_me": "Remember me",
+    "login_button": "Login",
+    "dont_have_account": "Don't have an account?",
+    "sign_up": "Sign up",
+    "sign_up_google": "Continue with google",
+    "sign_up_facebook": "Continue with facebook",
+    "or_login_with": "Or login with",
+    "login_with_google": "Continue with google",
+    "create_account": "Create Account",
+    "create_account_subtitle": "Start your journey with us",
+    "name": "Full Name",
+    "name_placeholder": "Enter your full name",
+    "name_required": "Full name is required",
+    "confirm_password": "Confirm Password",
+    "confirm_password_required": "Confirm password is required",
+    "passwords_do_not_match": "Passwords do not match",
+    "create_account_button": "Create Account",
+    "already_have_account": "Already have an account?",
+    "sign_in": "Sign in",
+    "phone": "Phone Number",
+    "phone_required": "Phone number is required",
+    "phone_invalid": "Enter a valid phone number",
+    "agree_to": "I agree to",
+    "terms_of_service": "Terms of Service",
+    "and": "and",
+    "privacy_policy": "Privacy Policy",
+    "or_continue_with": "Or continue with",
+    "forgot_password_title": "Forgot Password?",
+    "forgot_password_subtitle": "Enter your email or phone and we’ll send a reset code",
+    "send_code": "Send Code",
+    "back_to_login": "Back to Login",
+    "reset_link_sent": "Reset link sent to your email",
+    "otp_verification_title": "OTP Verification",
+    "otp_verification_subtitle": "Enter the code sent to your email",
+    "add_avatar": "Add Avatar",
+    "change_avatar": "Change Avatar",
+    "select_image_source": "Select image source",
+    "camera": "Camera",
+    "gallery": "Gallery",
+    "complete_in_browser": "Complete login in browser",
+    "logging_in": "Logging in...",
+    "login_success": "Login successful",
+    "login_failed": "Login failed",
+    "terms_required": "You must accept the terms and conditions to continue",
+    "splash_subtitle": "Fast and reliable delivery",
+    "otp_sent_success": "Verification code sent successfully",
+    "account_not_active": "not active"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "shipping_address": "Shipping Address",
+    "saved_addresses": "Saved Addresses",
+    "customer_name": "Customer Name",
+    "customer_phone": "Phone Number",
+    "customer_address": "Address",
+    "governorate": "Governorate",
+    "region": "Region",
+    "center": "City/Center",
+    "coupon_code": "Coupon Code",
+    "order_summary": "Order Summary",
+    "complete_order": "Complete Order",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "discount": "Discount",
+    "total": "Total Amount",
+    "order_success": "Order placed successfully!",
+    "validation": {
+      "name_required": "Name is required",
+      "phone_required": "Phone number is required",
+      "address_required": "Address is required",
+      "governorate_required": "Governorate is required",
+      "center_required": "City is required"
+    }
+  },
+  "privacy_policy": {
+    "title": "Privacy Policy",
+    "last_updated": "Last Updated",
+    "last_updated_date": "December 30, 2024",
+    "introduction": {
+      "title": "Introduction",
+      "content": "Wassaly ('we', 'our', or 'us') is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our mobile application and related services."
+    },
+    "data_collection": {
+      "title": "Information We Collect",
+      "content": "We collect information you provide directly to us, such as when you create an account, update your profile, use our services, or contact us for support. This includes: name, email address, phone number, profile information, payment information, location data, and usage data."
+    },
+    "data_usage": {
+      "title": "How We Use Your Information",
+      "content": "We use the information we collect to: provide, maintain, and improve our services; process transactions and send related information; send technical notices and support messages; communicate with you about products, services, and promotional offers; and monitor and analyze trends and usage."
+    },
+    "data_sharing": {
+      "title": "Information Sharing",
+      "content": "We do not sell, trade, or otherwise transfer your personal information to third parties without your consent, except as described in this policy. We may share information with: service providers who assist in operating our app, payment processors, and when required by law or to protect our rights."
+    },
+    "data_security": {
+      "title": "Data Security",
+      "content": "We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the internet is 100% secure."
+    },
+    "user_rights": {
+      "title": "Your Rights",
+      "content": "You have the right to: access and update your personal information, request deletion of your account and data, opt-out of marketing communications, and request a copy of your data. To exercise these rights, contact us using the information below."
+    },
+    "third_party": {
+      "title": "Third-Party Services",
+      "content": "Our app may contain links to third-party websites and services. We are not responsible for the privacy practices of these third parties. We encourage you to review their privacy policies."
+    },
+    "children_privacy": {
+      "title": "Children's Privacy",
+      "content": "Our services are not intended for children under 13. We do not knowingly collect personal information from children under 13. If you believe we have collected such information, please contact us immediately."
+    },
+    "international_transfers": {
+      "title": "International Data Transfers",
+      "content": "Your information may be transferred to and processed in countries other than your own. We ensure appropriate safeguards are in place to protect your data in accordance with applicable data protection laws."
+    },
+    "changes": {
+      "title": "Changes to This Policy",
+      "content": "We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new policy in the app and updating the 'Last Updated' date. Your continued use of the app after such changes constitutes acceptance."
+    },
+    "contact": {
+      "title": "Contact Us",
+      "content": "If you have any questions about this Privacy Policy, please contact us at: privacy@wassaly.com or through our in-app support center."
+    },
+    "footer": {
+      "note": "By using Wassaly, you acknowledge that you have read and understood this Privacy Policy."
+    },
+    "google_privacy": "Google Privacy Policy",
+    "google_terms": "Google Terms of Service"
+  }
+};
+static const Map<String, Map<String,dynamic>> mapLocales = {"ar": _ar, "en": _en};
 }

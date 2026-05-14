@@ -33,7 +33,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       GetBannersEvent event, Emitter<HomeState> emit) async {
     emit(state.copyWith(
       bannersStatus: HomeStatus.loading,
-      errorMessage: '',
+      failure: null,
     ));
 
     final result = await getBannersUseCase();
@@ -42,7 +42,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       (failure) {
         emit(state.copyWith(
           bannersStatus: HomeStatus.failure,
-          errorMessage: failure.message,
+          failure: failure,
         ));
       },
       (banners) {
@@ -58,8 +58,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       GetPopularServicesEvent event, Emitter<HomeState> emit) async {
     emit(state.copyWith(
       popularServicesStatus: HomeStatus.loading,
-      popularServices: const <SubCategoryEntity>[], // Clear old data to show skeleton
-      errorMessage: '',
+      popularServices: const <SubCategoryEntity>[],
+      failure: null,
     ));
 
     final result = await getPopularServicesUseCase();
@@ -68,7 +68,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       (failure) {
         emit(state.copyWith(
           popularServicesStatus: HomeStatus.failure,
-          errorMessage: failure.message,
+          failure: failure,
         ));
       },
       (services) {
@@ -84,8 +84,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       GetCategoriesEvent event, Emitter<HomeState> emit) async {
     emit(state.copyWith(
       categoriesStatus: HomeStatus.loading,
-      categories: const <CategoryEntity>[], // Clear old data to show skeleton
-      errorMessage: '',
+      categories: const <CategoryEntity>[],
+      failure: null,
     ));
 
     final result = await getCategoriesUseCase();
@@ -94,7 +94,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       (failure) {
         emit(state.copyWith(
           categoriesStatus: HomeStatus.failure,
-          errorMessage: failure.message,
+          failure: failure,
         ));
       },
       (categories) {
@@ -110,9 +110,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       GetProductsEvent event, Emitter<HomeState> emit) async {
     emit(state.copyWith(
       productsStatus: HomeStatus.loading,
-      products: const PaginatedResponse<ProductEntity>(
-          data: []), // Clear old data to show skeleton
-      errorMessage: '',
+      products: const PaginatedResponse<ProductEntity>(data: []),
+      failure: null,
     ));
 
     final result = await getProductsUseCase(page: 1);
@@ -121,7 +120,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       (failure) {
         emit(state.copyWith(
           productsStatus: HomeStatus.failure,
-          errorMessage: failure.message,
+          failure: failure,
         ));
       },
       (paginatedResponse) {
@@ -146,7 +145,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     result.fold(
       (failure) {
         // We don't change productsStatus to failure here to keep showing current products
-        // Maybe show a snackbar or just ignore
       },
       (paginatedResponse) {
         emit(state.copyWith(

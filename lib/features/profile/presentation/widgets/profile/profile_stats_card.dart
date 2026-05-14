@@ -11,10 +11,10 @@ class ProfileStatsCard extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: AppCard(
         showShadow: true,
-        onTap: () {},
+        onTap: () => context.push(AppRoutes.orders),
         leading: Container(
           width: 48.w,
-          height: 48.w,
+          height: 48.h,
           decoration: BoxDecoration(
             color: cs.primaryContainer.withValues(alpha: 0.4),
             borderRadius: BorderRadius.circular(8.r),

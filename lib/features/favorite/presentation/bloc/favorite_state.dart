@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:wassaly/core/utils/pagination.dart';
+import 'package:wassaly/core/imports/core_imports.dart';
 import 'package:wassaly/features/home/domain/entities/product_entity.dart';
 
 enum FavoriteStatus { initial, loading, refreshing, success, error }
@@ -9,14 +9,14 @@ class FavoriteState extends Equatable {
   final PaginatedResponse<ProductEntity> favorites;
   final Set<int> favoriteIds;
   final Set<int> togglingIds;
-  final String? errorMessage;
+  final Failure? failure;
 
   const FavoriteState({
     this.status = FavoriteStatus.initial,
     PaginatedResponse<ProductEntity>? favorites,
     this.favoriteIds = const {},
     this.togglingIds = const {},
-    this.errorMessage,
+    this.failure,
   }) : favorites = favorites ?? const PaginatedResponse(data: []);
 
   bool get isLoading => status == FavoriteStatus.loading;
@@ -33,14 +33,14 @@ class FavoriteState extends Equatable {
     PaginatedResponse<ProductEntity>? favorites,
     Set<int>? favoriteIds,
     Set<int>? togglingIds,
-    String? errorMessage,
+    Failure? failure,
   }) {
     return FavoriteState(
       status: status ?? this.status,
       favorites: favorites ?? this.favorites,
       favoriteIds: favoriteIds ?? this.favoriteIds,
       togglingIds: togglingIds ?? this.togglingIds,
-      errorMessage: errorMessage,
+      failure: failure,
     );
   }
 
@@ -50,6 +50,9 @@ class FavoriteState extends Equatable {
         favorites,
         favoriteIds,
         togglingIds,
-        errorMessage,
+        failure,
       ];
+
+  // Backward compatibility getter
+  String get errorMessage => failure?.message ?? '';
 }

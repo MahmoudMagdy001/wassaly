@@ -29,3 +29,6 @@ class ToggleFavoriteEvent extends FavoriteEvent {
   @override
   List<Object?> get props => [productId, expectedIsFavorite];
 }
+class ClearFavoritesEvent extends FavoriteEvent {
+  const ClearFavoritesEvent();
+}

@@ -2,9 +2,6 @@ import 'package:wassaly/core/services/internet_connection_service.dart';
 
 import '../imports/imports.dart';
 
-// Global variable to track last network error toast time
-DateTime? _lastNetworkErrorToastTime;
-
 /// A reusable generic function to handle potential exceptions in async tasks
 /// and map them to the [Either] type matching [FutureEither<T>].
 ///
@@ -19,11 +16,17 @@ FutureEither<T> runTask<T>(
     final result = await action();
     return right(result);
   } on DioException catch (e) {
+    // Handle 404 Not Found specifically
+    if (e.response?.statusCode == 404) {
+      final errorMessage = AppErrorHandler.format(e);
+      return left(NotFoundFailure(errorMessage, error: e));
+    }
+
     if (requiresNetwork && _isConnectionError(e)) {
       final hasNetwork = await InternetConnectionService().hasConnection();
       if (!hasNetwork) {
         AppLogger.warning('Network unavailable for task');
-        _showNetworkErrorToast();
+        // Don't show toast here - let the UI handle the error display
         return left(NetworkFailure('errors.no_internet'.tr()));
       }
     }
@@ -41,18 +44,4 @@ bool _isConnectionError(DioException e) {
       e.type == DioExceptionType.connectionTimeout ||
       e.type == DioExceptionType.sendTimeout ||
       e.type == DioExceptionType.receiveTimeout;
-}
-
-void _showNetworkErrorToast() {
-  final now = DateTime.now();
-  final shouldShowToast = _lastNetworkErrorToastTime == null ||
-      now.difference(_lastNetworkErrorToastTime!) > const Duration(seconds: 3);
-
-  if (shouldShowToast) {
-    showGlobalToast(
-      message: 'errors.no_internet'.tr(),
-      status: 'warning',
-    );
-    _lastNetworkErrorToastTime = now;
-  }
 }

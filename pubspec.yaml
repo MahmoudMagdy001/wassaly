@@ -31,7 +31,7 @@ dependencies:
 
   # Images & SVG
   cached_network_image: ^3.4.1
-  flutter_svg: ^2.2.4
+  flutter_svg: ^2.3.0
   cross_file: ^0.3.4
   image_picker_platform_interface: ^2.11.1
 

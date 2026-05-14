@@ -20,6 +20,7 @@ import 'package:wassaly/features/auth/presentation/bloc/otp_verification/otp_ver
 import 'package:wassaly/features/auth/presentation/bloc/reset_password/reset_password_bloc.dart';
 import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
 import 'package:wassaly/features/auth/presentation/bloc/signup/signup_bloc.dart';
+import 'package:wassaly/features/favorite/data/datasources/favorite_local_datasource.dart';
 import 'package:wassaly/features/favorite/data/datasources/favorite_remote_datasource.dart';
 import 'package:wassaly/features/favorite/data/repositories/favorite_repository_impl.dart';
 import 'package:wassaly/features/favorite/domain/repositories/favorite_repository.dart';
@@ -32,17 +33,25 @@ import 'package:wassaly/features/sub_category/domain/repositories/sub_category_r
 import 'package:wassaly/features/sub_category/domain/usecases/get_sub_category_detail_usecase.dart';
 import 'package:wassaly/features/sub_category/presentation/bloc/sub_category_bloc.dart';
 
+import '../../features/auth/domain/usecases/clear_user_session_usecase.dart';
 import '../../features/auth/domain/usecases/get_cached_user_usecase.dart';
 import '../../features/auth/domain/usecases/google_login_usecase.dart';
 import '../../features/auth/presentation/bloc/google_login/google_login_bloc.dart';
+import '../../features/cart/data/datasources/cart_local_datasource.dart';
 import '../../features/cart/data/datasources/cart_remote_datasource.dart';
 import '../../features/cart/data/repositories/cart_repository_impl.dart';
 import '../../features/cart/domain/repositories/cart_repository.dart';
 import '../../features/cart/domain/usecases/add_to_cart_usecase.dart';
+import '../../features/cart/domain/usecases/apply_coupon_usecase.dart';
 import '../../features/cart/domain/usecases/get_cart_items_usecase.dart';
+import '../../features/cart/domain/usecases/get_governorates_usecase.dart';
+import '../../features/cart/domain/usecases/get_user_addresses_usecase.dart';
+import '../../features/cart/domain/usecases/get_user_data_usecase.dart';
+import '../../features/cart/domain/usecases/place_order_usecase.dart';
 import '../../features/cart/domain/usecases/remove_from_cart_usecase.dart';
 import '../../features/cart/domain/usecases/update_quantity_usecase.dart';
 import '../../features/cart/presentation/bloc/cart_bloc.dart';
+import '../../features/cart/presentation/bloc/checkout/checkout_bloc.dart';
 import '../../features/category/data/datasources/category_remote_datasource.dart';
 import '../../features/category/data/repositories/category_repository_impl.dart';
 import '../../features/category/domain/repositories/category_repository.dart';
@@ -82,10 +91,15 @@ import '../../features/search/data/repositories/search_repository_impl.dart';
 import '../../features/search/domain/repositories/search_repository.dart';
 import '../../features/search/domain/usecases/search_products_usecase.dart';
 import '../../features/search/presentation/bloc/search_bloc.dart';
+import '../../features/orders/data/datasources/orders_remote_datasource.dart';
+import '../../features/orders/data/repositories/orders_repository_impl.dart';
+import '../../features/orders/domain/repositories/orders_repository.dart';
+import '../../features/orders/domain/usecases/get_orders_usecase.dart';
+import '../../features/orders/presentation/bloc/orders_bloc.dart';
 
 final sl = GetIt.instance;
 
-Future<void> initDependencies() async {
+void initDependencies() {
   // Blocs
   sl.registerLazySingleton(() => SessionBloc(
         loginUseCase: sl(),
@@ -93,6 +107,7 @@ Future<void> initDependencies() async {
         getProfileUseCase: sl(),
         getCachedUserUseCase: sl(),
         logoutUseCase: sl(),
+        clearUserSessionUseCase: sl(),
       ));
   sl.registerFactory(() => LoginBloc(
         loginUseCase: sl(),
@@ -138,7 +153,7 @@ Future<void> initDependencies() async {
   sl.registerFactory(() => SearchBloc(
         searchProductsUseCase: sl(),
       ));
-  sl.registerFactory(() => FavoriteBloc(
+  sl.registerLazySingleton(() => FavoriteBloc(
         sl(),
         sl(),
       ));
@@ -153,6 +168,19 @@ Future<void> initDependencies() async {
         addToCartUseCase: sl(),
         removeFromCartUseCase: sl(),
         updateQuantityUseCase: sl(),
+      ));
+
+  sl.registerFactory(() => OrdersBloc(
+        getOrdersUseCase: sl(),
+      ));
+
+  sl.registerFactory(() => CheckoutBloc(
+        placeOrderUseCase: sl(),
+        applyCouponUseCase: sl(),
+        getGovernoratesUseCase: sl(),
+        getCentersUseCase: sl(),
+        getUserDataUseCase: sl(),
+        getUserAddressesUseCase: sl(),
       ));
 
   sl.registerFactoryParam<OtpVerificationBloc, String, VerificationType>(
@@ -224,10 +252,21 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(() => AddToCartUseCase(sl()));
   sl.registerLazySingleton(() => RemoveFromCartUseCase(sl()));
   sl.registerLazySingleton(() => UpdateQuantityUseCase(sl()));
+  sl.registerLazySingleton(() => GetUserDataUseCase(sl()));
+  sl.registerLazySingleton(() => GetUserAddressesUseCase(sl()));
+  sl.registerLazySingleton(() => GetCartGovernoratesUseCase(sl()));
+  sl.registerLazySingleton(() => ApplyCouponUseCase(sl()));
+  sl.registerLazySingleton(() => PlaceOrderUseCase(sl()));
+
+  // UseCases - Auth (new)
+  sl.registerLazySingleton(() => ClearUserSessionUseCase(sl()));
+
+  // UseCases - Orders
+  sl.registerLazySingleton(() => GetOrdersUseCase(sl()));
 
   // Repositories
   sl.registerLazySingleton<AuthRepository>(
-      () => AuthRepositoryImpl(sl(), sl()));
+      () => AuthRepositoryImpl(sl(), sl(), sl(), sl()));
   sl.registerLazySingleton<ProfileRepository>(
       () => ProfileRepositoryImpl(sl(), sl()));
   sl.registerLazySingleton<HomeRepository>(() => HomeRepositoryImpl(sl()));
@@ -240,7 +279,11 @@ Future<void> initDependencies() async {
       () => FavoriteRepositoryImpl(sl()));
   sl.registerLazySingleton<ProductDetailsRepository>(
       () => ProductDetailsRepositoryImpl(sl()));
-  sl.registerLazySingleton<CartRepository>(() => CartRepositoryImpl(sl()));
+  sl.registerLazySingleton<CartRepository>(
+      () => CartRepositoryImpl(sl(), sl()));
+
+  sl.registerLazySingleton<OrdersRepository>(
+      () => OrdersRepositoryImpl(sl()));
 
   // DataSources
   sl.registerLazySingleton<AuthRemoteDataSource>(
@@ -261,6 +304,13 @@ Future<void> initDependencies() async {
       () => FavoriteRemoteDataSourceImpl(DioService.instance));
   sl.registerLazySingleton<ProductDetailsRemoteDataSource>(
       () => ProductDetailsRemoteDataSourceImpl(DioService.instance));
-  sl.registerLazySingleton<CartRemoteDataSource>(() =>
-      CartRemoteDataSourceImpl(DioService.instance, StorageService.instance));
+  sl.registerLazySingleton<CartRemoteDataSource>(
+      () => CartRemoteDataSourceImpl(DioService.instance));
+  sl.registerLazySingleton<CartLocalDataSource>(
+      () => CartLocalDataSourceImpl(StorageService.instance));
+  sl.registerLazySingleton<FavoriteLocalDataSource>(
+      () => FavoriteLocalDataSourceImpl(StorageService.instance));
+
+  sl.registerLazySingleton<OrdersRemoteDataSource>(
+      () => OrdersRemoteDataSourceImpl(DioService.instance));
 }

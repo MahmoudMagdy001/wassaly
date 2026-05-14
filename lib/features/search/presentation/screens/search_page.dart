@@ -47,7 +47,10 @@ class _SearchPageContent extends StatelessWidget {
 
                   if (state.status == SearchStatus.failure) {
                     return AppErrorWidget(
-                      message: state.errorMessage,
+                      title: 'errors.error_occurred_title'.tr(),
+                      message: state.errorMessage.isNotEmpty
+                          ? state.errorMessage
+                          : 'errors.error_occurred_message'.tr(),
                       onRetry: () {
                         context.read<SearchBloc>().add(const SearchSubmitted());
                       },

@@ -44,8 +44,10 @@ class _SubCategoryView extends StatelessWidget {
         builder: (context, state) {
           if (state.status == SubCategoryStatus.failure) {
             return AppErrorWidget(
-              title: 'errors.something_went_wrong'.tr(),
-              message: state.errorMessage,
+              title: 'errors.error_occurred_title'.tr(),
+              message: state.errorMessage.isNotEmpty
+                  ? state.errorMessage
+                  : 'errors.error_occurred_message'.tr(),
               onRetry: () {
                 context.read<SubCategoryBloc>().add(
                       FetchSubCategoryDetailEvent(subCategory.id),

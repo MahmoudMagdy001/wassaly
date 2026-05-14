@@ -142,12 +142,13 @@ class AppCachedImage extends StatelessWidget {
     return SizedBox(
       width: width,
       height: height,
-      child: const Center(
-        child: ImageIcon(
-          AssetImage(
-            'assets/images/logo.png',
-          ),
-          size: 80,
+      child: Center(
+        child: Image.asset(
+          AppAssets.logo,
+          width: 120,
+          height: 120,
+          fit: BoxFit.cover,
+          cacheHeight: 120,
         ),
       ),
     );

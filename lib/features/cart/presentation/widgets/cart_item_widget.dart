@@ -1,4 +1,5 @@
-import '../../../../core/imports/imports.dart';
+import 'package:wassaly/core/imports/imports.dart';
+
 import '../../domain/entities/cart_item_entity.dart';
 
 class CartItemWidget extends StatelessWidget {
@@ -25,27 +26,64 @@ class CartItemWidget extends StatelessWidget {
       direction: DismissDirection.endToStart,
       onDismissed: (_) => onRemove(),
       confirmDismiss: (_) async {
-        return await showDialog<bool>(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.r),
-            ),
-            title: Text('cart.remove_item_title'.tr()),
-            content: Text('cart.remove_item_message'.tr()),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx, false),
-                child: Text('common.cancel'.tr()),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(ctx, true),
-                child: Text(
-                  'common.delete'.tr(),
-                  style: TextStyle(color: cs.error),
+        return await showAppDialog<bool>(
+          child: Builder(
+            builder: (ctx) => Dialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.r)),
+              child: Padding(
+                padding: EdgeInsets.all(24.w),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.delete_outline,
+                      size: 48.r,
+                      color: cs.error,
+                    ),
+                    16.verticalSpace,
+                    Text(
+                      'cart.remove_item_title'.tr(),
+                      style: tt.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: cs.onSurface,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    8.verticalSpace,
+                    Text(
+                      'cart.remove_item_message'.tr(),
+                      style: tt.bodyMedium?.copyWith(
+                        color: cs.onSurfaceVariant,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    24.verticalSpace,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: AppButton(
+                            label: 'shared.cancel'.tr(),
+                            variant: ButtonVariant.ghost,
+                            isFullWidth: false,
+                            onPressed: () => Navigator.of(ctx).pop(false),
+                          ),
+                        ),
+                        12.horizontalSpace,
+                        Expanded(
+                          child: AppButton(
+                            isFullWidth: true,
+                            label: 'shared.delete'.tr(),
+                            variant: ButtonVariant.danger,
+                            onPressed: () => Navigator.of(ctx).pop(true),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
         );
       },
@@ -61,8 +99,8 @@ class CartItemWidget extends StatelessWidget {
         color: cs.errorContainer,
         borderRadius: BorderRadius.circular(16.r),
       ),
-      alignment: Alignment.centerRight,
-      padding: EdgeInsets.only(right: 20.w),
+      alignment: Alignment.centerLeft,
+      padding: EdgeInsets.only(left: 20.w),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -83,7 +121,7 @@ class CartItemWidget extends StatelessWidget {
 
   Widget _buildCard(BuildContext context, ColorScheme cs, TextTheme tt) {
     return AppCard(
-      margin: EdgeInsets.symmetric(vertical: 4.h),
+      showShadow: true,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -152,6 +190,7 @@ class CartItemWidget extends StatelessWidget {
             icon: Icons.remove_rounded,
             onTap: onQuantityDecrease,
             cs: cs,
+            isEnabled: item.quantity > 1,
           ),
           Container(
             constraints: BoxConstraints(minWidth: 32.w),
@@ -274,11 +313,13 @@ class _QtyButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
   final ColorScheme cs;
+  final bool isEnabled;
 
   const _QtyButton({
     required this.icon,
     required this.onTap,
     required this.cs,
+    this.isEnabled = true,
   });
 
   @override
@@ -286,11 +327,15 @@ class _QtyButton extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: onTap,
+        onTap: isEnabled ? onTap : null,
         borderRadius: BorderRadius.circular(8.r),
         child: Padding(
           padding: EdgeInsets.all(6.w),
-          child: Icon(icon, size: 18.r, color: cs.onSurface),
+          child: Icon(
+            icon,
+            size: 18.r,
+            color: isEnabled ? cs.onSurface : cs.onSurface.withValues(alpha: 0.3),
+          ),
         ),
       ),
     );

@@ -1,0 +1,61 @@
+import 'package:wassaly/core/imports/imports.dart';
+import '../models/order_model.dart';
+
+abstract class OrdersRemoteDataSource {
+  Future<PaginatedResponse<OrderModel>> getOrders({int page = 1});
+}
+
+class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
+  final DioService _dioService;
+
+  const OrdersRemoteDataSourceImpl(this._dioService);
+
+  @override
+  Future<PaginatedResponse<OrderModel>> getOrders({int page = 1}) async {
+    final result = await _dioService.get(
+      '/api/orders',
+      queryParameters: {'page': page},
+    );
+
+    return result.fold(
+      (failure) => throw failure,
+      (response) {
+        final responseData = response.data as Map<String, dynamic>;
+        final status = responseData['status'] as bool? ?? false;
+        final message = responseData['message'] as String? ?? '';
+
+        if (!status) {
+          throw ServerFailure(message);
+        }
+
+        final data = responseData['data'];
+        final pagination =
+            responseData['pagination'] as Map<String, dynamic>? ?? {};
+        final lastPage = pagination['last_page'] as int? ?? 1;
+        final total = pagination['total'] as int? ?? 0;
+        final currentPage = pagination['current_page'] as int? ?? page;
+
+        if (data == null) {
+          return PaginatedResponse(
+            data: const <OrderModel>[],
+            currentPage: currentPage,
+            lastPage: lastPage,
+            total: total,
+          );
+        }
+
+        final List<dynamic> list = data as List<dynamic>;
+        final orders = list
+            .map((e) => OrderModel.fromJson(e as Map<String, dynamic>))
+            .toList();
+
+        return PaginatedResponse(
+          data: orders,
+          currentPage: currentPage,
+          lastPage: lastPage,
+          total: total,
+        );
+      },
+    );
+  }
+}

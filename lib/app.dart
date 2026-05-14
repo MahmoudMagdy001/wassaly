@@ -31,14 +31,8 @@ class App extends StatelessWidget {
       builder: (context, child) {
         return BlocListener<FavoriteBloc, FavoriteState>(
           listenWhen: (previous, current) =>
-              previous.errorMessage != current.errorMessage &&
-              current.errorMessage != null,
-          listener: (context, state) {
-            context.showTypedSnackBar(
-              state.errorMessage!,
-              type: SnackBarType.error,
-            );
-          },
+              previous.errorMessage != current.errorMessage,
+          listener: (context, state) {},
           child: SessionListenerWrapper(child: child!),
         );
       },

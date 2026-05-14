@@ -1,5 +1,7 @@
 import 'package:wassaly/core/imports/imports.dart';
 
+import '../../../home/domain/entities/product_entity.dart';
+import '../../domain/entities/product_detail_entity.dart';
 import '../bloc/product_details_bloc.dart';
 import '../bloc/product_details_event.dart';
 import '../bloc/product_details_state.dart';
@@ -53,12 +55,14 @@ class _ProductDetailsView extends StatelessWidget {
 
         if (state.status == ProductDetailsStatus.loading ||
             state.status == ProductDetailsStatus.initial) {
-          body = const Center(child: CircularProgressIndicator());
+          body = const _ProductDetailsSkeleton();
         } else if (state.status == ProductDetailsStatus.failure ||
             state.product == null) {
           body = AppErrorWidget(
-            title: 'errors.something_went_wrong'.tr(),
-            message: state.errorMessage,
+            title: 'errors.error_occurred_title'.tr(),
+            message: state.errorMessage.isNotEmpty
+                ? state.errorMessage
+                : 'errors.error_occurred_message'.tr(),
             onRetry: () {
               context.read<ProductDetailsBloc>().add(
                     FetchProductDetailsEvent(productId),
@@ -74,9 +78,68 @@ class _ProductDetailsView extends StatelessWidget {
         }
 
         return Scaffold(
-          body: SafeArea(child: body),
+          body: body,
         );
       },
+    );
+  }
+}
+
+class _ProductDetailsSkeleton extends StatelessWidget {
+  const _ProductDetailsSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    const dummyProduct = ProductDetailEntity(
+      id: 0,
+      name: 'اسم المنتج التجريبي يظهر هنا',
+      image: '',
+      price: '1000',
+      description:
+          'هذا وصف تجريبي للمنتج يظهر عند التحميل ليعطي انطباعا جيدا للمستخدم عن شكل الصفحة النهائي. هذا النص طويل بما يكفي لمحاكاة وصف حقيقي للمنتج.',
+      specifications: [
+        ProductSpecificationEntity(
+          id: 1,
+          key: 'المادة',
+          value: 'قطن',
+          icon: '',
+        ),
+        ProductSpecificationEntity(
+          id: 2,
+          key: 'اللون',
+          value: 'أزرق',
+          icon: '',
+        ),
+      ],
+      images: [],
+      subCategory: ProductMetaEntity(id: 1, name: 'فئة تجريبية', image: ''),
+      brand: ProductMetaEntity(id: 1, name: 'ماركة تجريبية', image: ''),
+      reviews: [],
+      offerPercentages: [10],
+      isFavorite: false,
+    );
+
+    final dummyRelatedProducts = List<ProductEntity>.generate(
+      4,
+      (index) => const ProductEntity(
+        id: 0,
+        name: 'منتج مرتبط تجريبي',
+        image: '',
+        price: '500',
+        description: 'وصف منتج مرتبط',
+        offers: [],
+        reviews: [],
+        isFavorite: false,
+      ),
+    );
+
+    return Skeletonizer(
+      enabled: true,
+      child: ProductDetailsContent(
+        product: dummyProduct,
+        relatedProductsStatus: RelatedProductsStatus.success,
+        relatedProducts: dummyRelatedProducts,
+      ),
     );
   }
 }

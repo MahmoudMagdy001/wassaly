@@ -50,7 +50,7 @@ class _HomeView extends StatelessWidget {
                   elevation: 0,
                   centerTitle: true,
                   title: Image.asset(
-                    'assets/images/logo.png',
+                    AppAssets.logo,
                     height: 60.h,
                     cacheHeight: (60.h * 2).toInt(),
                     filterQuality: FilterQuality.high,
@@ -70,14 +70,19 @@ class _HomeView extends StatelessWidget {
                   SliverPadding(
                     padding: EdgeInsets.only(top: 100.h),
                     sliver: SliverFillRemaining(
-                      child: AppErrorWidget(
-                        title: 'errors.no_internet'.tr(),
-                        message: state.errorMessage.isNotEmpty
-                            ? state.errorMessage
-                            : 'Please check your internet connection and try again.',
-                        onRetry: () => _refreshAllSections(context),
-                        icon: Icons.wifi_off_rounded,
-                      ),
+                      child: state.failure != null
+                          ? AppErrorWidget.failure(
+                              failure: state.failure!,
+                              onRetry: () => _refreshAllSections(context),
+                            )
+                          : AppErrorWidget(
+                              title: 'errors.no_internet_title'.tr(),
+                              message: state.errorMessage.isNotEmpty
+                                  ? state.errorMessage
+                                  : 'errors.no_internet_message'.tr(),
+                              onRetry: () => _refreshAllSections(context),
+                              icon: Icons.wifi_off_rounded,
+                            ),
                     ),
                   ),
                 ] else ...[

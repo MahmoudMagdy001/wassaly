@@ -1,6 +1,10 @@
 import 'package:equatable/equatable.dart';
+import 'package:wassaly/core/imports/core_imports.dart';
 
+import '../../../../features/profile/domain/entities/address_entity.dart';
+import '../../domain/entities/cart_checkout_entity.dart';
 import '../../domain/entities/cart_item_entity.dart';
+import '../../domain/entities/coupon_entity.dart';
 
 enum CartStatus { initial, loading, success, error }
 
@@ -10,7 +14,21 @@ class CartState extends Equatable {
   final int cartCount;
   final Set<int> inCartProductIds;
   final Set<int> addingProductIds;
-  final String? errorMessage;
+  final Failure? failure;
+
+  // Address fields
+  final List<AddressEntity> addresses;
+  final AddressEntity? selectedAddress;
+  final bool isLoadingAddresses;
+  final Failure? addressesFailure;
+
+  // Checkout data (for calculating shipping in cart page)
+  final CartCheckoutEntity? checkoutData;
+
+  // Coupon data
+  final CouponEntity? appliedCoupon;
+  final bool isApplyingCoupon;
+  final Failure? couponFailure;
 
   const CartState({
     this.status = CartStatus.initial,
@@ -18,7 +36,15 @@ class CartState extends Equatable {
     this.cartCount = 0,
     this.inCartProductIds = const {},
     this.addingProductIds = const {},
-    this.errorMessage,
+    this.failure,
+    this.addresses = const [],
+    this.selectedAddress,
+    this.isLoadingAddresses = false,
+    this.addressesFailure,
+    this.checkoutData,
+    this.appliedCoupon,
+    this.isApplyingCoupon = false,
+    this.couponFailure,
   });
 
   bool get isLoading => status == CartStatus.loading;
@@ -34,7 +60,19 @@ class CartState extends Equatable {
     int? cartCount,
     Set<int>? inCartProductIds,
     Set<int>? addingProductIds,
-    String? errorMessage,
+    Failure? failure,
+    List<AddressEntity>? addresses,
+    AddressEntity? selectedAddress,
+    bool? isLoadingAddresses,
+    Failure? addressesFailure,
+    CartCheckoutEntity? checkoutData,
+    CouponEntity? appliedCoupon,
+    bool? isApplyingCoupon,
+    Failure? couponFailure,
+    bool clearError = false,
+    bool clearAddressesError = false,
+    bool clearCouponError = false,
+    bool clearSelectedAddress = false,
   }) {
     return CartState(
       status: status ?? this.status,
@@ -42,7 +80,19 @@ class CartState extends Equatable {
       cartCount: cartCount ?? this.cartCount,
       inCartProductIds: inCartProductIds ?? this.inCartProductIds,
       addingProductIds: addingProductIds ?? this.addingProductIds,
-      errorMessage: errorMessage,
+      failure: clearError ? null : failure ?? this.failure,
+      addresses: addresses ?? this.addresses,
+      selectedAddress:
+          clearSelectedAddress ? null : selectedAddress ?? this.selectedAddress,
+      isLoadingAddresses: isLoadingAddresses ?? this.isLoadingAddresses,
+      addressesFailure: clearAddressesError
+          ? null
+          : addressesFailure ?? this.addressesFailure,
+      checkoutData: checkoutData ?? this.checkoutData,
+      appliedCoupon: appliedCoupon ?? this.appliedCoupon,
+      isApplyingCoupon: isApplyingCoupon ?? this.isApplyingCoupon,
+      couponFailure:
+          clearCouponError ? null : couponFailure ?? this.couponFailure,
     );
   }
 
@@ -53,6 +103,19 @@ class CartState extends Equatable {
         cartCount,
         inCartProductIds,
         addingProductIds,
-        errorMessage,
+        failure,
+        addresses,
+        selectedAddress,
+        isLoadingAddresses,
+        addressesFailure,
+        checkoutData,
+        appliedCoupon,
+        isApplyingCoupon,
+        couponFailure,
       ];
+
+  // Backward compatibility getters
+  String get errorMessage => failure?.message ?? '';
+  String get addressesError => addressesFailure?.message ?? '';
+  String get couponError => couponFailure?.message ?? '';
 }
