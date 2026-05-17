@@ -39,14 +39,13 @@ class ForgotPasswordForm extends StatelessWidget {
             },
           ),
           24.verticalSpace,
-          BlocBuilder<ForgotPasswordBloc, ForgotPasswordState>(
-            buildWhen: (previous, current) =>
-                previous.isLoading != current.isLoading,
-            builder: (context, state) {
+          BlocSelector<ForgotPasswordBloc, ForgotPasswordState, bool>(
+            selector: (state) => state.isLoading,
+            builder: (context, isLoading) {
               return AppButton(
                 label: context.l10n.auth_send_code,
-                onPressed: state.isLoading ? null : onSubmit,
-                isLoading: state.isLoading,
+                onPressed: isLoading ? null : onSubmit,
+                isLoading: isLoading,
                 variant: ButtonVariant.success,
                 isFullWidth: true,
                 height: ButtonSize.medium,

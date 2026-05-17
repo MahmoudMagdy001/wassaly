@@ -21,10 +21,9 @@ class LoginPasswordField extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = context.theme.colorScheme;
 
-    return BlocBuilder<LoginBloc, LoginState>(
-      buildWhen: (previous, current) =>
-          previous.isPasswordVisible != current.isPasswordVisible,
-      builder: (context, state) {
+    return BlocSelector<LoginBloc, LoginState, bool>(
+      selector: (state) => state.isPasswordVisible,
+      builder: (context, isPasswordVisible) {
         return ClipRRect(
           borderRadius: BorderRadius.circular(12.r),
           child: AppTextField(
@@ -32,13 +31,13 @@ class LoginPasswordField extends StatelessWidget {
             focusNode: focusNode,
             onChanged: onChanged,
             validator: validator,
-            obscureText: !state.isPasswordVisible,
+            obscureText: !isPasswordVisible,
             hint: '••••••••',
             prefixIcon: const Icon(Icons.lock_outline),
             suffixIcon: IconButton(
-              onPressed: () => onToggleVisibility(state.isPasswordVisible),
+              onPressed: () => onToggleVisibility(isPasswordVisible),
               icon: Icon(
-                state.isPasswordVisible
+                isPasswordVisible
                     ? Icons.visibility_outlined
                     : Icons.visibility_off_outlined,
                 color: cs.onSurfaceVariant,

@@ -1,18 +1,22 @@
-import 'package:wassaly/core/imports/packages_imports.dart';
+import 'package:wassaly/core/imports/imports.dart';
 
 import '../../../sub_category/domain/entities/service_entity.dart';
 
 class ProviderDetailReviewEntity extends Equatable {
+  final int? id;
   final int rating;
   final String comment;
+  final String? createdAt;
 
   const ProviderDetailReviewEntity({
+    this.id,
     required this.rating,
     required this.comment,
+    this.createdAt,
   });
 
   @override
-  List<Object?> get props => [rating, comment];
+  List<Object?> get props => [id, rating, comment, createdAt];
 }
 
 class ProviderDetailUserEntity extends Equatable {

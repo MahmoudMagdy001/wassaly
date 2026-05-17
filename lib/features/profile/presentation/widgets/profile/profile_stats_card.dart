@@ -10,8 +10,11 @@ class ProfileStatsCard extends StatelessWidget {
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
 
-    return BlocBuilder<OrdersBloc, OrdersState>(
-      builder: (context, state) {
+    return BlocSelector<OrdersBloc, OrdersState, (int, int)>(
+      selector: (state) => (state.orders.total, state.serviceBookings.total),
+      builder: (context, totals) {
+        final (ordersTotal, bookingsTotal) = totals;
+
         return Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.w),
           child: Column(
@@ -32,7 +35,7 @@ class ProfileStatsCard extends StatelessWidget {
                   Expanded(
                     child: _StatCard(
                       title: context.l10n.order_products,
-                      count: state.orders.total,
+                      count: ordersTotal,
                       icon: Icons.inventory_2_outlined,
                       onTap: () => context
                           .push(AppRoutes.orders, extra: {'initialIndex': 0}),
@@ -42,7 +45,7 @@ class ProfileStatsCard extends StatelessWidget {
                   Expanded(
                     child: _StatCard(
                       title: context.l10n.order_services,
-                      count: state.serviceBookings.total,
+                      count: bookingsTotal,
                       icon: Icons.handyman_outlined,
                       onTap: () => context
                           .push(AppRoutes.orders, extra: {'initialIndex': 1}),

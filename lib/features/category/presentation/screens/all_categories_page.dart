@@ -1,4 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/features/home/domain/entities/category_entity.dart';
 import 'package:wassaly/features/home/presentation/bloc/home_bloc.dart';
 import 'package:wassaly/features/home/presentation/bloc/home_event.dart';
 import 'package:wassaly/features/home/presentation/bloc/home_state.dart';
@@ -20,13 +21,18 @@ class CategoriesPage extends StatelessWidget {
             title: l10n.home_main_categories,
             pinned: true,
           ),
-          BlocBuilder<HomeBloc, HomeState>(
-            buildWhen: (previous, current) =>
-                previous.categoriesStatus != current.categoriesStatus ||
-                previous.categories != current.categories,
-            builder: (context, state) {
-              if (state.categoriesStatus == HomeStatus.loading ||
-                  state.categoriesStatus == HomeStatus.initial) {
+          BlocSelector<HomeBloc, HomeState,
+              (HomeStatus, List<CategoryEntity>, String)>(
+            selector: (state) => (
+              state.categoriesStatus,
+              state.categories,
+              state.errorMessage,
+            ),
+            builder: (context, data) {
+              final (categoriesStatus, categories, errorMessage) = data;
+
+              if (categoriesStatus == HomeStatus.loading ||
+                  categoriesStatus == HomeStatus.initial) {
                 return const SliverFillRemaining(
                   child: Center(
                     child: AppLoading(),
@@ -34,17 +40,17 @@ class CategoriesPage extends StatelessWidget {
                 );
               }
 
-              if (state.categoriesStatus == HomeStatus.failure) {
+              if (categoriesStatus == HomeStatus.failure) {
                 return SliverFillRemaining(
                   child: AppErrorWidget(
-                    message: state.errorMessage,
+                    message: errorMessage,
                     onRetry: () =>
                         context.read<HomeBloc>().add(GetCategoriesEvent()),
                   ),
                 );
               }
 
-              if (state.categories.isEmpty) {
+              if (categories.isEmpty) {
                 return SliverFillRemaining(
                   child: AppEmptyState(
                     title: l10n.home_no_sub_categories,
@@ -52,8 +58,6 @@ class CategoriesPage extends StatelessWidget {
                   ),
                 );
               }
-
-              final categories = state.categories;
 
               return SliverPadding(
                 padding: EdgeInsets.all(12.r),

@@ -6,6 +6,7 @@ class AppProductsSection extends StatelessWidget {
   final bool hasMore;
   final bool isLoadingMore;
   final VoidCallback? onLoadMore;
+  final bool isLoading;
   
   // Grid properties
   final double childAspectRatio;
@@ -21,6 +22,7 @@ class AppProductsSection extends StatelessWidget {
     this.hasMore = false,
     this.isLoadingMore = false,
     this.onLoadMore,
+    this.isLoading = false,
     this.childAspectRatio = 0.65,
     this.mainAxisExtent,
     this.crossAxisCount = 2,
@@ -31,36 +33,57 @@ class AppProductsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverMainAxisGroup(
-      slivers: [
-        AppSliverGrid<ProductEntity>(
-          padding: padding ?? EdgeInsets.zero,
-          childAspectRatio: childAspectRatio,
-          mainAxisExtent: mainAxisExtent,
-          crossAxisCount: crossAxisCount,
-          mainAxisSpacing: mainAxisSpacing,
-          crossAxisSpacing: crossAxisSpacing,
-          items: products,
-          hasMore: hasMore && !isLoadingMore,
-          onLoadMore: onLoadMore,
-          itemBuilder: (context, product, index, wrapAnimation) {
-            return wrapAnimation(
-              ProductCard(
-                product: product,
-              ),
-            );
-          },
-        ),
-        if (isLoadingMore)
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 20.h),
-              child: const Center(
-                child: CircularProgressIndicator(),
+    final displayProducts = isLoading && products.isEmpty
+        ? List.generate(
+            4,
+            (index) => ProductEntity(
+              id: index,
+              name: 'منتج تجريبي طويل جدا للتجربة',
+              image: '',
+              price: '100.00',
+              description: 'وصف تجريبي طويل جدا للتجربة وعرض التفاصيل بشكل كامل',
+              offers: const [],
+              reviews: const [],
+              isFavorite: false,
+            ),
+          )
+        : products;
+
+    return Skeletonizer.sliver(
+      enabled: isLoading,
+      ignoreContainers: true,
+      child: SliverMainAxisGroup(
+        slivers: [
+          AppSliverGrid<ProductEntity>(
+            padding: padding ?? EdgeInsets.zero,
+            childAspectRatio: childAspectRatio,
+            mainAxisExtent: mainAxisExtent,
+            crossAxisCount: crossAxisCount,
+            mainAxisSpacing: mainAxisSpacing,
+            crossAxisSpacing: crossAxisSpacing,
+            items: displayProducts,
+            hasMore: hasMore && !isLoadingMore && !isLoading,
+            onLoadMore: onLoadMore,
+            animateItems: !isLoading,
+            itemBuilder: (context, product, index, wrapAnimation) {
+              return wrapAnimation(
+                ProductCard(
+                  product: product,
+                ),
+              );
+            },
+          ),
+          if (isLoadingMore)
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 20.h),
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
               ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 }

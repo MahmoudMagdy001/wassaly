@@ -75,9 +75,10 @@ class ProductDetailsRemoteDataSourceImpl
   }) async {
     final result = await _dioService.put(
       '/api/reviews/update/product/$reviewId',
-      queryParameters: {
-        'comment': comment,
+      data: {
+        'review_id': reviewId,
         'rating': rating,
+        'comment': comment,
       },
     );
 

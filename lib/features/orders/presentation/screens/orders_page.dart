@@ -1,10 +1,11 @@
 import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/features/orders/domain/entities/order_entity.dart';
+import 'package:wassaly/features/orders/presentation/bloc/orders_bloc.dart';
+import 'package:wassaly/features/orders/presentation/bloc/orders_event.dart';
+import 'package:wassaly/features/orders/presentation/bloc/orders_state.dart';
 import 'package:wassaly/features/orders/presentation/widgets/booking_card.dart';
-
-import '../bloc/orders_bloc.dart';
-import '../bloc/orders_event.dart';
-import '../bloc/orders_state.dart';
-import '../widgets/order_card.dart';
+import 'package:wassaly/features/orders/presentation/widgets/order_card.dart';
+import 'package:wassaly/features/service_booking/domain/entities/booking_entity.dart';
 
 class OrdersPage extends StatelessWidget {
   final int initialIndex;
@@ -35,24 +36,34 @@ class _OrdersView extends StatelessWidget {
       length: 2,
       initialIndex: initialIndex,
       child: Scaffold(
-        appBar: AppTopBar(
-          title: context.l10n.profile_my_orders,
-          bottom: TabBar(
-            labelColor: cs.primary,
-            unselectedLabelColor: cs.onSurfaceVariant,
-            indicatorColor: cs.primary,
-            indicatorSize: TabBarIndicatorSize.label,
-            tabs: [
-              Tab(text: context.l10n.order_products),
-              Tab(text: context.l10n.order_services),
+        body: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) {
+            return [
+              AppSliverTopBar(
+                title: context.l10n.profile_my_orders,
+                centerTitle: true,
+                pinned: true,
+                floating: true,
+                snap: true,
+                bottom: TabBar(
+                  labelColor: cs.primary,
+                  unselectedLabelColor: cs.onSurfaceVariant,
+                  indicatorColor: cs.primary,
+                  indicatorSize: TabBarIndicatorSize.label,
+                  tabs: [
+                    Tab(text: context.l10n.order_products),
+                    Tab(text: context.l10n.order_services),
+                  ],
+                ),
+              ),
+            ];
+          },
+          body: const TabBarView(
+            children: [
+              _ProductOrdersTab(),
+              _ServiceBookingsTab(),
             ],
           ),
-        ),
-        body: const TabBarView(
-          children: [
-            _ProductOrdersTab(),
-            _ServiceBookingsTab(),
-          ],
         ),
       ),
     );
@@ -96,18 +107,22 @@ class _ProductOrdersTabState extends State<_ProductOrdersTab> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<OrdersBloc, OrdersState>(
-      builder: (context, state) {
-        if (state.status == OrdersStatus.loading && state.orders.data.isEmpty) {
+    return BlocSelector<OrdersBloc, OrdersState,
+        (OrdersStatus, PaginatedResponse<OrderEntity>, String)>(
+      selector: (state) => (state.status, state.orders, state.errorMessage),
+      builder: (context, data) {
+        final (status, orders, errorMessage) = data;
+
+        if (status == OrdersStatus.loading && orders.data.isEmpty) {
           return const Center(child: AppLoading());
         }
 
-        if (state.status == OrdersStatus.failure && state.orders.data.isEmpty) {
+        if (status == OrdersStatus.failure && orders.data.isEmpty) {
           return Center(
             child: AppErrorWidget(
               title: context.l10n.errors_error_occurred_title,
-              message: state.errorMessage.isNotEmpty
-                  ? state.errorMessage
+              message: errorMessage.isNotEmpty
+                  ? errorMessage
                   : context.l10n.errors_error_occurred_message,
               onRetry: () =>
                   context.read<OrdersBloc>().add(const GetOrdersEvent()),
@@ -115,7 +130,7 @@ class _ProductOrdersTabState extends State<_ProductOrdersTab> {
           );
         }
 
-        if (state.orders.data.isEmpty) {
+        if (orders.data.isEmpty) {
           return AppEmptyState(
             title: context.l10n.order_no_orders_title,
             subtitle: context.l10n.order_no_orders_msg,
@@ -126,25 +141,30 @@ class _ProductOrdersTabState extends State<_ProductOrdersTab> {
           onRefresh: () async {
             context.read<OrdersBloc>().add(const GetOrdersEvent());
           },
-          child: ListView.builder(
+          child: CustomScrollView(
             controller: _scrollController,
-            padding: EdgeInsets.all(16.r),
-            itemCount: state.orders.hasMore
-                ? state.orders.data.length + 1
-                : state.orders.data.length,
-            itemBuilder: (context, index) {
-              if (index >= state.orders.data.length) {
-                return const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(8),
-                    child: AppLoading(),
-                  ),
-                );
-              }
+            slivers: [
+              SliverPadding(
+                padding: EdgeInsets.all(16.r),
+                sliver: SliverList.builder(
+                  itemCount:
+                      orders.hasMore ? orders.data.length + 1 : orders.data.length,
+                  itemBuilder: (context, index) {
+                    if (index >= orders.data.length) {
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(8),
+                          child: AppLoading(),
+                        ),
+                      );
+                    }
 
-              final order = state.orders.data[index];
-              return OrderCard(order: order);
-            },
+                    final order = orders.data[index];
+                    return OrderCard(order: order);
+                  },
+                ),
+              ),
+            ],
           ),
         );
       },
@@ -157,20 +177,25 @@ class _ServiceBookingsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<OrdersBloc, OrdersState>(
-      builder: (context, state) {
-        if (state.serviceStatus == OrdersStatus.loading &&
-            state.serviceBookings.data.isEmpty) {
+    return BlocSelector<OrdersBloc, OrdersState,
+        (OrdersStatus, PaginatedResponse<BookingEntity>, String)>(
+      selector: (state) =>
+          (state.serviceStatus, state.serviceBookings, state.errorMessage),
+      builder: (context, data) {
+        final (serviceStatus, serviceBookings, errorMessage) = data;
+
+        if (serviceStatus == OrdersStatus.loading &&
+            serviceBookings.data.isEmpty) {
           return const Center(child: AppLoading());
         }
 
-        if (state.serviceStatus == OrdersStatus.failure &&
-            state.serviceBookings.data.isEmpty) {
+        if (serviceStatus == OrdersStatus.failure &&
+            serviceBookings.data.isEmpty) {
           return Center(
             child: AppErrorWidget(
               title: context.l10n.errors_error_occurred_title,
-              message: state.errorMessage.isNotEmpty
-                  ? state.errorMessage
+              message: errorMessage.isNotEmpty
+                  ? errorMessage
                   : context.l10n.errors_error_occurred_message,
               onRetry: () => context
                   .read<OrdersBloc>()
@@ -179,7 +204,7 @@ class _ServiceBookingsTab extends StatelessWidget {
           );
         }
 
-        if (state.serviceBookings.data.isEmpty) {
+        if (serviceBookings.data.isEmpty) {
           return AppEmptyState(
             title: context.l10n.order_no_orders_title,
             subtitle: context.l10n.order_no_orders_msg,
@@ -190,13 +215,19 @@ class _ServiceBookingsTab extends StatelessWidget {
           onRefresh: () async {
             context.read<OrdersBloc>().add(const GetServiceBookingsEvent());
           },
-          child: ListView.builder(
-            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 10.h),
-            itemCount: state.serviceBookings.data.length,
-            itemBuilder: (context, index) {
-              final booking = state.serviceBookings.data[index];
-              return BookingCard(booking: booking);
-            },
+          child: CustomScrollView(
+            slivers: [
+              SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 10.h),
+                sliver: SliverList.builder(
+                  itemCount: serviceBookings.data.length,
+                  itemBuilder: (context, index) {
+                    final booking = serviceBookings.data[index];
+                    return BookingCard(booking: booking);
+                  },
+                ),
+              ),
+            ],
           ),
         );
       },

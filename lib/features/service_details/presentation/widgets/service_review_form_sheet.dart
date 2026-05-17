@@ -1,0 +1,138 @@
+import 'package:wassaly/core/imports/imports.dart';
+import '../../domain/entities/service_detail_entity.dart';
+import '../bloc/service_details_bloc.dart';
+
+class ServiceReviewFormSheet extends StatefulWidget {
+  final int serviceId;
+  final ServiceDetailReviewEntity? review;
+
+  const ServiceReviewFormSheet({
+    super.key,
+    required this.serviceId,
+    this.review,
+  });
+
+  @override
+  State<ServiceReviewFormSheet> createState() => _ServiceReviewFormSheetState();
+}
+
+class _ServiceReviewFormSheetState extends State<ServiceReviewFormSheet> {
+  late final TextEditingController _commentController;
+  late int _rating;
+
+  bool get _isEdit => widget.review != null;
+
+  @override
+  void initState() {
+    super.initState();
+    _rating = widget.review?.rating ?? 5;
+    _commentController = TextEditingController(text: widget.review?.comment);
+  }
+
+  @override
+  void dispose() {
+    _commentController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = context.theme.colorScheme;
+    final tt = context.theme.textTheme;
+
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 16.w,
+        right: 16.w,
+        top: 16.h,
+        bottom: MediaQuery.viewInsetsOf(context).bottom + 16.h,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            _isEdit
+                ? context.l10n.product_details_edit_review
+                : context.l10n.product_details_add_review,
+            style: tt.titleLarge?.copyWith(
+              color: cs.primary,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          12.verticalSpace,
+          Row(
+            children: List.generate(
+              5,
+              (index) {
+                final star = index + 1;
+                return IconButton(
+                  onPressed: () => setState(() => _rating = star),
+                  icon: Icon(
+                    star <= _rating
+                        ? Icons.star_rounded
+                        : Icons.star_outline_rounded,
+                    color: star <= _rating ? cs.secondary : cs.outline,
+                  ),
+                );
+              },
+            ),
+          ),
+          8.verticalSpace,
+          TextField(
+            controller: _commentController,
+            minLines: 3,
+            maxLines: 5,
+            decoration: InputDecoration(
+              hintText: context.l10n.product_details_review_comment_hint,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+            ),
+          ),
+          16.verticalSpace,
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              onPressed: _submit,
+              child: Text(context.l10n.profile_save_changes),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _submit() {
+    final comment = _commentController.text.trim();
+    if (comment.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content:
+                Text(context.l10n.product_details_review_comment_required)),
+      );
+      return;
+    }
+
+    final bloc = context.read<ServiceDetailsBloc>();
+    if (_isEdit) {
+      bloc.add(
+        UpdateServiceReviewEvent(
+          reviewId: widget.review!.id,
+          rating: _rating,
+          comment: comment,
+        ),
+      );
+    } else {
+      bloc.add(
+        CreateServiceReviewEvent(
+          serviceId: widget.serviceId,
+          rating: _rating,
+          comment: comment,
+        ),
+      );
+    }
+
+    Navigator.of(context).pop();
+  }
+}

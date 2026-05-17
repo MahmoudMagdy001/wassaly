@@ -3,14 +3,18 @@ import '../../domain/entities/provider_detail_entity.dart';
 
 class ProviderDetailReviewModel extends ProviderDetailReviewEntity {
   const ProviderDetailReviewModel({
+    super.id,
     required super.rating,
     required super.comment,
+    super.createdAt,
   });
 
   factory ProviderDetailReviewModel.fromJson(Map<String, dynamic> json) {
     return ProviderDetailReviewModel(
+      id: json['id'] as int?,
       rating: (json['rating'] as num).toInt(),
       comment: json['comment'] as String? ?? '',
+      createdAt: json['created_at'] as String?,
     );
   }
 }

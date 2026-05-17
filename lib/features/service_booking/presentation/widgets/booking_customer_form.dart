@@ -1,5 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
-import '../bloc/service_booking_bloc.dart';
+import 'package:wassaly/features/service_booking/presentation/bloc/service_booking_bloc.dart';
 
 class BookingCustomerForm extends StatefulWidget {
   const BookingCustomerForm({super.key});
@@ -55,8 +55,8 @@ class _BookingCustomerFormState extends State<BookingCustomerForm> {
           _problemController.text = state.problemDescription;
         }
       },
-      child: BlocBuilder<ServiceBookingBloc, ServiceBookingState>(
-        builder: (context, state) {
+      child: Builder(
+        builder: (context) {
           final bloc = context.read<ServiceBookingBloc>();
 
           return Column(

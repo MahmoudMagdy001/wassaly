@@ -122,13 +122,13 @@ class _ResetPasswordView extends StatelessWidget {
                 32.verticalSpace,
 
                 // Password Requirements Hint
-                BlocBuilder<ResetPasswordBloc, ResetPasswordState>(
-                  buildWhen: (previous, current) =>
-                      previous.isNewPasswordValid !=
-                          current.isNewPasswordValid ||
-                      previous.isConfirmPasswordValid !=
-                          current.isConfirmPasswordValid,
-                  builder: (context, state) {
+                BlocSelector<ResetPasswordBloc, ResetPasswordState,
+                    (bool, bool)>(
+                  selector: (state) =>
+                      (state.isNewPasswordValid, state.isConfirmPasswordValid),
+                  builder: (context, data) {
+                    final (isNewPasswordValid, isConfirmPasswordValid) = data;
+
                     return Container(
                       padding: EdgeInsets.all(16.w),
                       decoration: BoxDecoration(
@@ -151,13 +151,13 @@ class _ResetPasswordView extends StatelessWidget {
                           _buildRequirementRow(
                             context,
                             context.l10n.reset_password_req_min_length,
-                            isMet: state.isNewPasswordValid,
+                            isMet: isNewPasswordValid,
                           ),
                           8.verticalSpace,
                           _buildRequirementRow(
                             context,
                             context.l10n.reset_password_req_match,
-                            isMet: state.isConfirmPasswordValid,
+                            isMet: isConfirmPasswordValid,
                           ),
                         ],
                       ),

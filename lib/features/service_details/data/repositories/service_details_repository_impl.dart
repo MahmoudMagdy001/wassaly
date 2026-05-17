@@ -38,4 +38,44 @@ class ServiceDetailsRepositoryImpl implements ServiceDetailsRepository {
       return Left(ServerFailure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, Unit>> createServiceReview({
+    required int serviceId,
+    required int rating,
+    required String comment,
+  }) async {
+    try {
+      await _remoteDataSource.createServiceReview(
+        serviceId: serviceId,
+        rating: rating,
+        comment: comment,
+      );
+      return const Right(unit);
+    } on Failure catch (failure) {
+      return Left(failure);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> updateServiceReview({
+    required int reviewId,
+    required int rating,
+    required String comment,
+  }) async {
+    try {
+      await _remoteDataSource.updateServiceReview(
+        reviewId: reviewId,
+        rating: rating,
+        comment: comment,
+      );
+      return const Right(unit);
+    } on Failure catch (failure) {
+      return Left(failure);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
 }

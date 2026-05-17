@@ -1,10 +1,9 @@
 import 'package:wassaly/core/imports/imports.dart';
-
-import '../../../brands/presentation/widgets/brands_section.dart';
-import '../bloc/home_bloc.dart';
-import '../bloc/home_event.dart';
-import '../bloc/home_state.dart';
-import '../widgets/widgets.dart';
+import 'package:wassaly/features/brands/presentation/widgets/brands_section.dart';
+import 'package:wassaly/features/home/presentation/bloc/home_bloc.dart';
+import 'package:wassaly/features/home/presentation/bloc/home_event.dart';
+import 'package:wassaly/features/home/presentation/bloc/home_state.dart';
+import 'package:wassaly/features/home/presentation/widgets/widgets.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -31,12 +30,17 @@ class _HomeView extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: cs.surface,
-      body: BlocBuilder<HomeBloc, HomeState>(
-        buildWhen: (previous, current) =>
-            previous.allSectionsFailed != current.allSectionsFailed ||
-            previous.anySectionLoading != current.anySectionLoading ||
-            previous.errorMessage != current.errorMessage,
-        builder: (context, state) {
+      body: BlocSelector<HomeBloc, HomeState, (bool, bool, Failure?, String)>(
+        selector: (state) => (
+          state.allSectionsFailed,
+          state.anySectionLoading,
+          state.failure,
+          state.errorMessage,
+        ),
+        builder: (context, data) {
+          final (allSectionsFailed, anySectionLoading, failure, errorMessage) =
+              data;
+
           return RefreshIndicator(
             onRefresh: () => _refreshAllSections(context),
             color: cs.primary,
@@ -57,19 +61,19 @@ class _HomeView extends StatelessWidget {
                 ),
 
                 // Show global error state when all sections failed
-                if (state.allSectionsFailed && !state.anySectionLoading) ...[
+                if (allSectionsFailed && !anySectionLoading) ...[
                   SliverPadding(
                     padding: EdgeInsets.only(top: 100.h),
                     sliver: SliverFillRemaining(
-                      child: state.failure != null
+                      child: failure != null
                           ? AppErrorWidget.failure(
-                              failure: state.failure!,
+                              failure: failure,
                               onRetry: () => _refreshAllSections(context),
                             )
                           : AppErrorWidget(
                               title: context.l10n.errors_no_internet_title,
-                              message: state.errorMessage.isNotEmpty
-                                  ? state.errorMessage
+                              message: errorMessage.isNotEmpty
+                                  ? errorMessage
                                   : context.l10n.errors_no_internet_message,
                               onRetry: () => _refreshAllSections(context),
                               icon: Icons.wifi_off_rounded,

@@ -11,13 +11,13 @@ class EditProfileSaveButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProfileBloc, ProfileState>(
-      buildWhen: (prev, curr) => prev.actionStatus != curr.actionStatus,
-      builder: (context, state) {
+    return BlocSelector<ProfileBloc, ProfileState, bool>(
+      selector: (state) => state.actionStatus.isLoading,
+      builder: (context, isLoading) {
         return AppButton(
           label: context.l10n.profile_save_changes,
           isFullWidth: true,
-          isLoading: state.actionStatus.isLoading,
+          isLoading: isLoading,
           onPressed: onPressed,
         );
       },

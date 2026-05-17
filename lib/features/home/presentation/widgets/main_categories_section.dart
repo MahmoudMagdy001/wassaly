@@ -1,9 +1,8 @@
 import 'package:wassaly/core/imports/imports.dart';
-
-import '../../domain/entities/category_entity.dart';
-import '../bloc/home_bloc.dart';
-import '../bloc/home_state.dart';
-import 'category_card.dart';
+import 'package:wassaly/features/home/domain/entities/category_entity.dart';
+import 'package:wassaly/features/home/presentation/bloc/home_bloc.dart';
+import 'package:wassaly/features/home/presentation/bloc/home_state.dart';
+import 'package:wassaly/features/home/presentation/widgets/category_card.dart';
 
 class MainCategoriesSection extends StatelessWidget {
   const MainCategoriesSection({super.key});
@@ -13,13 +12,14 @@ class MainCategoriesSection extends StatelessWidget {
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
 
-    return BlocBuilder<HomeBloc, HomeState>(
-      buildWhen: (previous, current) =>
-          previous.categoriesStatus != current.categoriesStatus ||
-          previous.categories != current.categories,
-      builder: (context, state) {
-        if (state.categoriesStatus == HomeStatus.loading ||
-            state.categoriesStatus == HomeStatus.initial) {
+    return BlocSelector<HomeBloc, HomeState,
+        (HomeStatus, List<CategoryEntity>)>(
+      selector: (state) => (state.categoriesStatus, state.categories),
+      builder: (context, data) {
+        final (categoriesStatus, categories) = data;
+
+        if (categoriesStatus == HomeStatus.loading ||
+            categoriesStatus == HomeStatus.initial) {
           final dummyCategories = List.generate(
             3,
             (index) => const CategoryEntity(
@@ -33,16 +33,14 @@ class MainCategoriesSection extends StatelessWidget {
             enabled: true,
             child: _buildContent(context, cs, tt, dummyCategories),
           );
-        } else if (state.categoriesStatus == HomeStatus.failure) {
+        } else if (categoriesStatus == HomeStatus.failure) {
           return const SizedBox.shrink();
-        } else if (state.categories.isEmpty &&
-            state.categoriesStatus == HomeStatus.success) {
+        } else if (categories.isEmpty &&
+            categoriesStatus == HomeStatus.success) {
           return const SizedBox.shrink();
         }
 
-        return _buildContent(context, cs, tt, state.categories)
-            .animate()
-            .fadeIn(
+        return _buildContent(context, cs, tt, categories).animate().fadeIn(
               delay: const Duration(milliseconds: 200),
               duration: const Duration(milliseconds: 400),
             );

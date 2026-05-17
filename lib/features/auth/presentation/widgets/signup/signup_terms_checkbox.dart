@@ -16,14 +16,13 @@ class SignupTermsCheckbox extends StatelessWidget {
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
 
-    return BlocBuilder<SignupBloc, SignupState>(
-      buildWhen: (previous, current) =>
-          previous.isTermsAccepted != current.isTermsAccepted,
-      builder: (context, state) {
+    return BlocSelector<SignupBloc, SignupState, bool>(
+      selector: (state) => state.isTermsAccepted,
+      builder: (context, isTermsAccepted) {
         return Row(
           children: [
             Checkbox(
-              value: state.isTermsAccepted,
+              value: isTermsAccepted,
               onChanged: (value) {
                 context
                     .read<SignupBloc>()

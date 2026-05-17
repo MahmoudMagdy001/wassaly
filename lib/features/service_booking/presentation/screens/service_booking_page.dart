@@ -1,5 +1,4 @@
-import 'package:wassaly/core/imports/core_imports.dart';
-import 'package:wassaly/core/imports/packages_imports.dart';
+import 'package:wassaly/core/imports/imports.dart';
 
 import '../../../service_details/domain/entities/service_detail_entity.dart';
 import '../bloc/service_booking_bloc.dart';
@@ -45,68 +44,65 @@ class ServiceBookingPage extends StatelessWidget {
         },
         child: Scaffold(
           backgroundColor: cs.surface,
-          appBar: AppTopBar(
-            title: context.l10n.service_booking_title,
-          ),
-          body: BlocBuilder<ServiceBookingBloc, ServiceBookingState>(
-            builder: (context, state) {
-              return CustomScrollView(
-                slivers: [
-                  SliverPadding(
-                    padding: EdgeInsets.fromLTRB(8.w, 16.h, 8.w, 16.h),
-                    sliver: SliverList(
-                      delegate: SliverChildListDelegate([
-                        // ─── Service Summary ────────────────────────────
-                        ServiceSummaryCard(service: service),
-                        16.verticalSpace,
+          body: CustomScrollView(
+            slivers: [
+              AppSliverTopBar(
+                title: context.l10n.service_booking_title,
+              ),
+              SliverPadding(
+                padding: EdgeInsets.fromLTRB(8.w, 16.h, 8.w, 16.h),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    // ─── Service Summary ────────────────────────────
+                    ServiceSummaryCard(service: service),
+                    16.verticalSpace,
 
-                        // ─── Customer Information ───────────────────────
-                        const AppCard(
-                          showShadow: true,
-                          child: BookingCustomerForm(),
-                        ),
-                        16.verticalSpace,
-
-                        // ─── Address Information ────────────────────────
-                        const AppCard(
-                          showShadow: true,
-                          child: BookingAddressSection(),
-                        ),
-                        16.verticalSpace,
-
-                        // ─── Booking Details Summary ────────────────────
-                        AppCard(
-                          showShadow: true,
-                          child: Column(
-                            children: [
-                              _buildSummaryRow(
-                                context,
-                                context.l10n.service_booking_selected_day,
-                                selectedDay != null
-                                    ? (context.isArabic
-                                        ? selectedDay!.nameAr
-                                        : selectedDay!.nameEn)
-                                    : '-',
-                              ),
-                              12.verticalSpace,
-                              _buildSummaryRow(
-                                context,
-                                context.l10n.service_booking_selected_time,
-                                selectedTime?.displayTime ?? '-',
-                              ),
-                            ],
-                          ),
-                        ),
-                      ]),
+                    // ─── Customer Information ───────────────────────
+                    const AppCard(
+                      showShadow: true,
+                      child: BookingCustomerForm(),
                     ),
-                  ),
-                ],
-              );
-            },
+                    16.verticalSpace,
+
+                    // ─── Address Information ────────────────────────
+                    const AppCard(
+                      showShadow: true,
+                      child: BookingAddressSection(),
+                    ),
+                    16.verticalSpace,
+
+                    // ─── Booking Details Summary ────────────────────
+                    AppCard(
+                      showShadow: true,
+                      child: Column(
+                        children: [
+                          _buildSummaryRow(
+                            context,
+                            context.l10n.service_booking_selected_day,
+                            selectedDay != null
+                                ? (context.isArabic
+                                    ? selectedDay!.nameAr
+                                    : selectedDay!.nameEn)
+                                : '-',
+                          ),
+                          12.verticalSpace,
+                          _buildSummaryRow(
+                            context,
+                            context.l10n.service_booking_selected_time,
+                            selectedTime?.displayTime ?? '-',
+                          ),
+                        ],
+                      ),
+                    ),
+                  ]),
+                ),
+              ),
+            ],
           ),
           bottomNavigationBar:
-              BlocBuilder<ServiceBookingBloc, ServiceBookingState>(
-            builder: (context, state) {
+              BlocSelector<ServiceBookingBloc, ServiceBookingState, bool>(
+            selector: (state) => state.status == ServiceBookingStatus.submitting,
+            builder: (context, isSubmitting) {
               return Container(
                 padding: EdgeInsets.fromLTRB(
                     16.w, 12.h, 16.w, 16.h + context.bottomPadding),
@@ -124,10 +120,12 @@ class ServiceBookingPage extends StatelessWidget {
                   label: context.l10n.service_booking_confirm,
                   isFullWidth: true,
                   height: ButtonSize.large,
-                  isLoading: state.status == ServiceBookingStatus.submitting,
-                  onPressed: () => context
-                      .read<ServiceBookingBloc>()
-                      .add(ServiceBookingSubmitted()),
+                  isLoading: isSubmitting,
+                  onPressed: isSubmitting
+                      ? null
+                      : () => context
+                          .read<ServiceBookingBloc>()
+                          .add(ServiceBookingSubmitted()),
                 ),
               );
             },

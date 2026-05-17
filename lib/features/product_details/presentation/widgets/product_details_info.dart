@@ -1,8 +1,8 @@
 import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_bloc.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_event.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_state.dart';
-import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
 
 import '../../../home/domain/entities/product_entity.dart';
 import '../../domain/entities/product_detail_entity.dart';
@@ -209,6 +209,7 @@ class _ReviewsSection extends StatelessWidget {
                 userAvatar: review.user.avatar,
                 isCurrentUserReview: isMine,
                 canEdit: isMine && _canEditReview(review.createdAt),
+                createdAt: review.createdAt,
                 onEdit: () => _showReviewSheet(context, review: review),
               );
             },

@@ -1,9 +1,8 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/home/domain/entities/sub_category_entity.dart';
-
-import '../bloc/sub_category_bloc.dart';
-import '../bloc/sub_category_event.dart';
-import '../bloc/sub_category_state.dart';
+import 'package:wassaly/features/sub_category/presentation/bloc/sub_category_bloc.dart';
+import 'package:wassaly/features/sub_category/presentation/bloc/sub_category_event.dart';
+import 'package:wassaly/features/sub_category/presentation/bloc/sub_category_state.dart';
 
 class SubCategoryPage extends StatelessWidget {
   final SubCategoryEntity subCategory;
@@ -108,19 +107,10 @@ class SubCategoryDetailView extends StatelessWidget {
                 ),
 
               // Services Section
-
-              if (!isLoading && detail != null && detail.services.isNotEmpty)
+              if (isLoading || (detail != null && detail.services.isNotEmpty))
                 AppServicesSection(
-                  services: detail.services,
-                  crossAxisCount: crossAxisCount,
-                  childAspectRatio:
-                      serviceChildAspectRatio ?? childAspectRatio ?? 0.50,
-                  mainAxisExtent: serviceMainAxisExtent ?? mainAxisExtent,
-                ),
-
-              // Services Skeleton
-              if (isLoading)
-                AppServicesSkeleton(
+                  isLoading: isLoading,
+                  services: isLoading ? const [] : detail!.services,
                   crossAxisCount: crossAxisCount,
                   childAspectRatio:
                       serviceChildAspectRatio ?? childAspectRatio ?? 0.50,
@@ -128,29 +118,23 @@ class SubCategoryDetailView extends StatelessWidget {
                 ),
 
               // Products Section
-              if (!isLoading && state.products.data.isNotEmpty)
+              if (isLoading || state.products.data.isNotEmpty)
                 AppProductsSection(
-                  products: state.products.data,
-                  hasMore: state.hasMoreProducts,
-                  isLoadingMore: state.isLoadingMore,
+                  isLoading: isLoading,
+                  products: isLoading ? const [] : state.products.data,
+                  hasMore: isLoading ? false : state.hasMoreProducts,
+                  isLoadingMore: isLoading ? false : state.isLoadingMore,
                   crossAxisCount: crossAxisCount,
                   childAspectRatio:
                       productChildAspectRatio ?? childAspectRatio ?? 0.65,
                   mainAxisExtent: productMainAxisExtent ?? mainAxisExtent,
-                  onLoadMore: () {
-                    context.read<SubCategoryBloc>().add(
-                          LoadMoreProductsEvent(subCategory.id),
-                        );
-                  },
-                ),
-
-              // Products Skeleton
-              if (isLoading)
-                AppProductsSkeleton(
-                  crossAxisCount: crossAxisCount,
-                  childAspectRatio:
-                      productChildAspectRatio ?? childAspectRatio ?? 0.65,
-                  mainAxisExtent: productMainAxisExtent ?? mainAxisExtent,
+                  onLoadMore: isLoading
+                      ? null
+                      : () {
+                          context.read<SubCategoryBloc>().add(
+                                LoadMoreProductsEvent(subCategory.id),
+                              );
+                        },
                 ),
 
               // Empty state if no data

@@ -156,10 +156,6 @@ class _EditProfileViewState extends State<_EditProfileView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppTopBar(
-        title: context.l10n.profile_edit_profile,
-        centerTitle: true,
-      ),
       body: BlocListener<ProfileBloc, ProfileState>(
         listenWhen: (prev, curr) =>
             (prev.user != curr.user && curr.user != null) ||
@@ -194,42 +190,52 @@ class _EditProfileViewState extends State<_EditProfileView> {
           }
           _previousActionStatus = state.actionStatus;
         },
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(16.w).copyWith(
-            bottom: 16.h,
-          ),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                EditProfileAvatarPicker(
-                  avatarFile: _avatarFile,
-                  onAvatarPicked: _onAvatarPicked,
-                ),
-                8.verticalSpace,
-                EditProfileNameField(controller: _nameController),
-                8.verticalSpace,
-                EditProfilePhoneField(controller: _phoneController),
-                16.verticalSpace,
-                EditProfilePasswordSection(
-                  currentPasswordController: _currentPasswordController,
-                  passwordController: _passwordController,
-                  passwordConfirmationController:
-                      _passwordConfirmationController,
-                ),
-                16.verticalSpace,
-                EditProfileSaveButton(onPressed: _submit),
-                8.verticalSpace,
-                AppButton(
-                  label: context.l10n.profile_delete_account,
-                  onPressed: _showDeleteAccountBottomSheet,
-                  variant: ButtonVariant.danger,
-                  isFullWidth: true,
-                  prefixIcon: const Icon(Icons.delete_forever),
-                ),
-              ],
+        child: CustomScrollView(
+          slivers: [
+            AppSliverTopBar(
+              title: context.l10n.profile_edit_profile,
+              centerTitle: true,
             ),
-          ),
+            SliverPadding(
+              padding: EdgeInsets.all(16.w).copyWith(
+                bottom: 16.h,
+              ),
+              sliver: SliverToBoxAdapter(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      EditProfileAvatarPicker(
+                        avatarFile: _avatarFile,
+                        onAvatarPicked: _onAvatarPicked,
+                      ),
+                      8.verticalSpace,
+                      EditProfileNameField(controller: _nameController),
+                      8.verticalSpace,
+                      EditProfilePhoneField(controller: _phoneController),
+                      16.verticalSpace,
+                      EditProfilePasswordSection(
+                        currentPasswordController: _currentPasswordController,
+                        passwordController: _passwordController,
+                        passwordConfirmationController:
+                            _passwordConfirmationController,
+                      ),
+                      16.verticalSpace,
+                      EditProfileSaveButton(onPressed: _submit),
+                      8.verticalSpace,
+                      AppButton(
+                        label: context.l10n.profile_delete_account,
+                        onPressed: _showDeleteAccountBottomSheet,
+                        variant: ButtonVariant.danger,
+                        isFullWidth: true,
+                        prefixIcon: const Icon(Icons.delete_forever),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

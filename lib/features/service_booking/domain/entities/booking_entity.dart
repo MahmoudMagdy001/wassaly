@@ -1,5 +1,5 @@
 import 'package:intl/intl.dart';
-import 'package:wassaly/core/imports/packages_imports.dart';
+import 'package:wassaly/core/imports/imports.dart';
 
 class BookingProviderEntity extends Equatable {
   final int id;

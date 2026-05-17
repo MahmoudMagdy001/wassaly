@@ -1,4 +1,4 @@
-import 'package:wassaly/core/imports/packages_imports.dart';
+import 'package:wassaly/core/imports/imports.dart';
 
 import '../../domain/entities/provider_detail_entity.dart';
 

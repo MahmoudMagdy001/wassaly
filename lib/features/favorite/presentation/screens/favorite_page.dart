@@ -1,8 +1,9 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_bloc.dart';
-
-import '../bloc/favorite_event.dart';
-import '../bloc/favorite_state.dart';
+import 'package:wassaly/features/favorite/presentation/bloc/favorite_event.dart';
+import 'package:wassaly/features/favorite/presentation/bloc/favorite_state.dart';
+import 'package:wassaly/features/home/domain/entities/product_entity.dart';
+import 'package:wassaly/features/sub_category/domain/entities/service_entity.dart';
 
 class FavoritePage extends StatelessWidget {
   const FavoritePage({super.key});
@@ -42,24 +43,34 @@ class _FavoriteViewState extends State<_FavoriteView> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        appBar: AppTopBar(
-          title: context.l10n.favorite_favorite_title,
-          bottom: TabBar(
-            labelColor: cs.primary,
-            unselectedLabelColor: cs.onSurfaceVariant,
-            indicatorColor: cs.primary,
-            indicatorSize: TabBarIndicatorSize.label,
-            tabs: [
-              Tab(text: context.l10n.favorite_products),
-              Tab(text: context.l10n.favorite_services),
+        body: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) {
+            return [
+              AppSliverTopBar(
+                title: context.l10n.favorite_favorite_title,
+                centerTitle: true,
+                pinned: true,
+                floating: true,
+                snap: true,
+                bottom: TabBar(
+                  labelColor: cs.primary,
+                  unselectedLabelColor: cs.onSurfaceVariant,
+                  indicatorColor: cs.primary,
+                  indicatorSize: TabBarIndicatorSize.label,
+                  tabs: [
+                    Tab(text: context.l10n.favorite_products),
+                    Tab(text: context.l10n.favorite_services),
+                  ],
+                ),
+              ),
+            ];
+          },
+          body: const TabBarView(
+            children: [
+              _ProductFavoritesTab(),
+              _ServiceFavoritesTab(),
             ],
           ),
-        ),
-        body: const TabBarView(
-          children: [
-            _ProductFavoritesTab(),
-            _ServiceFavoritesTab(),
-          ],
         ),
       ),
     );
@@ -73,12 +84,14 @@ class _ProductFavoritesTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = context.theme.colorScheme;
 
-    return BlocBuilder<FavoriteBloc, FavoriteState>(
-      buildWhen: (previous, current) =>
-          previous.status != current.status ||
-          previous.favorites != current.favorites ||
-          previous.failure != current.failure,
-      builder: (context, state) {
+    return BlocSelector<FavoriteBloc, FavoriteState,
+        (FavoriteStatus, PaginatedResponse<ProductEntity>, Failure?)>(
+      selector: (state) => (state.status, state.favorites, state.failure),
+      builder: (context, data) {
+        final (status, favorites, failure) = data;
+        final isLoading = status == FavoriteStatus.loading;
+        final isError = status == FavoriteStatus.error;
+
         return RefreshIndicator(
           onRefresh: () async {
             final bloc = context.read<FavoriteBloc>();
@@ -94,24 +107,27 @@ class _ProductFavoritesTab extends StatelessWidget {
           child: CustomScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             slivers: [
-              if (state.isLoading && state.favorites.data.isEmpty)
-                const AppProductsSkeleton(
-                  padding: EdgeInsets.symmetric(horizontal: 6, vertical: 10),
-                  mainAxisExtent: 220,
+              if (isLoading || favorites.data.isNotEmpty)
+                AppProductsSection(
+                  isLoading: isLoading,
+                  products: isLoading ? const [] : favorites.data,
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 6.w, vertical: 10.h),
+                  mainAxisExtent: 230.h,
                 )
-              else if (state.isError && state.favorites.data.isEmpty)
+              else if (isError && favorites.data.isEmpty)
                 SliverFillRemaining(
                   hasScrollBody: false,
                   child: Center(
                     child: AppErrorWidget.failure(
-                      failure: state.failure!,
+                      failure: failure!,
                       onRetry: () => context
                           .read<FavoriteBloc>()
                           .add(const GetFavoritesEvent()),
                     ),
                   ),
                 )
-              else if (state.favorites.data.isEmpty)
+              else if (favorites.data.isEmpty)
                 SliverFillRemaining(
                   hasScrollBody: false,
                   child: Center(
@@ -121,13 +137,6 @@ class _ProductFavoritesTab extends StatelessWidget {
                       subtitle: context.l10n.favorite_no_favorites_subtitle,
                     ),
                   ),
-                )
-              else
-                AppProductsSection(
-                  products: state.favorites.data,
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 6.w, vertical: 10.h),
-                  mainAxisExtent: 230.h,
                 ),
             ],
           ),
@@ -144,12 +153,15 @@ class _ServiceFavoritesTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = context.theme.colorScheme;
 
-    return BlocBuilder<FavoriteBloc, FavoriteState>(
-      buildWhen: (previous, current) =>
-          previous.status != current.status ||
-          previous.serviceFavorites != current.serviceFavorites ||
-          previous.failure != current.failure,
-      builder: (context, state) {
+    return BlocSelector<FavoriteBloc, FavoriteState,
+        (FavoriteStatus, PaginatedResponse<ServiceEntity>, Failure?)>(
+      selector: (state) =>
+          (state.status, state.serviceFavorites, state.failure),
+      builder: (context, data) {
+        final (status, serviceFavorites, failure) = data;
+        final isLoading = status == FavoriteStatus.loading;
+        final isError = status == FavoriteStatus.error;
+
         return RefreshIndicator(
           onRefresh: () async {
             final bloc = context.read<FavoriteBloc>();
@@ -165,25 +177,27 @@ class _ServiceFavoritesTab extends StatelessWidget {
           child: CustomScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             slivers: [
-              if (state.isLoading && state.serviceFavorites.data.isEmpty)
-                AppServicesSkeleton(
+              if (isLoading || serviceFavorites.data.isNotEmpty)
+                AppServicesSection(
+                  isLoading: isLoading,
+                  services: isLoading ? const [] : serviceFavorites.data,
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
+                      EdgeInsets.symmetric(horizontal: 6.w, vertical: 10.h),
                   mainAxisExtent: 190.h,
                 )
-              else if (state.isError && state.serviceFavorites.data.isEmpty)
+              else if (isError && serviceFavorites.data.isEmpty)
                 SliverFillRemaining(
                   hasScrollBody: false,
                   child: Center(
                     child: AppErrorWidget.failure(
-                      failure: state.failure!,
+                      failure: failure!,
                       onRetry: () => context
                           .read<FavoriteBloc>()
                           .add(const GetServiceFavoritesEvent()),
                     ),
                   ),
                 )
-              else if (state.serviceFavorites.data.isEmpty)
+              else if (serviceFavorites.data.isEmpty)
                 SliverFillRemaining(
                   hasScrollBody: false,
                   child: Center(
@@ -193,13 +207,6 @@ class _ServiceFavoritesTab extends StatelessWidget {
                       subtitle: context.l10n.favorite_no_favorites_subtitle,
                     ),
                   ),
-                )
-              else
-                AppServicesSection(
-                  services: state.serviceFavorites.data,
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 6.w, vertical: 10.h),
-                  mainAxisExtent: 190.h,
                 ),
             ],
           ),

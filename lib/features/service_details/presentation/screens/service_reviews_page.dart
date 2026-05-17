@@ -1,17 +1,17 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
+import 'package:wassaly/features/orders/presentation/bloc/orders_bloc.dart';
 
-import '../../domain/entities/product_detail_entity.dart';
-import '../bloc/product_details_bloc.dart';
-import '../bloc/product_details_state.dart';
-import '../widgets/product_review_form_sheet.dart';
+import '../../domain/entities/service_detail_entity.dart';
+import '../bloc/service_details_bloc.dart';
+import '../widgets/service_review_form_sheet.dart';
 
-class ProductReviewsPage extends StatelessWidget {
-  final int productId;
+class ServiceReviewsPage extends StatelessWidget {
+  final int serviceId;
 
-  const ProductReviewsPage({
+  const ServiceReviewsPage({
     super.key,
-    required this.productId,
+    required this.serviceId,
   });
 
   @override
@@ -20,7 +20,7 @@ class ProductReviewsPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: cs.surface,
-      body: BlocConsumer<ProductDetailsBloc, ProductDetailsState>(
+      body: BlocConsumer<ServiceDetailsBloc, ServiceDetailsState>(
         listenWhen: (previous, current) =>
             previous.reviewActionStatus != current.reviewActionStatus,
         listener: (context, state) {
@@ -31,10 +31,18 @@ class ProductReviewsPage extends StatelessWidget {
             );
           }
         },
-        buildWhen: (previous, current) => previous.product != current.product,
+        buildWhen: (previous, current) => previous.service != current.service,
         builder: (context, state) {
-          final reviews = state.product?.reviews ?? const [];
+          final reviews = state.service?.reviews ?? const [];
           final currentUserId = _currentUserId(context);
+
+          final bookingsState = context.watch<OrdersBloc>().state;
+          final bookings = bookingsState.serviceBookings.data;
+
+          final hasCompletedBooking = bookings.any((b) =>
+              b.service.id == serviceId &&
+              (b.status.trim().toLowerCase() == 'completed' ||
+                  b.status.trim() == 'مكتمل'));
 
           return CustomScrollView(
             slivers: [
@@ -57,7 +65,7 @@ class ProductReviewsPage extends StatelessWidget {
                       userName: review.user.name,
                       userAvatar: review.user.avatar,
                       isCurrentUserReview: isMine,
-                      canEdit: isMine && _canEditReview(review.createdAt),
+                      canEdit: isMine && _canEditReview(review.createdAt) && hasCompletedBooking,
                       createdAt: review.createdAt,
                       onEdit: () => _showReviewSheet(context, review),
                     );
@@ -107,15 +115,15 @@ class ProductReviewsPage extends StatelessWidget {
 
   void _showReviewSheet(
     BuildContext context,
-    ProductDetailReviewEntity review,
+    ServiceDetailReviewEntity review,
   ) {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       builder: (_) => BlocProvider.value(
-        value: context.read<ProductDetailsBloc>(),
-        child: ProductReviewFormSheet(
-          productId: productId,
+        value: context.read<ServiceDetailsBloc>(),
+        child: ServiceReviewFormSheet(
+          serviceId: serviceId,
           review: review,
         ),
       ),

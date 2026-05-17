@@ -144,21 +144,23 @@ class _OtpVerificationViewState extends State<_OtpVerificationView> {
                 32.verticalSpace,
                 ResendOtpWidget(onResend: _onResendPressed),
                 40.verticalSpace,
-                BlocBuilder<OtpVerificationBloc, OtpVerificationState>(
-                  buildWhen: (previous, current) =>
-                      previous.canVerify != current.canVerify ||
-                      previous.verificationStatus != current.verificationStatus,
-                  builder: (context, state) {
+                BlocSelector<OtpVerificationBloc, OtpVerificationState,
+                    (bool, OtpVerificationStatus)>(
+                  selector: (state) =>
+                      (state.canVerify, state.verificationStatus),
+                  builder: (context, data) {
+                    final (canVerify, verificationStatus) = data;
+                    final isLoading =
+                        verificationStatus == OtpVerificationStatus.loading;
+
                     return AppButton(
                       label: context.l10n.otp_verify_now,
-                      onPressed: state.canVerify ? _onVerifyPressed : null,
-                      isLoading: state.verificationStatus ==
-                          OtpVerificationStatus.loading,
+                      onPressed: canVerify ? _onVerifyPressed : null,
+                      isLoading: isLoading,
                       isFullWidth: true,
                       height: ButtonSize.medium,
                       variant: ButtonVariant.success,
-                      suffixIcon: state.verificationStatus !=
-                              OtpVerificationStatus.loading
+                      suffixIcon: !isLoading
                           ? Icon(
                               Icons.verified_outlined,
                               color: cs.onPrimary,

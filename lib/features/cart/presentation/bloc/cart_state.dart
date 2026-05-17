@@ -1,5 +1,4 @@
-import 'package:equatable/equatable.dart';
-import 'package:wassaly/core/imports/core_imports.dart';
+import 'package:wassaly/core/imports/imports.dart';
 
 import '../../../../features/profile/domain/entities/address_entity.dart';
 import '../../domain/entities/cart_checkout_entity.dart';

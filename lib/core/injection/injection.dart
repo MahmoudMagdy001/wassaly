@@ -104,6 +104,8 @@ import '../../features/service_details/domain/repositories/service_details_repos
 import '../../features/service_details/domain/usecases/get_service_details_usecase.dart';
 import '../../features/service_details/domain/usecases/toggle_service_favorite_usecase.dart'
     as detail_favorite;
+import '../../features/service_details/domain/usecases/create_service_review_usecase.dart';
+import '../../features/service_details/domain/usecases/update_service_review_usecase.dart';
 import '../../features/service_details/presentation/bloc/service_details_bloc.dart';
 import '../../features/service_booking/data/datasources/booking_remote_datasource.dart';
 import '../../features/service_booking/data/repositories/booking_repository_impl.dart';
@@ -234,6 +236,8 @@ void initDependencies() {
   sl.registerFactory(() => ServiceDetailsBloc(
         getServiceDetailsUseCase: sl(),
         toggleServiceFavoriteUseCase: sl(),
+        createServiceReviewUseCase: sl(),
+        updateServiceReviewUseCase: sl(),
       ));
 
   // Service Booking
@@ -327,6 +331,8 @@ void initDependencies() {
   sl.registerLazySingleton(() => GetServiceDetailsUseCase(sl()));
   sl.registerLazySingleton(
       () => detail_favorite.ToggleServiceFavoriteUseCase(sl()));
+  sl.registerLazySingleton(() => CreateServiceReviewUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateServiceReviewUseCase(sl()));
 
   // UseCases - Service Booking
   sl.registerLazySingleton(() => CreateBookingUseCase(sl()));

@@ -1,6 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
-
-import '../bloc/service_booking_bloc.dart';
+import 'package:wassaly/features/service_booking/presentation/bloc/service_booking_bloc.dart';
 
 class BookingAddressSection extends StatelessWidget {
   const BookingAddressSection({super.key});
@@ -49,100 +48,103 @@ class BookingAddressSection extends StatelessWidget {
               if (state.isLoadingAddresses)
                 const Center(child: AppLoading())
               else
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: state.addresses.length,
-                  separatorBuilder: (_, __) => 12.verticalSpace,
-                  itemBuilder: (context, index) {
-                    final address = state.addresses[index];
-                    final isSelected = state.selectedAddress?.id == address.id;
+                Column(
+                  children: List.generate(
+                    state.addresses.length,
+                    (index) {
+                      final address = state.addresses[index];
+                      final isSelected = state.selectedAddress?.id == address.id;
 
-                    return InkWell(
-                      onTap: () =>
-                          bloc.add(ServiceBookingAddressSelected(address)),
-                      borderRadius: BorderRadius.circular(16.r),
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 300),
-                        padding: EdgeInsets.all(16.r),
-                        decoration: BoxDecoration(
+                      return Padding(
+                        padding: EdgeInsets.only(
+                            bottom: index == state.addresses.length - 1 ? 0 : 12.h),
+                        child: InkWell(
+                          onTap: () =>
+                              bloc.add(ServiceBookingAddressSelected(address)),
                           borderRadius: BorderRadius.circular(16.r),
-                          border: Border.all(
-                            color: isSelected ? cs.primary : cs.outlineVariant,
-                            width: isSelected ? 2 : 1,
-                          ),
-                          color: isSelected
-                              ? cs.primaryContainer.withValues(alpha: 0.05)
-                              : cs.surface,
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Radio Button
-                            Container(
-                              margin: EdgeInsets.only(top: 2.h),
-                              width: 20.r,
-                              height: 20.r,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: isSelected
-                                      ? cs.primary
-                                      : cs.onSurfaceVariant,
-                                  width: 2,
-                                ),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            padding: EdgeInsets.all(16.r),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16.r),
+                              border: Border.all(
+                                color: isSelected ? cs.primary : cs.outlineVariant,
+                                width: isSelected ? 2 : 1,
                               ),
-                              child: isSelected
-                                  ? Center(
-                                      child: Container(
-                                        width: 10.r,
-                                        height: 10.r,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: cs.primary,
-                                        ),
-                                      ),
-                                    )
-                                  : null,
+                              color: isSelected
+                                  ? cs.primaryContainer.withValues(alpha: 0.05)
+                                  : cs.surface,
                             ),
-                            16.horizontalSpace,
-                            // Address Details
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    address.title,
-                                    style: tt.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.bold,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Radio Button
+                                Container(
+                                  margin: EdgeInsets.only(top: 2.h),
+                                  width: 20.r,
+                                  height: 20.r,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
                                       color: isSelected
                                           ? cs.primary
-                                          : cs.onSurface,
+                                          : cs.onSurfaceVariant,
+                                      width: 2,
                                     ),
                                   ),
-                                  4.verticalSpace,
-                                  Text(
-                                    '${address.governorateName}، ${address.centerName}',
-                                    style: tt.bodyMedium?.copyWith(
-                                      color: cs.onSurface,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                                  child: isSelected
+                                      ? Center(
+                                          child: Container(
+                                            width: 10.r,
+                                            height: 10.r,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: cs.primary,
+                                            ),
+                                          ),
+                                        )
+                                      : null,
+                                ),
+                                16.horizontalSpace,
+                                // Address Details
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        address.title,
+                                        style: tt.titleMedium?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: isSelected
+                                              ? cs.primary
+                                              : cs.onSurface,
+                                        ),
+                                      ),
+                                      4.verticalSpace,
+                                      Text(
+                                        '${address.governorateName}، ${address.centerName}',
+                                        style: tt.bodyMedium?.copyWith(
+                                          color: cs.onSurface,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      4.verticalSpace,
+                                      Text(
+                                        address.address,
+                                        style: tt.bodySmall?.copyWith(
+                                          color: cs.onSurfaceVariant,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  4.verticalSpace,
-                                  Text(
-                                    address.address,
-                                    style: tt.bodySmall?.copyWith(
-                                      color: cs.onSurfaceVariant,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               24.verticalSpace,
             ],

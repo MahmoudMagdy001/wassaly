@@ -10,90 +10,93 @@ class PrivacyPolicyPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: cs.surface,
-      appBar: AppTopBar(
-        title: context.l10n.privacy_policy_title,
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildSection(
-              context,
-              context.l10n.privacy_policy_last_updated,
-              context.l10n.privacy_policy_last_updated_date,
-              isHighlighted: true,
+      body: CustomScrollView(
+        slivers: [
+          AppSliverTopBar(
+            title: context.l10n.privacy_policy_title,
+          ),
+          SliverPadding(
+            padding: EdgeInsets.all(16.w),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                _buildSection(
+                  context,
+                  context.l10n.privacy_policy_last_updated,
+                  context.l10n.privacy_policy_last_updated_date,
+                  isHighlighted: true,
+                ),
+                16.verticalSpace,
+                _buildSection(
+                  context,
+                  context.l10n.privacy_policy_introduction_title,
+                  context.l10n.privacy_policy_introduction_content,
+                ),
+                16.verticalSpace,
+                _buildSection(
+                  context,
+                  context.l10n.privacy_policy_data_collection_title,
+                  context.l10n.privacy_policy_data_collection_content,
+                ),
+                16.verticalSpace,
+                _buildSection(
+                  context,
+                  context.l10n.privacy_policy_data_usage_title,
+                  context.l10n.privacy_policy_data_usage_content,
+                ),
+                16.verticalSpace,
+                _buildSection(
+                  context,
+                  context.l10n.privacy_policy_data_sharing_title,
+                  context.l10n.privacy_policy_data_sharing_content,
+                ),
+                16.verticalSpace,
+                _buildSection(
+                  context,
+                  context.l10n.privacy_policy_data_security_title,
+                  context.l10n.privacy_policy_data_security_content,
+                ),
+                16.verticalSpace,
+                _buildSection(
+                  context,
+                  context.l10n.privacy_policy_user_rights_title,
+                  context.l10n.privacy_policy_user_rights_content,
+                ),
+                16.verticalSpace,
+                _buildSection(
+                  context,
+                  context.l10n.privacy_policy_third_party_title,
+                  context.l10n.privacy_policy_third_party_content,
+                ),
+                16.verticalSpace,
+                _buildSection(
+                  context,
+                  context.l10n.privacy_policy_children_privacy_title,
+                  context.l10n.privacy_policy_children_privacy_content,
+                ),
+                16.verticalSpace,
+                _buildSection(
+                  context,
+                  context.l10n.privacy_policy_international_transfers_title,
+                  context.l10n.privacy_policy_international_transfers_content,
+                ),
+                16.verticalSpace,
+                _buildSection(
+                  context,
+                  context.l10n.privacy_policy_changes_title,
+                  context.l10n.privacy_policy_changes_content,
+                ),
+                16.verticalSpace,
+                _buildSection(
+                  context,
+                  context.l10n.privacy_policy_contact_title,
+                  context.l10n.privacy_policy_contact_content,
+                ),
+                32.verticalSpace,
+                _buildFooter(context),
+              ]),
             ),
-            16.verticalSpace,
-            _buildSection(
-              context,
-              context.l10n.privacy_policy_introduction_title,
-              context.l10n.privacy_policy_introduction_content,
-            ),
-            16.verticalSpace,
-            _buildSection(
-              context,
-              context.l10n.privacy_policy_data_collection_title,
-              context.l10n.privacy_policy_data_collection_content,
-            ),
-            16.verticalSpace,
-            _buildSection(
-              context,
-              context.l10n.privacy_policy_data_usage_title,
-              context.l10n.privacy_policy_data_usage_content,
-            ),
-            16.verticalSpace,
-            _buildSection(
-              context,
-              context.l10n.privacy_policy_data_sharing_title,
-              context.l10n.privacy_policy_data_sharing_content,
-            ),
-            16.verticalSpace,
-            _buildSection(
-              context,
-              context.l10n.privacy_policy_data_security_title,
-              context.l10n.privacy_policy_data_security_content,
-            ),
-            16.verticalSpace,
-            _buildSection(
-              context,
-              context.l10n.privacy_policy_user_rights_title,
-              context.l10n.privacy_policy_user_rights_content,
-            ),
-            16.verticalSpace,
-            _buildSection(
-              context,
-              context.l10n.privacy_policy_third_party_title,
-              context.l10n.privacy_policy_third_party_content,
-            ),
-            16.verticalSpace,
-            _buildSection(
-              context,
-              context.l10n.privacy_policy_children_privacy_title,
-              context.l10n.privacy_policy_children_privacy_content,
-            ),
-            16.verticalSpace,
-            _buildSection(
-              context,
-              context.l10n.privacy_policy_international_transfers_title,
-              context.l10n.privacy_policy_international_transfers_content,
-            ),
-            16.verticalSpace,
-            _buildSection(
-              context,
-              context.l10n.privacy_policy_changes_title,
-              context.l10n.privacy_policy_changes_content,
-            ),
-            16.verticalSpace,
-            _buildSection(
-              context,
-              context.l10n.privacy_policy_contact_title,
-              context.l10n.privacy_policy_contact_content,
-            ),
-            32.verticalSpace,
-            _buildFooter(context),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

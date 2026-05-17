@@ -1,5 +1,4 @@
-import 'package:wassaly/core/imports/core_imports.dart';
-import 'package:wassaly/core/imports/packages_imports.dart';
+import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/cart/presentation/bloc/cart_bloc.dart';
 import 'package:wassaly/features/cart/presentation/bloc/cart_event.dart';
 import 'package:wassaly/features/cart/presentation/bloc/cart_state.dart';
@@ -15,108 +14,132 @@ class CheckoutPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = context.theme.colorScheme;
 
-    return Scaffold(
-      backgroundColor: cs.surface,
-      appBar: AppTopBar(
-        title: context.l10n.checkout_title,
-      ),
-      body: BlocConsumer<CheckoutBloc, CheckoutState>(
-        listenWhen: (prev, curr) =>
-            prev.status != curr.status ||
-            (prev.errorMessage != curr.errorMessage &&
-                curr.errorMessage != null),
-        listener: (context, state) {
-          if (state.status == CheckoutStatus.success) {
-            // Refresh cart items after successful order
-            context.read<CartBloc>().add(const LoadCartItemsEvent());
+    return BlocConsumer<CheckoutBloc, CheckoutState>(
+      listenWhen: (prev, curr) =>
+          prev.status != curr.status ||
+          (prev.errorMessage != curr.errorMessage && curr.errorMessage != null),
+      listener: (context, state) {
+        if (state.status == CheckoutStatus.success) {
+          // Refresh cart items after successful order
+          context.read<CartBloc>().add(const LoadCartItemsEvent());
 
-            // Navigate to order confirmation — pop back to cart for now
-            // Replace with actual order confirmation route when available
-            context.pop();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(context.l10n.checkout_order_success),
-                backgroundColor: cs.primary,
+          // Navigate to order confirmation — pop back to cart for now
+          // Replace with actual order confirmation route when available
+          context.pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(context.l10n.checkout_order_success),
+              backgroundColor: cs.primary,
+            ),
+          );
+        } else if (state.status == CheckoutStatus.error &&
+            state.errorMessage != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.errorMessage!),
+              backgroundColor: cs.error,
+            ),
+          );
+        }
+      },
+      buildWhen: (prev, curr) {
+        // Rebuild only when major structural page state transitions happen
+        final prevShowLoading =
+            prev.status == CheckoutStatus.loading && prev.governorates.isEmpty;
+        final currShowLoading =
+            curr.status == CheckoutStatus.loading && curr.governorates.isEmpty;
+        if (prevShowLoading != currShowLoading) return true;
+
+        final prevShowError =
+            prev.status == CheckoutStatus.error && prev.governorates.isEmpty;
+        final currShowError =
+            curr.status == CheckoutStatus.error && curr.governorates.isEmpty;
+        if (prevShowError != currShowError) return true;
+
+        // Transitioning from loading/error to content or vice versa
+        final prevHasContent = prev.governorates.isNotEmpty;
+        final currHasContent = curr.governorates.isNotEmpty;
+        if (prevHasContent != currHasContent) return true;
+
+        return false;
+      },
+      builder: (context, state) {
+        // Show full-screen loading while loading governorates initially
+        final isLoading = state.status == CheckoutStatus.loading &&
+            state.governorates.isEmpty;
+
+        // Show error if governorates failed to load
+        final isError =
+            state.status == CheckoutStatus.error && state.governorates.isEmpty;
+
+        return Scaffold(
+          backgroundColor: cs.surface,
+          body: CustomScrollView(
+            slivers: [
+              AppSliverTopBar(
+                title: context.l10n.checkout_title,
               ),
-            );
-          } else if (state.status == CheckoutStatus.error &&
-              state.errorMessage != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.errorMessage!),
-                backgroundColor: cs.error,
-              ),
-            );
-          }
-        },
-        builder: (context, state) {
-          // Show full-screen loading while loading governorates initially
-          if (state.status == CheckoutStatus.loading &&
-              state.governorates.isEmpty) {
-            return const Center(child: AppLoading());
-          }
-
-          // Show error if governorates failed to load
-          if (state.status == CheckoutStatus.error &&
-              state.governorates.isEmpty) {
-            return Center(
-              child: AppErrorWidget(
-                title: context.l10n.errors_error_occurred_title,
-                message: state.errorMessage ??
-                    context.l10n.errors_error_occurred_message,
-                onRetry: () {
-                  final cartState = context.read<CheckoutBloc>().state;
-                  context.read<CheckoutBloc>().add(
-                        CheckoutInitialized(cartState: cartState as CartState),
-                      );
-                },
-              ),
-            );
-          }
-
-          final isSubmitting = state.status == CheckoutStatus.submitting;
-
-          return Stack(
-            children: [
-              CustomScrollView(
-                slivers: [
-                  SliverPadding(
-                    padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 120.h),
-                    sliver: SliverList(
-                      delegate: SliverChildListDelegate([
-                        // ─── Shipping Address Form ────────────────────────────
-                        AppCard(
-                          title: context.l10n.checkout_shipping_address,
-                          child: const CheckoutFormSection(),
-                        ),
-                        16.verticalSpace,
-
-                        // ─── Coupon Section ───────────────────────────────────
-                        AppCard(
-                          title: context.l10n.checkout_coupon_code,
-                          child: const CheckoutCouponSection(),
-                        ),
-                        16.verticalSpace,
-
-                        // ─── Order Summary ────────────────────────────────────
-                        AppCard(
-                          title: context.l10n.checkout_order_summary,
-                          child: const CheckoutOrderSummarySection(),
-                        ),
-                      ]),
+              if (isLoading)
+                const SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(child: AppLoading()),
+                )
+              else if (isError)
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(
+                    child: AppErrorWidget(
+                      title: context.l10n.errors_error_occurred_title,
+                      message: state.errorMessage ??
+                          context.l10n.errors_error_occurred_message,
+                      onRetry: () {
+                        final cartState = context.read<CheckoutBloc>().state;
+                        context.read<CheckoutBloc>().add(
+                              CheckoutInitialized(
+                                  cartState: cartState as CartState),
+                            );
+                      },
                     ),
                   ),
-                ],
-              ),
+                )
+              else
+                SliverPadding(
+                  padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 120.h),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate([
+                      // ─── Shipping Address Form ────────────────────────────
+                      const AppCard(
+                        showShadow: true,
+                        child: CheckoutFormSection(),
+                      ),
+                      16.verticalSpace,
 
-              // ─── Submit Button (pinned at bottom) ─────────────────────────
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: Container(
-                  padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w,
-                      24.h + MediaQuery.of(context).padding.bottom),
+                      // ─── Coupon Section ───────────────────────────────────
+                      AppCard(
+                        showShadow: true,
+                        title: context.l10n.checkout_coupon_code,
+                        child: const CheckoutCouponSection(),
+                      ),
+                      16.verticalSpace,
+
+                      // ─── Order Summary ────────────────────────────────────
+                      const AppCard(
+                        showShadow: true,
+                        child: CheckoutOrderSummarySection(),
+                      ),
+                    ]),
+                  ),
+                ),
+            ],
+          ),
+          bottomSheet: (!isLoading && !isError)
+              ? Container(
+                  padding: EdgeInsets.fromLTRB(
+                    16.w,
+                    12.h,
+                    16.w,
+                    context.bottomPadding,
+                  ),
                   decoration: BoxDecoration(
                     color: cs.surface,
                     boxShadow: [
@@ -127,23 +150,32 @@ class CheckoutPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: AppButton(
-                    label: context.l10n.checkout_complete_order,
-                    isFullWidth: true,
-                    height: ButtonSize.large,
-                    isLoading: isSubmitting,
-                    onPressed: (!state.isFormValid || isSubmitting)
-                        ? null
-                        : () => context
-                            .read<CheckoutBloc>()
-                            .add(const CheckoutSubmitted()),
+                  child:
+                      BlocSelector<CheckoutBloc, CheckoutState, (bool, bool)>(
+                    selector: (state) => (
+                      state.isFormValid,
+                      state.status == CheckoutStatus.submitting,
+                    ),
+                    builder: (context, data) {
+                      final (isFormValid, isSubmitting) = data;
+
+                      return AppButton(
+                        label: context.l10n.checkout_complete_order,
+                        isFullWidth: true,
+                        height: ButtonSize.large,
+                        isLoading: isSubmitting,
+                        onPressed: (!isFormValid || isSubmitting)
+                            ? null
+                            : () => context
+                                .read<CheckoutBloc>()
+                                .add(const CheckoutSubmitted()),
+                      );
+                    },
                   ),
-                ),
-              ),
-            ],
-          );
-        },
-      ),
+                )
+              : null,
+        );
+      },
     );
   }
 }

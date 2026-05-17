@@ -16,6 +16,7 @@ class HomeState extends Equatable {
   final List<SubCategoryEntity> popularServices;
   final HomeStatus productsStatus;
   final PaginatedResponse<ProductEntity> products;
+  final bool isProductsLoadingMore;
   final Failure? failure;
 
   const HomeState({
@@ -27,6 +28,7 @@ class HomeState extends Equatable {
     this.popularServices = const [],
     this.productsStatus = HomeStatus.initial,
     this.products = const PaginatedResponse(data: []),
+    this.isProductsLoadingMore = false,
     this.failure,
   });
 
@@ -39,6 +41,7 @@ class HomeState extends Equatable {
     List<SubCategoryEntity>? popularServices,
     HomeStatus? productsStatus,
     PaginatedResponse<ProductEntity>? products,
+    bool? isProductsLoadingMore,
     Failure? failure,
   }) {
     return HomeState(
@@ -51,6 +54,8 @@ class HomeState extends Equatable {
       popularServices: popularServices ?? this.popularServices,
       productsStatus: productsStatus ?? this.productsStatus,
       products: products ?? this.products,
+      isProductsLoadingMore:
+          isProductsLoadingMore ?? this.isProductsLoadingMore,
       failure: failure,
     );
   }
@@ -65,6 +70,7 @@ class HomeState extends Equatable {
         popularServices,
         productsStatus,
         products,
+        isProductsLoadingMore,
         failure,
       ];
 

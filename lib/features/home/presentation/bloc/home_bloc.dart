@@ -134,9 +134,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Future<void> _onLoadMoreProducts(
       LoadMoreProductsEvent event, Emitter<HomeState> emit) async {
-    if (state.productsStatus == HomeStatus.loading || !state.products.hasMore) {
+    if (state.productsStatus == HomeStatus.loading ||
+        state.isProductsLoadingMore ||
+        !state.products.hasMore) {
       return;
     }
+
+    emit(state.copyWith(isProductsLoadingMore: true));
 
     final nextPage = state.products.currentPage + 1;
 
@@ -144,10 +148,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     result.fold(
       (failure) {
-        // We don't change productsStatus to failure here to keep showing current products
+        emit(state.copyWith(isProductsLoadingMore: false));
       },
       (paginatedResponse) {
         emit(state.copyWith(
+          isProductsLoadingMore: false,
           products: paginatedResponse.copyWith(
             data: [...state.products.data, ...paginatedResponse.data],
           ),

@@ -79,14 +79,13 @@ class LoginForm extends StatelessWidget {
               },
             ),
             24.verticalSpace,
-            BlocBuilder<LoginBloc, LoginState>(
-              buildWhen: (previous, current) =>
-                  previous.isLoading != current.isLoading,
-              builder: (context, state) {
+            BlocSelector<LoginBloc, LoginState, bool>(
+              selector: (state) => state.isLoading,
+              builder: (context, isLoading) {
                 return AppButton(
                   label: context.l10n.auth_login_button,
-                  onPressed: state.isLoading ? null : onLogin,
-                  isLoading: state.isLoading,
+                  onPressed: isLoading ? null : onLogin,
+                  isLoading: isLoading,
                   variant: ButtonVariant.success,
                   isFullWidth: true,
                   height: ButtonSize.medium,

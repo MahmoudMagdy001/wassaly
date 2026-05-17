@@ -109,13 +109,12 @@ class _EditProfileAvatarPickerState extends State<EditProfileAvatarPicker> {
             child: ClipOval(
               child: widget.avatarFile != null
                   ? Image.file(widget.avatarFile!, fit: BoxFit.cover)
-                  : BlocBuilder<ProfileBloc, ProfileState>(
-                      buildWhen: (prev, curr) => prev.user != curr.user,
-                      builder: (context, state) {
-                        final user = state.user;
-                        if (user?.avatarUrl != null) {
+                  : BlocSelector<ProfileBloc, ProfileState, String?>(
+                      selector: (state) => state.user?.avatarUrl,
+                      builder: (context, avatarUrl) {
+                        if (avatarUrl != null) {
                           return CommonImage(
-                            imageUrl: user!.avatarUrl!,
+                            imageUrl: avatarUrl,
                             width: 120,
                             height: 120,
                             memCacheHeight: 120 * 3,

@@ -13,6 +13,7 @@ class AppSliverTopBar extends StatelessWidget {
     this.pinned = false,
     this.floating = true,
     this.snap = true,
+    this.bottom,
   });
 
   final String? title;
@@ -25,6 +26,7 @@ class AppSliverTopBar extends StatelessWidget {
   final bool pinned;
   final bool floating;
   final bool snap;
+  final PreferredSizeWidget? bottom;
 
   @override
   Widget build(BuildContext context) {
@@ -88,26 +90,32 @@ class AppSliverTopBar extends StatelessWidget {
       return SliverSafeArea(
         bottom: false,
         sliver: SliverToBoxAdapter(
-          child: CupertinoNavigationBar(
-            middle: buildTitle(),
-            backgroundColor: isTransparent ? Colors.transparent : cs.surface,
-            border: isTransparent ? null : const Border(),
-            leading: canPop
-                ? CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: handleBack,
-                    child: Icon(
-                      CupertinoIcons.back,
-                      color: cs.primary,
-                    ),
-                  )
-                : const SizedBox.shrink(),
-            trailing: actions != null && actions!.isNotEmpty
-                ? Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: actions!,
-                  )
-                : null,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CupertinoNavigationBar(
+                middle: buildTitle(),
+                backgroundColor: isTransparent ? Colors.transparent : cs.surface,
+                border: bottom != null ? null : (isTransparent ? null : const Border()),
+                leading: canPop
+                    ? CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: handleBack,
+                        child: Icon(
+                          CupertinoIcons.back,
+                          color: cs.primary,
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+                trailing: actions != null && actions!.isNotEmpty
+                    ? Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: actions!,
+                      )
+                    : null,
+              ),
+              if (bottom != null) bottom!,
+            ],
           ),
         ),
       );
@@ -137,6 +145,7 @@ class AppSliverTopBar extends StatelessWidget {
             )
           : null,
       actions: actions ?? [],
+      bottom: bottom,
     );
   }
 }

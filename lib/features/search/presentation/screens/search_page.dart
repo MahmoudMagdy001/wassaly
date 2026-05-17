@@ -26,47 +26,51 @@ class _SearchPageContent extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: cs.surface,
-      body: SafeArea(
-        child: Column(
-          children: [
-            const SearchAppBar(),
-            Expanded(
-              child: BlocBuilder<SearchBloc, SearchState>(
-                buildWhen: (previous, current) =>
-                    previous.status != current.status ||
-                    previous.products != current.products ||
-                    previous.hasSearched != current.hasSearched,
-                builder: (context, state) {
-                  if (state.status == SearchStatus.initial) {
-                    return _buildInitialState(context);
-                  }
-
-                  if (state.status == SearchStatus.loading) {
-                    return const AppLoading();
-                  }
-
-                  if (state.status == SearchStatus.failure) {
-                    return AppErrorWidget(
-                      title: context.l10n.errors_error_occurred_title,
-                      message: state.errorMessage.isNotEmpty
-                          ? state.errorMessage
-                          : context.l10n.errors_error_occurred_message,
-                      onRetry: () {
-                        context.read<SearchBloc>().add(const SearchSubmitted());
-                      },
-                    );
-                  }
-
-                  if (state.isEmpty) {
-                    return _buildEmptyState(context);
-                  }
-
-                  return const SearchResultsList();
-                },
-              ),
-            ),
-          ],
-        ),
+      body: BlocBuilder<SearchBloc, SearchState>(
+        buildWhen: (previous, current) =>
+            previous.status != current.status ||
+            previous.products != current.products ||
+            previous.hasSearched != current.hasSearched,
+        builder: (context, state) {
+          return CustomScrollView(
+            slivers: [
+              const SearchAppBar(),
+              if (state.status == SearchStatus.initial)
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: _buildInitialState(context),
+                )
+              else if (state.status == SearchStatus.loading)
+                const SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(child: AppLoading()),
+                )
+              else if (state.status == SearchStatus.failure)
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: AppErrorWidget(
+                    title: context.l10n.errors_error_occurred_title,
+                    message: state.errorMessage.isNotEmpty
+                        ? state.errorMessage
+                        : context.l10n.errors_error_occurred_message,
+                    onRetry: () {
+                      context.read<SearchBloc>().add(const SearchSubmitted());
+                    },
+                  ),
+                )
+              else if (state.isEmpty)
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: _buildEmptyState(context),
+                )
+              else
+                const SliverFillRemaining(
+                  hasScrollBody: true,
+                  child: SearchResultsList(),
+                ),
+            ],
+          );
+        },
       ),
     );
   }

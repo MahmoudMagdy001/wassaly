@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'app.dart';
 import 'core/imports/imports.dart';
 

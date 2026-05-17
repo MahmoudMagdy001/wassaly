@@ -139,10 +139,9 @@ class _SignupViewState extends State<_SignupView> {
               children: [
                 const SignupHeader(),
                 15.verticalSpace,
-                BlocBuilder<SignupBloc, SignupState>(
-                  buildWhen: (previous, current) =>
-                      previous.avatarFile != current.avatarFile,
-                  builder: (context, state) {
+                BlocSelector<SignupBloc, SignupState, File?>(
+                  selector: (state) => state.avatarFile,
+                  builder: (context, avatarFile) {
                     return SignupForm(
                       formKey: _formKey,
                       nameController: _nameController,
@@ -161,7 +160,7 @@ class _SignupViewState extends State<_SignupView> {
                       onSignup: _onSignup,
                       onTermsPressed: _onTermsPressed,
                       onPrivacyPressed: _onPrivacyPressed,
-                      avatarFile: state.avatarFile,
+                      avatarFile: avatarFile,
                       onAvatarSelected: _onAvatarSelected,
                       onAvatarCleared: _onAvatarCleared,
                     );

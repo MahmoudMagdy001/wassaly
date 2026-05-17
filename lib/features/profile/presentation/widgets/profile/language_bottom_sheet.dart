@@ -9,9 +9,9 @@ class LanguageBottomSheet extends StatelessWidget {
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
 
-    return BlocBuilder<SettingsBloc, SettingsState>(
-      buildWhen: (prev, curr) => prev.language != curr.language,
-      builder: (context, state) {
+    return BlocSelector<SettingsBloc, SettingsState, String>(
+      selector: (state) => state.language,
+      builder: (context, language) {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -42,10 +42,10 @@ class LanguageBottomSheet extends StatelessWidget {
                   _LanguageOption(
                     title: context.l10n.profile_arabic,
                     subtitle: 'ar',
-                    isSelected: state.language == 'ar',
+                    isSelected: language == 'ar',
                     onTap: () async {
                       final currentContext = context;
-                      if (state.language != 'ar') {
+                      if (language != 'ar') {
                         final confirmed =
                             await _showLanguageChangeDialog(currentContext);
                         if ((confirmed ?? false) && currentContext.mounted) {
@@ -63,10 +63,10 @@ class LanguageBottomSheet extends StatelessWidget {
                   _LanguageOption(
                     title: context.l10n.profile_english,
                     subtitle: 'en',
-                    isSelected: state.language == 'en',
+                    isSelected: language == 'en',
                     onTap: () async {
                       final currentContext = context;
-                      if (state.language != 'en') {
+                      if (language != 'en') {
                         final confirmed =
                             await _showLanguageChangeDialog(currentContext);
                         if ((confirmed ?? false) && currentContext.mounted) {

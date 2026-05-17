@@ -41,13 +41,13 @@ class ProfileSettingsSection extends StatelessWidget {
                   title: context.l10n.profile_payment_methods,
                   onTap: () {},
                 ),
-                BlocBuilder<SettingsBloc, SettingsState>(
-                  buildWhen: (prev, curr) => prev.language != curr.language,
-                  builder: (context, state) {
+                BlocSelector<SettingsBloc, SettingsState, String>(
+                  selector: (state) => state.language,
+                  builder: (context, language) {
                     return ProfileMenuTile(
                       icon: Icons.language_outlined,
                       title: context.l10n.profile_language,
-                      subtitle: state.language == 'ar'
+                      subtitle: language == 'ar'
                           ? context.l10n.profile_arabic
                           : context.l10n.profile_english,
                       onTap: () => context.showAppBottomSheet<void>(
@@ -56,21 +56,19 @@ class ProfileSettingsSection extends StatelessWidget {
                     );
                   },
                 ),
-                BlocBuilder<SettingsBloc, SettingsState>(
-                  buildWhen: (prev, curr) =>
-                      prev.isDarkMode != curr.isDarkMode ||
-                      prev.language != curr.language,
-                  builder: (context, state) {
+                BlocSelector<SettingsBloc, SettingsState, bool>(
+                  selector: (state) => state.isDarkMode,
+                  builder: (context, isDarkMode) {
                     return ProfileMenuTile(
-                      icon: state.isDarkMode
+                      icon: isDarkMode
                           ? Icons.dark_mode_outlined
                           : Icons.light_mode_outlined,
                       title: context.l10n.profile_theme,
-                      subtitle: state.isDarkMode
+                      subtitle: isDarkMode
                           ? context.l10n.profile_dark
                           : context.l10n.profile_light,
                       trailing: Switch.adaptive(
-                        value: state.isDarkMode,
+                        value: isDarkMode,
                         onChanged: (_) {
                           context
                               .read<SettingsBloc>()
@@ -86,12 +84,11 @@ class ProfileSettingsSection extends StatelessWidget {
                 ProfileMenuTile(
                   icon: Icons.notifications_outlined,
                   title: context.l10n.profile_notifications,
-                  trailing: BlocBuilder<SettingsBloc, SettingsState>(
-                    buildWhen: (prev, curr) =>
-                        prev.notificationsEnabled != curr.notificationsEnabled,
-                    builder: (context, state) {
+                  trailing: BlocSelector<SettingsBloc, SettingsState, bool>(
+                    selector: (state) => state.notificationsEnabled,
+                    builder: (context, notificationsEnabled) {
                       return Switch.adaptive(
-                        value: state.notificationsEnabled,
+                        value: notificationsEnabled,
                         onChanged: (value) {
                           context
                               .read<SettingsBloc>()

@@ -1,11 +1,9 @@
-import 'package:wassaly/core/imports/core_imports.dart';
-import 'package:wassaly/core/imports/packages_imports.dart';
-
-import '../../domain/entities/brand_entity.dart';
-import '../bloc/brands_bloc.dart';
-import '../bloc/brands_event.dart';
-import '../bloc/brands_state.dart';
-import '../widgets/brand_card.dart';
+import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/features/brands/domain/entities/brand_entity.dart';
+import 'package:wassaly/features/brands/presentation/bloc/brands_bloc.dart';
+import 'package:wassaly/features/brands/presentation/bloc/brands_event.dart';
+import 'package:wassaly/features/brands/presentation/bloc/brands_state.dart';
+import 'package:wassaly/features/brands/presentation/widgets/brand_card.dart';
 
 class BrandsPage extends StatelessWidget {
   const BrandsPage({super.key});
@@ -35,11 +33,15 @@ class BrandsView extends StatelessWidget {
             title: l10n.brands,
             pinned: true,
           ),
-          BlocBuilder<BrandsBloc, BrandsState>(
-            buildWhen: (previous, current) => previous.status != current.status,
-            builder: (context, state) {
-              if (state.status == BrandsStatus.loading ||
-                  state.status == BrandsStatus.initial) {
+          BlocSelector<BrandsBloc, BrandsState,
+              (BrandsStatus, List<BrandEntity>, String)>(
+            selector: (state) =>
+                (state.status, state.brands, state.errorMessage),
+            builder: (context, data) {
+              final (status, brands, errorMessage) = data;
+
+              if (status == BrandsStatus.loading ||
+                  status == BrandsStatus.initial) {
                 return const SliverFillRemaining(
                   child: Center(
                     child: AppLoading(),
@@ -47,17 +49,17 @@ class BrandsView extends StatelessWidget {
                 );
               }
 
-              if (state.status == BrandsStatus.failure) {
+              if (status == BrandsStatus.failure) {
                 return SliverFillRemaining(
                   child: AppErrorWidget(
-                    message: state.errorMessage,
+                    message: errorMessage,
                     onRetry: () =>
                         context.read<BrandsBloc>().add(GetBrandsEvent()),
                   ),
                 );
               }
 
-              if (state.brands.isEmpty) {
+              if (brands.isEmpty) {
                 return SliverFillRemaining(
                   child: AppEmptyState(
                     title: l10n.no_brands,
@@ -67,7 +69,7 @@ class BrandsView extends StatelessWidget {
               }
 
               return AppSliverGrid<BrandEntity>(
-                items: state.brands,
+                items: brands,
                 crossAxisCount: 3,
                 childAspectRatio: 0.8,
                 padding: EdgeInsets.all(16.r),

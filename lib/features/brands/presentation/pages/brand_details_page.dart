@@ -1,10 +1,8 @@
-import 'package:wassaly/core/imports/core_imports.dart';
-import 'package:wassaly/core/imports/packages_imports.dart';
-
-
-import '../bloc/brands_bloc.dart';
-import '../bloc/brands_event.dart';
-import '../bloc/brands_state.dart';
+import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/features/brands/presentation/bloc/brands_bloc.dart';
+import 'package:wassaly/features/brands/presentation/bloc/brands_event.dart';
+import 'package:wassaly/features/brands/presentation/bloc/brands_state.dart';
+import 'package:wassaly/features/home/domain/entities/product_entity.dart';
 
 class BrandDetailsPage extends StatelessWidget {
   final int brandId;
@@ -111,21 +109,48 @@ class _BrandDetailsViewState extends State<BrandDetailsView> {
               ],
             ),
           ),
-          BlocBuilder<BrandsBloc, BrandsState>(
-            buildWhen: (previous, current) =>
-                previous.productsStatus != current.productsStatus ||
-                previous.products != current.products,
-            builder: (context, state) {
-              if (state.productsStatus == BrandProductsStatus.loading &&
-                  state.products.isEmpty) {
-                return const AppProductsSkeleton();
+          BlocSelector<BrandsBloc, BrandsState,
+              (BrandProductsStatus, List<ProductEntity>, bool, String)>(
+            selector: (state) => (
+              state.productsStatus,
+              state.products,
+              state.hasReachedMax,
+              state.productsErrorMessage,
+            ),
+            builder: (context, data) {
+              final (
+                productsStatus,
+                products,
+                hasReachedMax,
+                productsErrorMessage
+              ) = data;
+
+              final isLoading = productsStatus == BrandProductsStatus.loading &&
+                  products.isEmpty;
+
+              if (isLoading || products.isNotEmpty) {
+                return AppProductsSection(
+                  isLoading: isLoading,
+                  products: isLoading ? const [] : products,
+                  padding: EdgeInsets.symmetric(vertical: 16.h),
+                  hasMore: isLoading ? false : !hasReachedMax,
+                  isLoadingMore: isLoading ? false : (productsStatus == BrandProductsStatus.loading),
+                  mainAxisExtent: 240.h,
+                  onLoadMore: isLoading
+                      ? null
+                      : () {
+                          if (productsStatus != BrandProductsStatus.loading) {
+                            context.read<BrandsBloc>().add(
+                                LoadMoreBrandProductsEvent(brandId: widget.brandId));
+                          }
+                        },
+                );
               }
 
-              if (state.productsStatus == BrandProductsStatus.failure &&
-                  state.products.isEmpty) {
+              if (productsStatus == BrandProductsStatus.failure) {
                 return SliverFillRemaining(
                   child: AppErrorWidget(
-                    message: state.productsErrorMessage,
+                    message: productsErrorMessage,
                     onRetry: () => context
                         .read<BrandsBloc>()
                         .add(GetBrandProductsEvent(brandId: widget.brandId)),
@@ -133,28 +158,11 @@ class _BrandDetailsViewState extends State<BrandDetailsView> {
                 );
               }
 
-              if (state.products.isEmpty) {
-                return SliverFillRemaining(
-                  child: AppEmptyState(
-                    title: l10n.no_brand_products,
-                    icon: Icons.inventory_2_outlined,
-                  ),
-                );
-              }
-
-              return AppProductsSection(
-                padding: EdgeInsets.symmetric(vertical: 16.h),
-                products: state.products,
-                hasMore: !state.hasReachedMax,
-                isLoadingMore:
-                    state.productsStatus == BrandProductsStatus.loading,
-                mainAxisExtent: 240.h,
-                onLoadMore: () {
-                  if (state.productsStatus != BrandProductsStatus.loading) {
-                    context.read<BrandsBloc>().add(
-                        LoadMoreBrandProductsEvent(brandId: widget.brandId));
-                  }
-                },
+              return SliverFillRemaining(
+                child: AppEmptyState(
+                  title: l10n.no_brand_products,
+                  icon: Icons.inventory_2_outlined,
+                ),
               );
             },
           ),

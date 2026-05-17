@@ -2,6 +2,9 @@ import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/profile/domain/entities/address_entity.dart';
 import 'package:wassaly/features/profile/presentation/bloc/profile/profile_bloc.dart';
 
+import '../../domain/entities/center_entity.dart';
+import '../../domain/entities/governorate_entity.dart';
+
 class AddAddressPage extends StatelessWidget {
   final AddressEntity? address;
 
@@ -91,12 +94,6 @@ class _AddAddressViewState extends State<_AddAddressView> {
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       behavior: HitTestBehavior.translucent,
       child: Scaffold(
-        appBar: AppTopBar(
-          title: _isEditing
-              ? context.l10n.profile_edit_address
-              : context.l10n.profile_add_address,
-          centerTitle: true,
-        ),
         body: BlocListener<ProfileBloc, ProfileState>(
           listenWhen: (prev, curr) =>
               prev.addressStatus != curr.addressStatus &&
@@ -117,51 +114,62 @@ class _AddAddressViewState extends State<_AddAddressView> {
                   type: SnackBarType.error);
             }
           },
-          child: SingleChildScrollView(
-            padding: EdgeInsets.all(16.w),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  AppTextField(
-                    label: context.l10n.profile_address_title,
-                    hint: context.l10n.profile_address_title_hint,
-                    controller: _titleController,
-                    prefixIcon: const Icon(Icons.label_outline),
-                    validator: (v) =>
-                        v!.isEmpty ? context.l10n.profile_title_required : null,
-                  ),
-                  16.verticalSpace,
-                  AppTextField(
-                    label: context.l10n.profile_address_details,
-                    hint: context.l10n.profile_address_details_hint,
-                    controller: _addressController,
-                    prefixIcon: const Icon(Icons.location_on_outlined),
-                    maxLines: 3,
-                    validator: (v) => v!.isEmpty
-                        ? context.l10n.profile_address_required
-                        : null,
-                  ),
-                  16.verticalSpace,
-                  _buildGovernorateDropdown(context),
-                  16.verticalSpace,
-                  _buildCenterDropdown(context),
-                  32.verticalSpace,
-                  BlocBuilder<ProfileBloc, ProfileState>(
-                    buildWhen: (prev, curr) =>
-                        prev.addressStatus != curr.addressStatus,
-                    builder: (context, state) {
-                      return AppButton(
-                        label: context.l10n.profile_save_address,
-                        isFullWidth: true,
-                        isLoading: state.addressStatus.isLoading,
-                        onPressed: _submit,
-                      );
-                    },
-                  ),
-                ],
+          child: CustomScrollView(
+            slivers: [
+              AppSliverTopBar(
+                title: _isEditing
+                    ? context.l10n.profile_edit_address
+                    : context.l10n.profile_add_address,
+                centerTitle: true,
               ),
-            ),
+              SliverPadding(
+                padding: EdgeInsets.all(16.w),
+                sliver: SliverToBoxAdapter(
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        AppTextField(
+                          label: context.l10n.profile_address_title,
+                          hint: context.l10n.profile_address_title_hint,
+                          controller: _titleController,
+                          prefixIcon: const Icon(Icons.label_outline),
+                          validator: (v) =>
+                              v!.isEmpty ? context.l10n.profile_title_required : null,
+                        ),
+                        16.verticalSpace,
+                        AppTextField(
+                          label: context.l10n.profile_address_details,
+                          hint: context.l10n.profile_address_details_hint,
+                          controller: _addressController,
+                          prefixIcon: const Icon(Icons.location_on_outlined),
+                          maxLines: 3,
+                          validator: (v) => v!.isEmpty
+                              ? context.l10n.profile_address_required
+                              : null,
+                        ),
+                        16.verticalSpace,
+                        _buildGovernorateDropdown(context),
+                        16.verticalSpace,
+                        _buildCenterDropdown(context),
+                        32.verticalSpace,
+                        BlocSelector<ProfileBloc, ProfileState, AppStatus>(
+                          selector: (state) => state.addressStatus,
+                          builder: (context, addressStatus) {
+                            return AppButton(
+                              label: context.l10n.profile_save_address,
+                              isFullWidth: true,
+                              isLoading: addressStatus.isLoading,
+                              onPressed: _submit,
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -169,13 +177,14 @@ class _AddAddressViewState extends State<_AddAddressView> {
   }
 
   Widget _buildGovernorateDropdown(BuildContext context) {
-    return BlocBuilder<ProfileBloc, ProfileState>(
-      buildWhen: (prev, curr) =>
-          prev.governorateStatus != curr.governorateStatus ||
-          prev.governorates != curr.governorates,
-      builder: (context, state) {
-        if (state.governorateStatus.isFailure &&
-            state.governorateError != null) {
+    return BlocSelector<ProfileBloc, ProfileState,
+        (AppStatus, List<GovernorateEntity>, String?)>(
+      selector: (state) =>
+          (state.governorateStatus, state.governorates, state.governorateError),
+      builder: (context, data) {
+        final (governorateStatus, governorates, governorateError) = data;
+
+        if (governorateStatus.isFailure && governorateError != null) {
           return AppDropdown<String>(
             label: context.l10n.profile_governorate,
             prefixIcon: const Icon(Icons.map_outlined),
@@ -196,13 +205,13 @@ class _AddAddressViewState extends State<_AddAddressView> {
           menuMaxHeight: 300.h,
           isExpanded: false,
           alignment: AlignmentDirectional.centerStart,
-          items: state.governorates.map((g) {
+          items: governorates.map((g) {
             return DropdownMenuItem(
               value: g.id,
               child: Text(g.name),
             );
           }).toList(),
-          onChanged: state.governorateStatus.isLoading
+          onChanged: governorateStatus.isLoading
               ? null
               : (value) {
                   setState(() {
@@ -215,8 +224,8 @@ class _AddAddressViewState extends State<_AddAddressView> {
                 },
           validator: (v) =>
               v == null ? context.l10n.profile_select_governorate : null,
-          enabled: !state.governorateStatus.isLoading,
-          suffixIcon: state.governorateStatus.isLoading
+          enabled: !governorateStatus.isLoading,
+          suffixIcon: governorateStatus.isLoading
               ? SizedBox(
                   width: 12.w,
                   height: 12.h,
@@ -232,24 +241,24 @@ class _AddAddressViewState extends State<_AddAddressView> {
   }
 
   Widget _buildCenterDropdown(BuildContext context) {
-    return BlocBuilder<ProfileBloc, ProfileState>(
-      buildWhen: (prev, curr) =>
-          prev.centerStatus != curr.centerStatus ||
-          prev.centers != curr.centers,
-      builder: (context, state) {
+    return BlocSelector<ProfileBloc, ProfileState,
+        (AppStatus, List<CenterEntity>)>(
+      selector: (state) => (state.centerStatus, state.centers),
+      builder: (context, data) {
+        final (centerStatus, centers) = data;
         final hasGovernorate = _selectedGovernorateId != null;
-        final isLoading = state.centerStatus.isLoading;
+        final isLoading = centerStatus.isLoading;
         final isDisabled = !hasGovernorate || isLoading;
 
         return AppDropdown<String>(
           label: context.l10n.profile_center,
           prefixIcon: const Icon(Icons.location_city_outlined),
           value: _selectedCenterId,
-          enabled: !isDisabled && state.centers.isNotEmpty,
+          enabled: !isDisabled && centers.isNotEmpty,
           menuMaxHeight: 300.h,
           isExpanded: false,
           alignment: AlignmentDirectional.centerStart,
-          items: state.centers.map((c) {
+          items: centers.map((c) {
             return DropdownMenuItem(
               value: c.id,
               child: Text(c.name),

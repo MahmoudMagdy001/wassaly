@@ -1,4 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/features/profile/domain/entities/address_entity.dart';
 import 'package:wassaly/features/profile/presentation/bloc/profile/profile_bloc.dart';
 
 class AddressesPage extends StatelessWidget {
@@ -29,72 +30,94 @@ class _AddressesViewState extends State<_AddressesView> {
     final cs = context.theme.colorScheme;
 
     return Scaffold(
-      appBar: AppTopBar(
-        title: context.l10n.profile_saved_addresses,
-        centerTitle: true,
-      ),
-      body: BlocBuilder<ProfileBloc, ProfileState>(
-        buildWhen: (prev, curr) =>
-            prev.addressStatus != curr.addressStatus ||
-            prev.addresses != curr.addresses,
-        builder: (context, state) {
-          if (state.addressStatus.isLoading) {
-            return const _AddressSkeleton();
-          }
+      body: BlocSelector<ProfileBloc, ProfileState,
+          (AppStatus, List<AddressEntity>, String?)>(
+        selector: (state) =>
+            (state.addressStatus, state.addresses, state.addressError),
+        builder: (context, data) {
+          final (addressStatus, addresses, addressError) = data;
 
-          if (state.addressStatus.isFailure && state.addressError != null) {
-            return Center(
-              child: AppErrorWidget(
-                title: context.l10n.errors_error_occurred_title,
-                message: state.addressError?.isNotEmpty ?? false
-                    ? state.addressError
-                    : context.l10n.errors_error_occurred_message,
-                onRetry: () =>
-                    context.read<ProfileBloc>().add(const AddressesFetched()),
+          return CustomScrollView(
+            slivers: [
+              AppSliverTopBar(
+                title: context.l10n.profile_saved_addresses,
+                centerTitle: true,
               ),
-            );
-          }
-
-          if (state.addresses.isEmpty) {
-            return AppEmptyState(
-              icon: Icons.location_on_outlined,
-              title: context.l10n.profile_no_addresses,
-              subtitle: context.l10n.profile_add_address_hint,
-              actionLabel: context.l10n.profile_add_address,
-              onAction: () => context.push(AppRoutes.addAddress),
-            );
-          }
-
-          return Column(
-            children: [
-              Expanded(
-                child: ListView.separated(
+              if (addressStatus.isLoading)
+                SliverPadding(
                   padding: EdgeInsets.all(16.w),
-                  itemCount: state.addresses.length,
-                  separatorBuilder: (_, __) => 16.verticalSpace,
-                  itemBuilder: (context, index) {
-                    final address = state.addresses[index];
-                    return _AddressCard(address: address);
-                  },
-                ),
-              ),
-              // Add New Address Button
-              Padding(
-                padding: EdgeInsets.all(16.w),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: AppButton(
-                    label: context.l10n.profile_add_new_address,
-                    isFullWidth: true,
-                    prefixIcon: Icon(
-                      Icons.add_location_alt_outlined,
-                      color: cs.onPrimary,
-                      size: 20.r,
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        if (index.isOdd) return 16.verticalSpace;
+                        return Skeletonizer(
+                          enabled: true,
+                          child: _AddressCard(address: _MockAddress()),
+                        );
+                      },
+                      childCount: 3 * 2 - 1,
                     ),
-                    onPressed: () => context.push(AppRoutes.addAddress),
+                  ),
+                )
+              else if (addressStatus.isFailure && addressError != null)
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(
+                    child: AppErrorWidget(
+                      title: context.l10n.errors_error_occurred_title,
+                      message: addressError.isNotEmpty
+                          ? addressError
+                          : context.l10n.errors_error_occurred_message,
+                      onRetry: () => context
+                          .read<ProfileBloc>()
+                          .add(const AddressesFetched()),
+                    ),
+                  ),
+                )
+              else if (addresses.isEmpty)
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: AppEmptyState(
+                    icon: Icons.location_on_outlined,
+                    title: context.l10n.profile_no_addresses,
+                    subtitle: context.l10n.profile_add_address_hint,
+                    actionLabel: context.l10n.profile_add_address,
+                    onAction: () => context.push(AppRoutes.addAddress),
+                  ),
+                )
+              else ...[
+                SliverPadding(
+                  padding: EdgeInsets.all(16.w),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        if (index.isOdd) return 16.verticalSpace;
+                        final address = addresses[index ~/ 2];
+                        return _AddressCard(address: address);
+                      },
+                      childCount: addresses.length * 2 - 1,
+                    ),
                   ),
                 ),
-              ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.all(16.w),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: AppButton(
+                        label: context.l10n.profile_add_new_address,
+                        isFullWidth: true,
+                        prefixIcon: Icon(
+                          Icons.add_location_alt_outlined,
+                          color: cs.onPrimary,
+                          size: 20.r,
+                        ),
+                        onPressed: () => context.push(AppRoutes.addAddress),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ],
           );
         },
@@ -210,25 +233,6 @@ class _AddressCard extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _AddressSkeleton extends StatelessWidget {
-  const _AddressSkeleton();
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.separated(
-      padding: EdgeInsets.all(16.w),
-      itemCount: 3,
-      separatorBuilder: (_, __) => 16.verticalSpace,
-      itemBuilder: (context, index) {
-        return Skeletonizer(
-          enabled: true,
-          child: _AddressCard(address: _MockAddress()),
-        );
-      },
     );
   }
 }

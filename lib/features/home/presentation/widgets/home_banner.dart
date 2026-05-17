@@ -1,9 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:wassaly/core/imports/imports.dart';
-
-import '../../domain/entities/banner_entity.dart';
-import '../bloc/home_bloc.dart';
-import '../bloc/home_state.dart';
+import 'package:wassaly/features/home/domain/entities/banner_entity.dart';
+import 'package:wassaly/features/home/presentation/bloc/home_bloc.dart';
+import 'package:wassaly/features/home/presentation/bloc/home_state.dart';
 
 class HomeBanner extends StatefulWidget {
   const HomeBanner({super.key});
@@ -26,13 +25,13 @@ class _HomeBannerState extends State<HomeBanner> {
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
 
-    return BlocBuilder<HomeBloc, HomeState>(
-      buildWhen: (prev, curr) =>
-          prev.bannersStatus != curr.bannersStatus ||
-          prev.banners != curr.banners,
-      builder: (context, state) {
-        if (state.bannersStatus == HomeStatus.loading ||
-            state.bannersStatus == HomeStatus.initial) {
+    return BlocSelector<HomeBloc, HomeState, (HomeStatus, List<BannerEntity>)>(
+      selector: (state) => (state.bannersStatus, state.banners),
+      builder: (context, data) {
+        final (bannersStatus, banners) = data;
+
+        if (bannersStatus == HomeStatus.loading ||
+            bannersStatus == HomeStatus.initial) {
           final dummyBanners = List.generate(
             3,
             (index) => const BannerEntity(
@@ -77,11 +76,9 @@ class _HomeBannerState extends State<HomeBanner> {
           );
         }
 
-        if (state.banners.isEmpty) {
+        if (banners.isEmpty) {
           return const SizedBox.shrink();
         }
-
-        final banners = state.banners;
 
         return Column(
           children: [

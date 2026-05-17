@@ -1,4 +1,4 @@
-import 'package:wassaly/core/imports/core_imports.dart';
+import 'package:wassaly/core/imports/imports.dart';
 
 import '../../../home/data/models/product_model.dart';
 import '../models/brand_model.dart';

@@ -100,21 +100,10 @@ class _MainLayoutPageState extends State<MainLayoutPage> {
       ],
       child: Scaffold(
         body: widget.navigationShell,
-        bottomNavigationBar: BlocBuilder<SessionBloc, SessionState>(
-          buildWhen: (prev, curr) {
-            // Rebuild when state type changes (e.g., SessionLoading -> SessionAuthenticated)
-            if (prev.runtimeType != curr.runtimeType) return true;
-            // Rebuild when avatar URL changes
-            final prevAvatar =
-                prev is SessionAuthenticated ? prev.user.avatarUrl : null;
-            final currAvatar =
-                curr is SessionAuthenticated ? curr.user.avatarUrl : null;
-            return prevAvatar != currAvatar;
-          },
-          builder: (context, state) {
-            final avatarUrl =
-                state is SessionAuthenticated ? state.user.avatarUrl : null;
-
+        bottomNavigationBar: BlocSelector<SessionBloc, SessionState, String?>(
+          selector: (state) =>
+              state is SessionAuthenticated ? state.user.avatarUrl : null,
+          builder: (context, avatarUrl) {
             return BottomNavigationBar(
               currentIndex: widget.navigationShell.currentIndex.clamp(0, 3),
               onTap: _onTap,
@@ -130,35 +119,35 @@ class _MainLayoutPageState extends State<MainLayoutPage> {
                   label: context.l10n.nav_nav_home,
                 ),
                 BottomNavigationBarItem(
-                  icon: BlocBuilder<CartBloc, CartState>(
-                    buildWhen: (prev, curr) => prev.cartCount != curr.cartCount,
-                    builder: (context, state) => Badge(
-                      label: state.cartCount > 0
+                  icon: BlocSelector<CartBloc, CartState, int>(
+                    selector: (state) => state.cartCount,
+                    builder: (context, cartCount) => Badge(
+                      label: cartCount > 0
                           ? Text(
-                              state.cartCount.toString(),
+                              cartCount.toString(),
                               style: tt.labelSmall?.copyWith(
                                 color: context.colors.onError,
                                 fontWeight: FontWeight.bold,
                               ),
                             )
                           : null,
-                      isLabelVisible: state.cartCount > 0,
+                      isLabelVisible: cartCount > 0,
                       child: const Icon(Icons.shopping_cart_outlined),
                     ),
                   ),
-                  activeIcon: BlocBuilder<CartBloc, CartState>(
-                    buildWhen: (prev, curr) => prev.cartCount != curr.cartCount,
-                    builder: (context, state) => Badge(
-                      label: state.cartCount > 0
+                  activeIcon: BlocSelector<CartBloc, CartState, int>(
+                    selector: (state) => state.cartCount,
+                    builder: (context, cartCount) => Badge(
+                      label: cartCount > 0
                           ? Text(
-                              state.cartCount.toString(),
+                              cartCount.toString(),
                               style: tt.labelSmall?.copyWith(
                                 color: context.colors.onError,
                                 fontWeight: FontWeight.bold,
                               ),
                             )
                           : null,
-                      isLabelVisible: state.cartCount > 0,
+                      isLabelVisible: cartCount > 0,
                       child: const Icon(Icons.shopping_cart_rounded),
                     ),
                   ),
