@@ -469,6 +469,12 @@ abstract class S {
   /// **'Total'**
   String get cart_total_price;
 
+  /// No description provided for @cart_total_after_discount.
+  ///
+  /// In en, this message translates to:
+  /// **'Total after discount'**
+  String get cart_total_after_discount;
+
   /// No description provided for @cart_subtotal.
   ///
   /// In en, this message translates to:
@@ -2338,7 +2344,7 @@ abstract class S {
   /// No description provided for @service_booking_problem.
   ///
   /// In en, this message translates to:
-  /// **'Problem Description (Optional)'**
+  /// **'Problem Description'**
   String get service_booking_problem;
 
   /// No description provided for @service_booking_problem_hint.
@@ -2484,6 +2490,60 @@ abstract class S {
   /// In en, this message translates to:
   /// **'No products in this brand yet'**
   String get no_brand_products;
+
+  /// No description provided for @offers.
+  ///
+  /// In en, this message translates to:
+  /// **'Offers'**
+  String get offers;
+
+  /// No description provided for @provider_details_contact_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Information'**
+  String get provider_details_contact_info;
+
+  /// No description provided for @provider_details_contact_person.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Person'**
+  String get provider_details_contact_person;
+
+  /// No description provided for @provider_details_phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get provider_details_phone;
+
+  /// No description provided for @provider_details_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email Address'**
+  String get provider_details_email;
+
+  /// No description provided for @provider_details_status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get provider_details_status;
+
+  /// No description provided for @provider_details_status_active.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get provider_details_status_active;
+
+  /// No description provided for @provider_details_status_inactive.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive'**
+  String get provider_details_status_inactive;
+
+  /// No description provided for @provider_details_successful_orders.
+  ///
+  /// In en, this message translates to:
+  /// **'Successful Orders'**
+  String get provider_details_successful_orders;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

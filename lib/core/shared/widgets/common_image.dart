@@ -2,8 +2,9 @@ import 'package:wassaly/core/imports/imports.dart';
 
 /// A multi-purpose image widget that handles network images, SVGs, and local assets.
 ///
-/// Automatically uses [CachedNetworkImage] if enabled for web images.
-/// Automatically uses [SvgPicture] if enabled for SVG files.
+/// Automatically uses [CachedNetworkImage] for absolute http URLs and relative
+/// API paths (starting with `/`). Relative paths are resolved against [AppConfig.baseUrl].
+/// Automatically uses [SvgPicture] for SVG files.
 class CommonImage extends StatelessWidget {
   final String imageUrl;
   final double? width;
@@ -30,16 +31,25 @@ class CommonImage extends StatelessWidget {
     this.memCacheWidth,
   });
 
+  /// Resolves a potentially relative path to an absolute URL.
+  /// e.g. "/storage/images/foo.jpg" → "https://wasly.bynona.store/storage/images/foo.jpg"
+  String get _resolvedUrl {
+    if (imageUrl.startsWith('http')) return imageUrl;
+    if (imageUrl.startsWith('/')) return '${AppConfig.baseUrl}$imageUrl';
+    return imageUrl;
+  }
+
   @override
   Widget build(BuildContext context) {
     final double? adjustedWidth = width?.w;
     final double? adjustedHeight = height?.h;
+    final resolved = _resolvedUrl;
 
     Widget image;
 
-    if (imageUrl.startsWith('http')) {
+    if (resolved.startsWith('http')) {
       image = AppCachedImage(
-        imageUrl: imageUrl,
+        imageUrl: resolved,
         width: width,
         height: height,
         memCacheHeight: memCacheHeight,
@@ -50,9 +60,9 @@ class CommonImage extends StatelessWidget {
         errorWidget: errorWidget,
         borderRadius: borderRadius,
       );
-    } else if (imageUrl.endsWith('.svg')) {
+    } else if (resolved.endsWith('.svg')) {
       image = SvgPicture.asset(
-        imageUrl,
+        resolved,
         width: adjustedWidth,
         height: adjustedHeight,
         fit: fit,
@@ -61,9 +71,9 @@ class CommonImage extends StatelessWidget {
       );
     } else {
       image = Image.asset(
+        resolved,
         cacheHeight: memCacheHeight,
         cacheWidth: memCacheWidth,
-        imageUrl,
         width: adjustedWidth,
         height: adjustedHeight,
         fit: fit,

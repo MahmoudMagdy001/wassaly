@@ -8,7 +8,15 @@ abstract class CartEvent extends Equatable {
 }
 
 class LoadCartItemsEvent extends CartEvent {
-  const LoadCartItemsEvent();
+  /// If [silent] is true, the bloc will not emit a loading state.
+  /// Use this for background syncs (after add/remove/update) to avoid
+  /// flashing the loading indicator when the cart is already rendered.
+  final bool silent;
+
+  const LoadCartItemsEvent({this.silent = false});
+
+  @override
+  List<Object?> get props => [silent];
 }
 
 class AddToCartEvent extends CartEvent {

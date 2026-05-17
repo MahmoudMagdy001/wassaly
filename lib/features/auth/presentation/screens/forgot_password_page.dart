@@ -50,7 +50,11 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
   }
 
   void _onBackToLogin() {
-    context.pop();
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.go(AppRoutes.login);
+    }
   }
 
   @override

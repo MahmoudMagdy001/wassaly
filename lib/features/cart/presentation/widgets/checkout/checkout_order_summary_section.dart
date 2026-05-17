@@ -1,6 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-import '../bloc/checkout/checkout_bloc.dart';
+import '../../bloc/checkout/checkout_bloc.dart';
 
 class CheckoutOrderSummarySection extends StatelessWidget {
   const CheckoutOrderSummarySection({super.key});

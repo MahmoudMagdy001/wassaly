@@ -1,5 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 
+import '../../../home/domain/entities/product_entity.dart';
 import '../../../sub_category/domain/entities/service_entity.dart';
 
 class ProviderDetailReviewEntity extends Equatable {
@@ -70,6 +71,7 @@ class ProviderDetailEntity extends Equatable {
   final int successfulOrdersCount;
   final List<ProviderDetailReviewEntity> reviews;
   final List<ServiceEntity> services;
+  final List<ProductEntity> products;
 
   const ProviderDetailEntity({
     required this.id,
@@ -88,6 +90,7 @@ class ProviderDetailEntity extends Equatable {
     required this.successfulOrdersCount,
     required this.reviews,
     required this.services,
+    required this.products,
   });
 
   @override
@@ -108,5 +111,6 @@ class ProviderDetailEntity extends Equatable {
         successfulOrdersCount,
         reviews,
         services,
+        products,
       ];
 }

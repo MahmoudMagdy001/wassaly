@@ -1,3 +1,4 @@
+import '../../../home/data/models/product_model.dart';
 import '../../../sub_category/data/models/service_model.dart';
 import '../../domain/entities/provider_detail_entity.dart';
 
@@ -63,6 +64,7 @@ class ProviderDetailModel extends ProviderDetailEntity {
     required super.successfulOrdersCount,
     required super.reviews,
     required super.services,
+    required super.products,
   });
 
   factory ProviderDetailModel.fromJson(Map<String, dynamic> json) {
@@ -89,6 +91,10 @@ class ProviderDetailModel extends ProviderDetailEntity {
           [],
       services: (json['services'] as List<dynamic>?)
               ?.map((e) => ServiceModel.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+      products: (json['products'] as List<dynamic>?)
+              ?.map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
     );

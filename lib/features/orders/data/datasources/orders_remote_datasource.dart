@@ -3,6 +3,7 @@ import '../models/order_model.dart';
 
 abstract class OrdersRemoteDataSource {
   Future<PaginatedResponse<OrderModel>> getOrders({int page = 1});
+  Future<OrderModel> getOrderDetails(int orderId);
 }
 
 class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
@@ -58,4 +59,30 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
       },
     );
   }
+
+  @override
+  Future<OrderModel> getOrderDetails(int orderId) async {
+    final result = await _dioService.get('/api/orders/$orderId');
+
+    return result.fold(
+      (failure) => throw failure,
+      (response) {
+        final responseData = response.data as Map<String, dynamic>;
+        final status = responseData['status'] as bool? ?? false;
+        final message = responseData['message'] as String? ?? '';
+
+        if (!status) {
+          throw ServerFailure(message);
+        }
+
+        final data = responseData['data'];
+        if (data == null) {
+          throw ServerFailure(message.isNotEmpty ? message : 'Empty response data');
+        }
+
+        return OrderModel.fromJson(data as Map<String, dynamic>);
+      },
+    );
+  }
 }
+

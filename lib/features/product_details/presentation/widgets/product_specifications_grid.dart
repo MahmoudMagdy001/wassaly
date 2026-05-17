@@ -34,13 +34,15 @@ class ProductSpecificationsGrid extends StatelessWidget {
                 children: [
                   // First item in the row
                   Expanded(
-                    child: _buildItem(context, cs, tt, specifications[firstIndex]),
+                    child:
+                        _buildItem(context, cs, tt, specifications[firstIndex]),
                   ),
                   8.horizontalSpace,
                   // Second item in the row (if exists)
                   Expanded(
                     child: secondIndex < specifications.length
-                        ? _buildItem(context, cs, tt, specifications[secondIndex])
+                        ? _buildItem(
+                            context, cs, tt, specifications[secondIndex])
                         : const SizedBox.shrink(),
                   ),
                 ],
@@ -69,9 +71,11 @@ class ProductSpecificationsGrid extends StatelessWidget {
           if (item.icon.isNotEmpty) ...[
             CommonImage(
               imageUrl: item.icon,
+              height: 25.h,
               width: 25.w,
+              memCacheHeight: 25 * 3,
               memCacheWidth: 25 * 3,
-              fit: BoxFit.cover,
+              fit: BoxFit.contain,
             ),
             12.horizontalSpace,
           ],

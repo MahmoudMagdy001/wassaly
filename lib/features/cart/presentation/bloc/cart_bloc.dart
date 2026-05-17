@@ -1,6 +1,4 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../core/injection/injection.dart';
+import 'package:wassaly/core/imports/imports.dart';
 import '../../domain/entities/cart_item_entity.dart';
 import '../../domain/repositories/cart_repository.dart';
 import '../../domain/usecases/add_to_cart_usecase.dart';
@@ -42,7 +40,11 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     LoadCartItemsEvent event,
     Emitter<CartState> emit,
   ) async {
-    emit(state.copyWith(status: CartStatus.loading, failure: null));
+    // Skip the loading indicator for background syncs (after add/remove/update)
+    // so the UI doesn't flash a loading screen when the cart is already rendered.
+    if (!event.silent) {
+      emit(state.copyWith(status: CartStatus.loading, failure: null));
+    }
 
     final result = await getCartItemsUseCase();
 
@@ -88,8 +90,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
           addingProductIds: state.addingProductIds..remove(event.productId),
           cartCount: state.cartCount + 1,
         ));
-        // Reload cart items to get updated list
-        add(const LoadCartItemsEvent());
+        // Silent reload to sync with backend without flashing loading UI
+        add(const LoadCartItemsEvent(silent: true));
       },
     );
   }
@@ -140,8 +142,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         emit(state.copyWith(
           addingProductIds: state.addingProductIds..remove(event.cartItemId),
         ));
-        // Reload cart items to ensure synchronization
-        add(const LoadCartItemsEvent());
+        // Silent reload to sync with backend without flashing loading UI
+        add(const LoadCartItemsEvent(silent: true));
       },
     );
   }
@@ -196,8 +198,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         emit(state.copyWith(
           addingProductIds: state.addingProductIds..remove(event.cartItemId),
         ));
-        // Reload cart items to ensure synchronization with the backend
-        add(const LoadCartItemsEvent());
+        // Silent reload to sync with backend without flashing loading UI
+        add(const LoadCartItemsEvent(silent: true));
       },
     );
   }

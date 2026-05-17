@@ -201,6 +201,9 @@ class SAr extends S {
   String get cart_total_price => 'الإجمالي';
 
   @override
+  String get cart_total_after_discount => 'الإجمالي بعد الخصم';
+
+  @override
   String get cart_subtotal => 'المجموع الفرعي';
 
   @override
@@ -1186,7 +1189,7 @@ class SAr extends S {
   String get service_booking_email => 'البريد الإلكتروني';
 
   @override
-  String get service_booking_problem => 'وصف المشكلة (اختياري)';
+  String get service_booking_problem => 'وصف المشكلة';
 
   @override
   String get service_booking_problem_hint => 'اشرح المشكلة التي تواجهها هنا...';
@@ -1260,4 +1263,31 @@ class SAr extends S {
 
   @override
   String get no_brand_products => 'لا يوجد منتجات في هذا البراند حالياً';
+
+  @override
+  String get offers => 'العروض';
+
+  @override
+  String get provider_details_contact_info => 'معلومات الاتصال';
+
+  @override
+  String get provider_details_contact_person => 'شخص الاتصال';
+
+  @override
+  String get provider_details_phone => 'رقم الهاتف';
+
+  @override
+  String get provider_details_email => 'البريد الإلكتروني';
+
+  @override
+  String get provider_details_status => 'الحالة';
+
+  @override
+  String get provider_details_status_active => 'نشط';
+
+  @override
+  String get provider_details_status_inactive => 'غير نشط';
+
+  @override
+  String get provider_details_successful_orders => 'الطلبات الناجحة';
 }

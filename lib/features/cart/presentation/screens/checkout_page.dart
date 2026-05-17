@@ -3,9 +3,10 @@ import 'package:wassaly/features/cart/presentation/bloc/cart_bloc.dart';
 import 'package:wassaly/features/cart/presentation/bloc/cart_event.dart';
 import 'package:wassaly/features/cart/presentation/bloc/cart_state.dart';
 import 'package:wassaly/features/cart/presentation/bloc/checkout/checkout_bloc.dart';
-import 'package:wassaly/features/cart/presentation/widgets/checkout_coupon_section.dart';
-import 'package:wassaly/features/cart/presentation/widgets/checkout_form_section.dart';
-import 'package:wassaly/features/cart/presentation/widgets/checkout_order_summary_section.dart';
+import 'package:wassaly/features/cart/presentation/widgets/checkout/checkout_bottom_sheet.dart';
+import 'package:wassaly/features/cart/presentation/widgets/checkout/checkout_coupon_section.dart';
+import 'package:wassaly/features/cart/presentation/widgets/checkout/checkout_form_section.dart';
+import 'package:wassaly/features/cart/presentation/widgets/checkout/checkout_order_summary_section.dart';
 
 class CheckoutPage extends StatelessWidget {
   const CheckoutPage({super.key});
@@ -25,7 +26,11 @@ class CheckoutPage extends StatelessWidget {
 
           // Navigate to order confirmation — pop back to cart for now
           // Replace with actual order confirmation route when available
-          context.pop();
+          try {
+            if (context.mounted && context.canPop()) {
+              context.pop();
+            }
+          } catch (_) {}
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(context.l10n.checkout_order_success),
@@ -132,48 +137,8 @@ class CheckoutPage extends StatelessWidget {
                 ),
             ],
           ),
-          bottomSheet: (!isLoading && !isError)
-              ? Container(
-                  padding: EdgeInsets.fromLTRB(
-                    16.w,
-                    12.h,
-                    16.w,
-                    context.bottomPadding,
-                  ),
-                  decoration: BoxDecoration(
-                    color: cs.surface,
-                    boxShadow: [
-                      BoxShadow(
-                        color: cs.shadow.withValues(alpha: 0.08),
-                        blurRadius: 8,
-                        offset: const Offset(0, -2),
-                      ),
-                    ],
-                  ),
-                  child:
-                      BlocSelector<CheckoutBloc, CheckoutState, (bool, bool)>(
-                    selector: (state) => (
-                      state.isFormValid,
-                      state.status == CheckoutStatus.submitting,
-                    ),
-                    builder: (context, data) {
-                      final (isFormValid, isSubmitting) = data;
-
-                      return AppButton(
-                        label: context.l10n.checkout_complete_order,
-                        isFullWidth: true,
-                        height: ButtonSize.large,
-                        isLoading: isSubmitting,
-                        onPressed: (!isFormValid || isSubmitting)
-                            ? null
-                            : () => context
-                                .read<CheckoutBloc>()
-                                .add(const CheckoutSubmitted()),
-                      );
-                    },
-                  ),
-                )
-              : null,
+          bottomSheet:
+              (!isLoading && !isError) ? const CheckoutBottomSheet() : null,
         );
       },
     );

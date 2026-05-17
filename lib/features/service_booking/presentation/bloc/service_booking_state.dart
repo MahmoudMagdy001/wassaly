@@ -67,6 +67,15 @@ class ServiceBookingState extends Equatable {
     this.centerError,
   });
 
+  bool get isFormValid =>
+      customerName.trim().isNotEmpty &&
+      customerPhone.trim().isNotEmpty &&
+      problemDescription.trim().isNotEmpty &&
+      selectedDay != null &&
+      selectedTime != null &&
+      selectedGovernorateId != null &&
+      selectedCenterId != null;
+
   ServiceBookingState copyWith({
     ServiceBookingStatus? status,
     ServiceDetailEntity? service,

@@ -97,7 +97,9 @@ import '../../features/orders/data/datasources/orders_remote_datasource.dart';
 import '../../features/orders/data/repositories/orders_repository_impl.dart';
 import '../../features/orders/domain/repositories/orders_repository.dart';
 import '../../features/orders/domain/usecases/get_orders_usecase.dart';
+import '../../features/orders/domain/usecases/get_order_details_usecase.dart';
 import '../../features/orders/presentation/bloc/orders_bloc.dart';
+import '../../features/orders/presentation/bloc/order_detail/order_detail_bloc.dart';
 import '../../features/service_details/data/datasources/service_details_remote_datasource.dart';
 import '../../features/service_details/data/repositories/service_details_repository_impl.dart';
 import '../../features/service_details/domain/repositories/service_details_repository.dart';
@@ -117,13 +119,18 @@ import '../../features/provider_details/data/datasources/provider_details_remote
 import '../../features/provider_details/data/repositories/provider_details_repository_impl.dart';
 import '../../features/provider_details/domain/repositories/provider_details_repository.dart';
 import '../../features/provider_details/domain/usecases/get_provider_details_usecase.dart';
-import '../../features/provider_details/presentation/cubit/provider_details_cubit.dart';
+import '../../features/provider_details/presentation/bloc/provider_details_bloc.dart';
 import '../../features/brands/data/datasources/brands_remote_datasource.dart';
 import '../../features/brands/data/repositories/brands_repository_impl.dart';
 import '../../features/brands/domain/repositories/brands_repository.dart';
 import '../../features/brands/domain/usecases/get_brand_products_usecase.dart';
 import '../../features/brands/domain/usecases/get_brands_usecase.dart';
 import '../../features/brands/presentation/bloc/brands_bloc.dart';
+import '../../features/offers/data/datasources/offers_remote_datasource.dart';
+import '../../features/offers/data/repositories/offers_repository_impl.dart';
+import '../../features/offers/domain/repositories/offers_repository.dart';
+import '../../features/offers/domain/usecases/get_offers_use_case.dart';
+import '../../features/offers/presentation/bloc/offers_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -205,6 +212,10 @@ void initDependencies() {
         getMyBookingsUseCase: sl(),
       ));
 
+  sl.registerFactory(() => OrderDetailBloc(
+        getOrderDetailsUseCase: sl(),
+      ));
+
   sl.registerFactory(() => CheckoutBloc(
         placeOrderUseCase: sl(),
         applyCouponUseCase: sl(),
@@ -250,14 +261,18 @@ void initDependencies() {
         ordersBloc: sl(),
       ));
 
-  // Provider Details
-  sl.registerFactory(() => ProviderDetailsCubit(
+  sl.registerFactory(() => ProviderDetailsBloc(
         getProviderDetailsUseCase: sl(),
       ));
 
   // Brands
   sl.registerFactory(() => BrandsBloc(
         sl(),
+        sl(),
+      ));
+
+  // Offers
+  sl.registerFactory(() => OffersBloc(
         sl(),
       ));
 
@@ -326,6 +341,7 @@ void initDependencies() {
 
   // UseCases - Orders
   sl.registerLazySingleton(() => GetOrdersUseCase(sl()));
+  sl.registerLazySingleton(() => GetOrderDetailsUseCase(sl()));
 
   // UseCases - Service Details
   sl.registerLazySingleton(() => GetServiceDetailsUseCase(sl()));
@@ -341,9 +357,12 @@ void initDependencies() {
   // UseCases - Provider Details
   sl.registerLazySingleton(() => GetProviderDetailsUseCase(sl()));
 
-  // UseCases - Brands
+  // UseCases  // Brands
   sl.registerLazySingleton(() => GetBrandsUseCase(sl()));
   sl.registerLazySingleton(() => GetBrandProductsUseCase(sl()));
+
+  // Offers
+  sl.registerLazySingleton(() => GetOffersUseCase(sl()));
 
   // Repositories
   sl.registerLazySingleton<AuthRepository>(
@@ -373,6 +392,8 @@ void initDependencies() {
       () => ProviderDetailsRepositoryImpl(sl()));
   sl.registerLazySingleton<BrandsRepository>(
       () => BrandsRepositoryImpl(sl()));
+  sl.registerLazySingleton<OffersRepository>(
+      () => OffersRepositoryImpl(sl()));
 
   // DataSources
   sl.registerLazySingleton<AuthRemoteDataSource>(
@@ -411,4 +432,6 @@ void initDependencies() {
       () => ProviderDetailsRemoteDataSourceImpl(DioService.instance));
   sl.registerLazySingleton<BrandsRemoteDataSource>(
       () => BrandsRemoteDataSourceImpl(DioService.instance));
+  sl.registerLazySingleton<OffersRemoteDataSource>(
+      () => OffersRemoteDataSourceImpl(DioService.instance));
 }

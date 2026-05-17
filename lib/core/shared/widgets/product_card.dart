@@ -43,7 +43,7 @@ class ProductCard extends StatefulWidget {
 }
 
 class _ProductCardState extends State<ProductCard> {
-  bool _isActive = false;
+  final ValueNotifier<bool> _isActiveNotifier = ValueNotifier(false);
 
   @override
   void initState() {
@@ -58,15 +58,16 @@ class _ProductCardState extends State<ProductCard> {
     if (activeMarqueeId.value == widget.product.id) {
       activeMarqueeId.value = null;
     }
+    _isActiveNotifier.dispose();
     super.dispose();
   }
 
   void _onActiveIdChanged() {
     final isNowActive = activeMarqueeId.value == widget.product.id;
-    if (isNowActive != _isActive) {
+    if (isNowActive != _isActiveNotifier.value) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
-          setState(() => _isActive = isNowActive);
+          _isActiveNotifier.value = isNowActive;
         }
       });
     }
@@ -102,18 +103,21 @@ class _ProductCardState extends State<ProductCard> {
     return GestureDetector(
       onTap: widget.onTap ?? _openProductDetails,
       onLongPress: _onLongPress,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        decoration: BoxDecoration(
-          color: cs.surface,
-          borderRadius: BorderRadius.circular(12.r),
-          border: Border.all(
-            // Subtle highlight when marquee is active
-            color: _isActive
-                ? cs.primary.withValues(alpha: 0.6)
-                : cs.outlineVariant.withValues(alpha: 0.5),
-            width: _isActive ? 1.5 : 1.0,
-          ),
+      child: ValueListenableBuilder<bool>(
+        valueListenable: _isActiveNotifier,
+        builder: (context, isActive, child) {
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            decoration: BoxDecoration(
+              color: cs.surface,
+              borderRadius: BorderRadius.circular(12.r),
+              border: Border.all(
+                // Subtle highlight when marquee is active
+                color: isActive
+                    ? cs.primary.withValues(alpha: 0.6)
+                    : cs.outlineVariant.withValues(alpha: 0.5),
+                width: isActive ? 1.5 : 1.0,
+              ),
         ),
         clipBehavior: Clip.antiAlias,
         child: Column(
@@ -136,7 +140,7 @@ class _ProductCardState extends State<ProductCard> {
                     if (widget.product.description.isNotEmpty)
                       MarqueeText(
                         text: widget.product.description,
-                        isActive: _isActive,
+                        isActive: isActive,
                         style: tt.labelSmall?.copyWith(
                           color: cs.onSurfaceVariant,
                         ),
@@ -146,7 +150,7 @@ class _ProductCardState extends State<ProductCard> {
                     // Product name — marquee when active
                     MarqueeText(
                       text: widget.product.name,
-                      isActive: _isActive,
+                      isActive: isActive,
                       style: tt.titleSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: cs.onSurface,
@@ -187,7 +191,9 @@ class _ProductCardState extends State<ProductCard> {
               ),
             ),
           ],
-        ),
+            ),
+          );
+        },
       ),
     );
   }

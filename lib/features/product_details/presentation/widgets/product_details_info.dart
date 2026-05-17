@@ -13,6 +13,7 @@ import 'product_details_meta_chip.dart';
 import 'product_review_form_sheet.dart';
 import 'product_specifications_grid.dart';
 import 'related_products_section.dart';
+import '../../../service_details/presentation/widgets/service_provider_card.dart';
 
 class ProductDetailsInfo extends StatelessWidget {
   final ProductDetailEntity product;
@@ -139,6 +140,15 @@ class ProductDetailsInfo extends StatelessWidget {
           ),
           if (product.specifications.isNotEmpty) ...[
             ProductSpecificationsGrid(specifications: product.specifications),
+          ],
+          if (product.provider != null) ...[
+            24.verticalSpace,
+            Text(
+              context.l10n.service_details_provider,
+              style: tt.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            12.verticalSpace,
+            ServiceProviderCard(provider: product.provider!),
           ],
           if (product.reviews.isNotEmpty || currentUserId != null) ...[
             8.verticalSpace,

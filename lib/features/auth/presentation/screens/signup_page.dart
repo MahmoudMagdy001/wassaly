@@ -88,7 +88,11 @@ class _SignupViewState extends State<_SignupView> {
   }
 
   void _onLogin() {
-    context.pop();
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.go(AppRoutes.login);
+    }
   }
 
   void _onTermsPressed() {

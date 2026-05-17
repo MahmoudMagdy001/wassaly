@@ -49,10 +49,15 @@ class _HomeView extends StatelessWidget {
               slivers: [
                 // Sliver AppBar
                 AppSliverTopBar(
+                  automaticallyImplyLeading: false,
                   showLogo: true,
                   actions: [
                     IconButton(
-                      icon: Icon(Icons.search, color: cs.primary),
+                      icon: Icon(
+                        Icons.search,
+                        color: cs.primary,
+                        size: 28.r,
+                      ),
                       onPressed: () {
                         context.push(AppRoutes.search);
                       },
@@ -98,6 +103,30 @@ class _HomeView extends StatelessWidget {
                   // Main Categories
                   const SliverToBoxAdapter(
                     child: MainCategoriesSection(),
+                  ),
+
+                  // Spacing
+                  SliverToBoxAdapter(
+                    child: 16.verticalSpace,
+                  ),
+
+                  // Offers Banner
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: GestureDetector(
+                        onTap: () => context.push(AppRoutes.offers),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12.r),
+                          child: Image.asset(
+                            'assets/images/offers.png',
+                            width: double.infinity,
+                            // cacheHeight: ,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
 
                   // Spacing

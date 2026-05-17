@@ -150,65 +150,89 @@ class BookingAddressSection extends StatelessWidget {
             ],
 
             // ─── Manual Selection / Fallback ────────────────────────────────
-            Text(
-              context.l10n.checkout_customer_address,
-              style: tt.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            12.verticalSpace,
-            AppDropdown<String>(
-              label: context.l10n.checkout_governorate,
-              value: state.selectedGovernorateId,
-              items: state.governorates.map((gov) {
-                return DropdownMenuItem(
-                  value: gov.id,
-                  child: Text(gov.name),
-                );
-              }).toList(),
-              onChanged: (val) {
-                if (val != null) {
-                  bloc.add(ServiceBookingGovernorateSelected(val));
-                }
-              },
-              validator: (v) => v == null ? state.governorateError : null,
-              prefixIcon: state.isLoadingGovernorates
-                  ? const AppLoading(size: 20)
-                  : const Icon(Icons.location_on_outlined),
-            ),
-            if (state.governorateError != null) ...[
-              4.verticalSpace,
-              Text(
-                state.governorateError!,
-                style: TextStyle(color: cs.error, fontSize: 12.sp),
+            if (state.addresses.isEmpty && !state.isLoadingAddresses) ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    context.l10n.checkout_customer_address,
+                    style: tt.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  TextButton.icon(
+                    onPressed: () async {
+                      final success = await context.push(AppRoutes.addAddress);
+                      if (success == true) {
+                        if (context.mounted) {
+                          bloc.add(const ServiceBookingAddressesRefreshed());
+                        }
+                      }
+                    },
+                    icon: Icon(Icons.add, size: 18.r),
+                    label: Text(context.l10n.cart_add_new_address),
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                  ),
+                ],
               ),
-            ],
-            16.verticalSpace,
-            AppDropdown<String>(
-              label: context.l10n.checkout_center,
-              value: state.selectedCenterId,
-              items: state.centers.map((center) {
-                return DropdownMenuItem(
-                  value: center.id,
-                  child: Text(center.name),
-                );
-              }).toList(),
-              onChanged: (val) {
-                if (val != null) {
-                  bloc.add(ServiceBookingCenterSelected(val));
-                }
-              },
-              validator: (v) => v == null ? state.centerError : null,
-              prefixIcon: state.isLoadingCenters
-                  ? const AppLoading(size: 20)
-                  : const Icon(Icons.location_city_outlined),
-              enabled: state.selectedGovernorateId != null &&
-                  state.centers.isNotEmpty,
-            ),
-            if (state.centerError != null) ...[
-              4.verticalSpace,
-              Text(
-                state.centerError!,
-                style: TextStyle(color: cs.error, fontSize: 12.sp),
+              12.verticalSpace,
+              AppDropdown<String>(
+                label: context.l10n.checkout_governorate,
+                value: state.selectedGovernorateId,
+                items: state.governorates.map((gov) {
+                  return DropdownMenuItem(
+                    value: gov.id,
+                    child: Text(gov.name),
+                  );
+                }).toList(),
+                onChanged: (val) {
+                  if (val != null) {
+                    bloc.add(ServiceBookingGovernorateSelected(val));
+                  }
+                },
+                validator: (v) => v == null ? state.governorateError : null,
+                prefixIcon: state.isLoadingGovernorates
+                    ? const AppLoading(size: 20)
+                    : const Icon(Icons.location_on_outlined),
               ),
+              if (state.governorateError != null) ...[
+                4.verticalSpace,
+                Text(
+                  state.governorateError!,
+                  style: TextStyle(color: cs.error, fontSize: 12.sp),
+                ),
+              ],
+              16.verticalSpace,
+              AppDropdown<String>(
+                label: context.l10n.checkout_center,
+                value: state.selectedCenterId,
+                items: state.centers.map((center) {
+                  return DropdownMenuItem(
+                    value: center.id,
+                    child: Text(center.name),
+                  );
+                }).toList(),
+                onChanged: (val) {
+                  if (val != null) {
+                    bloc.add(ServiceBookingCenterSelected(val));
+                  }
+                },
+                validator: (v) => v == null ? state.centerError : null,
+                prefixIcon: state.isLoadingCenters
+                    ? const AppLoading(size: 20)
+                    : const Icon(Icons.location_city_outlined),
+                enabled: state.selectedGovernorateId != null &&
+                    state.centers.isNotEmpty,
+              ),
+              if (state.centerError != null) ...[
+                4.verticalSpace,
+                Text(
+                  state.centerError!,
+                  style: TextStyle(color: cs.error, fontSize: 12.sp),
+                ),
+              ],
             ],
           ],
         );

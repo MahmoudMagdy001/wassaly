@@ -11,6 +11,13 @@ class OrderModel extends OrderEntity {
     required super.deliveryFees,
     required super.items,
     required super.createdAt,
+    super.subTotal,
+    super.discountAmount,
+    super.customerName,
+    super.customerPhone,
+    super.deliveryAddress,
+    super.governorateName,
+    super.centerName,
   });
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
@@ -26,6 +33,14 @@ class OrderModel extends OrderEntity {
               .toList() ??
           [],
       createdAt: json['created_at'] as String? ?? '',
+      subTotal: (json['sub_total'] as num?)?.toDouble(),
+      discountAmount: (json['discount_amount'] as num?)?.toDouble(),
+      customerName: json['customer_name'] as String?,
+      customerPhone: json['customer_phone'] as String?,
+      deliveryAddress: json['delivery_address'] as String?,
+      governorateName: (json['governorate'] as Map<String, dynamic>?)?['name'] as String?,
+      centerName: (json['center'] as Map<String, dynamic>?)?['name'] as String?,
     );
   }
 }
+

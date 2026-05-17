@@ -5,6 +5,7 @@ import 'package:wassaly/features/cart/presentation/bloc/cart_event.dart';
 import 'package:wassaly/features/cart/presentation/bloc/cart_state.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_bloc.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_event.dart';
+import 'package:wassaly/features/favorite/presentation/bloc/favorite_state.dart';
 
 class MainLayoutPage extends StatefulWidget {
   const MainLayoutPage({
@@ -33,17 +34,17 @@ class _MainLayoutPageState extends State<MainLayoutPage> {
     final sessionState = context.read<SessionBloc>().state;
 
     if (sessionState is SessionAuthenticated) {
-      // Check cart
+      // Only load if never fetched before (status == initial).
+      // This prevents double-loading when the data was fetched but empty.
       final cartState = context.read<CartBloc>().state;
-      if (cartState.items.isEmpty && !cartState.isLoading) {
-        debugPrint('[MainLayout] Cart is empty, loading cart items');
+      if (cartState.status == CartStatus.initial) {
+        debugPrint('[MainLayout] Cart not yet loaded, loading cart items');
         context.read<CartBloc>().add(const LoadCartItemsEvent());
       }
 
-      // Check favorites
       final favoriteState = context.read<FavoriteBloc>().state;
-      if (favoriteState.favorites.data.isEmpty && !favoriteState.isLoading) {
-        debugPrint('[MainLayout] Favorites are empty, loading favorites');
+      if (favoriteState.status == FavoriteStatus.initial) {
+        debugPrint('[MainLayout] Favorites not yet loaded, loading favorites');
         context.read<FavoriteBloc>().add(const GetFavoritesEvent());
       }
     }
@@ -76,27 +77,7 @@ class _MainLayoutPageState extends State<MainLayoutPage> {
             context.read<FavoriteBloc>().add(const GetFavoritesEvent());
           },
         ),
-        // Also load data if already authenticated on page load
-        BlocListener<SessionBloc, SessionState>(
-          listenWhen: (prev, curr) => curr is SessionAuthenticated,
-          listener: (context, state) {
-            debugPrint(
-                '[MainLayout] User is authenticated, checking if data needs loading');
-            // Check if cart is empty, if so load it
-            final cartState = context.read<CartBloc>().state;
-            if (cartState.items.isEmpty) {
-              debugPrint('[MainLayout] Cart is empty, loading cart items');
-              context.read<CartBloc>().add(const LoadCartItemsEvent());
-            }
 
-            // Check if favorites are empty, if so load them
-            final favoriteState = context.read<FavoriteBloc>().state;
-            if (favoriteState.favorites.data.isEmpty) {
-              debugPrint('[MainLayout] Favorites are empty, loading favorites');
-              context.read<FavoriteBloc>().add(const GetFavoritesEvent());
-            }
-          },
-        ),
       ],
       child: Scaffold(
         body: widget.navigationShell,

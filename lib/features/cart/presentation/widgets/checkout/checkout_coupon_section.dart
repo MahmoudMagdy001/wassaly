@@ -1,6 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-import '../bloc/checkout/checkout_bloc.dart';
+import '../../bloc/checkout/checkout_bloc.dart';
 
 class CheckoutCouponSection extends StatefulWidget {
   const CheckoutCouponSection({super.key});
@@ -54,7 +54,7 @@ class _CheckoutCouponSectionState extends State<CheckoutCouponSection> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
                   child: AppTextField(

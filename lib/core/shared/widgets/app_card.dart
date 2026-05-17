@@ -59,7 +59,7 @@ class AppCard extends StatelessWidget {
             padding: EdgeInsets.only(
               left: 12.w,
               right: 12.w,
-              top: 12.h,
+              top: 8.h,
             ),
             child: Row(
               children: [
@@ -68,13 +68,13 @@ class AppCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (title != null)
-                        Text(
-                          title!,
-                          style: tt.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
+                      Text(
+                        title!,
+                        style: tt.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
                         ),
+                      ),
+                      10.verticalSpace,
                       if (subtitle != null)
                         Text(
                           subtitle!,

@@ -8,6 +8,7 @@ import 'package:wassaly/features/auth/presentation/screens/signup_page.dart';
 import 'package:wassaly/features/auth/presentation/screens/splash_page.dart';
 import 'package:wassaly/features/brands/presentation/pages/brand_details_page.dart';
 import 'package:wassaly/features/brands/presentation/pages/brands_page.dart';
+import 'package:wassaly/features/offers/presentation/pages/offers_page.dart';
 import 'package:wassaly/features/cart/presentation/bloc/cart_state.dart';
 import 'package:wassaly/features/cart/presentation/bloc/checkout/checkout_bloc.dart';
 import 'package:wassaly/features/cart/presentation/screens/cart_page.dart';
@@ -16,6 +17,9 @@ import 'package:wassaly/features/favorite/presentation/screens/favorite_page.dar
 import 'package:wassaly/features/home/presentation/screens/home_page.dart';
 import 'package:wassaly/features/main_layout/presentation/screens/main_layout_page.dart';
 import 'package:wassaly/features/orders/presentation/screens/orders_page.dart';
+import 'package:wassaly/features/orders/presentation/bloc/order_detail/order_detail_bloc.dart';
+import 'package:wassaly/features/orders/presentation/bloc/order_detail/order_detail_event.dart';
+import 'package:wassaly/features/orders/presentation/screens/order_details_page.dart';
 import 'package:wassaly/features/product_details/presentation/screens/product_details_page.dart';
 import 'package:wassaly/features/profile/domain/entities/address_entity.dart';
 import 'package:wassaly/features/profile/presentation/bloc/profile/profile_bloc.dart';
@@ -113,6 +117,18 @@ final GoRouter appRouter = GoRouter(
         final extra = state.extra as Map<String, dynamic>?;
         final initialIndex = extra?['initialIndex'] as int? ?? 0;
         return OrdersPage(initialIndex: initialIndex);
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.orderDetails,
+      name: 'orderDetails',
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        final orderId = extra?['orderId'] as int? ?? 0;
+        return BlocProvider(
+          create: (_) => sl<OrderDetailBloc>()..add(FetchOrderDetailEvent(orderId)),
+          child: OrderDetailsPage(orderId: orderId),
+        );
       },
     ),
     GoRoute(
@@ -356,6 +372,11 @@ final GoRouter appRouter = GoRouter(
         }
         return ProviderDetailsPage(providerId: providerId);
       },
+    ),
+    GoRoute(
+      path: AppRoutes.offers,
+      name: 'offers',
+      builder: (context, state) => const OffersPage(),
     ),
     GoRoute(
       path: AppRoutes.brands,

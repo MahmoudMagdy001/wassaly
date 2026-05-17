@@ -22,7 +22,7 @@ class ServiceCard extends StatefulWidget {
 }
 
 class _ServiceCardState extends State<ServiceCard> {
-  bool _isActive = false;
+  final ValueNotifier<bool> _isActiveNotifier = ValueNotifier(false);
 
   @override
   void initState() {
@@ -36,15 +36,16 @@ class _ServiceCardState extends State<ServiceCard> {
     if (activeServiceMarqueeId.value == widget.service.id) {
       activeServiceMarqueeId.value = null;
     }
+    _isActiveNotifier.dispose();
     super.dispose();
   }
 
   void _onActiveIdChanged() {
     final isNowActive = activeServiceMarqueeId.value == widget.service.id;
-    if (isNowActive != _isActive) {
+    if (isNowActive != _isActiveNotifier.value) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
-          setState(() => _isActive = isNowActive);
+          _isActiveNotifier.value = isNowActive;
         }
       });
     }
@@ -75,17 +76,20 @@ class _ServiceCardState extends State<ServiceCard> {
     return GestureDetector(
       onTap: widget.onTap ?? () => _openServiceDetails(context),
       onLongPress: _onLongPress,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        decoration: BoxDecoration(
-          color: cs.surface,
-          borderRadius: BorderRadius.circular(9.r),
-          border: Border.all(
-            color: _isActive
-                ? cs.primary.withValues(alpha: 0.6)
-                : cs.outlineVariant.withValues(alpha: 0.5),
-            width: _isActive ? 1.5 : 1.0,
-          ),
+      child: ValueListenableBuilder<bool>(
+        valueListenable: _isActiveNotifier,
+        builder: (context, isActive, child) {
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            decoration: BoxDecoration(
+              color: cs.surface,
+              borderRadius: BorderRadius.circular(9.r),
+              border: Border.all(
+                color: isActive
+                    ? cs.primary.withValues(alpha: 0.6)
+                    : cs.outlineVariant.withValues(alpha: 0.5),
+                width: isActive ? 1.5 : 1.0,
+              ),
         ),
         clipBehavior: Clip.antiAlias,
         child: Column(
@@ -188,7 +192,7 @@ class _ServiceCardState extends State<ServiceCard> {
                     // Title
                     MarqueeText(
                       text: widget.service.title,
-                      isActive: _isActive,
+                      isActive: isActive,
                       style: tt.titleSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: cs.onSurface,
@@ -200,7 +204,7 @@ class _ServiceCardState extends State<ServiceCard> {
                     if (widget.service.description.isNotEmpty)
                       MarqueeText(
                         text: widget.service.description,
-                        isActive: _isActive,
+                        isActive: isActive,
                         style: tt.labelSmall?.copyWith(
                           color: cs.onSurfaceVariant,
                         ),
@@ -221,7 +225,9 @@ class _ServiceCardState extends State<ServiceCard> {
               ),
             ),
           ],
-        ),
+            ),
+          );
+        },
       ),
     );
   }

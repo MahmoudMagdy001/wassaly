@@ -62,6 +62,7 @@
   "cart_remove_item_message": "هل أنت متأكد أنك تريد إزالة هذا المنتج من السلة؟",
   "cart_error_loading_cart": "فشل تحميل السلة",
   "cart_total_price": "الإجمالي",
+  "cart_total_after_discount": "الإجمالي بعد الخصم",
   "cart_subtotal": "المجموع الفرعي",
   "cart_product_offers": "عروض المنتجات",
   "cart_coupon_discount": "خصم الكوبون",
@@ -380,7 +381,7 @@
   "service_booking_name": "الاسم بالكامل",
   "service_booking_phone": "رقم الهاتف",
   "service_booking_email": "البريد الإلكتروني",
-  "service_booking_problem": "وصف المشكلة (اختياري)",
+  "service_booking_problem": "وصف المشكلة",
   "service_booking_problem_hint": "اشرح المشكلة التي تواجهها هنا...",
   "service_booking_address_info": "بيانات العنوان",
   "service_booking_selected_day": "اليوم المختار",
@@ -404,5 +405,14 @@
   "brands": "البراندات",
   "no_brands": "لا يوجد براندات مضافة حالياً",
   "brand_products": "منتجات البراند",
-  "no_brand_products": "لا يوجد منتجات في هذا البراند حالياً"
+  "no_brand_products": "لا يوجد منتجات في هذا البراند حالياً",
+  "offers": "العروض",
+  "provider_details_contact_info": "معلومات الاتصال",
+  "provider_details_contact_person": "شخص الاتصال",
+  "provider_details_phone": "رقم الهاتف",
+  "provider_details_email": "البريد الإلكتروني",
+  "provider_details_status": "الحالة",
+  "provider_details_status_active": "نشط",
+  "provider_details_status_inactive": "غير نشط",
+  "provider_details_successful_orders": "الطلبات الناجحة"
 }

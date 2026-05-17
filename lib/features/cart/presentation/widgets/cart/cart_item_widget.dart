@@ -1,6 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-import '../../domain/entities/cart_item_entity.dart';
+import '../../../domain/entities/cart_item_entity.dart';
 
 class CartItemWidget extends StatelessWidget {
   final CartItemEntity item;
@@ -292,8 +292,13 @@ class CartItemWidget extends StatelessWidget {
             Text(
               '${item.totalPrice.toStringAsFixed(0)} ${context.l10n.shared_currency_egp}',
               style: tt.bodyMedium?.copyWith(
-                color: cs.onSurface,
+                color: hasOffer
+                    ? cs.onSurface.withValues(alpha: 0.5)
+                    : cs.onSurface,
                 fontWeight: FontWeight.w600,
+                decoration: hasOffer ? TextDecoration.lineThrough : null,
+                decorationColor:
+                    hasOffer ? cs.onSurface.withValues(alpha: 0.5) : null,
               ),
             ),
             8.horizontalSpace,
@@ -305,6 +310,28 @@ class CartItemWidget extends StatelessWidget {
             ),
           ],
         ),
+        if (hasOffer) ...[
+          2.verticalSpace,
+          Row(
+            children: [
+              Text(
+                context.l10n.cart_total_after_discount,
+                style: tt.bodySmall?.copyWith(
+                  color: cs.primary.withValues(alpha: 0.8),
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              4.horizontalSpace,
+              Text(
+                '${(discountedPrice * item.quantity).toStringAsFixed(0)} ${context.l10n.shared_currency_egp}',
+                style: tt.bodyMedium?.copyWith(
+                  color: cs.primary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ],
       ],
     );
   }

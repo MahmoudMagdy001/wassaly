@@ -62,6 +62,7 @@
   "cart_remove_item_message": "Are you sure you want to remove this product from cart?",
   "cart_error_loading_cart": "Failed to load cart",
   "cart_total_price": "Total",
+  "cart_total_after_discount": "Total after discount",
   "cart_subtotal": "Subtotal",
   "cart_product_offers": "Product Offers",
   "cart_coupon_discount": "Coupon Discount",
@@ -380,7 +381,7 @@
   "service_booking_name": "Full Name",
   "service_booking_phone": "Phone Number",
   "service_booking_email": "Email Address",
-  "service_booking_problem": "Problem Description (Optional)",
+  "service_booking_problem": "Problem Description",
   "service_booking_problem_hint": "Explain your problem here...",
   "service_booking_address_info": "Address Information",
   "service_booking_selected_day": "Selected Day",
@@ -404,5 +405,14 @@
   "brands": "Brands",
   "no_brands": "No brands added yet",
   "brand_products": "Brand Products",
-  "no_brand_products": "No products in this brand yet"
+  "no_brand_products": "No products in this brand yet",
+  "offers": "Offers",
+  "provider_details_contact_info": "Contact Information",
+  "provider_details_contact_person": "Contact Person",
+  "provider_details_phone": "Phone Number",
+  "provider_details_email": "Email Address",
+  "provider_details_status": "Status",
+  "provider_details_status_active": "Active",
+  "provider_details_status_inactive": "Inactive",
+  "provider_details_successful_orders": "Successful Orders"
 }

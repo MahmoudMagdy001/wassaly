@@ -1,6 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-import '../bloc/checkout/checkout_bloc.dart';
+import '../../bloc/checkout/checkout_bloc.dart';
 
 class CheckoutFormSection extends StatefulWidget {
   const CheckoutFormSection({super.key});
@@ -144,124 +144,130 @@ class _CheckoutFormSectionState extends State<CheckoutFormSection> {
                 if (state.isLoadingAddresses)
                   const Center(child: AppLoading())
                 else
-                Column(
-                  children: List.generate(
-                    state.addresses.length,
-                    (index) {
-                      final address = state.addresses[index];
-                      final isSelected =
-                          state.selectedAddress?.id == address.id;
+                  Column(
+                    children: List.generate(
+                      state.addresses.length,
+                      (index) {
+                        final address = state.addresses[index];
+                        final isSelected =
+                            state.selectedAddress?.id == address.id;
 
-                      return Padding(
-                        padding: EdgeInsets.only(
-                            bottom: index == state.addresses.length - 1 ? 0 : 12.h),
-                        child: InkWell(
-                          onTap: () {
-                            context
-                                .read<CheckoutBloc>()
-                                .add(CheckoutAddressSelected(address));
-                          },
-                          borderRadius: BorderRadius.circular(16.r),
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 300),
-                            padding: EdgeInsets.all(16.r),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16.r),
-                              border: Border.all(
-                                color:
-                                    isSelected ? cs.primary : cs.outlineVariant,
-                                width: isSelected ? 2 : 1,
+                        return Padding(
+                          padding: EdgeInsets.only(
+                              bottom: index == state.addresses.length - 1
+                                  ? 0
+                                  : 12.h),
+                          child: InkWell(
+                            onTap: () {
+                              context
+                                  .read<CheckoutBloc>()
+                                  .add(CheckoutAddressSelected(address));
+                            },
+                            borderRadius: BorderRadius.circular(16.r),
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 300),
+                              padding: EdgeInsets.all(16.r),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16.r),
+                                border: Border.all(
+                                  color: isSelected
+                                      ? cs.primary
+                                      : cs.outlineVariant,
+                                  width: isSelected ? 2 : 1,
+                                ),
+                                color: isSelected
+                                    ? cs.primaryContainer
+                                        .withValues(alpha: 0.05)
+                                    : cs.surface,
+                                boxShadow: isSelected
+                                    ? [
+                                        BoxShadow(
+                                          color:
+                                              cs.primary.withValues(alpha: 0.1),
+                                          blurRadius: 8,
+                                          offset: const Offset(0, 4),
+                                        )
+                                      ]
+                                    : null,
                               ),
-                              color: isSelected
-                                  ? cs.primaryContainer.withValues(alpha: 0.05)
-                                  : cs.surface,
-                              boxShadow: isSelected
-                                  ? [
-                                      BoxShadow(
-                                        color: cs.primary.withValues(alpha: 0.1),
-                                        blurRadius: 8,
-                                        offset: const Offset(0, 4),
-                                      )
-                                    ]
-                                  : null,
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Radio Button
-                                Container(
-                                  margin: EdgeInsets.only(top: 2.h),
-                                  width: 20.r,
-                                  height: 20.r,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: isSelected
-                                          ? cs.primary
-                                          : cs.onSurfaceVariant,
-                                      width: 2,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Radio Button
+                                  Container(
+                                    margin: EdgeInsets.only(top: 2.h),
+                                    width: 20.r,
+                                    height: 20.r,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: isSelected
+                                            ? cs.primary
+                                            : cs.onSurfaceVariant,
+                                        width: 2,
+                                      ),
+                                    ),
+                                    child: isSelected
+                                        ? Center(
+                                            child: Container(
+                                              width: 10.r,
+                                              height: 10.r,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: cs.primary,
+                                              ),
+                                            ),
+                                          )
+                                        : null,
+                                  ),
+                                  16.horizontalSpace,
+                                  // Address Details
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              address.title,
+                                              style: tt.titleMedium?.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                                color: isSelected
+                                                    ? cs.primary
+                                                    : cs.onSurface,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        4.verticalSpace,
+                                        Text(
+                                          '${address.governorateName}، ${address.centerName}',
+                                          style: tt.bodyMedium?.copyWith(
+                                            color: cs.onSurface,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        4.verticalSpace,
+                                        Text(
+                                          address.address,
+                                          style: tt.bodySmall?.copyWith(
+                                            color: cs.onSurfaceVariant,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  child: isSelected
-                                      ? Center(
-                                          child: Container(
-                                            width: 10.r,
-                                            height: 10.r,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: cs.primary,
-                                            ),
-                                          ),
-                                        )
-                                      : null,
-                                ),
-                                16.horizontalSpace,
-                                // Address Details
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            address.title,
-                                            style: tt.titleMedium?.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: isSelected
-                                                  ? cs.primary
-                                                  : cs.onSurface,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      4.verticalSpace,
-                                      Text(
-                                        '${address.governorateName}، ${address.centerName}',
-                                        style: tt.bodyMedium?.copyWith(
-                                          color: cs.onSurface,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                      4.verticalSpace,
-                                      Text(
-                                        address.address,
-                                        style: tt.bodySmall?.copyWith(
-                                          color: cs.onSurfaceVariant,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
-                ),
               ] else if (!state.isLoadingAddresses) ...[
                 // Empty state with Add button
                 Center(

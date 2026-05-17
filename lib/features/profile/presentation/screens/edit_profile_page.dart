@@ -28,7 +28,7 @@ class _EditProfileViewState extends State<_EditProfileView> {
   late final TextEditingController _passwordController;
   late final TextEditingController _passwordConfirmationController;
 
-  File? _avatarFile;
+  final ValueNotifier<File?> _avatarFileNotifier = ValueNotifier(null);
   UserEntity? _previousUser;
   var _previousActionStatus = AppStatus.initial;
 
@@ -60,12 +60,13 @@ class _EditProfileViewState extends State<_EditProfileView> {
     _currentPasswordController.dispose();
     _passwordController.dispose();
     _passwordConfirmationController.dispose();
+    _avatarFileNotifier.dispose();
     super.dispose();
   }
 
   void _onAvatarPicked(File? file) {
     if (file != null) {
-      setState(() => _avatarFile = file);
+      _avatarFileNotifier.value = file;
     }
   }
 
@@ -82,7 +83,7 @@ class _EditProfileViewState extends State<_EditProfileView> {
     context.read<ProfileBloc>().add(ProfileUpdated(
           fullName: _nameController.text.trim(),
           phone: _phoneController.text.trim(),
-          avatar: _avatarFile,
+          avatar: _avatarFileNotifier.value,
           password: password.isNotEmpty ? password : null,
           currentPassword: _currentPasswordController.text.trim().isNotEmpty
               ? _currentPasswordController.text.trim()
@@ -180,7 +181,11 @@ class _EditProfileViewState extends State<_EditProfileView> {
                 // Regular profile update
                 context.showTypedSnackBar(context.l10n.profile_update_success,
                     type: SnackBarType.success);
-                context.pop();
+                try {
+                  if (context.mounted && context.canPop()) {
+                    context.pop();
+                  }
+                } catch (_) {}
               }
             } else if (state.actionStatus.isFailure &&
                 state.actionError != null) {
@@ -205,9 +210,14 @@ class _EditProfileViewState extends State<_EditProfileView> {
                   key: _formKey,
                   child: Column(
                     children: [
-                      EditProfileAvatarPicker(
-                        avatarFile: _avatarFile,
-                        onAvatarPicked: _onAvatarPicked,
+                      ValueListenableBuilder<File?>(
+                        valueListenable: _avatarFileNotifier,
+                        builder: (context, avatarFile, child) {
+                          return EditProfileAvatarPicker(
+                            avatarFile: avatarFile,
+                            onAvatarPicked: _onAvatarPicked,
+                          );
+                        },
                       ),
                       8.verticalSpace,
                       EditProfileNameField(controller: _nameController),

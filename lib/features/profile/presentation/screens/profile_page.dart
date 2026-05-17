@@ -56,6 +56,7 @@ class _ProfileView extends StatelessWidget {
         child: CustomScrollView(
           slivers: [
             AppSliverTopBar(
+              automaticallyImplyLeading: false,
               title: context.l10n.profile_my_account,
               centerTitle: true,
               actions: [

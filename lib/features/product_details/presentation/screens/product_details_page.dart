@@ -117,6 +117,7 @@ class _ProductDetailsSkeleton extends StatelessWidget {
       reviews: [],
       offerPercentages: [10],
       isFavorite: false,
+      provider: null,
     );
 
     final dummyRelatedProducts = List<ProductEntity>.generate(

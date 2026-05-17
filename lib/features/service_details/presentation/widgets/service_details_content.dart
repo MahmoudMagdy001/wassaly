@@ -19,8 +19,15 @@ class ServiceDetailsContent extends StatefulWidget {
 }
 
 class _ServiceDetailsContentState extends State<ServiceDetailsContent> {
-  ServiceAvailableDayEntity? _selectedDay;
-  ServiceAvailableTimeEntity? _selectedTime;
+  final ValueNotifier<ServiceAvailableDayEntity?> _selectedDayNotifier = ValueNotifier(null);
+  final ValueNotifier<ServiceAvailableTimeEntity?> _selectedTimeNotifier = ValueNotifier(null);
+
+  @override
+  void dispose() {
+    _selectedDayNotifier.dispose();
+    _selectedTimeNotifier.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,10 +59,8 @@ class _ServiceDetailsContentState extends State<ServiceDetailsContent> {
             ServiceDetailsInfo(
               service: widget.service,
               onSelectionChanged: (day, time) {
-                setState(() {
-                  _selectedDay = day;
-                  _selectedTime = time;
-                });
+                _selectedDayNotifier.value = day;
+                _selectedTimeNotifier.value = time;
               },
             ),
             SliverPadding(
@@ -65,16 +70,26 @@ class _ServiceDetailsContentState extends State<ServiceDetailsContent> {
         ),
         bottomSheet: Padding(
           padding: EdgeInsets.only(bottom: 6.h),
-          child: BookServiceBottomBar(
-            price: widget.service.price,
-            isEnabled: _selectedDay != null && _selectedTime != null,
-            onBookPressed: () {
-              context.push(
-                AppRoutes.serviceBooking,
-                extra: {
-                  'service': widget.service,
-                  'selectedDay': _selectedDay,
-                  'selectedTime': _selectedTime,
+          child: ValueListenableBuilder<ServiceAvailableTimeEntity?>(
+            valueListenable: _selectedTimeNotifier,
+            builder: (context, selectedTime, child) {
+              return ValueListenableBuilder<ServiceAvailableDayEntity?>(
+                valueListenable: _selectedDayNotifier,
+                builder: (context, selectedDay, child) {
+                  return BookServiceBottomBar(
+                    price: widget.service.price,
+                    isEnabled: selectedDay != null && selectedTime != null,
+                    onBookPressed: () {
+                      context.push(
+                        AppRoutes.serviceBooking,
+                        extra: {
+                          'service': widget.service,
+                          'selectedDay': selectedDay,
+                          'selectedTime': selectedTime,
+                        },
+                      );
+                    },
+                  );
                 },
               );
             },

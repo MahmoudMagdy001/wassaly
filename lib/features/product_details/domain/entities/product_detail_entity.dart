@@ -1,4 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
+import '../../../service_details/domain/entities/service_detail_entity.dart';
 
 class ProductSpecificationEntity extends Equatable {
   final int id;
@@ -93,6 +94,8 @@ class ProductDetailEntity extends Equatable {
   final List<int> offerPercentages;
   final bool isFavorite;
 
+  final ServiceProviderEntity? provider;
+
   const ProductDetailEntity({
     required this.id,
     required this.name,
@@ -106,6 +109,7 @@ class ProductDetailEntity extends Equatable {
     required this.reviews,
     required this.offerPercentages,
     required this.isFavorite,
+    required this.provider,
   });
 
   int get discountPercentage =>
@@ -133,5 +137,6 @@ class ProductDetailEntity extends Equatable {
         reviews,
         offerPercentages,
         isFavorite,
+        provider,
       ];
 }

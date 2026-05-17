@@ -30,8 +30,8 @@ class _AddAddressViewState extends State<_AddAddressView> {
   final _titleController = TextEditingController();
   final _addressController = TextEditingController();
 
-  String? _selectedGovernorateId;
-  String? _selectedCenterId;
+  final ValueNotifier<String?> _selectedGovernorateId = ValueNotifier(null);
+  final ValueNotifier<String?> _selectedCenterId = ValueNotifier(null);
 
   bool get _isEditing => widget.address != null;
 
@@ -44,8 +44,8 @@ class _AddAddressViewState extends State<_AddAddressView> {
     if (_isEditing) {
       _titleController.text = widget.address!.title;
       _addressController.text = widget.address!.address;
-      _selectedGovernorateId = widget.address!.governorateId;
-      _selectedCenterId = widget.address!.centerId;
+      _selectedGovernorateId.value = widget.address!.governorateId;
+      _selectedCenterId.value = widget.address!.centerId;
       bloc.add(CentersFetched(widget.address!.governorateId));
     }
   }
@@ -54,17 +54,19 @@ class _AddAddressViewState extends State<_AddAddressView> {
   void dispose() {
     _titleController.dispose();
     _addressController.dispose();
+    _selectedGovernorateId.dispose();
+    _selectedCenterId.dispose();
     super.dispose();
   }
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
-    if (_selectedGovernorateId == null) {
+    if (_selectedGovernorateId.value == null) {
       context.showTypedSnackBar(context.l10n.profile_select_governorate,
           type: SnackBarType.error);
       return;
     }
-    if (_selectedCenterId == null) {
+    if (_selectedCenterId.value == null) {
       context.showTypedSnackBar(context.l10n.profile_select_center,
           type: SnackBarType.error);
       return;
@@ -75,15 +77,15 @@ class _AddAddressViewState extends State<_AddAddressView> {
             addressId: widget.address!.id,
             title: _titleController.text.trim(),
             address: _addressController.text.trim(),
-            governorateId: _selectedGovernorateId!,
-            centerId: _selectedCenterId!,
+            governorateId: _selectedGovernorateId.value!,
+            centerId: _selectedCenterId.value!,
           ));
     } else {
       context.read<ProfileBloc>().add(AddressCreated(
             title: _titleController.text.trim(),
             address: _addressController.text.trim(),
-            governorateId: _selectedGovernorateId!,
-            centerId: _selectedCenterId!,
+            governorateId: _selectedGovernorateId.value!,
+            centerId: _selectedCenterId.value!,
           ));
     }
   }
@@ -198,43 +200,46 @@ class _AddAddressViewState extends State<_AddAddressView> {
           );
         }
 
-        return AppDropdown<String>(
-          label: context.l10n.profile_governorate,
-          prefixIcon: const Icon(Icons.map_outlined),
-          value: _selectedGovernorateId,
-          menuMaxHeight: 300.h,
-          isExpanded: false,
-          alignment: AlignmentDirectional.centerStart,
-          items: governorates.map((g) {
-            return DropdownMenuItem(
-              value: g.id,
-              child: Text(g.name),
+        return ValueListenableBuilder<String?>(
+          valueListenable: _selectedGovernorateId,
+          builder: (context, selectedGovernorateId, child) {
+            return AppDropdown<String>(
+              label: context.l10n.profile_governorate,
+              prefixIcon: const Icon(Icons.map_outlined),
+              value: selectedGovernorateId,
+              menuMaxHeight: 300.h,
+              isExpanded: false,
+              alignment: AlignmentDirectional.centerStart,
+              items: governorates.map((g) {
+                return DropdownMenuItem(
+                  value: g.id,
+                  child: Text(g.name),
+                );
+              }).toList(),
+              onChanged: governorateStatus.isLoading
+                  ? null
+                  : (value) {
+                      _selectedGovernorateId.value = value;
+                      _selectedCenterId.value = null;
+                      if (value != null) {
+                        context.read<ProfileBloc>().add(CentersFetched(value));
+                      }
+                    },
+              validator: (v) =>
+                  v == null ? context.l10n.profile_select_governorate : null,
+              enabled: !governorateStatus.isLoading,
+              suffixIcon: governorateStatus.isLoading
+                  ? SizedBox(
+                      width: 12.w,
+                      height: 12.h,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: context.theme.colorScheme.primary,
+                      ),
+                    )
+                  : null,
             );
-          }).toList(),
-          onChanged: governorateStatus.isLoading
-              ? null
-              : (value) {
-                  setState(() {
-                    _selectedGovernorateId = value;
-                    _selectedCenterId = null;
-                  });
-                  if (value != null) {
-                    context.read<ProfileBloc>().add(CentersFetched(value));
-                  }
-                },
-          validator: (v) =>
-              v == null ? context.l10n.profile_select_governorate : null,
-          enabled: !governorateStatus.isLoading,
-          suffixIcon: governorateStatus.isLoading
-              ? SizedBox(
-                  width: 12.w,
-                  height: 12.h,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: context.theme.colorScheme.primary,
-                  ),
-                )
-              : null,
+          },
         );
       },
     );
@@ -246,43 +251,51 @@ class _AddAddressViewState extends State<_AddAddressView> {
       selector: (state) => (state.centerStatus, state.centers),
       builder: (context, data) {
         final (centerStatus, centers) = data;
-        final hasGovernorate = _selectedGovernorateId != null;
-        final isLoading = centerStatus.isLoading;
-        final isDisabled = !hasGovernorate || isLoading;
+        return ValueListenableBuilder<String?>(
+          valueListenable: _selectedGovernorateId,
+          builder: (context, selectedGovernorateId, child) {
+            final hasGovernorate = selectedGovernorateId != null;
+            final isLoading = centerStatus.isLoading;
+            final isDisabled = !hasGovernorate || isLoading;
 
-        return AppDropdown<String>(
-          label: context.l10n.profile_center,
-          prefixIcon: const Icon(Icons.location_city_outlined),
-          value: _selectedCenterId,
-          enabled: !isDisabled && centers.isNotEmpty,
-          menuMaxHeight: 300.h,
-          isExpanded: false,
-          alignment: AlignmentDirectional.centerStart,
-          items: centers.map((c) {
-            return DropdownMenuItem(
-              value: c.id,
-              child: Text(c.name),
+            return ValueListenableBuilder<String?>(
+              valueListenable: _selectedCenterId,
+              builder: (context, selectedCenterId, child) {
+                return AppDropdown<String>(
+                  label: context.l10n.profile_center,
+                  prefixIcon: const Icon(Icons.location_city_outlined),
+                  value: selectedCenterId,
+                  enabled: !isDisabled && centers.isNotEmpty,
+                  menuMaxHeight: 300.h,
+                  isExpanded: false,
+                  alignment: AlignmentDirectional.centerStart,
+                  items: centers.map((c) {
+                    return DropdownMenuItem(
+                      value: c.id,
+                      child: Text(c.name),
+                    );
+                  }).toList(),
+                  onChanged: isDisabled
+                      ? null
+                      : (value) {
+                          _selectedCenterId.value = value;
+                        },
+                  validator: (v) =>
+                      v == null ? context.l10n.profile_select_center : null,
+                  suffixIcon: isLoading
+                      ? SizedBox(
+                          width: 12.w,
+                          height: 12.h,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: context.theme.colorScheme.primary,
+                          ),
+                        )
+                      : null,
+                );
+              },
             );
-          }).toList(),
-          onChanged: isDisabled
-              ? null
-              : (value) {
-                  setState(() {
-                    _selectedCenterId = value;
-                  });
-                },
-          validator: (v) =>
-              v == null ? context.l10n.profile_select_center : null,
-          suffixIcon: isLoading
-              ? SizedBox(
-                  width: 12.w,
-                  height: 12.h,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: context.theme.colorScheme.primary,
-                  ),
-                )
-              : null,
+          },
         );
       },
     );

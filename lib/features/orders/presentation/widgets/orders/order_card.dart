@@ -1,6 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-import '../../domain/entities/order_entity.dart';
+import '../../../domain/entities/order_entity.dart';
 
 class OrderCard extends StatelessWidget {
   final OrderEntity order;
@@ -16,6 +16,8 @@ class OrderCard extends StatelessWidget {
       showShadow: true,
       margin: EdgeInsets.only(bottom: 10.h),
       padding: EdgeInsets.all(12.r),
+      onTap: () =>
+          context.push(AppRoutes.orderDetails, extra: {'orderId': order.id}),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -132,14 +134,12 @@ class _StatusBadge extends StatelessWidget {
           _StatusConfig(Colors.green, context.l10n.order_status_delivered),
       'completed':
           _StatusConfig(Colors.green, context.l10n.order_status_completed),
-      'مكتمل':
-          _StatusConfig(Colors.green, context.l10n.order_status_completed),
+      'مكتمل': _StatusConfig(Colors.green, context.l10n.order_status_completed),
       'success':
           _StatusConfig(Colors.green, context.l10n.order_status_completed),
       'cancelled':
           _StatusConfig(Colors.red, context.l10n.order_status_cancelled),
-      'ملغي':
-          _StatusConfig(Colors.red, context.l10n.order_status_cancelled),
+      'ملغي': _StatusConfig(Colors.red, context.l10n.order_status_cancelled),
       'rejected':
           _StatusConfig(Colors.red, context.l10n.order_status_cancelled),
       'failed': _StatusConfig(Colors.red, context.l10n.order_status_cancelled),

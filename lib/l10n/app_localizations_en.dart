@@ -202,6 +202,9 @@ class SEn extends S {
   String get cart_total_price => 'Total';
 
   @override
+  String get cart_total_after_discount => 'Total after discount';
+
+  @override
   String get cart_subtotal => 'Subtotal';
 
   @override
@@ -1191,7 +1194,7 @@ class SEn extends S {
   String get service_booking_email => 'Email Address';
 
   @override
-  String get service_booking_problem => 'Problem Description (Optional)';
+  String get service_booking_problem => 'Problem Description';
 
   @override
   String get service_booking_problem_hint => 'Explain your problem here...';
@@ -1265,4 +1268,31 @@ class SEn extends S {
 
   @override
   String get no_brand_products => 'No products in this brand yet';
+
+  @override
+  String get offers => 'Offers';
+
+  @override
+  String get provider_details_contact_info => 'Contact Information';
+
+  @override
+  String get provider_details_contact_person => 'Contact Person';
+
+  @override
+  String get provider_details_phone => 'Phone Number';
+
+  @override
+  String get provider_details_email => 'Email Address';
+
+  @override
+  String get provider_details_status => 'Status';
+
+  @override
+  String get provider_details_status_active => 'Active';
+
+  @override
+  String get provider_details_status_inactive => 'Inactive';
+
+  @override
+  String get provider_details_successful_orders => 'Successful Orders';
 }

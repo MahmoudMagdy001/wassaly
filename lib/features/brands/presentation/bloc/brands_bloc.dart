@@ -1,4 +1,4 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wassaly/core/imports/imports.dart';
 
 import '../../domain/usecases/get_brand_products_usecase.dart';
 import '../../domain/usecases/get_brands_usecase.dart';

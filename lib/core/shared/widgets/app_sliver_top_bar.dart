@@ -14,6 +14,7 @@ class AppSliverTopBar extends StatelessWidget {
     this.floating = true,
     this.snap = true,
     this.bottom,
+    this.automaticallyImplyLeading = true,
   });
 
   final String? title;
@@ -27,22 +28,48 @@ class AppSliverTopBar extends StatelessWidget {
   final bool floating;
   final bool snap;
   final PreferredSizeWidget? bottom;
+  final bool automaticallyImplyLeading;
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
     final isIOS = context.isIOS;
-    final canPop = context.canPop();
+    String? currentPath;
+    try {
+      currentPath = GoRouterState.of(context).uri.path;
+    } catch (_) {
+      try {
+        currentPath =
+            GoRouter.of(context).routeInformationProvider.value.uri.path;
+      } catch (_) {
+        currentPath = null;
+      }
+    }
+    final isShellRoute = currentPath == AppRoutes.home ||
+        currentPath == AppRoutes.cart ||
+        currentPath == AppRoutes.favorite ||
+        currentPath == AppRoutes.profile;
+    final canPop =
+        automaticallyImplyLeading && (context.canPop() || !isShellRoute);
     final cs = theme.colorScheme;
     final tt = theme.textTheme;
 
     void handleBack() {
       if (onPressed != null) {
         onPressed!();
-      } else if (canPop) {
-        context.pop();
-      } else {
-        context.go(AppRoutes.home);
+        return;
+      }
+
+      try {
+        if (context.canPop()) {
+          context.pop();
+        } else {
+          context.go(AppRoutes.home);
+        }
+      } catch (_) {
+        if (context.mounted) {
+          context.go(AppRoutes.home);
+        }
       }
     }
 
@@ -50,17 +77,18 @@ class AppSliverTopBar extends StatelessWidget {
       if (titleWidget != null) return titleWidget!;
 
       final List<Widget> children = [];
-      
+
       if (showLogo) {
         children.add(
-          Image.asset(
-            AppAssets.logo,
-            height: 32.h,
-            fit: BoxFit.contain,
+          CommonImage(
+            imageUrl: AppAssets.logo,
+            height: 45.h,
+            // memCacheHeight: 40 * 3,
+            fit: BoxFit.cover,
           ),
         );
       }
-      
+
       if (title != null && title!.isNotEmpty) {
         if (showLogo) children.add(8.horizontalSpace);
         children.add(
@@ -81,7 +109,8 @@ class AppSliverTopBar extends StatelessWidget {
 
       return Row(
         mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: centerTitle ? MainAxisAlignment.center : MainAxisAlignment.start,
+        mainAxisAlignment:
+            centerTitle ? MainAxisAlignment.center : MainAxisAlignment.start,
         children: children,
       );
     }
@@ -95,8 +124,11 @@ class AppSliverTopBar extends StatelessWidget {
             children: [
               CupertinoNavigationBar(
                 middle: buildTitle(),
-                backgroundColor: isTransparent ? Colors.transparent : cs.surface,
-                border: bottom != null ? null : (isTransparent ? null : const Border()),
+                backgroundColor:
+                    isTransparent ? Colors.transparent : cs.surface,
+                border: bottom != null
+                    ? null
+                    : (isTransparent ? null : const Border()),
                 leading: canPop
                     ? CupertinoButton(
                         padding: EdgeInsets.zero,
@@ -122,6 +154,7 @@ class AppSliverTopBar extends StatelessWidget {
     }
 
     return SliverAppBar(
+      automaticallyImplyLeading: automaticallyImplyLeading,
       pinned: pinned,
       floating: floating,
       snap: snap,

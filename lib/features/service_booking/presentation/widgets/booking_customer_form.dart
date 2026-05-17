@@ -12,7 +12,6 @@ class _BookingCustomerFormState extends State<BookingCustomerForm> {
   late final TextEditingController _nameController;
   late final TextEditingController _phoneController;
   late final TextEditingController _emailController;
-  late final TextEditingController _problemController;
 
   @override
   void initState() {
@@ -21,7 +20,6 @@ class _BookingCustomerFormState extends State<BookingCustomerForm> {
     _nameController = TextEditingController(text: state.customerName);
     _phoneController = TextEditingController(text: state.customerPhone);
     _emailController = TextEditingController(text: state.customerEmail);
-    _problemController = TextEditingController(text: state.problemDescription);
   }
 
   @override
@@ -29,7 +27,6 @@ class _BookingCustomerFormState extends State<BookingCustomerForm> {
     _nameController.dispose();
     _phoneController.dispose();
     _emailController.dispose();
-    _problemController.dispose();
     super.dispose();
   }
 
@@ -39,8 +36,7 @@ class _BookingCustomerFormState extends State<BookingCustomerForm> {
       listenWhen: (prev, curr) =>
           prev.customerName != curr.customerName ||
           prev.customerPhone != curr.customerPhone ||
-          prev.customerEmail != curr.customerEmail ||
-          prev.problemDescription != curr.problemDescription,
+          prev.customerEmail != curr.customerEmail,
       listener: (context, state) {
         if (_nameController.text != state.customerName) {
           _nameController.text = state.customerName;
@@ -50,9 +46,6 @@ class _BookingCustomerFormState extends State<BookingCustomerForm> {
         }
         if (_emailController.text != state.customerEmail) {
           _emailController.text = state.customerEmail;
-        }
-        if (_problemController.text != state.problemDescription) {
-          _problemController.text = state.problemDescription;
         }
       },
       child: Builder(
@@ -83,15 +76,6 @@ class _BookingCustomerFormState extends State<BookingCustomerForm> {
                 keyboardType: TextInputType.emailAddress,
                 onChanged: (val) =>
                     bloc.add(ServiceBookingFormChanged(email: val)),
-              ),
-              16.verticalSpace,
-              AppTextField(
-                label: context.l10n.service_booking_problem,
-                hint: context.l10n.service_booking_problem_hint,
-                controller: _problemController,
-                maxLines: 3,
-                onChanged: (val) => bloc
-                    .add(ServiceBookingFormChanged(problemDescription: val)),
               ),
             ],
           );

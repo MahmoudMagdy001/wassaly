@@ -30,7 +30,7 @@ class AppReviewCard extends StatefulWidget {
 
 class _AppReviewCardState extends State<AppReviewCard> {
   Timer? _timer;
-  Duration _remaining = Duration.zero;
+  final ValueNotifier<Duration> _remainingNotifier = ValueNotifier(Duration.zero);
 
   @override
   void initState() {
@@ -49,20 +49,19 @@ class _AppReviewCardState extends State<AppReviewCard> {
   @override
   void dispose() {
     _timer?.cancel();
+    _remainingNotifier.dispose();
     super.dispose();
   }
 
   void _startTimer() {
     _timer?.cancel();
     if (!widget.isCurrentUserReview || widget.createdAt == null) {
-      setState(() {
-        _remaining = Duration.zero;
-      });
+      _remainingNotifier.value = Duration.zero;
       return;
     }
 
     _updateRemaining();
-    if (_remaining > Duration.zero) {
+    if (_remainingNotifier.value > Duration.zero) {
       _timer = Timer.periodic(const Duration(seconds: 1), (_) {
         _updateRemaining();
       });
@@ -72,20 +71,16 @@ class _AppReviewCardState extends State<AppReviewCard> {
   void _updateRemaining() {
     final parsed = _parseCreatedAt(widget.createdAt);
     if (parsed == null) {
-      setState(() {
-        _remaining = Duration.zero;
-      });
+      _remainingNotifier.value = Duration.zero;
       return;
     }
 
     final limit = parsed.add(const Duration(hours: 1));
     final remaining = limit.difference(DateTime.now());
 
-    setState(() {
-      _remaining = remaining;
-    });
+    _remainingNotifier.value = remaining;
 
-    if (_remaining <= Duration.zero) {
+    if (_remainingNotifier.value <= Duration.zero) {
       _timer?.cancel();
     }
   }
@@ -110,11 +105,6 @@ class _AppReviewCardState extends State<AppReviewCard> {
       createdDate.millisecond,
       createdDate.microsecond,
     ).toLocal();
-  }
-
-  bool get _canEdit {
-    if (widget.createdAt == null) return widget.canEdit;
-    return _remaining > Duration.zero;
   }
 
   @override
@@ -159,41 +149,47 @@ class _AppReviewCardState extends State<AppReviewCard> {
               ),
               if (widget.isCurrentUserReview) ...[
                 4.horizontalSpace,
-                PopupMenuButton<String>(
-                  tooltip: context.l10n.product_details_review_options,
-                  icon: Icon(
-                    Icons.more_vert_rounded,
-                    size: 20.r,
-                    color: cs.onSurfaceVariant,
-                  ),
-                  onSelected: (value) {
-                    if (value == 'edit' && _canEdit) {
-                      widget.onEdit?.call();
-                    }
-                  },
-                  itemBuilder: (context) => [
-                    PopupMenuItem<String>(
-                      value: 'edit',
-                      enabled: _canEdit,
-                      child: widget.createdAt != null
-                          ? _ReviewEditMenuItemContent(
-                              createdAt: widget.createdAt!,
-                              editText: context.l10n.shared_edit,
-                              expiredText: context
-                                  .l10n.product_details_edit_time_expired,
-                              timerStyle: tt.bodySmall?.copyWith(
-                                color: cs.secondary,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            )
-                          : Text(
-                              _canEdit
-                                  ? context.l10n.shared_edit
-                                  : context
+                ValueListenableBuilder<Duration>(
+                  valueListenable: _remainingNotifier,
+                  builder: (context, remaining, child) {
+                    final canEdit = widget.createdAt == null ? widget.canEdit : remaining > Duration.zero;
+                    return PopupMenuButton<String>(
+                      tooltip: context.l10n.product_details_review_options,
+                      icon: Icon(
+                        Icons.more_vert_rounded,
+                        size: 20.r,
+                        color: cs.onSurfaceVariant,
+                      ),
+                      onSelected: (value) {
+                        if (value == 'edit' && canEdit) {
+                          widget.onEdit?.call();
+                        }
+                      },
+                      itemBuilder: (context) => [
+                        PopupMenuItem<String>(
+                          value: 'edit',
+                          enabled: canEdit,
+                          child: widget.createdAt != null
+                              ? _ReviewEditMenuItemContent(
+                                  createdAt: widget.createdAt!,
+                                  editText: context.l10n.shared_edit,
+                                  expiredText: context
                                       .l10n.product_details_edit_time_expired,
-                            ),
-                    ),
-                  ],
+                                  timerStyle: tt.bodySmall?.copyWith(
+                                    color: cs.secondary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )
+                              : Text(
+                                  canEdit
+                                      ? context.l10n.shared_edit
+                                      : context
+                                          .l10n.product_details_edit_time_expired,
+                                ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ],
             ],
@@ -265,7 +261,7 @@ class _ReviewEditMenuItemContent extends StatefulWidget {
 class __ReviewEditMenuItemContentState
     extends State<_ReviewEditMenuItemContent> {
   Timer? _menuTimer;
-  Duration _remaining = Duration.zero;
+  final ValueNotifier<Duration> _remainingNotifier = ValueNotifier(Duration.zero);
 
   @override
   void initState() {
@@ -279,6 +275,7 @@ class __ReviewEditMenuItemContentState
   @override
   void dispose() {
     _menuTimer?.cancel();
+    _remainingNotifier.dispose();
     super.dispose();
   }
 
@@ -286,9 +283,7 @@ class __ReviewEditMenuItemContentState
     final parsed = _parseCreatedAt(widget.createdAt);
     if (parsed == null) {
       if (mounted) {
-        setState(() {
-          _remaining = Duration.zero;
-        });
+        _remainingNotifier.value = Duration.zero;
       }
       return;
     }
@@ -297,12 +292,10 @@ class __ReviewEditMenuItemContentState
     final remaining = limit.difference(DateTime.now());
 
     if (mounted) {
-      setState(() {
-        _remaining = remaining;
-      });
+      _remainingNotifier.value = remaining;
     }
 
-    if (_remaining <= Duration.zero) {
+    if (_remainingNotifier.value <= Duration.zero) {
       _menuTimer?.cancel();
     }
   }
@@ -338,32 +331,38 @@ class __ReviewEditMenuItemContentState
   @override
   Widget build(BuildContext context) {
     final cs = context.theme.colorScheme;
-    final isExpired = _remaining <= Duration.zero;
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          isExpired ? widget.expiredText : widget.editText,
-        ),
-        if (!isExpired) ...[
-          6.horizontalSpace,
-          Text(
-            '(${_formatDuration(_remaining)})',
-            style: widget.timerStyle ??
-                context.theme.textTheme.bodySmall?.copyWith(
-                  color: cs.secondary,
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
-          4.horizontalSpace,
-          Icon(
-            Icons.timer_outlined,
-            size: 14.r,
-            color: cs.secondary,
-          ),
-        ],
-      ],
+    return ValueListenableBuilder<Duration>(
+      valueListenable: _remainingNotifier,
+      builder: (context, remaining, child) {
+        final isExpired = remaining <= Duration.zero;
+
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              isExpired ? widget.expiredText : widget.editText,
+            ),
+            if (!isExpired) ...[
+              6.horizontalSpace,
+              Text(
+                '(${_formatDuration(remaining)})',
+                style: widget.timerStyle ??
+                    context.theme.textTheme.bodySmall?.copyWith(
+                      color: cs.secondary,
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+              4.horizontalSpace,
+              Icon(
+                Icons.timer_outlined,
+                size: 14.r,
+                color: cs.secondary,
+              ),
+            ],
+          ],
+        );
+      },
     );
   }
 }

@@ -10,6 +10,13 @@ class OrderEntity extends Equatable {
   final double deliveryFees;
   final List<OrderItemEntity> items;
   final String createdAt;
+  final double? subTotal;
+  final double? discountAmount;
+  final String? customerName;
+  final String? customerPhone;
+  final String? deliveryAddress;
+  final String? governorateName;
+  final String? centerName;
 
   const OrderEntity({
     required this.id,
@@ -20,6 +27,13 @@ class OrderEntity extends Equatable {
     required this.deliveryFees,
     required this.items,
     required this.createdAt,
+    this.subTotal,
+    this.discountAmount,
+    this.customerName,
+    this.customerPhone,
+    this.deliveryAddress,
+    this.governorateName,
+    this.centerName,
   });
 
   @override
@@ -32,5 +46,13 @@ class OrderEntity extends Equatable {
         deliveryFees,
         items,
         createdAt,
+        subTotal,
+        discountAmount,
+        customerName,
+        customerPhone,
+        deliveryAddress,
+        governorateName,
+        centerName,
       ];
 }
+

@@ -16,19 +16,6 @@ class FetchProductDetailsEvent extends ProductDetailsEvent {
   List<Object?> get props => [productId];
 }
 
-class FetchRelatedProductsEvent extends ProductDetailsEvent {
-  final int subCategoryId;
-  final int currentProductId;
-
-  const FetchRelatedProductsEvent({
-    required this.subCategoryId,
-    required this.currentProductId,
-  });
-
-  @override
-  List<Object?> get props => [subCategoryId, currentProductId];
-}
-
 class CreateProductReviewEvent extends ProductDetailsEvent {
   final int productId;
   final int rating;

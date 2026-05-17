@@ -77,7 +77,10 @@ class BookingSuccessPage extends StatelessWidget {
               AppButton(
                 label: context.l10n.service_booking_view_orders,
                 variant: ButtonVariant.outline,
-                onPressed: () => context.go(AppRoutes.orders),
+                onPressed: () => context.go(
+                  AppRoutes.orders,
+                  extra: {'initialIndex': 1},
+                ),
               ),
             ],
           ),

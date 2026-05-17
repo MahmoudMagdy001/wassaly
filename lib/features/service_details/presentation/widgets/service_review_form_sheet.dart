@@ -18,19 +18,20 @@ class ServiceReviewFormSheet extends StatefulWidget {
 
 class _ServiceReviewFormSheetState extends State<ServiceReviewFormSheet> {
   late final TextEditingController _commentController;
-  late int _rating;
+  late final ValueNotifier<int> _ratingNotifier;
 
   bool get _isEdit => widget.review != null;
 
   @override
   void initState() {
     super.initState();
-    _rating = widget.review?.rating ?? 5;
+    _ratingNotifier = ValueNotifier<int>(widget.review?.rating ?? 5);
     _commentController = TextEditingController(text: widget.review?.comment);
   }
 
   @override
   void dispose() {
+    _ratingNotifier.dispose();
     _commentController.dispose();
     super.dispose();
   }
@@ -61,22 +62,27 @@ class _ServiceReviewFormSheetState extends State<ServiceReviewFormSheet> {
             ),
           ),
           12.verticalSpace,
-          Row(
-            children: List.generate(
-              5,
-              (index) {
-                final star = index + 1;
-                return IconButton(
-                  onPressed: () => setState(() => _rating = star),
-                  icon: Icon(
-                    star <= _rating
-                        ? Icons.star_rounded
-                        : Icons.star_outline_rounded,
-                    color: star <= _rating ? cs.secondary : cs.outline,
-                  ),
-                );
-              },
-            ),
+          ValueListenableBuilder<int>(
+            valueListenable: _ratingNotifier,
+            builder: (context, rating, child) {
+              return Row(
+                children: List.generate(
+                  5,
+                  (index) {
+                    final star = index + 1;
+                    return IconButton(
+                      onPressed: () => _ratingNotifier.value = star,
+                      icon: Icon(
+                        star <= rating
+                            ? Icons.star_rounded
+                            : Icons.star_outline_rounded,
+                        color: star <= rating ? cs.secondary : cs.outline,
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
           ),
           8.verticalSpace,
           TextField(
@@ -119,7 +125,7 @@ class _ServiceReviewFormSheetState extends State<ServiceReviewFormSheet> {
       bloc.add(
         UpdateServiceReviewEvent(
           reviewId: widget.review!.id,
-          rating: _rating,
+          rating: _ratingNotifier.value,
           comment: comment,
         ),
       );
@@ -127,7 +133,7 @@ class _ServiceReviewFormSheetState extends State<ServiceReviewFormSheet> {
       bloc.add(
         CreateServiceReviewEvent(
           serviceId: widget.serviceId,
-          rating: _rating,
+          rating: _ratingNotifier.value,
           comment: comment,
         ),
       );
