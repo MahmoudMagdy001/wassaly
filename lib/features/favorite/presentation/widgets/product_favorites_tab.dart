@@ -60,8 +60,8 @@ class ProductFavoritesTab extends StatelessWidget {
                   child: Center(
                     child: AppEmptyState(
                       icon: Icons.favorite_outline,
-                      title: context.l10n.favorite_no_favorites,
-                      subtitle: context.l10n.favorite_no_favorites_subtitle,
+                      title: context.l10n.favorite_no_products,
+                      subtitle: context.l10n.favorite_no_products_subtitle,
                     ),
                   ),
                 ),

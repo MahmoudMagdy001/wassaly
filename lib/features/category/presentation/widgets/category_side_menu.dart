@@ -39,7 +39,8 @@ class CategorySideMenu extends StatelessWidget {
               itemCount: subCategories.length,
               itemBuilder: (context, index) {
                 final item = subCategories[index];
-                final isSelected = !isLoading && selectedSubCategoryId == item.id;
+                final isSelected =
+                    !isLoading && selectedSubCategoryId == item.id;
 
                 return Column(
                   children: [
@@ -53,9 +54,10 @@ class CategorySideMenu extends StatelessWidget {
                                   .add(SelectSubCategoryEvent(item));
                             },
                       child: AnimatedContainer(
+                        width: double.infinity,
                         duration: const Duration(milliseconds: 300),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 4.w, vertical: 12.h),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 4.w, vertical: 12.h),
                         decoration: BoxDecoration(
                           color: isSelected
                               ? cs.primary.withValues(alpha: 0.08)

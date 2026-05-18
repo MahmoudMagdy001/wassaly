@@ -61,8 +61,8 @@ class ServiceFavoritesTab extends StatelessWidget {
                   child: Center(
                     child: AppEmptyState(
                       icon: Icons.favorite_outline,
-                      title: context.l10n.favorite_no_favorites,
-                      subtitle: context.l10n.favorite_no_favorites_subtitle,
+                      title: context.l10n.favorite_no_services,
+                      subtitle: context.l10n.favorite_no_services_subtitle,
                     ),
                   ),
                 ),

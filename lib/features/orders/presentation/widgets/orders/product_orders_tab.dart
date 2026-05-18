@@ -67,8 +67,8 @@ class _ProductOrdersTabState extends State<ProductOrdersTab> {
 
         if (orders.data.isEmpty) {
           return AppEmptyState(
-            title: context.l10n.order_no_orders_title,
-            subtitle: context.l10n.order_no_orders_msg,
+            title: context.l10n.order_no_product_orders_title,
+            subtitle: context.l10n.order_no_product_orders_msg,
           );
         }
 

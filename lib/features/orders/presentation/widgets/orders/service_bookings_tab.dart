@@ -39,8 +39,8 @@ class ServiceBookingsTab extends StatelessWidget {
 
         if (serviceBookings.data.isEmpty) {
           return AppEmptyState(
-            title: context.l10n.order_no_orders_title,
-            subtitle: context.l10n.order_no_orders_msg,
+            title: context.l10n.order_no_service_bookings_title,
+            subtitle: context.l10n.order_no_service_bookings_msg,
           );
         }
 

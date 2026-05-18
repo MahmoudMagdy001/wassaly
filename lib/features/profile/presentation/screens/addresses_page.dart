@@ -270,7 +270,7 @@ class _DeleteAddressDialog extends StatelessWidget {
             ),
             8.verticalSpace,
             Text(
-              'profile.delete_address_message',
+              context.l10n.profile_delete_address_message(addressTitle),
               style: tt.bodyMedium?.copyWith(
                 color: cs.onSurfaceVariant,
               ),

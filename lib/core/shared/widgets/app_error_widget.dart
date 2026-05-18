@@ -97,23 +97,23 @@ class AppErrorWidget extends StatelessWidget {
     switch (failure.runtimeType) {
       case const (NetworkFailure):
         iconData = Icons.wifi_off_rounded;
-        iconColor = const Color(0xFFFF9800); // Orange
+        iconColor = context.appColors.warning; // Semantic warning
         break;
       case const (NotFoundFailure):
         iconData = Icons.search_off_rounded;
-        iconColor = const Color(0xFFE53935); // Red
+        iconColor = context.theme.colorScheme.error; // Theme error
         break;
       case const (ServerFailure):
         iconData = Icons.error_rounded;
-        iconColor = const Color(0xFFE53935); // Red
+        iconColor = context.theme.colorScheme.error; // Theme error
         break;
       case const (CacheFailure):
         iconData = Icons.storage_rounded;
-        iconColor = const Color(0xFFFFA000); // Amber
+        iconColor = context.appColors.warning; // Semantic warning
         break;
       default:
         iconData = Icons.error_outline_rounded;
-        iconColor = const Color(0xFF9E9E9E); // Grey
+        iconColor = context.theme.colorScheme.outline; // Theme outline
     }
 
     return Icon(

@@ -36,11 +36,6 @@ class ProfileSettingsSection extends StatelessWidget {
                   title: context.l10n.profile_saved_addresses,
                   onTap: () => context.push(AppRoutes.addresses),
                 ),
-                ProfileMenuTile(
-                  icon: Icons.credit_card_outlined,
-                  title: context.l10n.profile_payment_methods,
-                  onTap: () {},
-                ),
                 BlocSelector<SettingsBloc, SettingsState, String>(
                   selector: (state) => state.language,
                   builder: (context, language) {

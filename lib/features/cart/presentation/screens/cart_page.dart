@@ -2,7 +2,6 @@ import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/cart/presentation/bloc/cart_bloc.dart';
 import 'package:wassaly/features/cart/presentation/bloc/cart_event.dart';
 import 'package:wassaly/features/cart/presentation/bloc/cart_state.dart';
-import 'package:wassaly/features/cart/presentation/widgets/cart/cart_empty_state.dart';
 import 'package:wassaly/features/cart/presentation/widgets/cart/cart_item_widget.dart';
 import 'package:wassaly/features/cart/presentation/widgets/cart/cart_order_summary.dart';
 
@@ -79,9 +78,13 @@ class _CartPageState extends State<CartPage> {
                   ),
                 )
               else if (state.items.isEmpty)
-                const SliverFillRemaining(
+                SliverFillRemaining(
                   hasScrollBody: false,
-                  child: CartEmptyState(),
+                  child: AppEmptyState(
+                    icon: Icons.shopping_basket_outlined,
+                    title: context.l10n.cart_empty_title,
+                    subtitle: context.l10n.cart_empty_subtitle,
+                  ),
                 )
               else ...[
                 // Cart Items List

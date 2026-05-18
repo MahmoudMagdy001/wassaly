@@ -113,7 +113,7 @@ class _AddToCartBottomBarState extends State<AddToCartBottomBar> {
                     },
                     listener: (context, state) {
                       if (state.isInCart(widget.productId)) {
-                        context.showTypedSnackBar('تم إضافة المنتج للسلة',
+                        context.showTypedSnackBar(context.l10n.cart_added_to_cart,
                             type: SnackBarType.success);
                       }
                     },
@@ -125,7 +125,7 @@ class _AddToCartBottomBarState extends State<AddToCartBottomBar> {
                       final isAdding = state.isAdding(widget.productId);
 
                       return AppButton(
-                        label: isInCart ? 'تم الإضافة' : 'أضف للسلة',
+                        label: isInCart ? context.l10n.cart_already_added : context.l10n.cart_add_to_cart,
                         onPressed: (isAdding || isInCart)
                             ? null
                             : () {

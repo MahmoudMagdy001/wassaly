@@ -12,34 +12,18 @@ class ServiceProviderCard extends StatelessWidget {
   });
 
   Future<void> _makeCall(String phoneNumber) async {
-    final Uri launchUri = Uri(
-      scheme: 'tel',
-      path: phoneNumber,
-    );
+    final Uri launchUri = Uri(scheme: 'tel', path: phoneNumber);
     try {
-      if (await canLaunchUrl(launchUri)) {
-        await launchUrl(launchUri);
-      } else {
-        // Fallback for Android 11+ package visibility constraints
-        await launchUrl(launchUri);
-      }
+      await launchUrl(launchUri);
     } catch (e) {
       debugPrint('Could not launch call: $e');
     }
   }
 
   Future<void> _sendEmail(String email) async {
-    final Uri launchUri = Uri(
-      scheme: 'mailto',
-      path: email,
-    );
+    final Uri launchUri = Uri(scheme: 'mailto', path: email);
     try {
-      if (await canLaunchUrl(launchUri)) {
-        await launchUrl(launchUri);
-      } else {
-        // Fallback for Android 11+ package visibility constraints
-        await launchUrl(launchUri);
-      }
+      await launchUrl(launchUri);
     } catch (e) {
       debugPrint('Could not launch email: $e');
     }
@@ -49,29 +33,18 @@ class ServiceProviderCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
-    final isAr = Localizations.localeOf(context).languageCode == 'ar';
     final bool isActive = provider.user.isActive == 1;
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(
-            color: cs.outlineVariant.withValues(alpha: 0.4), width: 0.8),
-        boxShadow: [
-          BoxShadow(
-            color: cs.shadow.withValues(alpha: 0.03),
-            blurRadius: 10.r,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16.r),
-        child: Column(
-          children: [
-            // Top Section (Tappable header that navigates to provider details)
-            InkWell(
+    return AppCard(
+      showShadow: true,
+      color: cs.surfaceContainerLow,
+      padding: EdgeInsets.zero,
+      child: Column(
+        children: [
+          // ── Top Section ──────────────────────────────────────────
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
               onTap: () => context.push(
                 AppRoutes.providerDetails,
                 extra: {'providerId': provider.id},
@@ -80,7 +53,7 @@ class ServiceProviderCard extends StatelessWidget {
                 padding: EdgeInsets.all(12.r),
                 child: Row(
                   children: [
-                    // Avatar with a subtle border & shadow
+                    // Avatar
                     DecoratedBox(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12.r),
@@ -90,7 +63,7 @@ class ServiceProviderCard extends StatelessWidget {
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.04),
+                            color: cs.shadow.withValues(alpha: 0.04),
                             blurRadius: 4.r,
                             offset: const Offset(0, 2),
                           ),
@@ -119,18 +92,16 @@ class ServiceProviderCard extends StatelessWidget {
                             ),
                           ),
                           6.verticalSpace,
-
-                          // Beautiful Rating Pill
                           Row(
                             children: [
                               Container(
                                 padding: EdgeInsets.symmetric(
                                     horizontal: 6.w, vertical: 2.h),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFFFF8E1), // soft amber
+                                  color: cs.tertiaryContainer,
                                   borderRadius: BorderRadius.circular(6.r),
                                   border: Border.all(
-                                    color: const Color(0xFFFFE082),
+                                    color: cs.tertiary.withValues(alpha: 0.2),
                                     width: 0.5,
                                   ),
                                 ),
@@ -139,7 +110,7 @@ class ServiceProviderCard extends StatelessWidget {
                                   children: [
                                     Icon(
                                       Icons.star_rounded,
-                                      color: const Color(0xFFFFB300),
+                                      color: cs.tertiary,
                                       size: 14.r,
                                     ),
                                     2.horizontalSpace,
@@ -147,256 +118,260 @@ class ServiceProviderCard extends StatelessWidget {
                                       provider.averageRating.toString(),
                                       style: tt.labelSmall?.copyWith(
                                         fontWeight: FontWeight.bold,
-                                        color: const Color(0xFF8D6E63),
+                                        color: cs.onTertiaryContainer,
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
                               8.horizontalSpace,
-                              Text(
-                                '(${provider.reviewsCount} ${context.l10n.product_details_reviews})',
-                                style: tt.bodySmall?.copyWith(
-                                  color: cs.outline,
-                                  fontWeight: FontWeight.w500,
+                              Flexible(
+                                child: Text(
+                                  '(${provider.reviewsCount} ${context.l10n.product_details_reviews})',
+                                  style: tt.bodySmall?.copyWith(
+                                    color: cs.outline,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                             ],
                           ),
                         ],
                       ),
-                    ),
-                    10.horizontalSpace,
-
-                    // Adaptive Details Text & Chevron Icon
-                    Row(
-                      children: [
-                        Text(
-                          isAr ? 'التفاصيل' : 'Details',
-                          style: tt.bodySmall?.copyWith(
-                            color: cs.primary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        4.horizontalSpace,
-                        Icon(
-                          isAr
-                              ? Icons.arrow_back_ios_new_rounded
-                              : Icons.arrow_forward_ios_rounded,
-                          size: 12.r,
-                          color: cs.primary,
-                        ),
-                      ],
                     ),
                   ],
                 ),
               ),
             ),
+          ),
 
-            Divider(color: cs.outlineVariant.withValues(alpha: 0.3), height: 1),
+          Divider(color: cs.outlineVariant.withValues(alpha: 0.3), height: 1),
 
-            // Middle & Bottom Section containing Stats, Description and Contacts
-            Padding(
-              padding: EdgeInsets.all(12.r),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Status & Successful Orders Badges Row
-                  Row(
-                    children: [
-                      // Status Badge
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 8.h),
-                          decoration: BoxDecoration(
+          // ── Bottom Section ───────────────────────────────────────
+          Padding(
+            padding: EdgeInsets.all(12.r),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Status & Orders Badges
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 8.h),
+                        decoration: BoxDecoration(
+                          color: isActive
+                              ? cs.primaryContainer.withValues(alpha: 0.3)
+                              : cs.errorContainer.withValues(alpha: 0.3),
+                          borderRadius: BorderRadius.circular(8.r),
+                          border: Border.all(
                             color: isActive
-                                ? const Color(0xFFE8F5E9) // soft green
-                                : const Color(0xFFFFEBEE), // soft red
-                            borderRadius: BorderRadius.circular(8.r),
-                            border: Border.all(
-                              color: isActive
-                                  ? const Color(0xFFC8E6C9)
-                                  : const Color(0xFFFFCDD2),
-                              width: 0.8,
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: 6.r,
-                                height: 6.r,
-                                decoration: BoxDecoration(
-                                  color: isActive
-                                      ? const Color(0xFF4CAF50)
-                                      : const Color(0xFFF44336),
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                              6.horizontalSpace,
-                              Text(
-                                isActive
-                                    ? context
-                                        .l10n.provider_details_status_active
-                                    : context
-                                        .l10n.provider_details_status_inactive,
-                                style: tt.labelMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: isActive
-                                      ? const Color(0xFF2E7D32)
-                                      : const Color(0xFFC62828),
-                                ),
-                              ),
-                            ],
+                                ? cs.primary.withValues(alpha: 0.2)
+                                : cs.error.withValues(alpha: 0.2),
+                            width: 0.8,
                           ),
                         ),
-                      ),
-                      12.horizontalSpace,
-                      // Successful Orders Badge
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 8.h),
-                          decoration: BoxDecoration(
-                            color: cs.secondaryContainer.withValues(alpha: 0.4),
-                            borderRadius: BorderRadius.circular(8.r),
-                            border: Border.all(
-                              color: cs.secondary.withValues(alpha: 0.2),
-                              width: 0.8,
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.check_circle_rounded,
-                                color: cs.secondary,
-                                size: 14.r,
-                              ),
-                              6.horizontalSpace,
-                              Flexible(
-                                child: Text(
-                                  context.l10n.profile_orders_count(
-                                      provider.successfulOrdersCount),
-                                  style: tt.labelMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: cs.onSecondaryContainer,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  12.verticalSpace,
-
-                  // Service description text with info icon
-                  if (provider.serviceDescription.trim().isNotEmpty) ...[
-                    Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.all(10.r),
-                      decoration: BoxDecoration(
-                        color: cs.surfaceContainerHigh.withValues(alpha: 0.5),
-                        borderRadius: BorderRadius.circular(10.r),
-                        border: Border.all(
-                          color: cs.outlineVariant.withValues(alpha: 0.2),
-                          width: 0.5,
-                        ),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.info_outline_rounded,
-                            color: cs.primary,
-                            size: 16.r,
-                          ),
-                          8.horizontalSpace,
-                          Expanded(
-                            child: Text(
-                              provider.serviceDescription,
-                              style: tt.bodySmall?.copyWith(
-                                color: cs.onSurfaceVariant,
-                                height: 1.4,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 6.r,
+                              height: 6.r,
+                              decoration: BoxDecoration(
+                                color: isActive ? cs.primary : cs.error,
+                                shape: BoxShape.circle,
                               ),
                             ),
-                          ),
-                        ],
+                            6.horizontalSpace,
+                            Text(
+                              isActive
+                                  ? context.l10n.provider_details_status_active
+                                  : context
+                                      .l10n.provider_details_status_inactive,
+                              style: tt.labelMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: isActive ? cs.primary : cs.error,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    12.verticalSpace,
+                    12.horizontalSpace,
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 8.h),
+                        decoration: BoxDecoration(
+                          color: cs.secondaryContainer.withValues(alpha: 0.4),
+                          borderRadius: BorderRadius.circular(8.r),
+                          border: Border.all(
+                            color: cs.secondary.withValues(alpha: 0.2),
+                            width: 0.8,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.check_circle_rounded,
+                              color: cs.secondary,
+                              size: 14.r,
+                            ),
+                            6.horizontalSpace,
+                            Flexible(
+                              child: Text(
+                                context.l10n.profile_orders_count(
+                                    provider.successfulOrdersCount),
+                                style: tt.labelMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: cs.onSecondaryContainer,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
+                ),
+                12.verticalSpace,
 
-                  // Quick Action Call & Email Buttons
-                  Row(
-                    children: [
-                      // Call Card Button
-                      Expanded(
-                        child: AppCard(
-                          onTap: () => _makeCall(provider.user.phone),
-                          color: cs.surfaceContainerHigh,
-                          padding: EdgeInsets.all(8.r),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.phone_in_talk_rounded,
-                                color: cs.primary,
-                                size: 18.r,
-                              ),
-                              8.horizontalSpace,
-                              Flexible(
-                                child: Text(
-                                  isAr ? 'اتصال سريع' : 'Quick Call',
-                                  style: tt.labelLarge?.copyWith(
-                                    color: cs.primary,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
+                // Description
+                if (provider.serviceDescription.trim().isNotEmpty) ...[
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(10.r),
+                    decoration: BoxDecoration(
+                      color: cs.surfaceContainerHigh.withValues(alpha: 0.5),
+                      borderRadius: BorderRadius.circular(10.r),
+                      border: Border.all(
+                        color: cs.outlineVariant.withValues(alpha: 0.2),
+                        width: 0.5,
+                      ),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Icons.info_outline_rounded,
+                          color: cs.primary,
+                          size: 16.r,
+                        ),
+                        8.horizontalSpace,
+                        Expanded(
+                          child: Text(
+                            provider.serviceDescription,
+                            style: tt.bodySmall?.copyWith(
+                              color: cs.onSurfaceVariant,
+                              height: 1.4,
+                            ),
                           ),
                         ),
-                      ),
-                      12.horizontalSpace,
-                      // Email Card Button
-                      Expanded(
-                        child: AppCard(
-                          onTap: () => _sendEmail(provider.user.email),
-                          color: cs.surfaceContainerHigh,
-                          padding: EdgeInsets.all(8.r),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.alternate_email_rounded,
-                                color: cs.secondary,
-                                size: 18.r,
-                              ),
-                              8.horizontalSpace,
-                              Flexible(
-                                child: Text(
-                                  isAr ? 'بريد إلكتروني' : 'Email',
-                                  style: tt.labelLarge?.copyWith(
-                                    color: cs.secondary,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
+                  12.verticalSpace,
                 ],
-              ),
+
+                // ── Action Buttons ───────────────────────────────
+                Row(
+                  children: [
+                    // Call Button
+                    Expanded(
+                      child: _ActionButton(
+                        onTap: () => _makeCall(provider.user.phone),
+                        icon: Icons.phone_in_talk_rounded,
+                        label: context.l10n.provider_details_quick_call,
+                        iconColor: cs.primary,
+                        labelColor: cs.primary,
+                        backgroundColor:
+                            cs.primaryContainer.withValues(alpha: 0.3),
+                        splashColor: cs.primary.withValues(alpha: 0.12),
+                      ),
+                    ),
+                    12.horizontalSpace,
+                    // Email Button
+                    Expanded(
+                      child: _ActionButton(
+                        onTap: () => _sendEmail(provider.user.email),
+                        icon: Icons.alternate_email_rounded,
+                        label: context.l10n.provider_details_email_action,
+                        iconColor: cs.secondary,
+                        labelColor: cs.secondary,
+                        backgroundColor:
+                            cs.secondaryContainer.withValues(alpha: 0.3),
+                        splashColor: cs.secondary.withValues(alpha: 0.12),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Reusable Action Button ─────────────────────────────────────────────────
+class _ActionButton extends StatelessWidget {
+  final VoidCallback onTap;
+  final IconData icon;
+  final String label;
+  final Color iconColor;
+  final Color labelColor;
+  final Color backgroundColor;
+  final Color splashColor;
+
+  const _ActionButton({
+    required this.onTap,
+    required this.icon,
+    required this.label,
+    required this.iconColor,
+    required this.labelColor,
+    required this.backgroundColor,
+    required this.splashColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final tt = context.theme.textTheme;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(10.r),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          splashColor: splashColor,
+          highlightColor: splashColor.withValues(alpha: 0.5),
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 10.h),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, color: iconColor, size: 18.r),
+                8.horizontalSpace,
+                Flexible(
+                  child: Text(
+                    label,
+                    style: tt.labelLarge?.copyWith(
+                      color: labelColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

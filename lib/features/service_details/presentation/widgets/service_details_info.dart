@@ -116,12 +116,12 @@ class ServiceDetailsInfo extends StatelessWidget {
                     ),
                   ],
                 ),
-                16.verticalSpace,
+                24.verticalSpace,
                 Text(
                   context.l10n.service_details_description,
                   style: tt.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                 ),
-                8.verticalSpace,
+                12.verticalSpace,
                 Text(
                   service.description,
                   style: tt.bodyMedium
@@ -179,19 +179,19 @@ class ServiceDetailsInfo extends StatelessWidget {
                 if (currentUserId != null &&
                     hasCompletedBooking &&
                     !hasCurrentUserReview) ...[
-                  10.verticalSpace,
+                  12.verticalSpace,
                   OutlinedButton.icon(
                     onPressed: () => _showReviewSheet(context),
                     icon: const Icon(Icons.rate_review_outlined),
                     label: Text(context.l10n.product_details_add_review),
                   ),
                 ],
-                10.verticalSpace,
+                12.verticalSpace,
                 if (service.reviews.isEmpty)
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 16.h),
                     child: Text(
-                      'لا توجد تقييمات بعد',
+                      context.l10n.service_details_no_reviews_yet,
                       style: tt.bodyMedium?.copyWith(color: cs.outline),
                     ),
                   ),

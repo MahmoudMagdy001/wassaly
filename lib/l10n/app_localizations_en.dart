@@ -229,6 +229,18 @@ class SEn extends S {
   String get product_details_edit_time_expired => 'Edit time expired';
 
   @override
+  String get service_details_no_reviews_yet => 'No reviews yet';
+
+  @override
+  String get cart_added_to_cart => 'Product added to cart';
+
+  @override
+  String get cart_already_added => 'Added';
+
+  @override
+  String get cart_add_to_cart => 'Add to Cart';
+
+  @override
   String get cart_cart_title => 'Cart';
 
   @override
@@ -341,6 +353,20 @@ class SEn extends S {
   @override
   String get favorite_no_favorites_subtitle =>
       'Add your favorite products here';
+
+  @override
+  String get favorite_no_products => 'No favorite products yet';
+
+  @override
+  String get favorite_no_products_subtitle =>
+      'Add your favorite products here to find them easily later';
+
+  @override
+  String get favorite_no_services => 'No favorite services yet';
+
+  @override
+  String get favorite_no_services_subtitle =>
+      'Add your favorite services here to find them easily later';
 
   @override
   String get favorite_removed_from_favorites => 'Removed from favorites';
@@ -950,6 +976,20 @@ class SEn extends S {
   String get order_no_orders_title => 'No Orders';
 
   @override
+  String get order_no_product_orders_title => 'No Product Orders';
+
+  @override
+  String get order_no_product_orders_msg =>
+      'You don\'t have any product orders yet';
+
+  @override
+  String get order_no_service_bookings_title => 'No Service Bookings';
+
+  @override
+  String get order_no_service_bookings_msg =>
+      'You don\'t have any service bookings yet';
+
+  @override
   String get order_total_price => 'Total Price';
 
   @override
@@ -1227,6 +1267,12 @@ class SEn extends S {
 
   @override
   String get provider_details_successful_orders => 'Successful Orders';
+
+  @override
+  String get provider_details_quick_call => 'Quick Call';
+
+  @override
+  String get provider_details_email_action => 'Email';
 
   @override
   String get brands => 'Brands';

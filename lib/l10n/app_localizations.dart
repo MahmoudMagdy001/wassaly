@@ -523,6 +523,30 @@ abstract class S {
   /// **'Edit time expired'**
   String get product_details_edit_time_expired;
 
+  /// No description provided for @service_details_no_reviews_yet.
+  ///
+  /// In en, this message translates to:
+  /// **'No reviews yet'**
+  String get service_details_no_reviews_yet;
+
+  /// No description provided for @cart_added_to_cart.
+  ///
+  /// In en, this message translates to:
+  /// **'Product added to cart'**
+  String get cart_added_to_cart;
+
+  /// No description provided for @cart_already_added.
+  ///
+  /// In en, this message translates to:
+  /// **'Added'**
+  String get cart_already_added;
+
+  /// No description provided for @cart_add_to_cart.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to Cart'**
+  String get cart_add_to_cart;
+
   /// No description provided for @cart_cart_title.
   ///
   /// In en, this message translates to:
@@ -744,6 +768,30 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Add your favorite products here'**
   String get favorite_no_favorites_subtitle;
+
+  /// No description provided for @favorite_no_products.
+  ///
+  /// In en, this message translates to:
+  /// **'No favorite products yet'**
+  String get favorite_no_products;
+
+  /// No description provided for @favorite_no_products_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your favorite products here to find them easily later'**
+  String get favorite_no_products_subtitle;
+
+  /// No description provided for @favorite_no_services.
+  ///
+  /// In en, this message translates to:
+  /// **'No favorite services yet'**
+  String get favorite_no_services;
+
+  /// No description provided for @favorite_no_services_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your favorite services here to find them easily later'**
+  String get favorite_no_services_subtitle;
 
   /// No description provided for @favorite_removed_from_favorites.
   ///
@@ -1903,6 +1951,30 @@ abstract class S {
   /// **'No Orders'**
   String get order_no_orders_title;
 
+  /// No description provided for @order_no_product_orders_title.
+  ///
+  /// In en, this message translates to:
+  /// **'No Product Orders'**
+  String get order_no_product_orders_title;
+
+  /// No description provided for @order_no_product_orders_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'You don\'t have any product orders yet'**
+  String get order_no_product_orders_msg;
+
+  /// No description provided for @order_no_service_bookings_title.
+  ///
+  /// In en, this message translates to:
+  /// **'No Service Bookings'**
+  String get order_no_service_bookings_title;
+
+  /// No description provided for @order_no_service_bookings_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'You don\'t have any service bookings yet'**
+  String get order_no_service_bookings_msg;
+
   /// No description provided for @order_total_price.
   ///
   /// In en, this message translates to:
@@ -2442,6 +2514,18 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Successful Orders'**
   String get provider_details_successful_orders;
+
+  /// No description provided for @provider_details_quick_call.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Call'**
+  String get provider_details_quick_call;
+
+  /// No description provided for @provider_details_email_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get provider_details_email_action;
 
   /// No description provided for @brands.
   ///

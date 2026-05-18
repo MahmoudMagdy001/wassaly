@@ -228,6 +228,18 @@ class SAr extends S {
   String get product_details_edit_time_expired => 'انتهى وقت التعديل';
 
   @override
+  String get service_details_no_reviews_yet => 'لا توجد تقييمات بعد';
+
+  @override
+  String get cart_added_to_cart => 'تم إضافة المنتج للسلة';
+
+  @override
+  String get cart_already_added => 'تم الإضافة';
+
+  @override
+  String get cart_add_to_cart => 'أضف للسلة';
+
+  @override
   String get cart_cart_title => 'السلة';
 
   @override
@@ -338,6 +350,20 @@ class SAr extends S {
 
   @override
   String get favorite_no_favorites_subtitle => 'أضف منتجاتك المفضلة هنا';
+
+  @override
+  String get favorite_no_products => 'لا توجد منتجات مفضلة بعد';
+
+  @override
+  String get favorite_no_products_subtitle =>
+      'أضف منتجاتك المفضلة هنا لتجدها بسهولة لاحقاً';
+
+  @override
+  String get favorite_no_services => 'لا توجد خدمات مفضلة بعد';
+
+  @override
+  String get favorite_no_services_subtitle =>
+      'أضف خدماتك المفضلة هنا لتجدها بسهولة لاحقاً';
 
   @override
   String get favorite_removed_from_favorites => 'تمت الإزالة من المفضلة';
@@ -946,6 +972,18 @@ class SAr extends S {
   String get order_no_orders_title => 'لا توجد طلبات';
 
   @override
+  String get order_no_product_orders_title => 'لا توجد طلبات منتجات';
+
+  @override
+  String get order_no_product_orders_msg => 'ليس لديك أي طلبات منتجات بعد';
+
+  @override
+  String get order_no_service_bookings_title => 'لا توجد حجوزات خدمات';
+
+  @override
+  String get order_no_service_bookings_msg => 'ليس لديك أي حجوزات خدمات بعد';
+
+  @override
   String get order_total_price => 'السعر الإجمالي';
 
   @override
@@ -1221,6 +1259,12 @@ class SAr extends S {
 
   @override
   String get provider_details_successful_orders => 'الطلبات الناجحة';
+
+  @override
+  String get provider_details_quick_call => 'اتصال سريع';
+
+  @override
+  String get provider_details_email_action => 'بريد إلكتروني';
 
   @override
   String get brands => 'البراندات';

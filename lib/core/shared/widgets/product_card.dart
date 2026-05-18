@@ -166,7 +166,7 @@ class _ProductCardState extends State<ProductCard> {
                           Icon(
                             Icons.star_rounded,
                             size: 14.r,
-                            color: const Color(0xFFFFC107),
+                            color: cs.secondary,
                           ),
                           2.horizontalSpace,
                           Text(

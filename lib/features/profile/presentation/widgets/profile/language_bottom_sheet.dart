@@ -18,21 +18,19 @@ class LanguageBottomSheet extends StatelessWidget {
             // Header
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 24.w),
-              child: Row(
-                children: [
-                  Text(
-                    context.l10n.profile_language,
-                    style: tt.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: cs.onSurface,
-                    ),
+              child: Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: Text(
+                  context.l10n.profile_language,
+                  style: tt.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: cs.onSurface,
                   ),
-                  const Spacer(),
-                ],
+                ),
               ),
             ),
 
-            16.verticalSpace,
+            20.verticalSpace,
 
             // Language options
             Padding(
@@ -41,7 +39,8 @@ class LanguageBottomSheet extends StatelessWidget {
                 children: [
                   _LanguageOption(
                     title: context.l10n.profile_arabic,
-                    subtitle: 'ar',
+                    subtitle: 'Arabic',
+                    flagEmoji: '🇸🇦',
                     isSelected: language == 'ar',
                     onTap: () async {
                       final currentContext = context;
@@ -54,15 +53,14 @@ class LanguageBottomSheet extends StatelessWidget {
                               .add(const LanguageToggled());
                         }
                       }
-                      if (currentContext.mounted) {
-                        currentContext.pop();
-                      }
+                      if (currentContext.mounted) currentContext.pop();
                     },
                   ),
-                  16.verticalSpace,
+                  12.verticalSpace,
                   _LanguageOption(
                     title: context.l10n.profile_english,
-                    subtitle: 'en',
+                    subtitle: 'الإنجليزية',
+                    flagEmoji: '🇬🇧',
                     isSelected: language == 'en',
                     onTap: () async {
                       final currentContext = context;
@@ -75,9 +73,7 @@ class LanguageBottomSheet extends StatelessWidget {
                               .add(const LanguageToggled());
                         }
                       }
-                      if (currentContext.mounted) {
-                        currentContext.pop();
-                      }
+                      if (currentContext.mounted) currentContext.pop();
                     },
                   ),
                 ],
@@ -106,23 +102,20 @@ class LanguageBottomSheet extends StatelessWidget {
         ),
         content: Text(
           context.l10n.profile_language_change_message,
-          style: tt.bodyMedium?.copyWith(
-            color: cs.onSurface,
-          ),
+          style: tt.bodyMedium?.copyWith(color: cs.onSurface),
         ),
         actions: [
           TextButton(
             onPressed: () => context.pop(false),
             child: Text(
               context.l10n.profile_language_change_cancel,
-              style: TextStyle(
-                color: cs.onSurface,
-              ),
+              style: TextStyle(color: cs.onSurface),
             ),
           ),
           AppButton(
-              label: context.l10n.profile_language_change_confirm,
-              onPressed: () => context.pop(true)),
+            label: context.l10n.profile_language_change_confirm,
+            onPressed: () => context.pop(true),
+          ),
         ],
       ),
     );
@@ -133,12 +126,14 @@ class _LanguageOption extends StatelessWidget {
   const _LanguageOption({
     required this.title,
     required this.subtitle,
+    required this.flagEmoji,
     required this.isSelected,
     required this.onTap,
   });
 
   final String title;
   final String subtitle;
+  final String flagEmoji;
   final bool isSelected;
   final VoidCallback onTap;
 
@@ -147,55 +142,97 @@ class _LanguageOption extends StatelessWidget {
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
 
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12.r),
-      child: Container(
-        padding: EdgeInsets.all(16.w),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: isSelected ? cs.primary : cs.outlineVariant,
-            width: isSelected ? 2 : 1,
-          ),
-          borderRadius: BorderRadius.circular(12.r),
-          color: isSelected ? cs.primaryContainer : cs.surface,
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      decoration: BoxDecoration(
+        color: isSelected ? cs.primary.withValues(alpha: 0.08) : cs.surface,
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(
+          color: isSelected ? cs.primary : cs.outlineVariant,
+          width: isSelected ? 2 : 1,
         ),
-        child: Row(
-          children: [
-            Icon(
-              Icons.language_outlined,
-              color: isSelected ? cs.primary : cs.onSurfaceVariant,
-              size: 24.r,
-            ),
-            12.horizontalSpace,
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: tt.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: isSelected ? cs.primary : cs.onSurface,
-                    ),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          splashColor: cs.primary.withValues(alpha: 0.1),
+          highlightColor: cs.primary.withValues(alpha: 0.05),
+          child: Padding(
+            padding: EdgeInsets.all(14.r),
+            child: Row(
+              children: [
+                // Flag icon container
+                Container(
+                  width: 44.w,
+                  height: 44.h,
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? cs.primary.withValues(alpha: 0.12)
+                        : cs.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(10.r),
                   ),
-                  4.verticalSpace,
-                  Text(
-                    subtitle,
-                    style: tt.bodySmall?.copyWith(
-                      color: cs.onSurfaceVariant,
-                    ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    flagEmoji,
+                    style: TextStyle(fontSize: 22.sp),
                   ),
-                ],
-              ),
+                ),
+                14.horizontalSpace,
+
+                // Text
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: tt.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: isSelected ? cs.primary : cs.onSurface,
+                        ),
+                      ),
+                      4.verticalSpace,
+                      Text(
+                        subtitle,
+                        style: tt.bodySmall?.copyWith(
+                          color: isSelected
+                              ? cs.primary.withValues(alpha: 0.7)
+                              : cs.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Check indicator
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  child: isSelected
+                      ? Container(
+                          key: const ValueKey('check'),
+                          width: 24.w,
+                          height: 24.h,
+                          decoration: BoxDecoration(
+                            color: cs.primary,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.check_rounded,
+                            color: cs.onPrimary,
+                            size: 14.sp,
+                          ),
+                        )
+                      : SizedBox(
+                          key: const ValueKey('empty'),
+                          width: 24.w,
+                          height: 24.h,
+                        ),
+                ),
+              ],
             ),
-            if (isSelected)
-              Icon(
-                Icons.check_circle,
-                color: cs.primary,
-                size: 24.r,
-              ),
-          ],
+          ),
         ),
       ),
     );

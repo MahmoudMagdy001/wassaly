@@ -90,46 +90,45 @@ class _ProductDetailsSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const dummyProduct = ProductDetailEntity(
+    final dummyProduct = ProductDetailEntity(
       id: 0,
-      name: 'اسم المنتج التجريبي يظهر هنا',
+      name: context.l10n.product_details_title,
       image: '',
       price: '1000',
-      description:
-          'هذا وصف تجريبي للمنتج يظهر عند التحميل ليعطي انطباعا جيدا للمستخدم عن شكل الصفحة النهائي. هذا النص طويل بما يكفي لمحاكاة وصف حقيقي للمنتج.',
-      specifications: [
+      description: context.l10n.product_details_description,
+      specifications: const [
         ProductSpecificationEntity(
           id: 1,
-          key: 'المادة',
-          value: 'قطن',
+          key: ' ',
+          value: ' ',
           icon: '',
         ),
         ProductSpecificationEntity(
           id: 2,
-          key: 'اللون',
-          value: 'أزرق',
+          key: ' ',
+          value: ' ',
           icon: '',
         ),
       ],
-      images: [],
-      subCategory: ProductMetaEntity(id: 1, name: 'فئة تجريبية', image: ''),
-      brand: ProductMetaEntity(id: 1, name: 'ماركة تجريبية', image: ''),
-      reviews: [],
-      offerPercentages: [10],
+      images: const [],
+      subCategory: const ProductMetaEntity(id: 1, name: ' ', image: ''),
+      brand: const ProductMetaEntity(id: 1, name: ' ', image: ''),
+      reviews: const [],
+      offerPercentages: const [10],
       isFavorite: false,
       provider: null,
     );
 
     final dummyRelatedProducts = List<ProductEntity>.generate(
       4,
-      (index) => const ProductEntity(
+      (index) => ProductEntity(
         id: 0,
-        name: 'منتج مرتبط تجريبي',
+        name: context.l10n.product_details_related_products,
         image: '',
         price: '500',
-        description: 'وصف منتج مرتبط',
-        offers: [],
-        reviews: [],
+        description: ' ',
+        offers: const [],
+        reviews: const [],
         isFavorite: false,
       ),
     );
