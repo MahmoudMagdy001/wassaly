@@ -9,90 +9,86 @@ class TermsOfServicePage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: cs.surface,
-      appBar: AppBar(
-        title: Text('terms_of_service.title'.tr()),
-        backgroundColor: cs.surface,
-        foregroundColor: cs.onSurface,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: cs.onSurface),
-          onPressed: () => context.pop(),
-        ),
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildSection(
-              context,
-              'terms_of_service.last_updated'.tr(),
-              'terms_of_service.last_updated_date'.tr(),
-              isHighlighted: true,
+      body: CustomScrollView(
+        slivers: [
+          AppSliverTopBar(
+            title: context.l10n.terms_of_service_title,
+          ),
+          SliverPadding(
+            padding: EdgeInsets.all(16.w),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                _buildSection(
+                  context,
+                  context.l10n.terms_of_service_last_updated,
+                  context.l10n.terms_of_service_last_updated_date,
+                  isHighlighted: true,
+                ),
+                16.verticalSpace,
+                _buildSection(
+                  context,
+                  context.l10n.terms_of_service_acceptance_title,
+                  context.l10n.terms_of_service_acceptance_content,
+                ),
+                16.verticalSpace,
+                _buildSection(
+                  context,
+                  context.l10n.terms_of_service_services_title,
+                  context.l10n.terms_of_service_services_content,
+                ),
+                16.verticalSpace,
+                _buildSection(
+                  context,
+                  context.l10n.terms_of_service_user_responsibilities_title,
+                  context.l10n.terms_of_service_user_responsibilities_content,
+                ),
+                16.verticalSpace,
+                _buildSection(
+                  context,
+                  context.l10n.terms_of_service_prohibited_uses_title,
+                  context.l10n.terms_of_service_prohibited_uses_content,
+                ),
+                16.verticalSpace,
+                _buildSection(
+                  context,
+                  context.l10n.terms_of_service_intellectual_property_title,
+                  context.l10n.terms_of_service_intellectual_property_content,
+                ),
+                16.verticalSpace,
+                _buildSection(
+                  context,
+                  context.l10n.terms_of_service_termination_title,
+                  context.l10n.terms_of_service_termination_content,
+                ),
+                16.verticalSpace,
+                _buildSection(
+                  context,
+                  context.l10n.terms_of_service_limitation_title,
+                  context.l10n.terms_of_service_limitation_content,
+                ),
+                16.verticalSpace,
+                _buildSection(
+                  context,
+                  context.l10n.terms_of_service_changes_title,
+                  context.l10n.terms_of_service_changes_content,
+                ),
+                16.verticalSpace,
+                _buildSection(
+                  context,
+                  context.l10n.terms_of_service_contact_title,
+                  context.l10n.terms_of_service_contact_content,
+                ),
+                32.verticalSpace,
+                _buildSection(
+                  context,
+                  context.l10n.terms_of_service_footer_note,
+                  '',
+                  isFooter: true,
+                ),
+              ]),
             ),
-            16.verticalSpace,
-            _buildSection(
-              context,
-              'terms_of_service.acceptance.title'.tr(),
-              'terms_of_service.acceptance.content'.tr(),
-            ),
-            16.verticalSpace,
-            _buildSection(
-              context,
-              'terms_of_service.services.title'.tr(),
-              'terms_of_service.services.content'.tr(),
-            ),
-            16.verticalSpace,
-            _buildSection(
-              context,
-              'terms_of_service.user_responsibilities.title'.tr(),
-              'terms_of_service.user_responsibilities.content'.tr(),
-            ),
-            16.verticalSpace,
-            _buildSection(
-              context,
-              'terms_of_service.prohibited_uses.title'.tr(),
-              'terms_of_service.prohibited_uses.content'.tr(),
-            ),
-            16.verticalSpace,
-            _buildSection(
-              context,
-              'terms_of_service.intellectual_property.title'.tr(),
-              'terms_of_service.intellectual_property.content'.tr(),
-            ),
-            16.verticalSpace,
-            _buildSection(
-              context,
-              'terms_of_service.termination.title'.tr(),
-              'terms_of_service.termination.content'.tr(),
-            ),
-            16.verticalSpace,
-            _buildSection(
-              context,
-              'terms_of_service.limitation.title'.tr(),
-              'terms_of_service.limitation.content'.tr(),
-            ),
-            16.verticalSpace,
-            _buildSection(
-              context,
-              'terms_of_service.changes.title'.tr(),
-              'terms_of_service.changes.content'.tr(),
-            ),
-            16.verticalSpace,
-            _buildSection(
-              context,
-              'terms_of_service.contact.title'.tr(),
-              'terms_of_service.contact.content'.tr(),
-            ),
-            32.verticalSpace,
-            _buildSection(
-              context,
-              'terms_of_service.footer.note'.tr(),
-              '',
-              isFooter: true,
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

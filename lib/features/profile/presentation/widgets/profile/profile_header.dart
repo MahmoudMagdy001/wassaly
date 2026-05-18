@@ -1,15 +1,16 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/profile/presentation/bloc/profile/profile_bloc.dart';
 
+import '../../../../auth/domain/entities/user_entity.dart';
+
 class ProfileHeader extends StatelessWidget {
   const ProfileHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProfileBloc, ProfileState>(
-      buildWhen: (prev, curr) => prev.user != curr.user,
-      builder: (context, state) {
-        final user = state.user;
+    return BlocSelector<ProfileBloc, ProfileState, UserEntity?>(
+      selector: (state) => state.user,
+      builder: (context, user) {
         final cs = context.theme.colorScheme;
         final tt = context.theme.textTheme;
 

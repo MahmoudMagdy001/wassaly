@@ -30,23 +30,22 @@ class ForgotPasswordForm extends StatelessWidget {
             onChanged: onEmailChanged,
             validator: (value) {
               if (value.isNullOrEmpty) {
-                return 'auth.email_required'.tr();
+                return context.l10n.auth_email_required;
               }
               if (!value!.isValidEmail && !value.isValidPhoneNumber) {
-                return 'auth.email_invalid'.tr();
+                return context.l10n.auth_email_invalid;
               }
               return null;
             },
           ),
           24.verticalSpace,
-          BlocBuilder<ForgotPasswordBloc, ForgotPasswordState>(
-            buildWhen: (previous, current) =>
-                previous.isLoading != current.isLoading,
-            builder: (context, state) {
+          BlocSelector<ForgotPasswordBloc, ForgotPasswordState, bool>(
+            selector: (state) => state.isLoading,
+            builder: (context, isLoading) {
               return AppButton(
-                label: 'auth.send_code'.tr(),
-                onPressed: state.isLoading ? null : onSubmit,
-                isLoading: state.isLoading,
+                label: context.l10n.auth_send_code,
+                onPressed: isLoading ? null : onSubmit,
+                isLoading: isLoading,
                 variant: ButtonVariant.success,
                 isFullWidth: true,
                 height: ButtonSize.medium,

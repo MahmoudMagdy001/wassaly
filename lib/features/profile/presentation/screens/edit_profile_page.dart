@@ -28,7 +28,7 @@ class _EditProfileViewState extends State<_EditProfileView> {
   late final TextEditingController _passwordController;
   late final TextEditingController _passwordConfirmationController;
 
-  File? _avatarFile;
+  final ValueNotifier<File?> _avatarFileNotifier = ValueNotifier(null);
   UserEntity? _previousUser;
   var _previousActionStatus = AppStatus.initial;
 
@@ -60,12 +60,13 @@ class _EditProfileViewState extends State<_EditProfileView> {
     _currentPasswordController.dispose();
     _passwordController.dispose();
     _passwordConfirmationController.dispose();
+    _avatarFileNotifier.dispose();
     super.dispose();
   }
 
   void _onAvatarPicked(File? file) {
     if (file != null) {
-      setState(() => _avatarFile = file);
+      _avatarFileNotifier.value = file;
     }
   }
 
@@ -74,7 +75,7 @@ class _EditProfileViewState extends State<_EditProfileView> {
 
     final password = _passwordController.text.trim();
     if (password.isNotEmpty && _currentPasswordController.text.isEmpty) {
-      context.showTypedSnackBar('profile.current_password_required'.tr(),
+      context.showTypedSnackBar(context.l10n.profile_current_password_required,
           type: SnackBarType.error);
       return;
     }
@@ -82,7 +83,7 @@ class _EditProfileViewState extends State<_EditProfileView> {
     context.read<ProfileBloc>().add(ProfileUpdated(
           fullName: _nameController.text.trim(),
           phone: _phoneController.text.trim(),
-          avatar: _avatarFile,
+          avatar: _avatarFileNotifier.value,
           password: password.isNotEmpty ? password : null,
           currentPassword: _currentPasswordController.text.trim().isNotEmpty
               ? _currentPasswordController.text.trim()
@@ -113,7 +114,7 @@ class _EditProfileViewState extends State<_EditProfileView> {
                 ),
                 16.verticalSpace,
                 Text(
-                  'profile.delete_account_title'.tr(),
+                  context.l10n.profile_delete_account_title,
                   style: tt.headlineSmall?.copyWith(
                     color: cs.onSurface,
                     fontWeight: FontWeight.bold,
@@ -122,7 +123,7 @@ class _EditProfileViewState extends State<_EditProfileView> {
                 ),
                 8.verticalSpace,
                 Text(
-                  'profile.delete_account_message'.tr(),
+                  context.l10n.profile_delete_account_message,
                   style: tt.bodyMedium?.copyWith(
                     color: cs.onSurfaceVariant,
                   ),
@@ -130,7 +131,7 @@ class _EditProfileViewState extends State<_EditProfileView> {
                 ),
                 16.verticalSpace,
                 AppButton(
-                  label: 'profile.delete_account_confirm'.tr(),
+                  label: context.l10n.profile_delete_account_confirm,
                   onPressed: () {
                     bottomSheetContext.pop(true);
                   },
@@ -156,10 +157,6 @@ class _EditProfileViewState extends State<_EditProfileView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('profile.edit_profile'.tr()),
-        centerTitle: true,
-      ),
       body: BlocListener<ProfileBloc, ProfileState>(
         listenWhen: (prev, curr) =>
             (prev.user != curr.user && curr.user != null) ||
@@ -182,9 +179,13 @@ class _EditProfileViewState extends State<_EditProfileView> {
                 context.go(AppRoutes.login);
               } else {
                 // Regular profile update
-                context.showTypedSnackBar('profile.update_success'.tr(),
+                context.showTypedSnackBar(context.l10n.profile_update_success,
                     type: SnackBarType.success);
-                context.pop();
+                try {
+                  if (context.mounted && context.canPop()) {
+                    context.pop();
+                  }
+                } catch (_) {}
               }
             } else if (state.actionStatus.isFailure &&
                 state.actionError != null) {
@@ -194,42 +195,57 @@ class _EditProfileViewState extends State<_EditProfileView> {
           }
           _previousActionStatus = state.actionStatus;
         },
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(16.w).copyWith(
-            bottom: 16.h,
-          ),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                EditProfileAvatarPicker(
-                  avatarFile: _avatarFile,
-                  onAvatarPicked: _onAvatarPicked,
-                ),
-                8.verticalSpace,
-                EditProfileNameField(controller: _nameController),
-                8.verticalSpace,
-                EditProfilePhoneField(controller: _phoneController),
-                16.verticalSpace,
-                EditProfilePasswordSection(
-                  currentPasswordController: _currentPasswordController,
-                  passwordController: _passwordController,
-                  passwordConfirmationController:
-                      _passwordConfirmationController,
-                ),
-                16.verticalSpace,
-                EditProfileSaveButton(onPressed: _submit),
-                8.verticalSpace,
-                AppButton(
-                  label: 'profile.delete_account'.tr(),
-                  onPressed: _showDeleteAccountBottomSheet,
-                  variant: ButtonVariant.danger,
-                  isFullWidth: true,
-                  prefixIcon: const Icon(Icons.delete_forever),
-                ),
-              ],
+        child: CustomScrollView(
+          slivers: [
+            AppSliverTopBar(
+              title: context.l10n.profile_edit_profile,
+              centerTitle: true,
             ),
-          ),
+            SliverPadding(
+              padding: EdgeInsets.all(16.w).copyWith(
+                bottom: 16.h,
+              ),
+              sliver: SliverToBoxAdapter(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      ValueListenableBuilder<File?>(
+                        valueListenable: _avatarFileNotifier,
+                        builder: (context, avatarFile, child) {
+                          return EditProfileAvatarPicker(
+                            avatarFile: avatarFile,
+                            onAvatarPicked: _onAvatarPicked,
+                          );
+                        },
+                      ),
+                      8.verticalSpace,
+                      EditProfileNameField(controller: _nameController),
+                      8.verticalSpace,
+                      EditProfilePhoneField(controller: _phoneController),
+                      16.verticalSpace,
+                      EditProfilePasswordSection(
+                        currentPasswordController: _currentPasswordController,
+                        passwordController: _passwordController,
+                        passwordConfirmationController:
+                            _passwordConfirmationController,
+                      ),
+                      16.verticalSpace,
+                      EditProfileSaveButton(onPressed: _submit),
+                      8.verticalSpace,
+                      AppButton(
+                        label: context.l10n.profile_delete_account,
+                        onPressed: _showDeleteAccountBottomSheet,
+                        variant: ButtonVariant.danger,
+                        isFullWidth: true,
+                        prefixIcon: const Icon(Icons.delete_forever),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

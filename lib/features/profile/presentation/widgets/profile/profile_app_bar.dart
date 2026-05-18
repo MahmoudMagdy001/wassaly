@@ -1,4 +1,4 @@
-import '../../../../../core/imports/imports.dart';
+import 'package:wassaly/core/imports/imports.dart';
 
 class ProfileAppBar extends StatelessWidget {
   const ProfileAppBar({super.key});
@@ -28,7 +28,7 @@ class ProfileAppBar extends StatelessWidget {
           Expanded(
             child: Center(
               child: Text(
-                'profile.my_account'.tr(),
+                context.l10n.profile_my_account,
                 style: tt.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),

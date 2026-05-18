@@ -1,5 +1,10 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
+import 'package:wassaly/features/cart/presentation/bloc/cart_bloc.dart';
+import 'package:wassaly/features/cart/presentation/bloc/cart_event.dart';
+import 'package:wassaly/features/favorite/presentation/bloc/favorite_bloc.dart';
+import 'package:wassaly/features/favorite/presentation/bloc/favorite_event.dart';
+import 'package:wassaly/features/profile/presentation/bloc/profile/profile_bloc.dart';
 
 class SessionListenerWrapper extends StatelessWidget {
   final Widget child;
@@ -15,8 +20,16 @@ class SessionListenerWrapper extends StatelessWidget {
           return;
         }
         if (state is SessionAuthenticated) {
+          // Load data for the new user
+          context.read<ProfileBloc>().add(const ProfileFetched());
+          context.read<CartBloc>().add(const LoadCartItemsEvent());
+          context.read<FavoriteBloc>().add(const GetFavoritesEvent());
           appRouter.go(AppRoutes.home);
         } else if (state is SessionUnauthenticated) {
+          // Clear data when user logs out
+          context.read<ProfileBloc>().add(const ProfileReset());
+          context.read<CartBloc>().add(const ClearCartEvent());
+          context.read<FavoriteBloc>().add(const ClearFavoritesEvent());
           appRouter.go(AppRoutes.login);
         }
       },

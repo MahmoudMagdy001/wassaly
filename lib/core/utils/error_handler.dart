@@ -6,6 +6,11 @@ class AppErrorHandler {
 
     // Handle DioException for API error messages
     if (error is DioException) {
+      // Handle 404 Not Found specifically
+      if (error.response?.statusCode == 404) {
+        return 'الخدمة غير متوفرة حالياً، يرجى المحاولة لاحقاً';
+      }
+
       final responseData = error.response?.data;
       if (responseData is Map<String, dynamic>) {
         // Extract message from API response

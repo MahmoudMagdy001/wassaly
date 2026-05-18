@@ -4,7 +4,7 @@ export 'package:cross_file/cross_file.dart';
 export 'package:dio/dio.dart';
 export 'package:equatable/equatable.dart';
 export 'package:flutter_animate/flutter_animate.dart' hide ShimmerEffect;
-export 'package:flutter_bloc/flutter_bloc.dart';
+export 'package:flutter_bloc/flutter_bloc.dart' hide Bloc, Cubit;
 export 'package:flutter_dotenv/flutter_dotenv.dart';
 export 'package:flutter_screenutil/flutter_screenutil.dart';
 export 'package:flutter_secure_storage/flutter_secure_storage.dart';

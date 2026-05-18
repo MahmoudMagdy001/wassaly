@@ -32,6 +32,10 @@ abstract class AuthRepository {
 
   FutureEither<void> logout();
 
+  /// Clears all user-specific local data (token, user cache, cart, favorites).
+  /// Must succeed even if the remote logout API fails.
+  FutureEither<void> clearUserSession();
+
   FutureEither<UserEntity> signup({
     required String name,
     required String phone,

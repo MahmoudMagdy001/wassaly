@@ -1,9 +1,8 @@
 import 'package:wassaly/core/imports/imports.dart';
-
-import '../../domain/entities/category_entity.dart';
-import '../bloc/home_bloc.dart';
-import '../bloc/home_state.dart';
-import 'category_card.dart';
+import 'package:wassaly/features/home/domain/entities/category_entity.dart';
+import 'package:wassaly/features/home/presentation/bloc/home_bloc.dart';
+import 'package:wassaly/features/home/presentation/bloc/home_state.dart';
+import 'package:wassaly/features/home/presentation/widgets/category_card.dart';
 
 class MainCategoriesSection extends StatelessWidget {
   const MainCategoriesSection({super.key});
@@ -13,13 +12,14 @@ class MainCategoriesSection extends StatelessWidget {
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
 
-    return BlocBuilder<HomeBloc, HomeState>(
-      buildWhen: (previous, current) =>
-          previous.categoriesStatus != current.categoriesStatus ||
-          previous.categories != current.categories,
-      builder: (context, state) {
-        if (state.categoriesStatus == HomeStatus.loading ||
-            state.categoriesStatus == HomeStatus.initial) {
+    return BlocSelector<HomeBloc, HomeState,
+        (HomeStatus, List<CategoryEntity>)>(
+      selector: (state) => (state.categoriesStatus, state.categories),
+      builder: (context, data) {
+        final (categoriesStatus, categories) = data;
+
+        if (categoriesStatus == HomeStatus.loading ||
+            categoriesStatus == HomeStatus.initial) {
           final dummyCategories = List.generate(
             3,
             (index) => const CategoryEntity(
@@ -33,16 +33,14 @@ class MainCategoriesSection extends StatelessWidget {
             enabled: true,
             child: _buildContent(context, cs, tt, dummyCategories),
           );
-        } else if (state.categoriesStatus == HomeStatus.failure) {
+        } else if (categoriesStatus == HomeStatus.failure) {
           return const SizedBox.shrink();
-        } else if (state.categories.isEmpty &&
-            state.categoriesStatus == HomeStatus.success) {
+        } else if (categories.isEmpty &&
+            categoriesStatus == HomeStatus.success) {
           return const SizedBox.shrink();
         }
 
-        return _buildContent(context, cs, tt, state.categories)
-            .animate()
-            .fadeIn(
+        return _buildContent(context, cs, tt, categories).animate().fadeIn(
               delay: const Duration(milliseconds: 200),
               duration: const Duration(milliseconds: 400),
             );
@@ -54,23 +52,42 @@ class MainCategoriesSection extends StatelessWidget {
       List<CategoryEntity> categories) {
     if (categories.isEmpty) return const SizedBox.shrink();
 
+    // Show only the first 3 categories
+    final displayedCategories = categories.take(3).toList();
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 12.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header
-          Text(
-            'home.main_categories'.tr(),
-            style: tt.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: cs.primary,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                context.l10n.home_main_categories,
+                style: tt.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: cs.primary,
+                ),
+              ),
+              if (categories.length > 3)
+                TextButton(
+                  onPressed: () => context.push(AppRoutes.allCategories),
+                  child: Text(
+                    context.l10n.shared_show_more,
+                    style: tt.labelLarge?.copyWith(
+                      color: cs.secondary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+            ],
           ),
           16.verticalSpace,
 
           // Build alternating layout: 1 item, then 2 items, then 1 item...
-          ..._buildAlternatingGrid(context, categories),
+          ..._buildAlternatingGrid(context, displayedCategories),
         ],
       ),
     );

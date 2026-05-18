@@ -10,102 +10,7 @@ import '../../../features/home/domain/entities/product_entity.dart';
 /// All other cards listen and stop their marquee automatically.
 final activeMarqueeId = ValueNotifier<int?>(null);
 
-/// Auto-scrolling marquee text widget.
-/// Only scrolls when [isActive] is true.
-/// Resets to start instantly when [isActive] becomes false.
-class _MarqueeText extends StatefulWidget {
-  const _MarqueeText({
-    required this.text,
-    required this.style,
-    required this.isActive,
-  });
 
-  final String text;
-  final TextStyle? style;
-  final bool isActive;
-
-  @override
-  State<_MarqueeText> createState() => _MarqueeTextState();
-}
-
-class _MarqueeTextState extends State<_MarqueeText> {
-  late final ScrollController _scrollController;
-  bool _isRunning = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController();
-  }
-
-  @override
-  void didUpdateWidget(_MarqueeText oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (widget.isActive && !oldWidget.isActive) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => _startScroll());
-    } else if (!widget.isActive && oldWidget.isActive) {
-      _stopAndReset();
-    }
-  }
-
-  void _startScroll() {
-    if (!mounted || !_scrollController.hasClients) return;
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    if (maxScroll <= 0) return;
-    if (_isRunning) return;
-
-    _isRunning = true;
-    _runMarquee(maxScroll);
-  }
-
-  void _stopAndReset() {
-    _isRunning = false;
-    if (_scrollController.hasClients) {
-      _scrollController.jumpTo(0);
-    }
-  }
-
-  Future<void> _runMarquee(double maxScroll) async {
-    while (mounted && _isRunning) {
-      await Future<void>.delayed(const Duration(milliseconds: 400));
-      if (!mounted || !_isRunning) break;
-
-      await _scrollController.animateTo(
-        maxScroll,
-        duration: Duration(milliseconds: (maxScroll * 18).toInt()),
-        curve: Curves.linear,
-      );
-      if (!mounted || !_isRunning) break;
-
-      await Future<void>.delayed(const Duration(milliseconds: 800));
-      if (!mounted || !_isRunning) break;
-
-      _scrollController.jumpTo(0);
-    }
-  }
-
-  @override
-  void dispose() {
-    _isRunning = false;
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      controller: _scrollController,
-      scrollDirection: Axis.horizontal,
-      physics: const NeverScrollableScrollPhysics(),
-      child: Text(
-        widget.text,
-        style: widget.style,
-        maxLines: 1,
-      ),
-    );
-  }
-}
 
 /// A reusable product card widget for displaying product information.
 ///
@@ -138,7 +43,7 @@ class ProductCard extends StatefulWidget {
 }
 
 class _ProductCardState extends State<ProductCard> {
-  bool _isActive = false;
+  final ValueNotifier<bool> _isActiveNotifier = ValueNotifier(false);
 
   @override
   void initState() {
@@ -153,15 +58,16 @@ class _ProductCardState extends State<ProductCard> {
     if (activeMarqueeId.value == widget.product.id) {
       activeMarqueeId.value = null;
     }
+    _isActiveNotifier.dispose();
     super.dispose();
   }
 
   void _onActiveIdChanged() {
     final isNowActive = activeMarqueeId.value == widget.product.id;
-    if (isNowActive != _isActive) {
+    if (isNowActive != _isActiveNotifier.value) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
-          setState(() => _isActive = isNowActive);
+          _isActiveNotifier.value = isNowActive;
         }
       });
     }
@@ -197,18 +103,21 @@ class _ProductCardState extends State<ProductCard> {
     return GestureDetector(
       onTap: widget.onTap ?? _openProductDetails,
       onLongPress: _onLongPress,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        decoration: BoxDecoration(
-          color: cs.surface,
-          borderRadius: BorderRadius.circular(12.r),
-          border: Border.all(
-            // Subtle highlight when marquee is active
-            color: _isActive
-                ? cs.primary.withValues(alpha: 0.6)
-                : cs.outlineVariant.withValues(alpha: 0.5),
-            width: _isActive ? 1.5 : 1.0,
-          ),
+      child: ValueListenableBuilder<bool>(
+        valueListenable: _isActiveNotifier,
+        builder: (context, isActive, child) {
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            decoration: BoxDecoration(
+              color: cs.surface,
+              borderRadius: BorderRadius.circular(12.r),
+              border: Border.all(
+                // Subtle highlight when marquee is active
+                color: isActive
+                    ? cs.primary.withValues(alpha: 0.6)
+                    : cs.outlineVariant.withValues(alpha: 0.5),
+                width: isActive ? 1.5 : 1.0,
+              ),
         ),
         clipBehavior: Clip.antiAlias,
         child: Column(
@@ -229,9 +138,9 @@ class _ProductCardState extends State<ProductCard> {
                   children: [
                     // Description — marquee when active
                     if (widget.product.description.isNotEmpty)
-                      _MarqueeText(
+                      MarqueeText(
                         text: widget.product.description,
-                        isActive: _isActive,
+                        isActive: isActive,
                         style: tt.labelSmall?.copyWith(
                           color: cs.onSurfaceVariant,
                         ),
@@ -239,9 +148,9 @@ class _ProductCardState extends State<ProductCard> {
                     4.verticalSpace,
 
                     // Product name — marquee when active
-                    _MarqueeText(
+                    MarqueeText(
                       text: widget.product.name,
-                      isActive: _isActive,
+                      isActive: isActive,
                       style: tt.titleSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: cs.onSurface,
@@ -257,7 +166,7 @@ class _ProductCardState extends State<ProductCard> {
                           Icon(
                             Icons.star_rounded,
                             size: 14.r,
-                            color: const Color(0xFFFFC107),
+                            color: cs.secondary,
                           ),
                           2.horizontalSpace,
                           Text(
@@ -282,7 +191,9 @@ class _ProductCardState extends State<ProductCard> {
               ),
             ),
           ],
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -298,7 +209,7 @@ class _ProductCardState extends State<ProductCard> {
             child: CommonImage(
               memCacheHeight: 140 * 3,
               imageUrl: widget.product.image,
-              fit: BoxFit.cover,
+              fit: BoxFit.contain,
               borderRadius: BorderRadius.vertical(
                 top: Radius.circular(9.r),
               ),
@@ -403,7 +314,7 @@ class _ProductCardState extends State<ProductCard> {
           children: [
             if (hasDiscount)
               Text(
-                '${originalPrice.toStringAsFixed(0)} ${'shared.currency_egp'.tr()}',
+                '${originalPrice.toStringAsFixed(0)} ${context.l10n.shared_currency_egp}',
                 style: tt.labelSmall?.copyWith(
                   color: cs.onSurfaceVariant,
                   decoration: TextDecoration.lineThrough,
@@ -411,7 +322,7 @@ class _ProductCardState extends State<ProductCard> {
                 ),
               ),
             Text(
-              '${(hasDiscount ? discountedPrice : originalPrice).toStringAsFixed(0)} ${'shared.currency_egp'.tr()}',
+              '${(hasDiscount ? discountedPrice : originalPrice).toStringAsFixed(0)} ${context.l10n.shared_currency_egp}',
               style: tt.titleSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: cs.onSurface,

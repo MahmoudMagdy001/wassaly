@@ -25,6 +25,10 @@ class NetworkFailure extends Failure {
   const NetworkFailure(super.message, {super.error});
 }
 
+class NotFoundFailure extends Failure {
+  const NotFoundFailure(super.message, {super.error});
+}
+
 class UnknownFailure extends Failure {
   const UnknownFailure(super.message, {super.error});
 }

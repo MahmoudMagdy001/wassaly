@@ -17,6 +17,7 @@ abstract final class AppRoutes {
   // Main layout shell
   static const String home = '/';
   static const String category = '/category';
+  static const String allCategories = '/all-categories';
   static const String cart = '/cart';
   static const String favorite = '/favorite';
   static const String profile = '/profile';
@@ -24,6 +25,9 @@ abstract final class AppRoutes {
   // Profile sub-routes
   static const String editProfile = '/profile/edit';
   static const String addresses = '/profile/addresses';
+  static const String orders = '/profile/orders';
+  static const String orderDetails = '/profile/orders/details';
+  static const String bookingDetails = '/profile/bookings/details';
   static const String addAddress = '/profile/addresses/add';
   static const String privacyPolicy = '/privacy-policy';
   static const String termsOfService = '/terms-of-service';
@@ -39,4 +43,21 @@ abstract final class AppRoutes {
 
   // Checkout
   static const String checkout = '/checkout';
+
+  // Service details
+  static const String serviceDetails = '/service-details';
+
+  // Service booking
+  static const String serviceBooking = '/service-booking';
+  static const String bookingSuccess = '/booking-success';
+
+  // Provider details
+  static const String providerDetails = '/provider-details';
+
+  // Offers
+  static const String offers = '/offers';
+
+  // Brands
+  static const String brands = '/brands';
+  static const String brandDetails = '/brand-details';
 }

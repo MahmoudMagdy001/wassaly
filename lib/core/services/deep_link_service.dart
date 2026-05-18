@@ -74,49 +74,84 @@ class DeepLinkService {
   /// Handle incoming deep link URI
   void _handleDeepLink(Uri uri) {
     AppLogger.info('🔔 Received deep link: $uri');
-    AppLogger.info(
-        '   Scheme: ${uri.scheme}, Host: ${uri.host}, Path: ${uri.path}');
-    AppLogger.info('   Query params: ${uri.queryParameters}');
 
-    // Check if this is an auth callback
-    if (uri.scheme == 'wasly' && uri.host == 'auth') {
-      AppLogger.info('✅ Auth callback detected');
-      if (uri.path == '/callback') {
-        // Fix HTML encoding in query parameters (&amp; -> &)
-        final String fixedQuery = uri.query.replaceAll('&amp;', '&');
-        final fixedUri =
-            Uri.parse('${uri.scheme}://${uri.host}${uri.path}?$fixedQuery');
-        final callbackData = _parseAuthCallback(fixedUri);
+    final String? internalRoute = getRouteForDeepLink(uri);
+    if (internalRoute != null) {
+      AppLogger.info(
+          '✅ Valid deep link detected, internal route: $internalRoute');
+
+      // Parse data for any listeners (like GoogleLoginBloc)
+      final callbackData = _parseAuthCallback(uri);
+      if (callbackData != null) {
         _callbackController.add(callbackData);
       }
     } else {
-      AppLogger.info('⚠️ Deep link does not match auth callback pattern');
+      AppLogger.info('⚠️ Deep link does not match any handled pattern');
     }
+  }
+
+  /// Transforms a raw deep link into an internal app route.
+  /// Used by GoRouter's redirect logic.
+  String? getRouteForDeepLink(Uri uri) {
+    // Check for auth callback (wasly://auth/callback or https://wasly.bynona.store/auth/callback)
+    if ((uri.scheme == 'wasly' &&
+            uri.host == 'auth' &&
+            uri.path == '/callback') ||
+        (uri.host == 'wasly.bynona.store' && uri.path == '/auth/callback')) {
+      // Fix potential encoding issues in query parameters
+      final queryParams = _getFixedQueryParams(uri);
+
+      // Build internal route with query parameters
+      final internalUri = Uri(
+        path: '/auth/callback', // AppRoutes.authCallback
+        queryParameters: queryParams.isNotEmpty ? queryParams : null,
+      );
+
+      return internalUri.toString();
+    }
+
+    return null;
+  }
+
+  /// Extracts and fixes query parameters from a URI
+  Map<String, String> _getFixedQueryParams(Uri uri) {
+    // Fix HTML encoding in query parameters (&amp; -> &) if present in raw query
+    final String fixedQuery = uri.query.replaceAll('&amp;', '&');
+    final tempUri = Uri.parse('http://temp.com/?$fixedQuery');
+    final rawParams = tempUri.queryParameters;
+
+    final params = <String, String>{};
+
+    // Normalize parameter names (backend sends 'user_id', we might want 'id')
+    if (rawParams['token'] != null) params['token'] = rawParams['token']!;
+    if (rawParams['user_id'] != null) params['id'] = rawParams['user_id']!;
+    if (rawParams['id'] != null) params['id'] = rawParams['id']!;
+    if (rawParams['full_name'] != null) {
+      params['full_name'] = rawParams['full_name']!;
+    }
+    if (rawParams['email'] != null) params['email'] = rawParams['email']!;
+    if (rawParams['avatar'] != null) params['avatar'] = rawParams['avatar']!;
+    if (rawParams['status'] != null) params['status'] = rawParams['status']!;
+
+    return params;
   }
 
   /// Parse auth callback URI into GoogleLoginCallbackData
   GoogleLoginCallbackData? _parseAuthCallback(Uri uri) {
     try {
-      final queryParams = uri.queryParameters;
+      final queryParams = _getFixedQueryParams(uri);
 
       final token = queryParams['token'];
-      // Backend sends 'user_id' but we need 'id' internally
-      final id = queryParams['user_id'] ?? queryParams['id'];
+      final id = queryParams['id'];
       final fullName = queryParams['full_name'];
       final email = queryParams['email'];
       final avatar = queryParams['avatar'];
       final status = queryParams['status'] ?? 'unknown';
 
-      AppLogger.info(
-          '🔍 Parsing auth callback - token: $token, id: $id, email: $email');
-
       if (token == null || id == null || fullName == null || email == null) {
-        AppLogger.error(
-            '❌ Missing required parameters in auth callback: $queryParams');
         return null;
       }
 
-      AppLogger.info('✅ Auth callback parsed successfully');
       return GoogleLoginCallbackData(
         token: token,
         id: id,

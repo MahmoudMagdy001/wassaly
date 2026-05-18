@@ -1,4 +1,14 @@
 import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
+import 'package:wassaly/features/cart/data/datasources/cart_local_datasource.dart';
+import 'package:wassaly/features/cart/presentation/bloc/cart_bloc.dart';
+import 'package:wassaly/features/cart/presentation/bloc/cart_event.dart';
+import 'package:wassaly/features/favorite/data/datasources/favorite_local_datasource.dart';
+import 'package:wassaly/features/favorite/presentation/bloc/favorite_bloc.dart';
+import 'package:wassaly/features/favorite/presentation/bloc/favorite_event.dart';
+import 'package:wassaly/features/orders/presentation/bloc/orders_bloc.dart';
+import 'package:wassaly/features/orders/presentation/bloc/orders_event.dart';
+import 'package:wassaly/features/profile/presentation/bloc/profile/profile_bloc.dart';
 import 'package:wassaly/features/profile/presentation/bloc/settings/settings_bloc.dart';
 
 /// A wrapper that listens to SettingsBloc and applies theme/language changes globally.
@@ -16,11 +26,24 @@ class SettingsListenerWrapper extends StatelessWidget {
     return BlocListener<SettingsBloc, SettingsState>(
       listenWhen: (prev, curr) => prev.language != curr.language,
       listener: (context, state) {
-        // Apply language change using EasyLocalization
-        final newLocale = Locale(state.language);
-        if (context.locale != newLocale) {
-          context.setLocale(newLocale);
+        // Clear local caches and reload language-dependent data if authenticated
+        final sessionState = sl<SessionBloc>().state;
+        if (sessionState is SessionAuthenticated) {
+          // Clear local cache which stores old translations
+          sl<CartLocalDataSource>().clearCartLocally();
+          sl<FavoriteLocalDataSource>().clearFavoritesLocally();
+
+          // Dispatch reload events to fetch data in the new language from the API
+          sl<CartBloc>().add(const LoadCartItemsEvent());
+          sl<FavoriteBloc>().add(const GetFavoritesEvent());
+          sl<FavoriteBloc>().add(const GetServiceFavoritesEvent());
+          sl<OrdersBloc>().add(const GetOrdersEvent());
+          sl<OrdersBloc>().add(const GetServiceBookingsEvent());
+          sl<ProfileBloc>().add(const ProfileFetched());
+          sl<ProfileBloc>().add(const AddressesFetched());
+          sl<ProfileBloc>().add(const GovernoratesFetched());
         }
+
         // Navigate to splash to re-initialize the entire app with new language
         WidgetsBinding.instance.addPostFrameCallback((_) {
           appRouter.go(AppRoutes.splash);

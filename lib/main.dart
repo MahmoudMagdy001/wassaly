@@ -1,15 +1,10 @@
-import 'dart:async';
-
 import 'app.dart';
 import 'core/imports/imports.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-  ]);
-
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -19,18 +14,8 @@ Future<void> main() async {
     ),
   );
 
-  await EasyLocalization.ensureInitialized();
-  await dotenv.load(fileName: '.env');
-  await initDependencies();
-  await StorageService.instance.init();
-
-  await DeepLinkService.instance.initialize();
-
-  runApp(
-    const LocalizationWrapper(
-      child: StateWrapper(
-        child: App(),
-      ),
-    ),
-  );
+  initDependencies();
+  runApp(const StateWrapper(
+    child: App(),
+  ));
 }

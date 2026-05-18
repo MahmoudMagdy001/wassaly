@@ -1,8 +1,4 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../core/injection/injection.dart';
-import '../../data/models/cart_item_model.dart';
-import '../../data/repositories/cart_repository_impl.dart';
+import 'package:wassaly/core/imports/imports.dart';
 import '../../domain/entities/cart_item_entity.dart';
 import '../../domain/repositories/cart_repository.dart';
 import '../../domain/usecases/add_to_cart_usecase.dart';
@@ -30,20 +26,32 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<UpdateQuantityEvent>(_onUpdateQuantity);
     on<CheckIfInCartEvent>(_onCheckIfInCart);
     on<GetCartCountEvent>(_onGetCartCount);
+    on<ClearCartEvent>(_onClearCart);
+  }
+
+  void _onClearCart(
+    ClearCartEvent event,
+    Emitter<CartState> emit,
+  ) {
+    emit(const CartState());
   }
 
   Future<void> _onLoadCartItems(
     LoadCartItemsEvent event,
     Emitter<CartState> emit,
   ) async {
-    emit(state.copyWith(status: CartStatus.loading, errorMessage: null));
+    // Skip the loading indicator for background syncs (after add/remove/update)
+    // so the UI doesn't flash a loading screen when the cart is already rendered.
+    if (!event.silent) {
+      emit(state.copyWith(status: CartStatus.loading, failure: null));
+    }
 
     final result = await getCartItemsUseCase();
 
     result.fold(
       (failure) => emit(state.copyWith(
         status: CartStatus.error,
-        errorMessage: failure.message,
+        failure: failure,
       )),
       (items) {
         // Save cart items locally for offline access
@@ -65,7 +73,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   ) async {
     emit(state.copyWith(
       addingProductIds: {...state.addingProductIds, event.productId},
-      errorMessage: null,
+      failure: null,
     ));
 
     final result = await addToCartUseCase(event.productId, event.quantity);
@@ -73,7 +81,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     result.fold(
       (failure) => emit(state.copyWith(
         addingProductIds: state.addingProductIds..remove(event.productId),
-        errorMessage: failure.message,
+        failure: failure,
       )),
       (_) {
         final updatedIds = {...state.inCartProductIds, event.productId};
@@ -82,6 +90,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
           addingProductIds: state.addingProductIds..remove(event.productId),
           cartCount: state.cartCount + 1,
         ));
+        // Silent reload to sync with backend without flashing loading UI
+        add(const LoadCartItemsEvent(silent: true));
       },
     );
   }
@@ -90,26 +100,50 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     RemoveFromCartEvent event,
     Emitter<CartState> emit,
   ) async {
+    // Optimistic UI Update: Remove item immediately
+    final previousItems = List<CartItemEntity>.from(state.items);
+    final previousIds = Set<int>.from(state.inCartProductIds);
+    final previousCount = state.cartCount;
+
+    // Find product ID to remove from set
+    int? productIdToRemove;
+    try {
+      productIdToRemove = state.items
+          .firstWhere((item) => item.id == event.cartItemId)
+          .productId;
+    } catch (_) {}
+
+    final updatedItems = List<CartItemEntity>.from(state.items)
+      ..removeWhere((item) => item.id == event.cartItemId);
+    final updatedIds = Set<int>.from(state.inCartProductIds);
+    if (productIdToRemove != null) {
+      updatedIds.remove(productIdToRemove);
+    }
+
     emit(state.copyWith(
+      items: updatedItems,
+      inCartProductIds: updatedIds,
+      cartCount: state.cartCount > 0 ? state.cartCount - 1 : 0,
       addingProductIds: {...state.addingProductIds, event.cartItemId},
-      errorMessage: null,
+      failure: null,
     ));
 
     final result = await removeFromCartUseCase(event.cartItemId);
 
     result.fold(
       (failure) => emit(state.copyWith(
+        items: previousItems, // Rollback
+        inCartProductIds: previousIds, // Rollback
+        cartCount: previousCount, // Rollback
         addingProductIds: state.addingProductIds..remove(event.cartItemId),
-        errorMessage: failure.message,
+        failure: failure,
       )),
       (_) {
-        final updatedIds = Set<int>.from(state.inCartProductIds)
-          ..remove(event.cartItemId);
         emit(state.copyWith(
-          inCartProductIds: updatedIds,
           addingProductIds: state.addingProductIds..remove(event.cartItemId),
-          cartCount: state.cartCount > 0 ? state.cartCount - 1 : 0,
         ));
+        // Silent reload to sync with backend without flashing loading UI
+        add(const LoadCartItemsEvent(silent: true));
       },
     );
   }
@@ -118,25 +152,54 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     UpdateQuantityEvent event,
     Emitter<CartState> emit,
   ) async {
-    emit(state.copyWith(
-      addingProductIds: {...state.addingProductIds, event.cartItemId},
-      errorMessage: null,
-    ));
+    // Optimistic UI Update: Update item immediately
+    final previousItems = List<CartItemEntity>.from(state.items);
+
+    final itemIndex =
+        state.items.indexWhere((item) => item.id == event.cartItemId);
+
+    if (itemIndex != -1) {
+      final item = state.items[itemIndex];
+      final newQuantity = event.quantity;
+      final itemUnitPrice =
+          item.quantity > 0 ? item.totalPrice / item.quantity : item.totalPrice;
+      final newTotalPrice = itemUnitPrice * newQuantity;
+
+      final updatedItem = item.copyWith(
+        quantity: newQuantity,
+        totalPrice: newTotalPrice,
+      );
+
+      final updatedItems = List<CartItemEntity>.from(state.items);
+      updatedItems[itemIndex] = updatedItem;
+
+      emit(state.copyWith(
+        items: updatedItems,
+        addingProductIds: {...state.addingProductIds, event.cartItemId},
+        failure: null,
+      ));
+    } else {
+      emit(state.copyWith(
+        addingProductIds: {...state.addingProductIds, event.cartItemId},
+        failure: null,
+      ));
+    }
 
     final result =
         await updateQuantityUseCase(event.cartItemId, event.quantity);
 
     result.fold(
       (failure) => emit(state.copyWith(
+        items: previousItems, // Rollback
         addingProductIds: state.addingProductIds..remove(event.cartItemId),
-        errorMessage: failure.message,
+        failure: failure,
       )),
       (_) {
         emit(state.copyWith(
           addingProductIds: state.addingProductIds..remove(event.cartItemId),
         ));
-        // Reload cart items to get updated quantities
-        add(const LoadCartItemsEvent());
+        // Silent reload to sync with backend without flashing loading UI
+        add(const LoadCartItemsEvent(silent: true));
       },
     );
   }
@@ -167,29 +230,10 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   // Helper method to save cart items locally
   Future<void> _saveCartItemsLocally(List<CartItemEntity> items) async {
     try {
-      // Convert entities to models and save via repository
       final cartRepository = sl<CartRepository>();
-      if (cartRepository is CartRepositoryImpl) {
-        // Access the datasource directly to save locally
-        final dataSource = (cartRepository).remoteDataSource;
-        final itemsModels = items
-            .map((entity) => CartItemModel(
-                  id: entity.id,
-                  productId: entity.productId,
-                  productName: entity.productName,
-                  productImage: entity.productImage,
-                  price: entity.price,
-                  quantity: entity.quantity,
-                  unitPrice: entity.unitPrice,
-                  totalPrice: entity.totalPrice,
-                ))
-            .toList();
-
-        await dataSource.saveCartItemsLocally(itemsModels);
-      }
+      await cartRepository.saveCartItemsLocally(items);
     } catch (e) {
       // Silently fail - local storage is optional
-      print('Failed to save cart items locally: $e');
     }
   }
 }

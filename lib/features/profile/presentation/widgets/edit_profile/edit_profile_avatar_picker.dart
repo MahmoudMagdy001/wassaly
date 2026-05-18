@@ -52,7 +52,7 @@ class _EditProfileAvatarPickerState extends State<EditProfileAvatarPicker> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  'profile.choose_image_source'.tr(),
+                  context.l10n.profile_choose_image_source,
                   style: tt.titleMedium?.copyWith(
                     color: cs.onSurface,
                     fontWeight: FontWeight.bold,
@@ -63,7 +63,7 @@ class _EditProfileAvatarPickerState extends State<EditProfileAvatarPicker> {
                 ListTile(
                   leading: Icon(Icons.camera_alt, color: cs.primary),
                   title: Text(
-                    'profile.camera'.tr(),
+                    context.l10n.profile_camera,
                     style: tt.bodyLarge?.copyWith(color: cs.onSurface),
                   ),
                   onTap: () {
@@ -75,7 +75,7 @@ class _EditProfileAvatarPickerState extends State<EditProfileAvatarPicker> {
                 ListTile(
                   leading: Icon(Icons.photo_library, color: cs.primary),
                   title: Text(
-                    'profile.gallery'.tr(),
+                    context.l10n.profile_gallery,
                     style: tt.bodyLarge?.copyWith(color: cs.onSurface),
                   ),
                   onTap: () {
@@ -109,13 +109,12 @@ class _EditProfileAvatarPickerState extends State<EditProfileAvatarPicker> {
             child: ClipOval(
               child: widget.avatarFile != null
                   ? Image.file(widget.avatarFile!, fit: BoxFit.cover)
-                  : BlocBuilder<ProfileBloc, ProfileState>(
-                      buildWhen: (prev, curr) => prev.user != curr.user,
-                      builder: (context, state) {
-                        final user = state.user;
-                        if (user?.avatarUrl != null) {
+                  : BlocSelector<ProfileBloc, ProfileState, String?>(
+                      selector: (state) => state.user?.avatarUrl,
+                      builder: (context, avatarUrl) {
+                        if (avatarUrl != null) {
                           return CommonImage(
-                            imageUrl: user!.avatarUrl!,
+                            imageUrl: avatarUrl,
                             width: 120,
                             height: 120,
                             memCacheHeight: 120 * 3,

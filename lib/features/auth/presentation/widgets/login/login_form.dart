@@ -40,7 +40,7 @@ class LoginForm extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'auth.email_or_phone'.tr(),
+              context.l10n.auth_email_or_phone,
               textAlign: TextAlign.start,
               style: tt.bodyMedium?.copyWith(
                 color: cs.primary,
@@ -53,10 +53,10 @@ class LoginForm extends StatelessWidget {
               onChanged: onEmailChanged,
               validator: (value) {
                 if (value.isNullOrEmpty) {
-                  return 'auth.email_required'.tr();
+                  return context.l10n.auth_email_required;
                 }
                 if (!value!.isValidEmail && !value.isValidPhoneNumber) {
-                  return 'auth.email_invalid'.tr();
+                  return context.l10n.auth_email_invalid;
                 }
                 return null;
               },
@@ -70,23 +70,22 @@ class LoginForm extends StatelessWidget {
               onToggleVisibility: onTogglePasswordVisibility,
               validator: (value) {
                 if (value.isNullOrEmpty) {
-                  return 'auth.password_required'.tr();
+                  return context.l10n.auth_password_required;
                 }
                 if (value!.length < 6) {
-                  return 'auth.password_too_short'.tr();
+                  return context.l10n.auth_password_too_short;
                 }
                 return null;
               },
             ),
             24.verticalSpace,
-            BlocBuilder<LoginBloc, LoginState>(
-              buildWhen: (previous, current) =>
-                  previous.isLoading != current.isLoading,
-              builder: (context, state) {
+            BlocSelector<LoginBloc, LoginState, bool>(
+              selector: (state) => state.isLoading,
+              builder: (context, isLoading) {
                 return AppButton(
-                  label: 'auth.login_button'.tr(),
-                  onPressed: state.isLoading ? null : onLogin,
-                  isLoading: state.isLoading,
+                  label: context.l10n.auth_login_button,
+                  onPressed: isLoading ? null : onLogin,
+                  isLoading: isLoading,
                   variant: ButtonVariant.success,
                   isFullWidth: true,
                   height: ButtonSize.medium,

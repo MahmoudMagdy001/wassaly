@@ -1,4 +1,4 @@
-import '../../../../../core/imports/imports.dart';
+import 'package:wassaly/core/imports/imports.dart';
 
 class EditProfilePasswordSection extends StatefulWidget {
   final TextEditingController currentPasswordController;
@@ -25,9 +25,17 @@ class EditProfilePasswordSection extends StatefulWidget {
 
 class _EditProfilePasswordSectionState
     extends State<EditProfilePasswordSection> {
-  bool _obscureCurrentPassword = true;
-  bool _obscurePassword = true;
-  bool _obscureConfirmPassword = true;
+  final ValueNotifier<bool> _obscureCurrentPassword = ValueNotifier(true);
+  final ValueNotifier<bool> _obscurePassword = ValueNotifier(true);
+  final ValueNotifier<bool> _obscureConfirmPassword = ValueNotifier(true);
+
+  @override
+  void dispose() {
+    _obscureCurrentPassword.dispose();
+    _obscurePassword.dispose();
+    _obscureConfirmPassword.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,65 +45,77 @@ class _EditProfilePasswordSectionState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'profile.change_password'.tr(),
+          context.l10n.profile_change_password,
           style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600),
         ),
         16.verticalSpace,
-        AppTextField(
-          label: 'profile.current_password'.tr(),
-          controller: widget.currentPasswordController,
-          focusNode: widget.currentPasswordFocusNode,
-          obscureText: _obscureCurrentPassword,
-          prefixIcon: const Icon(Icons.lock_outline),
-          suffixIcon: IconButton(
-            onPressed: () => setState(
-                () => _obscureCurrentPassword = !_obscureCurrentPassword),
-            icon: Icon(
-              _obscureCurrentPassword
-                  ? Icons.visibility_off_outlined
-                  : Icons.visibility_outlined,
-            ),
-          ),
+        ValueListenableBuilder<bool>(
+          valueListenable: _obscureCurrentPassword,
+          builder: (context, obscure, child) {
+            return AppTextField(
+              label: context.l10n.profile_current_password,
+              controller: widget.currentPasswordController,
+              focusNode: widget.currentPasswordFocusNode,
+              obscureText: obscure,
+              prefixIcon: const Icon(Icons.lock_outline),
+              suffixIcon: IconButton(
+                onPressed: () => _obscureCurrentPassword.value = !obscure,
+                icon: Icon(
+                  obscure
+                      ? Icons.visibility_off_outlined
+                      : Icons.visibility_outlined,
+                ),
+              ),
+            );
+          },
         ),
         16.verticalSpace,
-        AppTextField(
-          label: 'auth.password'.tr(),
-          controller: widget.passwordController,
-          focusNode: widget.passwordFocusNode,
-          obscureText: _obscurePassword,
-          prefixIcon: const Icon(Icons.lock_outline),
-          suffixIcon: IconButton(
-            onPressed: () =>
-                setState(() => _obscurePassword = !_obscurePassword),
-            icon: Icon(
-              _obscurePassword
-                  ? Icons.visibility_off_outlined
-                  : Icons.visibility_outlined,
-            ),
-          ),
+        ValueListenableBuilder<bool>(
+          valueListenable: _obscurePassword,
+          builder: (context, obscure, child) {
+            return AppTextField(
+              label: context.l10n.auth_password,
+              controller: widget.passwordController,
+              focusNode: widget.passwordFocusNode,
+              obscureText: obscure,
+              prefixIcon: const Icon(Icons.lock_outline),
+              suffixIcon: IconButton(
+                onPressed: () => _obscurePassword.value = !obscure,
+                icon: Icon(
+                  obscure
+                      ? Icons.visibility_off_outlined
+                      : Icons.visibility_outlined,
+                ),
+              ),
+            );
+          },
         ),
         16.verticalSpace,
-        AppTextField(
-          label: 'auth.confirm_password'.tr(),
-          controller: widget.passwordConfirmationController,
-          focusNode: widget.passwordConfirmationFocusNode,
-          obscureText: _obscureConfirmPassword,
-          prefixIcon: const Icon(Icons.lock_outline),
-          suffixIcon: IconButton(
-            onPressed: () => setState(
-                () => _obscureConfirmPassword = !_obscureConfirmPassword),
-            icon: Icon(
-              _obscureConfirmPassword
-                  ? Icons.visibility_off_outlined
-                  : Icons.visibility_outlined,
-            ),
-          ),
-          validator: (v) {
-            final password = widget.passwordController.text;
-            if (password.isNotEmpty && v != password) {
-              return 'auth.passwords_do_not_match'.tr();
-            }
-            return null;
+        ValueListenableBuilder<bool>(
+          valueListenable: _obscureConfirmPassword,
+          builder: (context, obscure, child) {
+            return AppTextField(
+              label: context.l10n.auth_confirm_password,
+              controller: widget.passwordConfirmationController,
+              focusNode: widget.passwordConfirmationFocusNode,
+              obscureText: obscure,
+              prefixIcon: const Icon(Icons.lock_outline),
+              suffixIcon: IconButton(
+                onPressed: () => _obscureConfirmPassword.value = !obscure,
+                icon: Icon(
+                  obscure
+                      ? Icons.visibility_off_outlined
+                      : Icons.visibility_outlined,
+                ),
+              ),
+              validator: (v) {
+                final password = widget.passwordController.text;
+                if (password.isNotEmpty && v != password) {
+                  return context.l10n.auth_passwords_do_not_match;
+                }
+                return null;
+              },
+            );
           },
         ),
       ],

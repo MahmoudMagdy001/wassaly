@@ -48,22 +48,32 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
     }
   }
 
-  String? _validateNewPassword(String? value, ResetPasswordState state) {
+  String? _validateNewPassword(String? value) {
     if (value == null || value.isEmpty) {
-      return 'auth.password_required'.tr();
+      return context.l10n.auth_password_required;
     }
+    final state = context.read<ResetPasswordBloc>().state;
     if (value.length < 8) {
-      return state.newPasswordError?.tr();
+      final errorMsg = state.newPasswordError;
+      if (errorMsg == 'auth.password_too_short') {
+        return context.l10n.auth_password_too_short;
+      }
+      return errorMsg;
     }
     return null;
   }
 
-  String? _validateConfirmPassword(String? value, ResetPasswordState state) {
+  String? _validateConfirmPassword(String? value) {
     if (value == null || value.isEmpty) {
-      return 'auth.confirm_password_required'.tr();
+      return context.l10n.auth_confirm_password_required;
     }
+    final state = context.read<ResetPasswordBloc>().state;
     if (value != state.password) {
-      return state.confirmPasswordError?.tr();
+      final errorMsg = state.confirmPasswordError;
+      if (errorMsg == 'auth.passwords_do_not_match') {
+        return context.l10n.auth_passwords_do_not_match;
+      }
+      return errorMsg;
     }
     return null;
   }
@@ -72,39 +82,33 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
   Widget build(BuildContext context) {
     final cs = context.theme.colorScheme;
 
-    return BlocBuilder<ResetPasswordBloc, ResetPasswordState>(
-      buildWhen: (previous, current) =>
-          previous.password != current.password ||
-          previous.passwordConfirmation != current.passwordConfirmation ||
-          previous.isNewPasswordVisible != current.isNewPasswordVisible ||
-          previous.isConfirmPasswordVisible !=
-              current.isConfirmPasswordVisible ||
-          previous.status != current.status,
-      builder: (context, state) {
-        return Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // New Password Field
-              Text(
-                'auth.password'.tr(),
-                style: context.theme.textTheme.labelLarge?.copyWith(
-                  fontWeight: FontWeight.w500,
-                  color: cs.onSurface,
-                ),
-              ),
-              8.verticalSpace,
-              AppTextField(
-                hint: 'reset_password.new_password_hint'.tr(),
-                obscureText: !state.isNewPasswordVisible,
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // New Password Field
+          Text(
+            context.l10n.auth_password,
+            style: context.theme.textTheme.labelLarge?.copyWith(
+              fontWeight: FontWeight.w500,
+              color: cs.onSurface,
+            ),
+          ),
+          8.verticalSpace,
+          BlocSelector<ResetPasswordBloc, ResetPasswordState, bool>(
+            selector: (state) => state.isNewPasswordVisible,
+            builder: (context, isNewPasswordVisible) {
+              return AppTextField(
+                hint: context.l10n.reset_password_new_password_hint,
+                obscureText: !isNewPasswordVisible,
                 onChanged: _onNewPasswordChanged,
                 onFieldSubmitted: (_) =>
                     _confirmPasswordFocusNode.requestFocus(),
                 focusNode: _newPasswordFocusNode,
                 textInputAction: TextInputAction.next,
                 keyboardType: TextInputType.visiblePassword,
-                validator: (value) => _validateNewPassword(value, state),
+                validator: _validateNewPassword,
                 prefixIcon: Icon(
                   Icons.lock_outline,
                   color: cs.onSurfaceVariant,
@@ -115,51 +119,63 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 200),
                     child: Icon(
-                      state.isNewPasswordVisible
+                      isNewPasswordVisible
                           ? Icons.visibility_outlined
                           : Icons.visibility_off_outlined,
-                      key: ValueKey<bool>(state.isNewPasswordVisible),
+                      key: ValueKey<bool>(isNewPasswordVisible),
                       color: cs.onSurfaceVariant,
                       size: 20.w,
                     ),
                   ),
                 ),
-              ),
+              );
+            },
+          ),
 
-              // Password Strength Indicator
-              AnimatedSize(
+          // Password Strength Indicator
+          BlocSelector<ResetPasswordBloc, ResetPasswordState, (String, int)>(
+            selector: (state) => (state.password, state.passwordStrength),
+            builder: (context, data) {
+              final (password, strength) = data;
+
+              return AnimatedSize(
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeInOut,
-                child: state.password.isNotEmpty
+                child: password.isNotEmpty
                     ? Padding(
                         padding: EdgeInsets.only(top: 12.h),
                         child: PasswordStrengthIndicator(
-                          strength: state.passwordStrength,
+                          strength: strength,
                         ),
                       )
                     : const SizedBox.shrink(),
-              ),
+              );
+            },
+          ),
 
-              24.verticalSpace,
+          24.verticalSpace,
 
-              // Confirm Password Field
-              Text(
-                'auth.confirm_password'.tr(),
-                style: context.theme.textTheme.labelLarge?.copyWith(
-                  fontWeight: FontWeight.w500,
-                  color: cs.onSurface,
-                ),
-              ),
-              8.verticalSpace,
-              AppTextField(
-                hint: 'reset_password.confirm_password_hint'.tr(),
-                obscureText: !state.isConfirmPasswordVisible,
+          // Confirm Password Field
+          Text(
+            context.l10n.auth_confirm_password,
+            style: context.theme.textTheme.labelLarge?.copyWith(
+              fontWeight: FontWeight.w500,
+              color: cs.onSurface,
+            ),
+          ),
+          8.verticalSpace,
+          BlocSelector<ResetPasswordBloc, ResetPasswordState, bool>(
+            selector: (state) => state.isConfirmPasswordVisible,
+            builder: (context, isConfirmPasswordVisible) {
+              return AppTextField(
+                hint: context.l10n.reset_password_confirm_password_hint,
+                obscureText: !isConfirmPasswordVisible,
                 onChanged: _onConfirmPasswordChanged,
                 onFieldSubmitted: (_) => _onSubmit(),
                 focusNode: _confirmPasswordFocusNode,
                 textInputAction: TextInputAction.done,
                 keyboardType: TextInputType.visiblePassword,
-                validator: (value) => _validateConfirmPassword(value, state),
+                validator: _validateConfirmPassword,
                 prefixIcon: Icon(
                   Icons.lock_outline,
                   color: cs.onSurfaceVariant,
@@ -170,39 +186,48 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 200),
                     child: Icon(
-                      state.isConfirmPasswordVisible
+                      isConfirmPasswordVisible
                           ? Icons.visibility_outlined
                           : Icons.visibility_off_outlined,
-                      key: ValueKey<bool>(state.isConfirmPasswordVisible),
+                      key: ValueKey<bool>(isConfirmPasswordVisible),
                       color: cs.onSurfaceVariant,
                       size: 20.w,
                     ),
                   ),
                 ),
-              ),
+              );
+            },
+          ),
 
-              32.verticalSpace,
+          32.verticalSpace,
 
-              // Submit Button
-              AppButton(
-                label: 'reset_password.reset_button'.tr(),
-                onPressed: state.canSubmit ? _onSubmit : null,
-                isLoading: state.status == ResetPasswordStatus.loading,
+          // Submit Button
+          BlocSelector<ResetPasswordBloc, ResetPasswordState,
+              (bool, ResetPasswordStatus)>(
+            selector: (state) => (state.canSubmit, state.status),
+            builder: (context, data) {
+              final (canSubmit, status) = data;
+              final isLoading = status == ResetPasswordStatus.loading;
+
+              return AppButton(
+                label: context.l10n.reset_password_reset_button,
+                onPressed: canSubmit ? _onSubmit : null,
+                isLoading: isLoading,
                 isFullWidth: true,
                 height: ButtonSize.medium,
                 variant: ButtonVariant.success,
-                suffixIcon: state.status != ResetPasswordStatus.loading
+                suffixIcon: !isLoading
                     ? Icon(
                         Icons.lock_reset_outlined,
                         color: cs.onPrimary,
                         size: 24.w,
                       )
                     : null,
-              ),
-            ],
+              );
+            },
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 }

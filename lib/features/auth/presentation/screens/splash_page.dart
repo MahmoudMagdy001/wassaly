@@ -87,23 +87,18 @@ class _SplashViewState extends State<_SplashView>
   /// Initialize heavy services in parallel with splash animation
   Future<void> _initializeServices() async {
     try {
-      await Future.wait([
-        StorageService.instance.init(),
-        AppConfig.init(),
-      ]);
+      // الحاجات اللي كانت في AppBootstrap / main
+      await dotenv.load(fileName: '.env');
+      await StorageService.instance.init();
+      await AppConfig.init();
+      await DeepLinkService.instance.initialize();
     } catch (e) {
-      // Log error but don't block navigation - services will handle failures gracefully
+      AppLogger.error('Splash init error: $e');
     } finally {
       if (mounted && !_initCompleter.isCompleted) {
         _initCompleter.complete();
       }
     }
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    context.read<SessionBloc>().add(const SessionCheckRequested());
   }
 
   Future<void> _startAnimation() async {
@@ -121,7 +116,7 @@ class _SplashViewState extends State<_SplashView>
     ]);
 
     if (mounted) {
-      _handleNavigation(context.read<SessionBloc>().state);
+      context.read<SessionBloc>().add(const SessionCheckRequested());
     }
   }
 
@@ -171,10 +166,12 @@ class _SplashViewState extends State<_SplashView>
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(16.r),
-            child: const CommonImage(
-              imageUrl: 'assets/images/logo.png',
-              memCacheHeight: logoSize * 2,
-              memCacheWidth: logoSize * 2,
+            child: Image.asset(
+              'assets/images/logo.png',
+              width: logoSize.w,
+              height: logoSize.h,
+              cacheHeight: logoSize * 2,
+              cacheWidth: logoSize * 2,
               fit: BoxFit.contain,
             ),
           ),
@@ -218,7 +215,7 @@ class _SplashViewState extends State<_SplashView>
                     child: Transform.translate(
                       offset: Offset(0, _contentSlide.value),
                       child: Text(
-                        'auth.splash_subtitle'.tr(),
+                        context.l10n.auth_splash_subtitle,
                         textAlign: TextAlign.center,
                         style: context.theme.textTheme.bodyMedium?.copyWith(
                           color:

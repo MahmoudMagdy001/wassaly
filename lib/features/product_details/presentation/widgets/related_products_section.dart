@@ -28,7 +28,7 @@ class RelatedProductsSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'product_details.related_products'.tr(),
+          context.l10n.product_details_related_products,
           style: tt.titleLarge?.copyWith(
             fontWeight: FontWeight.bold,
             color: cs.primary,
@@ -46,7 +46,7 @@ class RelatedProductsSection extends StatelessWidget {
             height: 70.h,
             child: Center(
               child: Text(
-                'product_details.no_related_products'.tr(),
+                context.l10n.product_details_no_related_products,
                 style: tt.bodyMedium?.copyWith(
                   color: cs.onSurfaceVariant,
                 ),
@@ -56,14 +56,22 @@ class RelatedProductsSection extends StatelessWidget {
         else
           SizedBox(
             height: 245.h,
-            child: ListView.separated(
+            child: CustomScrollView(
               scrollDirection: Axis.horizontal,
-              itemCount: products.length,
-              separatorBuilder: (_, __) => 10.horizontalSpace,
-              itemBuilder: (context, index) => SizedBox(
-                width: 165.w,
-                child: ProductCard(product: products[index]),
-              ),
+              slivers: [
+                SliverList.builder(
+                  itemCount: products.length,
+                  itemBuilder: (context, index) => Padding(
+                    padding: EdgeInsetsDirectional.only(
+                      end: index == products.length - 1 ? 0 : 10.w,
+                    ),
+                    child: SizedBox(
+                      width: 165.w,
+                      child: ProductCard(product: products[index]),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
       ],

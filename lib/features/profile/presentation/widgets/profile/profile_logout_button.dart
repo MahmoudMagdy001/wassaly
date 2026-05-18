@@ -1,6 +1,5 @@
+import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
-
-import '../../../../../core/imports/imports.dart';
 
 class ProfileLogoutButton extends StatelessWidget {
   final VoidCallback onLogoutAllDevices;
@@ -12,7 +11,7 @@ class ProfileLogoutButton extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: AppButton(
-        label: 'profile.logout'.tr(),
+        label: context.l10n.profile_logout,
         variant: ButtonVariant.danger,
         isFullWidth: true,
         prefixIcon: Icon(Icons.logout,
@@ -62,7 +61,7 @@ class _LogoutChoiceDialog extends StatelessWidget {
             ),
             16.verticalSpace,
             Text(
-              'profile.logout_title'.tr(),
+              context.l10n.profile_logout_title,
               style: tt.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: cs.onSurface,
@@ -71,7 +70,7 @@ class _LogoutChoiceDialog extends StatelessWidget {
             ),
             8.verticalSpace,
             Text(
-              'profile.logout_choice_message'.tr(),
+              context.l10n.profile_logout_choice_message,
               style: tt.bodyMedium?.copyWith(
                 color: cs.onSurfaceVariant,
               ),
@@ -81,7 +80,7 @@ class _LogoutChoiceDialog extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: AppButton(
-                label: 'profile.logout_this_device'.tr(),
+                label: context.l10n.profile_logout_this_device,
                 variant: ButtonVariant.danger,
                 onPressed: () => Navigator.of(context).pop('this_device'),
               ),
@@ -90,7 +89,7 @@ class _LogoutChoiceDialog extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: AppButton(
-                label: 'profile.logout_all_devices'.tr(),
+                label: context.l10n.profile_logout_all_devices,
                 variant: ButtonVariant.danger,
                 onPressed: () => Navigator.of(context).pop('all_devices'),
               ),
@@ -99,7 +98,7 @@ class _LogoutChoiceDialog extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: AppButton(
-                label: 'shared.cancel'.tr(),
+                label: context.l10n.shared_cancel,
                 variant: ButtonVariant.secondary,
                 onPressed: () => Navigator.of(context).pop(),
               ),

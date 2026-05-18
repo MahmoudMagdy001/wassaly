@@ -23,15 +23,11 @@ class SignupPasswordField extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = context.theme.colorScheme;
 
-    return BlocBuilder<SignupBloc, SignupState>(
-      buildWhen: (previous, current) => isConfirmPassword
-          ? previous.isConfirmPasswordVisible !=
-              current.isConfirmPasswordVisible
-          : previous.isPasswordVisible != current.isPasswordVisible,
-      builder: (context, state) {
-        final isVisible = isConfirmPassword
-            ? state.isConfirmPasswordVisible
-            : state.isPasswordVisible;
+    return BlocSelector<SignupBloc, SignupState, bool>(
+      selector: (state) => isConfirmPassword
+          ? state.isConfirmPasswordVisible
+          : state.isPasswordVisible,
+      builder: (context, isVisible) {
         return ClipRRect(
           borderRadius: BorderRadius.circular(12.r),
           child: AppTextField(

@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_bloc.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_state.dart';
@@ -17,28 +18,23 @@ class App extends StatelessWidget {
 
   Widget _buildMaterialApp(
       BuildContext context, ThemeMode themeMode, String language) {
+    Intl.defaultLocale = language;
     return MaterialApp.router(
       key: ValueKey(language),
-      title: 'app.title'.tr(),
+      onGenerateTitle: (context) => context.l10n.app_title,
       debugShowCheckedModeBanner: false,
       theme: buildLightTheme(primaryColorHex: '#093773'),
       darkTheme: buildDarkTheme(primaryColorHex: '#093773'),
       themeMode: themeMode,
       routerConfig: appRouter,
-      localizationsDelegates: context.localizationDelegates,
-      supportedLocales: context.supportedLocales,
-      locale: context.locale,
+      localizationsDelegates: S.localizationsDelegates,
+      supportedLocales: S.supportedLocales,
+      locale: Locale(language),
       builder: (context, child) {
         return BlocListener<FavoriteBloc, FavoriteState>(
           listenWhen: (previous, current) =>
-              previous.errorMessage != current.errorMessage &&
-              current.errorMessage != null,
-          listener: (context, state) {
-            context.showTypedSnackBar(
-              state.errorMessage!,
-              type: SnackBarType.error,
-            );
-          },
+              previous.errorMessage != current.errorMessage,
+          listener: (context, state) {},
           child: SessionListenerWrapper(child: child!),
         );
       },

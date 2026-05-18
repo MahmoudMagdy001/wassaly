@@ -15,61 +15,96 @@ class ProductSpecificationsGrid extends StatelessWidget {
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
 
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
+    final rowsCount = (specifications.length / 2).ceil();
+
+    return Padding(
       padding: EdgeInsets.symmetric(vertical: 16.h),
-      itemCount: specifications.length,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 2.6,
-        crossAxisSpacing: 8.w,
-        mainAxisSpacing: 8.h,
-      ),
-      itemBuilder: (context, index) {
-        final item = specifications[index];
-        return Container(
-          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
-          decoration: BoxDecoration(
-            color: cs.surfaceContainerHighest.withValues(alpha: 0.35),
-            borderRadius: BorderRadius.circular(12.r),
-          ),
-          child: Row(
-            children: [
-              if (item.icon.isNotEmpty)
-                CommonImage(
-                  imageUrl: item.icon,
-                  width: 25.w,
-                  memCacheWidth: 25 * 3,
-                  fit: BoxFit.cover,
-                ),
-              12.horizontalSpace,
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
+        children: List.generate(
+          rowsCount,
+          (rowIndex) {
+            final firstIndex = rowIndex * 2;
+            final secondIndex = firstIndex + 1;
+
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: rowIndex == rowsCount - 1 ? 0 : 8.h,
+              ),
+              child: Row(
                 children: [
-                  Text(
-                    item.key,
-                    style: tt.labelMedium?.copyWith(color: cs.onSurfaceVariant),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  // First item in the row
+                  Expanded(
+                    child:
+                        _buildItem(context, cs, tt, specifications[firstIndex]),
                   ),
-                  2.verticalSpace,
-                  Text(
-                    item.value,
-                    style: tt.titleSmall?.copyWith(
-                      color: cs.primary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  8.horizontalSpace,
+                  // Second item in the row (if exists)
+                  Expanded(
+                    child: secondIndex < specifications.length
+                        ? _buildItem(
+                            context, cs, tt, specifications[secondIndex])
+                        : const SizedBox.shrink(),
                   ),
                 ],
               ),
-            ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildItem(
+    BuildContext context,
+    ColorScheme cs,
+    TextTheme tt,
+    ProductSpecificationEntity item,
+  ) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+      decoration: BoxDecoration(
+        color: cs.surfaceContainerHighest.withValues(alpha: 0.35),
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: Row(
+        children: [
+          if (item.icon.isNotEmpty) ...[
+            CommonImage(
+              imageUrl: item.icon,
+              height: 25.h,
+              width: 25.w,
+              memCacheHeight: 25 * 3,
+              memCacheWidth: 25 * 3,
+              fit: BoxFit.contain,
+            ),
+            12.horizontalSpace,
+          ],
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.key,
+                  style: tt.labelMedium?.copyWith(color: cs.onSurfaceVariant),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                2.verticalSpace,
+                Text(
+                  item.value,
+                  style: tt.titleSmall?.copyWith(
+                    color: cs.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 }

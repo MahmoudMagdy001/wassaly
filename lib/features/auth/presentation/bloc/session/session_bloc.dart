@@ -1,5 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/auth/domain/entities/user_entity.dart';
+import 'package:wassaly/features/auth/domain/usecases/clear_user_session_usecase.dart';
 import 'package:wassaly/features/auth/domain/usecases/get_cached_user_usecase.dart';
 import 'package:wassaly/features/auth/domain/usecases/get_profile_usecase.dart';
 import 'package:wassaly/features/auth/domain/usecases/get_saved_token_usecase.dart';
@@ -15,6 +16,7 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
   final GetProfileUseCase _getProfileUseCase;
   final GetCachedUserUseCase _getCachedUserUseCase;
   final LogoutUseCase _logoutUseCase;
+  final ClearUserSessionUseCase _clearUserSessionUseCase;
 
   SessionBloc({
     required LoginUseCase loginUseCase,
@@ -22,11 +24,13 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
     required GetProfileUseCase getProfileUseCase,
     required GetCachedUserUseCase getCachedUserUseCase,
     required LogoutUseCase logoutUseCase,
+    required ClearUserSessionUseCase clearUserSessionUseCase,
   })  : _loginUseCase = loginUseCase,
         _getSavedTokenUseCase = getSavedTokenUseCase,
         _getProfileUseCase = getProfileUseCase,
         _getCachedUserUseCase = getCachedUserUseCase,
         _logoutUseCase = logoutUseCase,
+        _clearUserSessionUseCase = clearUserSessionUseCase,
         super(const SessionInitial()) {
     on<SessionLoginRequested>(_onSessionLoginRequested);
     on<SessionCheckRequested>(_onSessionCheckRequested);
@@ -82,8 +86,8 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
     if (user != null) {
       // Token is valid → navigate to Home
       emit(SessionAuthenticated(user));
-    } else if (failure is NetworkFailure) {
-      // No internet → use cached user and navigate to Home
+    } else if (failure is NetworkFailure || failure is NotFoundFailure) {
+      // No internet or API endpoint not found → use cached user and navigate to Home
       final cachedResult = await _getCachedUserUseCase();
       cachedResult.fold(
         (_) {
@@ -110,9 +114,7 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
     Emitter<SessionState> emit,
   ) async {
     emit(const SessionLoading());
-
-    await _logoutUseCase();
-
+    await _clearUserSessionUseCase();
     emit(const SessionUnauthenticated());
   }
 

@@ -79,7 +79,7 @@ class AppDropdown<T> extends StatelessWidget {
                   children: [
                     CupertinoButton(
                       child: Text(
-                        'done'.tr(),
+                        context.l10n.done,
                         style: tt.labelLarge?.copyWith(
                           color: cs.primary,
                           fontWeight: FontWeight.w600,
@@ -96,9 +96,10 @@ class AppDropdown<T> extends StatelessWidget {
                     useMagnifier: true,
                     itemExtent: 32,
                     scrollController: FixedExtentScrollController(
-                      initialItem: items.indexWhere(
-                        (item) => item.value == value,
-                      ),
+                      initialItem: () {
+                        final index = items.indexWhere((item) => item.value == value);
+                        return index >= 0 ? index : 0;
+                      }(),
                     ),
                     onSelectedItemChanged: (int index) {
                       if (onChanged != null) {
@@ -124,11 +125,13 @@ class AppDropdown<T> extends StatelessWidget {
     final radius = borderRadius ?? 12.r;
     final isIOS = context.isIOS;
 
+    final hasValue = value != null && items.any((item) => item.value == value);
+    final dropdownValue = hasValue ? value : null;
+
     if (isIOS) {
-      final selectedItem = items.firstWhere(
-        (item) => item.value == value,
-        orElse: () => items.first,
-      );
+      final selectedItem = hasValue
+          ? items.firstWhere((item) => item.value == value)
+          : (items.isNotEmpty ? items.first : null);
 
       return GestureDetector(
         onTap: enabled ? () => _showIOSPicker(context, cs, tt) : null,
@@ -163,7 +166,7 @@ class AppDropdown<T> extends StatelessWidget {
                           color: cs.onSurfaceVariant.withValues(alpha: 0.7),
                         ),
                       ),
-                    if (value != null)
+                    if (dropdownValue != null && selectedItem != null)
                       DefaultTextStyle(
                         style: tt.bodyLarge!.copyWith(
                           color: enabled
@@ -198,7 +201,7 @@ class AppDropdown<T> extends StatelessWidget {
 
     return DropdownButtonFormField<T>(
       focusNode: focusNode,
-      initialValue: value,
+      initialValue: dropdownValue,
       items: items,
       onChanged: enabled ? onChanged : null,
       validator: validator,

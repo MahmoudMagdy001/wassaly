@@ -9,10 +9,18 @@ class OfferModel {
     required this.discountPercentage,
   });
 
+  factory OfferModel.fromEntity(OfferEntity entity) {
+    return OfferModel(
+      id: entity.id,
+      discountPercentage: entity.discountPercentage,
+    );
+  }
+
   factory OfferModel.fromJson(Map<String, dynamic> json) {
     return OfferModel(
-      id: json['id'] as int,
-      discountPercentage: (json['discount_percentage'] as num?)?.toDouble() ?? 0.0,
+      id: json['id'] as int? ?? 0,
+      discountPercentage:
+          (json['discount_percentage'] as num?)?.toDouble() ?? 0.0,
     );
   }
 

@@ -1,6 +1,5 @@
+import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/profile/presentation/widgets/profile/profile_menu_tile.dart';
-
-import '../../../../../core/imports/imports.dart';
 
 class ProfileSupportSection extends StatelessWidget {
   const ProfileSupportSection({super.key});
@@ -18,7 +17,7 @@ class ProfileSupportSection extends StatelessWidget {
           Padding(
             padding: EdgeInsetsDirectional.only(start: 8.w, bottom: 8.h),
             child: Text(
-              'profile.support_and_privacy'.tr(),
+              context.l10n.profile_support_and_privacy,
               style: tt.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: cs.primary,
@@ -31,12 +30,12 @@ class ProfileSupportSection extends StatelessWidget {
               children: [
                 ProfileMenuTile(
                   icon: Icons.help_outline,
-                  title: 'profile.help_center'.tr(),
+                  title: context.l10n.profile_help_center,
                   onTap: () {},
                 ),
                 ProfileMenuTile(
                   icon: Icons.privacy_tip_outlined,
-                  title: 'profile.privacy_policy'.tr(),
+                  title: context.l10n.profile_privacy_policy,
                   onTap: () =>
                       GoRouter.of(context).push(AppRoutes.privacyPolicy),
                 ),

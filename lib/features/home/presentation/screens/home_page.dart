@@ -1,9 +1,9 @@
 import 'package:wassaly/core/imports/imports.dart';
-
-import '../bloc/home_bloc.dart';
-import '../bloc/home_event.dart';
-import '../bloc/home_state.dart';
-import '../widgets/widgets.dart';
+import 'package:wassaly/features/brands/presentation/widgets/brands_section.dart';
+import 'package:wassaly/features/home/presentation/bloc/home_bloc.dart';
+import 'package:wassaly/features/home/presentation/bloc/home_event.dart';
+import 'package:wassaly/features/home/presentation/bloc/home_state.dart';
+import 'package:wassaly/features/home/presentation/widgets/widgets.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -30,12 +30,17 @@ class _HomeView extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: cs.surface,
-      body: BlocBuilder<HomeBloc, HomeState>(
-        buildWhen: (previous, current) =>
-            previous.allSectionsFailed != current.allSectionsFailed ||
-            previous.anySectionLoading != current.anySectionLoading ||
-            previous.errorMessage != current.errorMessage,
-        builder: (context, state) {
+      body: BlocSelector<HomeBloc, HomeState, (bool, bool, Failure?, String)>(
+        selector: (state) => (
+          state.allSectionsFailed,
+          state.anySectionLoading,
+          state.failure,
+          state.errorMessage,
+        ),
+        builder: (context, data) {
+          final (allSectionsFailed, anySectionLoading, failure, errorMessage) =
+              data;
+
           return RefreshIndicator(
             onRefresh: () => _refreshAllSections(context),
             color: cs.primary,
@@ -43,21 +48,16 @@ class _HomeView extends StatelessWidget {
             child: CustomScrollView(
               slivers: [
                 // Sliver AppBar
-                SliverAppBar(
-                  floating: true,
-                  snap: true,
-                  backgroundColor: cs.surface,
-                  elevation: 0,
-                  centerTitle: true,
-                  title: Image.asset(
-                    'assets/images/logo.png',
-                    height: 60.h,
-                    cacheHeight: (60.h * 2).toInt(),
-                    filterQuality: FilterQuality.high,
-                  ),
+                AppSliverTopBar(
+                  automaticallyImplyLeading: false,
+                  showLogo: true,
                   actions: [
                     IconButton(
-                      icon: Icon(Icons.search, color: cs.primary),
+                      icon: Icon(
+                        Icons.search,
+                        color: cs.primary,
+                        size: 28.r,
+                      ),
                       onPressed: () {
                         context.push(AppRoutes.search);
                       },
@@ -66,18 +66,23 @@ class _HomeView extends StatelessWidget {
                 ),
 
                 // Show global error state when all sections failed
-                if (state.allSectionsFailed && !state.anySectionLoading) ...[
+                if (allSectionsFailed && !anySectionLoading) ...[
                   SliverPadding(
                     padding: EdgeInsets.only(top: 100.h),
                     sliver: SliverFillRemaining(
-                      child: AppErrorWidget(
-                        title: 'errors.no_internet'.tr(),
-                        message: state.errorMessage.isNotEmpty
-                            ? state.errorMessage
-                            : 'Please check your internet connection and try again.',
-                        onRetry: () => _refreshAllSections(context),
-                        icon: Icons.wifi_off_rounded,
-                      ),
+                      child: failure != null
+                          ? AppErrorWidget.failure(
+                              failure: failure,
+                              onRetry: () => _refreshAllSections(context),
+                            )
+                          : AppErrorWidget(
+                              title: context.l10n.errors_no_internet_title,
+                              message: errorMessage.isNotEmpty
+                                  ? errorMessage
+                                  : context.l10n.errors_no_internet_message,
+                              onRetry: () => _refreshAllSections(context),
+                              icon: Icons.wifi_off_rounded,
+                            ),
                     ),
                   ),
                 ] else ...[
@@ -102,8 +107,35 @@ class _HomeView extends StatelessWidget {
 
                   // Spacing
                   SliverToBoxAdapter(
-                    child: 12.verticalSpace,
+                    child: 16.verticalSpace,
                   ),
+
+                  // Offers Banner
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: GestureDetector(
+                        onTap: () => context.push(AppRoutes.offers),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12.r),
+                          child: Image.asset(
+                            'assets/images/offers.png',
+                            width: double.infinity,
+                            // cacheHeight: ,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // Spacing
+                  SliverToBoxAdapter(
+                    child: 16.verticalSpace,
+                  ),
+
+                  // Brands
+                  const BrandsSection(),
 
                   // Products
                   const ProductsSection(),

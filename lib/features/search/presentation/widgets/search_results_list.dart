@@ -9,18 +9,21 @@ class SearchResultsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SearchBloc, SearchState>(
-      buildWhen: (previous, current) =>
-          previous.products != current.products ||
-          previous.status != current.status,
-      builder: (context, state) {
-        final products = state.products.data;
+    return BlocSelector<SearchBloc, SearchState,
+        (List<ProductEntity>, bool, bool)>(
+      selector: (state) => (
+        state.products.data,
+        state.products.hasMore,
+        state.isLoadingMore,
+      ),
+      builder: (context, data) {
+        final (products, hasMore, isLoadingMore) = data;
 
         return CustomScrollView(
           slivers: [
-            SliverProductGrid<ProductEntity>(
+            AppSliverGrid<ProductEntity>(
               items: products,
-              hasMore: state.products.hasMore,
+              hasMore: hasMore,
               onLoadMore: () {
                 context.read<SearchBloc>().add(const SearchLoadMore());
               },
@@ -33,7 +36,7 @@ class SearchResultsList extends StatelessWidget {
                 );
               },
             ),
-            if (state.isLoadingMore)
+            if (isLoadingMore)
               SliverToBoxAdapter(
                 child: Padding(
                   padding: EdgeInsets.all(16.w),

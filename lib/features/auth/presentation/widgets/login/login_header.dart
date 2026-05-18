@@ -16,7 +16,7 @@ class LoginHeader extends StatelessWidget {
           height: 100.h,
         ),
         Text(
-          'auth.log_in'.tr(),
+          context.l10n.auth_log_in,
           style: tt.headlineMedium?.copyWith(
             fontWeight: FontWeight.w700,
             color: cs.primary,
@@ -24,7 +24,7 @@ class LoginHeader extends StatelessWidget {
         ),
         8.verticalSpace,
         Text(
-          'auth.log_in_subtitle'.tr(),
+          context.l10n.auth_log_in_subtitle,
           style: tt.bodyMedium?.copyWith(
             color: cs.onSurfaceVariant,
           ),

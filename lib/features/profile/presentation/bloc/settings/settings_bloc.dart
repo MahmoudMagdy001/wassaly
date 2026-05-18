@@ -25,6 +25,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     SettingsInitialized event,
     Emitter<SettingsState> emit,
   ) async {
+    await _storage.init();
     final language = _storage.getString(_languageKey) ?? 'ar';
     final isDarkMode = _storage.getBool(_themeKey) ?? false;
     final notificationsEnabled = _storage.getBool(_notificationsKey) ?? true;

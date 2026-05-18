@@ -26,7 +26,7 @@ class LoginEmailField extends StatelessWidget {
         onChanged: onChanged,
         validator: validator,
         keyboardType: TextInputType.emailAddress,
-        hint: 'auth.email_placeholder'.tr(),
+        hint: context.l10n.auth_email_placeholder,
         prefixIcon: Icon(
           Icons.alternate_email,
           color: cs.onSurfaceVariant,

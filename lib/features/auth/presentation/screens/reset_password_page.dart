@@ -54,7 +54,7 @@ class _ResetPasswordView extends StatelessWidget {
       listener: (context, state) {
         // Handle success
         if (state.status == ResetPasswordStatus.success) {
-          context.showTypedSnackBar('reset_password.success_message'.tr(),
+          context.showTypedSnackBar(context.l10n.reset_password_success_message,
               type: SnackBarType.success);
           // Navigate to login and clear the navigation stack
           context.go(AppRoutes.login);
@@ -63,7 +63,7 @@ class _ResetPasswordView extends StatelessWidget {
         // Handle error
         if (state.status == ResetPasswordStatus.error &&
             state.errorMessage != null) {
-          context.showTypedSnackBar(state.errorMessage!.tr(),
+          context.showTypedSnackBar(state.errorMessage!,
               type: SnackBarType.error);
         }
       },
@@ -93,7 +93,7 @@ class _ResetPasswordView extends StatelessWidget {
 
                 // Title
                 Text(
-                  'reset_password.title'.tr(),
+                  context.l10n.reset_password_title,
                   style: context.theme.textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: cs.onSurface,
@@ -104,7 +104,7 @@ class _ResetPasswordView extends StatelessWidget {
 
                 // Subtitle with email
                 Text(
-                  'reset_password.subtitle'.tr(),
+                  context.l10n.reset_password_subtitle,
                   style: context.theme.textTheme.bodyLarge?.copyWith(
                     color: cs.onSurfaceVariant,
                   ),
@@ -122,13 +122,13 @@ class _ResetPasswordView extends StatelessWidget {
                 32.verticalSpace,
 
                 // Password Requirements Hint
-                BlocBuilder<ResetPasswordBloc, ResetPasswordState>(
-                  buildWhen: (previous, current) =>
-                      previous.isNewPasswordValid !=
-                          current.isNewPasswordValid ||
-                      previous.isConfirmPasswordValid !=
-                          current.isConfirmPasswordValid,
-                  builder: (context, state) {
+                BlocSelector<ResetPasswordBloc, ResetPasswordState,
+                    (bool, bool)>(
+                  selector: (state) =>
+                      (state.isNewPasswordValid, state.isConfirmPasswordValid),
+                  builder: (context, data) {
+                    final (isNewPasswordValid, isConfirmPasswordValid) = data;
+
                     return Container(
                       padding: EdgeInsets.all(16.w),
                       decoration: BoxDecoration(
@@ -141,7 +141,7 @@ class _ResetPasswordView extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'reset_password.requirements_title'.tr(),
+                            context.l10n.reset_password_requirements_title,
                             style: context.theme.textTheme.labelLarge?.copyWith(
                               fontWeight: FontWeight.w600,
                               color: cs.onSurface,
@@ -150,14 +150,14 @@ class _ResetPasswordView extends StatelessWidget {
                           12.verticalSpace,
                           _buildRequirementRow(
                             context,
-                            'reset_password.req_min_length'.tr(),
-                            isMet: state.isNewPasswordValid,
+                            context.l10n.reset_password_req_min_length,
+                            isMet: isNewPasswordValid,
                           ),
                           8.verticalSpace,
                           _buildRequirementRow(
                             context,
-                            'reset_password.req_match'.tr(),
-                            isMet: state.isConfirmPasswordValid,
+                            context.l10n.reset_password_req_match,
+                            isMet: isConfirmPasswordValid,
                           ),
                         ],
                       ),

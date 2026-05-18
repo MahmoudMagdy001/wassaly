@@ -1,4 +1,5 @@
 import '../../domain/entities/product_detail_entity.dart';
+import '../../../service_details/data/models/service_detail_model.dart';
 
 class ProductSpecificationModel extends ProductSpecificationEntity {
   const ProductSpecificationModel({
@@ -100,6 +101,7 @@ class ProductDetailModel extends ProductDetailEntity {
     required super.reviews,
     required super.offerPercentages,
     required super.isFavorite,
+    required super.provider,
   });
 
   factory ProductDetailModel.fromJson(Map<String, dynamic> json) {
@@ -143,6 +145,11 @@ class ProductDetailModel extends ProductDetailEntity {
               .toList() ??
           [],
       isFavorite: json['is_favorite'] as bool? ?? false,
+      provider: json['provider'] == null
+          ? null
+          : ServiceProviderModel.fromJson(
+              json['provider'] as Map<String, dynamic>,
+            ),
     );
   }
 }

@@ -16,7 +16,8 @@ class HomeState extends Equatable {
   final List<SubCategoryEntity> popularServices;
   final HomeStatus productsStatus;
   final PaginatedResponse<ProductEntity> products;
-  final String errorMessage;
+  final bool isProductsLoadingMore;
+  final Failure? failure;
 
   const HomeState({
     this.bannersStatus = HomeStatus.initial,
@@ -27,7 +28,8 @@ class HomeState extends Equatable {
     this.popularServices = const [],
     this.productsStatus = HomeStatus.initial,
     this.products = const PaginatedResponse(data: []),
-    this.errorMessage = '',
+    this.isProductsLoadingMore = false,
+    this.failure,
   });
 
   HomeState copyWith({
@@ -39,7 +41,8 @@ class HomeState extends Equatable {
     List<SubCategoryEntity>? popularServices,
     HomeStatus? productsStatus,
     PaginatedResponse<ProductEntity>? products,
-    String? errorMessage,
+    bool? isProductsLoadingMore,
+    Failure? failure,
   }) {
     return HomeState(
       bannersStatus: bannersStatus ?? this.bannersStatus,
@@ -51,7 +54,9 @@ class HomeState extends Equatable {
       popularServices: popularServices ?? this.popularServices,
       productsStatus: productsStatus ?? this.productsStatus,
       products: products ?? this.products,
-      errorMessage: errorMessage ?? this.errorMessage,
+      isProductsLoadingMore:
+          isProductsLoadingMore ?? this.isProductsLoadingMore,
+      failure: failure,
     );
   }
 
@@ -65,7 +70,8 @@ class HomeState extends Equatable {
         popularServices,
         productsStatus,
         products,
-        errorMessage,
+        isProductsLoadingMore,
+        failure,
       ];
 
   /// Check if all sections failed (likely due to network error)
@@ -83,4 +89,7 @@ class HomeState extends Equatable {
         popularServicesStatus == HomeStatus.loading ||
         productsStatus == HomeStatus.loading;
   }
+
+  /// Get error message for backward compatibility
+  String get errorMessage => failure?.message ?? '';
 }

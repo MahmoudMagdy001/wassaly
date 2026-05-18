@@ -88,7 +88,11 @@ class _SignupViewState extends State<_SignupView> {
   }
 
   void _onLogin() {
-    context.pop();
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.go(AppRoutes.login);
+    }
   }
 
   void _onTermsPressed() {
@@ -115,7 +119,7 @@ class _SignupViewState extends State<_SignupView> {
           previous.errorMessage != current.errorMessage,
       listener: (context, state) {
         if (state.isRegistered) {
-          context.showTypedSnackBar('auth.otp_sent_success'.tr(),
+          context.showTypedSnackBar(context.l10n.auth_otp_sent_success,
               type: SnackBarType.success);
           context.push(
             AppRoutes.otpVerification,
@@ -139,10 +143,9 @@ class _SignupViewState extends State<_SignupView> {
               children: [
                 const SignupHeader(),
                 15.verticalSpace,
-                BlocBuilder<SignupBloc, SignupState>(
-                  buildWhen: (previous, current) =>
-                      previous.avatarFile != current.avatarFile,
-                  builder: (context, state) {
+                BlocSelector<SignupBloc, SignupState, File?>(
+                  selector: (state) => state.avatarFile,
+                  builder: (context, avatarFile) {
                     return SignupForm(
                       formKey: _formKey,
                       nameController: _nameController,
@@ -161,7 +164,7 @@ class _SignupViewState extends State<_SignupView> {
                       onSignup: _onSignup,
                       onTermsPressed: _onTermsPressed,
                       onPrivacyPressed: _onPrivacyPressed,
-                      avatarFile: state.avatarFile,
+                      avatarFile: avatarFile,
                       onAvatarSelected: _onAvatarSelected,
                       onAvatarCleared: _onAvatarCleared,
                     );

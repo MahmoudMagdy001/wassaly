@@ -1,13 +1,16 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
+import 'package:wassaly/features/favorite/presentation/bloc/favorite_bloc.dart';
+import 'package:wassaly/features/favorite/presentation/bloc/favorite_event.dart';
+import 'package:wassaly/features/favorite/presentation/bloc/favorite_state.dart';
 
 import '../../../home/domain/entities/product_entity.dart';
+import '../../../service_details/presentation/widgets/service_provider_card.dart';
 import '../../domain/entities/product_detail_entity.dart';
 import '../bloc/product_details_bloc.dart';
 import '../bloc/product_details_state.dart';
 import '../screens/product_reviews_page.dart';
 import 'product_details_meta_chip.dart';
-import 'product_review_card.dart';
 import 'product_review_form_sheet.dart';
 import 'product_specifications_grid.dart';
 import 'related_products_section.dart';
@@ -58,7 +61,7 @@ class ProductDetailsInfo extends StatelessWidget {
                       runSpacing: 4.h,
                       children: [
                         Text(
-                          '${finalPrice.toStringAsFixed(0)} ${'shared.currency_egp'.tr()}',
+                          '${finalPrice.toStringAsFixed(0)} ${context.l10n.shared_currency_egp}',
                           style: tt.headlineSmall?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: cs.secondary,
@@ -66,7 +69,7 @@ class ProductDetailsInfo extends StatelessWidget {
                         ),
                         if (product.hasOffer)
                           Text(
-                            '${price.toStringAsFixed(0)} ${'shared.currency_egp'.tr()}',
+                            '${price.toStringAsFixed(0)} ${context.l10n.shared_currency_egp}',
                             style: tt.bodyLarge?.copyWith(
                               color: cs.onSurfaceVariant,
                               decoration: TextDecoration.lineThrough,
@@ -87,19 +90,47 @@ class ProductDetailsInfo extends StatelessWidget {
                   ),
                 ),
               ],
+              BlocSelector<FavoriteBloc, FavoriteState, (bool, bool)>(
+                selector: (state) => (
+                  state.favoriteIds.contains(product.id) ||
+                      (!state.hasLoaded && product.isFavorite),
+                  state.togglingIds.contains(product.id),
+                ),
+                builder: (context, status) {
+                  final isFavorite = status.$1;
+                  final isToggling = status.$2;
+                  return IconButton(
+                    onPressed: isToggling
+                        ? null
+                        : () => context.read<FavoriteBloc>().add(
+                              ToggleFavoriteEvent(
+                                product.id,
+                                expectedIsFavorite: isFavorite,
+                              ),
+                            ),
+                    icon: Icon(
+                      isFavorite
+                          ? Icons.favorite_rounded
+                          : Icons.favorite_border_rounded,
+                      color: isFavorite ? cs.error : cs.outline,
+                      size: 28.r,
+                    ),
+                  );
+                },
+              ),
             ],
           ),
-          10.verticalSpace,
-          _ProductMeta(product: product),
           12.verticalSpace,
+          _ProductMeta(product: product),
+          24.verticalSpace,
           Text(
-            'product_details.description'.tr(),
+            context.l10n.product_details_description,
             style: tt.titleMedium?.copyWith(
               fontWeight: FontWeight.w700,
               color: cs.primary,
             ),
           ),
-          8.verticalSpace,
+          12.verticalSpace,
           Text(
             product.description,
             style: tt.bodyLarge?.copyWith(
@@ -110,14 +141,23 @@ class ProductDetailsInfo extends StatelessWidget {
           if (product.specifications.isNotEmpty) ...[
             ProductSpecificationsGrid(specifications: product.specifications),
           ],
-          if (product.reviews.isNotEmpty || currentUserId != null) ...[
+          if (product.provider != null) ...[
             8.verticalSpace,
+            Text(
+              context.l10n.service_details_provider,
+              style: tt.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            12.verticalSpace,
+            ServiceProviderCard(provider: product.provider!),
+          ],
+          if (product.reviews.isNotEmpty || currentUserId != null) ...[
+            24.verticalSpace,
             _ReviewsSection(
               product: product,
               currentUserId: currentUserId,
             ),
           ],
-          20.verticalSpace,
+          12.verticalSpace,
           RelatedProductsSection(
             status: relatedProductsStatus,
             products: relatedProducts,
@@ -158,24 +198,28 @@ class _ReviewsSection extends StatelessWidget {
       children: [
         _ReviewsHeader(reviews: reviews),
         if (currentUserId != null && !hasCurrentUserReview) ...[
-          10.verticalSpace,
+          12.verticalSpace,
           OutlinedButton.icon(
             onPressed: () => _showReviewSheet(context),
             icon: const Icon(Icons.rate_review_outlined),
-            label: Text('product_details.add_review'.tr()),
+            label: Text(context.l10n.product_details_add_review),
           ),
         ],
         if (previewReviews.isNotEmpty) ...[
-          10.verticalSpace,
+          12.verticalSpace,
           ...previewReviews.map(
             (review) {
               final isMine = currentUserId != null &&
                   review.user.id.toString() == currentUserId;
 
-              return ProductReviewCard(
-                review: review,
+              return AppReviewCard(
+                rating: review.rating,
+                comment: review.comment,
+                userName: review.user.name,
+                userAvatar: review.user.avatar,
                 isCurrentUserReview: isMine,
                 canEdit: isMine && _canEditReview(review.createdAt),
+                createdAt: review.createdAt,
                 onEdit: () => _showReviewSheet(context, review: review),
               );
             },
@@ -189,7 +233,7 @@ class _ReviewsSection extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'product_details.show_more'.tr(),
+                      context.l10n.product_details_show_more,
                       style: tt.titleSmall?.copyWith(
                         color: cs.primary,
                         fontWeight: FontWeight.w600,
@@ -282,13 +326,14 @@ class _ProductMeta extends StatelessWidget {
         if (product.brand != null)
           ProductDetailsMetaChip(
             icon: Icons.verified_outlined,
-            label: '${'product_details.brand'.tr()}: ${product.brand!.name}',
+            label:
+                '${context.l10n.product_details_brand}: ${product.brand!.name}',
           ),
         if (product.subCategory != null)
           ProductDetailsMetaChip(
             icon: Icons.category_outlined,
             label:
-                '${'product_details.sub_category'.tr()}: ${product.subCategory!.name}',
+                '${context.l10n.product_details_sub_category}: ${product.subCategory!.name}',
           ),
       ],
     );
@@ -307,16 +352,16 @@ class _OfferBadge extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
       decoration: BoxDecoration(
-        color: const Color(0xFF79F29A),
+        color: context.appColors.successContainer,
         borderRadius: BorderRadius.circular(18.r),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            'product_details.discount'.tr(),
+            context.l10n.product_details_discount,
             style: tt.labelSmall?.copyWith(
-              color: const Color(0xFF067A2F),
+              color: context.appColors.onSuccessContainer,
               fontWeight: FontWeight.w800,
               height: 1.h,
             ),
@@ -325,7 +370,7 @@ class _OfferBadge extends StatelessWidget {
           Text(
             '$discountPercentage%',
             style: tt.labelSmall?.copyWith(
-              color: const Color(0xFF067A2F),
+              color: context.appColors.onSuccessContainer,
               fontWeight: FontWeight.w800,
               height: 1.h,
             ),
@@ -354,7 +399,7 @@ class _ReviewsHeader extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          '${'product_details.reviews'.tr()} (${reviews.length})',
+          '${context.l10n.product_details_reviews} (${reviews.length})',
           style: tt.titleLarge?.copyWith(
             fontWeight: FontWeight.bold,
             color: cs.primary,

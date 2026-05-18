@@ -12,6 +12,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
         super(const CategoryState()) {
     on<FetchCategoryDetailEvent>(_onFetchCategoryDetail);
     on<LoadMoreSubCategoriesEvent>(_onLoadMoreSubCategories);
+    on<SelectSubCategoryEvent>(_onSelectSubCategory);
   }
 
   Future<void> _onFetchCategoryDetail(
@@ -27,12 +28,24 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
         status: CategoryStatus.failure,
         errorMessage: failure.message,
       )),
-      (categoryDetail) => emit(state.copyWith(
-        status: CategoryStatus.success,
-        categoryDetail: categoryDetail,
-        subCategories: categoryDetail.subCategories,
-      )),
+      (categoryDetail) {
+        final subCategories = categoryDetail.subCategories;
+        emit(state.copyWith(
+          status: CategoryStatus.success,
+          categoryDetail: categoryDetail,
+          subCategories: subCategories,
+          selectedSubCategory:
+              subCategories.data.isNotEmpty ? subCategories.data.first : null,
+        ));
+      },
     );
+  }
+
+  void _onSelectSubCategory(
+    SelectSubCategoryEvent event,
+    Emitter<CategoryState> emit,
+  ) {
+    emit(state.copyWith(selectedSubCategory: event.subCategory));
   }
 
   Future<void> _onLoadMoreSubCategories(

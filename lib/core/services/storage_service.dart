@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:fpdart/fpdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -9,16 +11,34 @@ class StorageService {
   static final StorageService instance = StorageService._();
 
   late final SharedPreferences _prefs;
-  bool _isInitialized = false;
+  Completer<void>? _initCompleter;
 
   /// Initialize SharedPreferences instance.
+  /// Safe to call concurrently — only initializes once.
   FutureEither<void> init() async {
-    if (_isInitialized) return right(null);
-    return runTask(() async {
-      _prefs = await SharedPreferences.getInstance();
-      _isInitialized = true;
-      AppLogger.info('StorageService (SharedPreferences) initialized');
-    });
+    // Already done
+    if (_initCompleter != null && _initCompleter!.isCompleted) {
+      return right(null);
+    }
+
+    // First caller starts initialization
+    if (_initCompleter == null) {
+      _initCompleter = Completer<void>();
+      try {
+        _prefs = await SharedPreferences.getInstance();
+        AppLogger.info('StorageService (SharedPreferences) initialized');
+        _initCompleter!.complete();
+      } catch (e, st) {
+        _initCompleter!.completeError(e, st);
+        _initCompleter = null; // allow retry on next call
+        return left(ServerFailure(e.toString()));
+      }
+    } else {
+      // Subsequent callers wait for the first to finish
+      await _initCompleter!.future;
+    }
+
+    return right(null);
   }
 
   // --- SETTERS ---

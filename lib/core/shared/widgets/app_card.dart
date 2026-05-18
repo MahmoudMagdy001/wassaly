@@ -1,20 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-/// A themed card widget with consistent padding, radius, and optional header.
-///
-/// Usage:
-/// ```dart
-/// AppCard(
-///   child: Text('Card content'),
-/// )
-///
-/// // With a header
-/// AppCard(
-///   title: 'Recent Transactions',
-///   trailing: TextButton(onPressed: _seeAll, child: const Text('See all')),
-///   child: TransactionList(),
-/// )
-/// ```
 class AppCard extends StatelessWidget {
   const AppCard({
     super.key,
@@ -38,8 +23,6 @@ class AppCard extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final EdgeInsetsGeometry? margin;
   final VoidCallback? onTap;
-
-  /// When true, uses [AppShadows.card] instead of a border outline.
   final bool showShadow;
   final Color? color;
 
@@ -59,7 +42,7 @@ class AppCard extends StatelessWidget {
             padding: EdgeInsets.only(
               left: 12.w,
               right: 12.w,
-              top: 12.h,
+              top: 8.h,
             ),
             child: Row(
               children: [
@@ -68,13 +51,13 @@ class AppCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (title != null)
-                        Text(
-                          title!,
-                          style: tt.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
+                      Text(
+                        title!,
+                        style: tt.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
                         ),
+                      ),
+                      10.verticalSpace,
                       if (subtitle != null)
                         Text(
                           subtitle!,
@@ -102,8 +85,6 @@ class AppCard extends StatelessWidget {
       ],
     );
 
-    final isIOS = context.isIOS;
-
     final cardWidget = Container(
       margin: margin,
       decoration: BoxDecoration(
@@ -112,7 +93,13 @@ class AppCard extends StatelessWidget {
         border:
             showShadow ? null : Border.all(color: cs.outlineVariant, width: 1),
         boxShadow: showShadow
-            ? []
+            ? [
+                BoxShadow(
+                  color: cs.shadow.withValues(alpha: 0.08),
+                  blurRadius: 8.r,
+                  offset: const Offset(0, 2),
+                ),
+              ]
             : [
                 BoxShadow(
                   color: cs.shadow.withValues(alpha: 0.05),
@@ -121,11 +108,15 @@ class AppCard extends StatelessWidget {
                 ),
               ],
       ),
-      clipBehavior: Clip.antiAlias,
-      child: content,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12.r),
+        child: content,
+      ),
     );
 
     if (onTap == null) return cardWidget;
+
+    final isIOS = context.isIOS;
 
     if (isIOS) {
       return GestureDetector(
@@ -135,10 +126,46 @@ class AppCard extends StatelessWidget {
       );
     }
 
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12.r),
-      child: cardWidget,
+    return Container(
+      margin: margin,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12.r),
+        boxShadow: showShadow
+            ? [
+                BoxShadow(
+                  color: cs.shadow.withValues(alpha: 0.08),
+                  blurRadius: 8.r,
+                  offset: const Offset(0, 2),
+                ),
+              ]
+            : [
+                BoxShadow(
+                  color: cs.shadow.withValues(alpha: 0.05),
+                  blurRadius: 4.r,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+      ),
+      child: Material(
+        color: cardColor,
+        borderRadius: BorderRadius.circular(12.r),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12.r),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12.r),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                border: showShadow
+                    ? null
+                    : Border.all(color: cs.outlineVariant, width: 1),
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              child: content,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -12,12 +12,17 @@ import 'package:wassaly/features/auth/data/models/user_model.dart';
 import 'package:wassaly/features/auth/data/models/verify_otp_response_model.dart';
 import 'package:wassaly/features/auth/domain/entities/user_entity.dart';
 import 'package:wassaly/features/auth/domain/repositories/auth_repository.dart';
+import 'package:wassaly/features/cart/data/datasources/cart_local_datasource.dart';
+import 'package:wassaly/features/favorite/data/datasources/favorite_local_datasource.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource _remoteDataSource;
   final AuthLocalDataSource _localDataSource;
+  final CartLocalDataSource _cartDataSource;
+  final FavoriteLocalDataSource _favoriteDataSource;
 
-  AuthRepositoryImpl(this._remoteDataSource, this._localDataSource);
+  AuthRepositoryImpl(this._remoteDataSource, this._localDataSource,
+      this._cartDataSource, this._favoriteDataSource);
 
   @override
   FutureEither<UserEntity> login({
@@ -102,11 +107,41 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       await _remoteDataSource.logout();
       await _localDataSource.clearAuthData();
+
+      // Clear cart data on logout
+      await _cartDataSource.clearCartLocally();
+
+      // Clear favorites data on logout
+      await _favoriteDataSource.clearFavoritesLocally();
+
       return const Right(null);
     } on Failure catch (e) {
       return Left(e);
     } catch (e) {
       return Left(UnknownFailure('Unexpected error: $e'));
+    }
+  }
+
+  @override
+  FutureEither<void> clearUserSession() async {
+    try {
+      // 1. Attempt remote logout — swallow errors (Req 4.1–4.4)
+      try {
+        await _remoteDataSource.logout();
+      } catch (e) {
+        // Remote logout failed; log and continue with local clearing
+      }
+
+      // 2. Clear local data in sequence (Req 3.7)
+      await _localDataSource.clearAuthData();
+      await _cartDataSource.clearCartLocally();
+      await _favoriteDataSource.clearFavoritesLocally();
+
+      return const Right(null);
+    } on Failure catch (e) {
+      return Left(e);
+    } catch (e) {
+      return Left(CacheFailure('Failed to clear user session: $e'));
     }
   }
 

@@ -7,7 +7,8 @@ import '../../domain/usecases/update_product_review_usecase.dart';
 import 'product_details_event.dart';
 import 'product_details_state.dart';
 
-class ProductDetailsBloc extends Bloc<ProductDetailsEvent, ProductDetailsState> {
+class ProductDetailsBloc
+    extends Bloc<ProductDetailsEvent, ProductDetailsState> {
   final GetProductDetailsUseCase _getProductDetailsUseCase;
   final GetSubCategoryDetailUseCase _getSubCategoryDetailUseCase;
   final CreateProductReviewUseCase _createProductReviewUseCase;
@@ -24,7 +25,6 @@ class ProductDetailsBloc extends Bloc<ProductDetailsEvent, ProductDetailsState> 
         _updateProductReviewUseCase = updateProductReviewUseCase,
         super(const ProductDetailsState()) {
     on<FetchProductDetailsEvent>(_onFetchProductDetails);
-    on<FetchRelatedProductsEvent>(_onFetchRelatedProducts);
     on<CreateProductReviewEvent>(_onCreateProductReview);
     on<UpdateProductReviewEvent>(_onUpdateProductReview);
   }
@@ -44,14 +44,14 @@ class ProductDetailsBloc extends Bloc<ProductDetailsEvent, ProductDetailsState> 
 
     final result = await _getProductDetailsUseCase(event.productId);
 
-    result.fold(
-      (failure) => emit(
+    await result.fold(
+      (failure) async => emit(
         state.copyWith(
           status: ProductDetailsStatus.failure,
           errorMessage: failure.message,
         ),
       ),
-      (product) {
+      (product) async {
         emit(
           state.copyWith(
             status: ProductDetailsStatus.success,
@@ -61,21 +61,21 @@ class ProductDetailsBloc extends Bloc<ProductDetailsEvent, ProductDetailsState> 
 
         final subCategoryId = product.subCategory?.id ?? 0;
         if (subCategoryId > 0) {
-          add(
-            FetchRelatedProductsEvent(
-              subCategoryId: subCategoryId,
-              currentProductId: product.id,
-            ),
+          await _fetchRelatedProducts(
+            subCategoryId: subCategoryId,
+            currentProductId: product.id,
+            emit: emit,
           );
         }
       },
     );
   }
 
-  Future<void> _onFetchRelatedProducts(
-    FetchRelatedProductsEvent event,
-    Emitter<ProductDetailsState> emit,
-  ) async {
+  Future<void> _fetchRelatedProducts({
+    required int subCategoryId,
+    required int currentProductId,
+    required Emitter<ProductDetailsState> emit,
+  }) async {
     emit(
       state.copyWith(
         relatedProductsStatus: RelatedProductsStatus.loading,
@@ -83,7 +83,7 @@ class ProductDetailsBloc extends Bloc<ProductDetailsEvent, ProductDetailsState> 
       ),
     );
 
-    final result = await _getSubCategoryDetailUseCase(event.subCategoryId);
+    final result = await _getSubCategoryDetailUseCase(subCategoryId);
 
     result.fold(
       (_) => emit(
@@ -96,7 +96,7 @@ class ProductDetailsBloc extends Bloc<ProductDetailsEvent, ProductDetailsState> 
         state.copyWith(
           relatedProductsStatus: RelatedProductsStatus.success,
           relatedProducts: subCategory.products.data
-              .where((product) => product.id != event.currentProductId)
+              .where((product) => product.id != currentProductId)
               .toList(),
         ),
       ),
@@ -135,7 +135,7 @@ class ProductDetailsBloc extends Bloc<ProductDetailsEvent, ProductDetailsState> 
         await _refreshProductAfterReviewAction(
           productId: event.productId,
           emit: emit,
-          successMessage: 'product_details.review_created'.tr(),
+          successMessage: rootContext!.l10n.product_details_review_created,
         );
       },
     );
@@ -173,7 +173,7 @@ class ProductDetailsBloc extends Bloc<ProductDetailsEvent, ProductDetailsState> 
         await _refreshProductAfterReviewAction(
           productId: event.productId,
           emit: emit,
-          successMessage: 'product_details.review_updated'.tr(),
+          successMessage: rootContext!.l10n.product_details_review_updated,
         );
       },
     );

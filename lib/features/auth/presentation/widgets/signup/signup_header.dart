@@ -17,7 +17,7 @@ class SignupHeader extends StatelessWidget {
           height: 100.h,
         ),
         Text(
-          'auth.create_account'.tr(),
+          context.l10n.auth_create_account,
           style: tt.headlineMedium?.copyWith(
             fontWeight: FontWeight.w700,
             color: cs.primary,
@@ -25,7 +25,7 @@ class SignupHeader extends StatelessWidget {
         ),
         8.verticalSpace,
         Text(
-          'auth.create_account_subtitle'.tr(),
+          context.l10n.auth_create_account_subtitle,
           style: tt.bodyMedium?.copyWith(
             color: cs.onSurfaceVariant,
           ),

@@ -1,5 +1,7 @@
 import 'package:wassaly/core/imports/imports.dart';
 
+import '../../../home/domain/entities/product_entity.dart';
+import '../../domain/entities/product_detail_entity.dart';
 import '../bloc/product_details_bloc.dart';
 import '../bloc/product_details_event.dart';
 import '../bloc/product_details_state.dart';
@@ -53,12 +55,14 @@ class _ProductDetailsView extends StatelessWidget {
 
         if (state.status == ProductDetailsStatus.loading ||
             state.status == ProductDetailsStatus.initial) {
-          body = const Center(child: CircularProgressIndicator());
+          body = const _ProductDetailsSkeleton();
         } else if (state.status == ProductDetailsStatus.failure ||
             state.product == null) {
           body = AppErrorWidget(
-            title: 'errors.something_went_wrong'.tr(),
-            message: state.errorMessage,
+            title: context.l10n.errors_error_occurred_title,
+            message: state.errorMessage.isNotEmpty
+                ? state.errorMessage
+                : context.l10n.errors_error_occurred_message,
             onRetry: () {
               context.read<ProductDetailsBloc>().add(
                     FetchProductDetailsEvent(productId),
@@ -74,9 +78,68 @@ class _ProductDetailsView extends StatelessWidget {
         }
 
         return Scaffold(
-          body: SafeArea(child: body),
+          body: body,
         );
       },
+    );
+  }
+}
+
+class _ProductDetailsSkeleton extends StatelessWidget {
+  const _ProductDetailsSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    final dummyProduct = ProductDetailEntity(
+      id: 0,
+      name: context.l10n.product_details_title,
+      image: '',
+      price: '1000',
+      description: context.l10n.product_details_description,
+      specifications: const [
+        ProductSpecificationEntity(
+          id: 1,
+          key: ' ',
+          value: ' ',
+          icon: '',
+        ),
+        ProductSpecificationEntity(
+          id: 2,
+          key: ' ',
+          value: ' ',
+          icon: '',
+        ),
+      ],
+      images: const [],
+      subCategory: const ProductMetaEntity(id: 1, name: ' ', image: ''),
+      brand: const ProductMetaEntity(id: 1, name: ' ', image: ''),
+      reviews: const [],
+      offerPercentages: const [10],
+      isFavorite: false,
+      provider: null,
+    );
+
+    final dummyRelatedProducts = List<ProductEntity>.generate(
+      4,
+      (index) => ProductEntity(
+        id: 0,
+        name: context.l10n.product_details_related_products,
+        image: '',
+        price: '500',
+        description: ' ',
+        offers: const [],
+        reviews: const [],
+        isFavorite: false,
+      ),
+    );
+
+    return Skeletonizer(
+      enabled: true,
+      child: ProductDetailsContent(
+        product: dummyProduct,
+        relatedProductsStatus: RelatedProductsStatus.success,
+        relatedProducts: dummyRelatedProducts,
+      ),
     );
   }
 }

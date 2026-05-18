@@ -3,6 +3,7 @@ import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dar
 import 'package:wassaly/features/cart/presentation/bloc/cart_bloc.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_bloc.dart';
 import 'package:wassaly/features/profile/presentation/bloc/settings/settings_bloc.dart';
+import 'package:wassaly/features/profile/presentation/bloc/profile/profile_bloc.dart';
 
 /// A wrapper to initialize the chosen State Management library.
 class StateWrapper extends StatelessWidget {
@@ -27,6 +28,9 @@ class StateWrapper extends StatelessWidget {
       ),
       BlocProvider<CartBloc>(
         create: (_) => sl<CartBloc>(),
+      ),
+      BlocProvider<ProfileBloc>(
+        create: (_) => sl<ProfileBloc>(),
       ),
     ];
 

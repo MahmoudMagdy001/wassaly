@@ -1,52 +1,77 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/search/presentation/bloc/search_bloc.dart';
 import 'package:wassaly/features/search/presentation/bloc/search_event.dart';
-import 'package:wassaly/features/search/presentation/bloc/search_state.dart';
 
-class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
+class SearchAppBar extends StatefulWidget {
   const SearchAppBar({super.key});
 
   @override
-  Size get preferredSize => Size.fromHeight(80.h);
+  State<SearchAppBar> createState() => _SearchAppBarState();
+}
+
+class _SearchAppBarState extends State<SearchAppBar> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    final currentQuery = context.read<SearchBloc>().state.query;
+    _controller = TextEditingController(text: currentQuery);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final cs = context.theme.colorScheme;
 
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-      decoration: BoxDecoration(
-        color: cs.surface,
-      ),
-      child: SafeArea(
-        child: Row(
-          children: [
-            IconButton(
-              onPressed: () => context.pop(),
-              icon: const Icon(Icons.arrow_back),
-              color: cs.onSurface,
-            ),
-            SizedBox(width: 6.w),
-            Expanded(
-              child: BlocBuilder<SearchBloc, SearchState>(
-                buildWhen: (previous, current) =>
-                    previous.query != current.query,
-                builder: (context, state) {
-                  return AppTextField(
-                    suffixIcon: const Icon(Icons.search),
-                    autofocus: true,
-                    onChanged: (value) {
-                      context.read<SearchBloc>().add(SearchQueryChanged(value));
-                    },
-                    onFieldSubmitted: (_) {
-                      context.read<SearchBloc>().add(const SearchSubmitted());
-                    },
-                    hint: 'search.search_hint'.tr(),
-                  );
+    return AppSliverTopBar(
+      centerTitle: false,
+      titleWidget: Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: 6.h,
+        ),
+        child: AppTextField(
+          controller: _controller,
+          autofocus: true,
+          textInputAction: TextInputAction.search,
+          onFieldSubmitted: (value) {
+            context.read<SearchBloc>().add(const SearchSubmitted());
+          },
+          onChanged: (value) {
+            context.read<SearchBloc>().add(SearchQueryChanged(value));
+          },
+          hint: context.l10n.search_search_hint,
+          prefixIcon: Icon(
+            Icons.search,
+            color: cs.onSurfaceVariant.withValues(alpha: 0.7),
+            size: 22.r,
+          ),
+          suffixIcon: ValueListenableBuilder<TextEditingValue>(
+            valueListenable: _controller,
+            builder: (context, value, child) {
+              if (value.text.isEmpty) return const SizedBox.shrink();
+              return GestureDetector(
+                onTap: () {
+                  _controller.clear();
+                  context.read<SearchBloc>().add(const SearchCleared());
                 },
-              ),
-            ),
-          ],
+                child: Icon(
+                  Icons.clear,
+                  color: cs.onSurfaceVariant.withValues(alpha: 0.7),
+                  size: 20.r,
+                ),
+              );
+            },
+          ),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 12.w,
+            vertical: 8.h,
+          ),
         ),
       ),
     );

@@ -1,11 +1,8 @@
 import 'package:wassaly/core/imports/imports.dart';
-
-import '../../domain/entities/offer_entity.dart';
-import '../../domain/entities/product_entity.dart';
-import '../../domain/entities/review_entity.dart';
-import '../bloc/home_bloc.dart';
-import '../bloc/home_event.dart';
-import '../bloc/home_state.dart';
+import 'package:wassaly/features/home/domain/entities/product_entity.dart';
+import 'package:wassaly/features/home/presentation/bloc/home_bloc.dart';
+import 'package:wassaly/features/home/presentation/bloc/home_event.dart';
+import 'package:wassaly/features/home/presentation/bloc/home_state.dart';
 
 class ProductsSection extends StatelessWidget {
   const ProductsSection({super.key});
@@ -15,27 +12,29 @@ class ProductsSection extends StatelessWidget {
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
 
-    return BlocBuilder<HomeBloc, HomeState>(
-      buildWhen: (previous, current) =>
-          previous.productsStatus != current.productsStatus ||
-          previous.products != current.products,
-      builder: (context, state) {
-        if (state.productsStatus == HomeStatus.loading ||
-            state.productsStatus == HomeStatus.initial) {
-          return _buildSkeleton(cs, tt);
-        } else if (state.productsStatus == HomeStatus.failure &&
-            state.products.data.isEmpty) {
+    return BlocSelector<HomeBloc, HomeState,
+        (HomeStatus, PaginatedResponse<ProductEntity>, bool)>(
+      selector: (state) =>
+          (state.productsStatus, state.products, state.isProductsLoadingMore),
+      builder: (context, data) {
+        final (productsStatus, products, isProductsLoadingMore) = data;
+
+        final isLoading = productsStatus == HomeStatus.loading ||
+            productsStatus == HomeStatus.initial;
+
+        if (productsStatus == HomeStatus.failure &&
+            products.data.isEmpty) {
           return const SliverToBoxAdapter(
             child: SizedBox.shrink(),
           );
-        } else if (state.products.data.isEmpty &&
-            state.productsStatus == HomeStatus.success) {
+        } else if (products.data.isEmpty &&
+            productsStatus == HomeStatus.success) {
           return const SliverToBoxAdapter(
             child: SizedBox.shrink(),
           );
         }
 
-        final products = state.products.data;
+        final productsList = products.data;
 
         return SliverMainAxisGroup(
           slivers: [
@@ -47,7 +46,7 @@ class ProductsSection extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'home.selected_products'.tr(),
+                      context.l10n.home_selected_products,
                       style: tt.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: cs.primary,
@@ -59,83 +58,18 @@ class ProductsSection extends StatelessWidget {
             ),
 
             // Grid
-            SliverProductGrid<ProductEntity>(
-              items: products,
-              hasMore: state.products.hasMore,
+            AppProductsSection(
+              isLoading: isLoading,
+              products: productsList,
+              hasMore: products.hasMore,
+              isLoadingMore: isProductsLoadingMore,
               onLoadMore: () {
                 context.read<HomeBloc>().add(LoadMoreProductsEvent());
               },
-              itemBuilder: (context, product, index, wrapAnimation) {
-                return wrapAnimation(
-                  ProductCard(
-                    product: product,
-                  ),
-                );
-              },
             ),
-
-            // Load more indicator
-            if (state.products.hasMore)
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20.h),
-                  child: const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                ),
-              ),
           ],
         );
       },
-    );
-  }
-
-  Widget _buildSkeleton(ColorScheme cs, TextTheme tt) {
-    final dummyProducts = List.generate(
-      4,
-      (index) => const ProductEntity(
-        id: 0,
-        name: 'منتج تجريبي',
-        image: '',
-        price: '100',
-        description: 'وصف تجريبي',
-        offers: [OfferEntity(id: 0, discountPercentage: 10)],
-        reviews: [
-          ReviewEntity(id: 0, rating: 5, comment: 'ممتاز', createdAt: ''),
-        ],
-        isFavorite: false,
-      ),
-    );
-
-    return SliverMainAxisGroup(
-      slivers: [
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12.w),
-            child: Text(
-              'home.selected_products'.tr(),
-              style: tt.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: cs.primary,
-              ),
-            ),
-          ),
-        ),
-        SliverToBoxAdapter(
-          child: 4.verticalSpace,
-        ),
-        SliverProductGrid<ProductEntity>(
-          items: dummyProducts,
-          animateItems: false,
-          itemBuilder: (context, product, index, wrapAnimation) {
-            return Skeletonizer(
-              ignoreContainers: true,
-              enabled: true,
-              child: ProductCard(product: product),
-            );
-          },
-        ),
-      ],
     );
   }
 }

@@ -23,7 +23,7 @@ class SocialLoginSection extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 12.w),
               child: Text(
-                'auth.or_login_with'.tr(),
+                context.l10n.auth_or_login_with,
                 style: tt.bodySmall?.copyWith(
                   color: cs.onSurfaceVariant,
                 ),

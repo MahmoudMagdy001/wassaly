@@ -27,7 +27,7 @@ class SignupNameField extends StatelessWidget {
         validator: validator,
         keyboardType: TextInputType.name,
         textInputAction: TextInputAction.next,
-        hint: 'auth.name_placeholder'.tr(),
+        hint: context.l10n.auth_name_placeholder,
         prefixIcon: Icon(
           Icons.person_outline,
           color: cs.onSurfaceVariant,

@@ -1,6 +1,5 @@
 import 'package:app_version_update/data/models/app_version_result.dart';
-
-import '../imports/imports.dart';
+import 'package:wassaly/core/imports/imports.dart';
 
 /// A service to check for app updates and manage version information using
 /// the `app_version_update` package.
@@ -40,7 +39,7 @@ class VersionUpdateService {
           return;
         }
 
-        if(context.mounted){
+        if (context.mounted) {
           AppVersionUpdate.showAlertUpdate(
             appVersionResult: result,
             context: context,

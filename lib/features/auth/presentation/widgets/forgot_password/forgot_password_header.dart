@@ -12,7 +12,7 @@ class ForgotPasswordHeader extends StatelessWidget {
       children: [
         60.verticalSpace,
         Text(
-          'auth.forgot_password_title'.tr(),
+          context.l10n.auth_forgot_password_title,
           style: tt.headlineMedium?.copyWith(
             fontWeight: FontWeight.w700,
             color: cs.onSurface,
@@ -20,7 +20,7 @@ class ForgotPasswordHeader extends StatelessWidget {
         ),
         12.verticalSpace,
         Text(
-          'auth.forgot_password_subtitle'.tr(),
+          context.l10n.auth_forgot_password_subtitle,
           style: tt.bodyMedium?.copyWith(
             color: cs.onSurfaceVariant,
           ),

@@ -1,20 +1,37 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/favorite/domain/usecases/get_favorites_usecase.dart';
+import 'package:wassaly/features/favorite/domain/usecases/get_service_favorites_usecase.dart';
 import 'package:wassaly/features/favorite/domain/usecases/toggle_favorite_usecase.dart';
+import 'package:wassaly/features/favorite/domain/usecases/toggle_service_favorite_usecase.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_event.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_state.dart';
 import 'package:wassaly/features/home/domain/entities/product_entity.dart';
+import 'package:wassaly/features/sub_category/domain/entities/service_entity.dart';
 
 class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
   final GetFavoritesUseCase getFavoritesUseCase;
+  final GetServiceFavoritesUseCase getServiceFavoritesUseCase;
   final ToggleFavoriteUseCase toggleFavoriteUseCase;
+  final ToggleServiceFavoriteUseCase toggleServiceFavoriteUseCase;
 
   FavoriteBloc(
     this.getFavoritesUseCase,
+    this.getServiceFavoritesUseCase,
     this.toggleFavoriteUseCase,
+    this.toggleServiceFavoriteUseCase,
   ) : super(const FavoriteState()) {
     on<GetFavoritesEvent>(_onGetFavorites);
+    on<GetServiceFavoritesEvent>(_onGetServiceFavorites);
     on<ToggleFavoriteEvent>(_onToggleFavorite);
+    on<ToggleServiceFavoriteEvent>(_onToggleServiceFavorite);
+    on<ClearFavoritesEvent>(_onClearFavorites);
+  }
+
+  void _onClearFavorites(
+    ClearFavoritesEvent event,
+    Emitter<FavoriteState> emit,
+  ) {
+    emit(const FavoriteState());
   }
 
   Future<void> _onGetFavorites(
@@ -28,7 +45,7 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
       status: state.status == FavoriteStatus.initial
           ? FavoriteStatus.loading
           : FavoriteStatus.refreshing,
-      errorMessage: null,
+      failure: null,
     ));
 
     final result = await getFavoritesUseCase();
@@ -36,13 +53,41 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
     result.fold(
       (failure) => emit(state.copyWith(
         status: FavoriteStatus.error,
-        errorMessage: failure.message,
+        failure: failure,
       )),
       (favorites) {
         emit(state.copyWith(
           status: FavoriteStatus.success,
           favorites: favorites,
           favoriteIds: favorites.data.map((f) => f.id).toSet(),
+        ));
+      },
+    );
+  }
+
+  Future<void> _onGetServiceFavorites(
+    GetServiceFavoritesEvent event,
+    Emitter<FavoriteState> emit,
+  ) async {
+    emit(state.copyWith(
+      status: state.status == FavoriteStatus.initial
+          ? FavoriteStatus.loading
+          : FavoriteStatus.refreshing,
+      failure: null,
+    ));
+
+    final result = await getServiceFavoritesUseCase();
+
+    result.fold(
+      (failure) => emit(state.copyWith(
+        status: FavoriteStatus.error,
+        failure: failure,
+      )),
+      (favorites) {
+        emit(state.copyWith(
+          status: FavoriteStatus.success,
+          serviceFavorites: favorites,
+          serviceFavoriteIds: favorites.data.map((f) => f.id).toSet(),
         ));
       },
     );
@@ -96,7 +141,7 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
       favoriteIds: optimisticIds,
       favorites: optimisticFavorites,
       togglingIds: {...state.togglingIds, event.productId},
-      errorMessage: null,
+      failure: null,
     ));
 
     debugPrint(
@@ -137,7 +182,7 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
           favoriteIds: rollbackIds,
           favorites: rollbackFavorites,
           togglingIds: rollbackToggling,
-          errorMessage: failure.message,
+          failure: failure,
         ));
 
         debugPrint(
@@ -156,7 +201,7 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
 
         emit(state.copyWith(
           togglingIds: updatedToggling,
-          errorMessage: null,
+          failure: null,
         ));
 
         debugPrint(
@@ -169,6 +214,112 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
         // the optimistic update already handled it without flicker.
         if (!isCurrentlyFavorite) {
           add(const GetFavoritesEvent());
+        }
+      },
+    );
+  }
+
+  Future<void> _onToggleServiceFavorite(
+    ToggleServiceFavoriteEvent event,
+    Emitter<FavoriteState> emit,
+  ) async {
+    final isCurrentlyFavorite = event.expectedIsFavorite;
+
+    debugPrint(
+      '[FavoriteBloc] Toggle Service ${event.serviceId} — currentlyFavorite: $isCurrentlyFavorite',
+    );
+
+    // Save the entity in case we need to rollback a removal on the
+    // Favorites page (where the service is already in serviceFavorites.data).
+    ServiceEntity? removedEntity;
+    if (isCurrentlyFavorite) {
+      for (final f in state.serviceFavorites.data) {
+        if (f.id == event.serviceId) {
+          removedEntity = f;
+          break;
+        }
+      }
+    }
+
+    // Optimistic update: immediately add/remove from the service favorite set
+    final optimisticIds = Set<int>.from(state.serviceFavoriteIds);
+    if (isCurrentlyFavorite) {
+      optimisticIds.remove(event.serviceId);
+    } else {
+      optimisticIds.add(event.serviceId);
+    }
+
+    final optimisticFavorites = removedEntity != null
+        ? state.serviceFavorites.copyWith(
+            data: state.serviceFavorites.data
+                .where((f) => f.id != event.serviceId)
+                .toList(),
+            total: state.serviceFavorites.total > 0
+                ? state.serviceFavorites.total - 1
+                : 0,
+          )
+        : state.serviceFavorites;
+
+    emit(state.copyWith(
+      serviceFavoriteIds: optimisticIds,
+      serviceFavorites: optimisticFavorites,
+      serviceTogglingIds: {...state.serviceTogglingIds, event.serviceId},
+      failure: null,
+    ));
+
+    // Persist the change via the domain layer.
+    final result = await toggleServiceFavoriteUseCase(
+      serviceId: event.serviceId,
+      isCurrentlyFavorite: isCurrentlyFavorite,
+    );
+
+    result.fold(
+      (failure) {
+        debugPrint(
+          '[FavoriteBloc] Toggle Service FAILED for ${event.serviceId}: ${failure.message}',
+        );
+
+        // Rollback on failure
+        final rollbackIds = Set<int>.from(state.serviceFavoriteIds);
+        if (isCurrentlyFavorite) {
+          rollbackIds.add(event.serviceId);
+        } else {
+          rollbackIds.remove(event.serviceId);
+        }
+
+        final rollbackFavorites = removedEntity != null
+            ? state.serviceFavorites.copyWith(
+                data: [...state.serviceFavorites.data, removedEntity],
+                total: state.serviceFavorites.total + 1,
+              )
+            : state.serviceFavorites;
+
+        final rollbackToggling = Set<int>.from(state.serviceTogglingIds)
+          ..remove(event.serviceId);
+
+        emit(state.copyWith(
+          serviceFavoriteIds: rollbackIds,
+          serviceFavorites: rollbackFavorites,
+          serviceTogglingIds: rollbackToggling,
+          failure: failure,
+        ));
+      },
+      (_) {
+        debugPrint(
+          '[FavoriteBloc] Toggle Service SUCCESS for ${event.serviceId}',
+        );
+
+        // Success: clear the toggling flag.
+        final updatedToggling = Set<int>.from(state.serviceTogglingIds)
+          ..remove(event.serviceId);
+
+        emit(state.copyWith(
+          serviceTogglingIds: updatedToggling,
+          failure: null,
+        ));
+
+        if (!isCurrentlyFavorite) {
+          add(const GetServiceFavoritesEvent());
         }
       },
     );

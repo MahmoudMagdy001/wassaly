@@ -20,7 +20,7 @@ class ProfileSettingsSection extends StatelessWidget {
           Padding(
             padding: EdgeInsetsDirectional.only(start: 8.w, bottom: 8.h),
             child: Text(
-              'profile.general_settings'.tr(),
+              context.l10n.profile_general_settings,
               style: tt.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: cs.primary,
@@ -33,44 +33,37 @@ class ProfileSettingsSection extends StatelessWidget {
               children: [
                 ProfileMenuTile(
                   icon: Icons.location_on_outlined,
-                  title: 'profile.saved_addresses'.tr(),
+                  title: context.l10n.profile_saved_addresses,
                   onTap: () => context.push(AppRoutes.addresses),
                 ),
-                ProfileMenuTile(
-                  icon: Icons.credit_card_outlined,
-                  title: 'profile.payment_methods'.tr(),
-                  onTap: () {},
-                ),
-                BlocBuilder<SettingsBloc, SettingsState>(
-                  buildWhen: (prev, curr) => prev.language != curr.language,
-                  builder: (context, state) {
+                BlocSelector<SettingsBloc, SettingsState, String>(
+                  selector: (state) => state.language,
+                  builder: (context, language) {
                     return ProfileMenuTile(
                       icon: Icons.language_outlined,
-                      title: 'profile.language'.tr(),
-                      subtitle: state.language == 'ar'
-                          ? 'profile.arabic'.tr()
-                          : 'profile.english'.tr(),
+                      title: context.l10n.profile_language,
+                      subtitle: language == 'ar'
+                          ? context.l10n.profile_arabic
+                          : context.l10n.profile_english,
                       onTap: () => context.showAppBottomSheet<void>(
                         builder: (context) => const LanguageBottomSheet(),
                       ),
                     );
                   },
                 ),
-                BlocBuilder<SettingsBloc, SettingsState>(
-                  buildWhen: (prev, curr) =>
-                      prev.isDarkMode != curr.isDarkMode ||
-                      prev.language != curr.language,
-                  builder: (context, state) {
+                BlocSelector<SettingsBloc, SettingsState, bool>(
+                  selector: (state) => state.isDarkMode,
+                  builder: (context, isDarkMode) {
                     return ProfileMenuTile(
-                      icon: state.isDarkMode
+                      icon: isDarkMode
                           ? Icons.dark_mode_outlined
                           : Icons.light_mode_outlined,
-                      title: 'profile.theme'.tr(),
-                      subtitle: state.isDarkMode
-                          ? 'profile.dark'.tr()
-                          : 'profile.light'.tr(),
+                      title: context.l10n.profile_theme,
+                      subtitle: isDarkMode
+                          ? context.l10n.profile_dark
+                          : context.l10n.profile_light,
                       trailing: Switch.adaptive(
-                        value: state.isDarkMode,
+                        value: isDarkMode,
                         onChanged: (_) {
                           context
                               .read<SettingsBloc>()
@@ -85,13 +78,12 @@ class ProfileSettingsSection extends StatelessWidget {
                 ),
                 ProfileMenuTile(
                   icon: Icons.notifications_outlined,
-                  title: 'profile.notifications'.tr(),
-                  trailing: BlocBuilder<SettingsBloc, SettingsState>(
-                    buildWhen: (prev, curr) =>
-                        prev.notificationsEnabled != curr.notificationsEnabled,
-                    builder: (context, state) {
+                  title: context.l10n.profile_notifications,
+                  trailing: BlocSelector<SettingsBloc, SettingsState, bool>(
+                    selector: (state) => state.notificationsEnabled,
+                    builder: (context, notificationsEnabled) {
                       return Switch.adaptive(
-                        value: state.notificationsEnabled,
+                        value: notificationsEnabled,
                         onChanged: (value) {
                           context
                               .read<SettingsBloc>()

@@ -16,7 +16,8 @@ abstract class ProductDetailsRemoteDataSource {
   });
 }
 
-class ProductDetailsRemoteDataSourceImpl implements ProductDetailsRemoteDataSource {
+class ProductDetailsRemoteDataSourceImpl
+    implements ProductDetailsRemoteDataSource {
   final DioService _dioService;
 
   const ProductDetailsRemoteDataSourceImpl(this._dioService);
@@ -74,9 +75,10 @@ class ProductDetailsRemoteDataSourceImpl implements ProductDetailsRemoteDataSour
   }) async {
     final result = await _dioService.put(
       '/api/reviews/update/product/$reviewId',
-      queryParameters: {
-        'comment': comment,
+      data: {
+        'review_id': reviewId,
         'rating': rating,
+        'comment': comment,
       },
     );
 

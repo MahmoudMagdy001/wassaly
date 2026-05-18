@@ -1,4 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/features/orders/presentation/bloc/orders_bloc.dart';
+import 'package:wassaly/features/orders/presentation/bloc/orders_state.dart';
 
 class ProfileStatsCard extends StatelessWidget {
   const ProfileStatsCard({super.key});
@@ -6,31 +8,120 @@ class ProfileStatsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = context.theme.colorScheme;
+    final tt = context.theme.textTheme;
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
-      child: AppCard(
-        showShadow: true,
-        onTap: () {},
-        leading: Container(
-          width: 48.w,
-          height: 48.w,
-          decoration: BoxDecoration(
-            color: cs.primaryContainer.withValues(alpha: 0.4),
-            borderRadius: BorderRadius.circular(8.r),
+    return BlocSelector<OrdersBloc, OrdersState, (int, int)>(
+      selector: (state) => (state.orders.total, state.serviceBookings.total),
+      builder: (context, totals) {
+        final (ordersTotal, bookingsTotal) = totals;
+
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsetsDirectional.only(start: 8.w, bottom: 8.h),
+                child: Text(
+                  context.l10n.profile_my_orders,
+                  style: tt.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: cs.primary,
+                  ),
+                ),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: _StatCard(
+                      title: context.l10n.order_products,
+                      count: ordersTotal,
+                      icon: Icons.inventory_2_outlined,
+                      onTap: () => context
+                          .push(AppRoutes.orders, extra: {'initialIndex': 0}),
+                    ),
+                  ),
+                  SizedBox(width: 12.w),
+                  Expanded(
+                    child: _StatCard(
+                      title: context.l10n.order_services,
+                      count: bookingsTotal,
+                      icon: Icons.handyman_outlined,
+                      onTap: () => context
+                          .push(AppRoutes.orders, extra: {'initialIndex': 1}),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-          child: Icon(
-            Icons.inventory_2_outlined,
-            color: cs.primary,
+        );
+      },
+    );
+  }
+}
+
+class _StatCard extends StatelessWidget {
+  final String title;
+  final int count;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  const _StatCard({
+    required this.title,
+    required this.count,
+    required this.icon,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = context.theme.colorScheme;
+    final tt = context.theme.textTheme;
+
+    return AppCard(
+      showShadow: true,
+      onTap: onTap,
+      padding: EdgeInsets.all(12.r),
+      child: Row(
+        children: [
+          Container(
+            width: 32.w,
+            height: 32.h,
+            decoration: BoxDecoration(
+              color: cs.primaryContainer.withValues(alpha: 0.4),
+              borderRadius: BorderRadius.circular(8.r),
+            ),
+            child: Icon(
+              icon,
+              size: 18.sp,
+              color: cs.primary,
+            ),
           ),
-        ),
-        title: 'profile.my_orders'.tr(),
-        subtitle: 'profile.orders_count'.plural(3, args: [3.toString()]),
-        trailing: Icon(
-          Icons.chevron_right,
-          color: cs.onSurfaceVariant,
-        ),
-        child: const SizedBox.shrink(),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  count.toString(),
+                  style: tt.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  title,
+                  style: tt.labelSmall?.copyWith(
+                    color: cs.onSurfaceVariant,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
