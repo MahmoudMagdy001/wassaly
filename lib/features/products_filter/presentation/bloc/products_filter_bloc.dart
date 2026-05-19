@@ -5,7 +5,8 @@ import 'package:wassaly/features/products_filter/domain/entities/product_filter_
 import 'products_filter_event.dart';
 import 'products_filter_state.dart';
 
-class ProductsFilterBloc extends Bloc<ProductsFilterEvent, ProductsFilterState> {
+class ProductsFilterBloc
+    extends Bloc<ProductsFilterEvent, ProductsFilterState> {
   final GetFilteredProductsUseCase _getFilteredProductsUseCase;
   final GetCategoriesUseCase _getCategoriesUseCase;
 

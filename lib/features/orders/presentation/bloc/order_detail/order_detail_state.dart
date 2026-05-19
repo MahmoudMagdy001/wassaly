@@ -2,6 +2,7 @@ import 'package:wassaly/core/imports/imports.dart';
 import '../../../domain/entities/order_entity.dart';
 
 enum OrderDetailStatus { initial, loading, success, failure }
+
 enum OrderActionStatus { initial, loading, success, failure }
 
 class OrderDetailState extends Equatable {
@@ -36,5 +37,6 @@ class OrderDetailState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [status, actionStatus, order, errorMessage, actionErrorMessage];
+  List<Object?> get props =>
+      [status, actionStatus, order, errorMessage, actionErrorMessage];
 }

@@ -19,4 +19,3 @@ class OrderItemEntity extends Equatable {
   @override
   List<Object?> get props => [id, price, quantity, totalPrice, product];
 }
-

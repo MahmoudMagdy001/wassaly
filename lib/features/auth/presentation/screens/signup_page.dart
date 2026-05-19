@@ -133,8 +133,7 @@ class _SignupViewState extends State<_SignupView> {
           final message = state.errorMessage == 'auth_terms_required'
               ? context.l10n.auth_terms_required
               : state.errorMessage!;
-          context.showTypedSnackBar(message,
-              type: SnackBarType.error);
+          context.showTypedSnackBar(message, type: SnackBarType.error);
         }
       },
       child: Scaffold(

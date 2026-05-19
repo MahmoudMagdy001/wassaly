@@ -134,14 +134,17 @@ class _BrandDetailsViewState extends State<BrandDetailsView> {
                   products: isLoading ? const [] : products,
                   padding: EdgeInsets.symmetric(vertical: 16.h),
                   hasMore: isLoading ? false : !hasReachedMax,
-                  isLoadingMore: isLoading ? false : (productsStatus == BrandProductsStatus.loading),
+                  isLoadingMore: isLoading
+                      ? false
+                      : (productsStatus == BrandProductsStatus.loading),
                   mainAxisExtent: 240.h,
                   onLoadMore: isLoading
                       ? null
                       : () {
                           if (productsStatus != BrandProductsStatus.loading) {
                             context.read<BrandsBloc>().add(
-                                LoadMoreBrandProductsEvent(brandId: widget.brandId));
+                                LoadMoreBrandProductsEvent(
+                                    brandId: widget.brandId));
                           }
                         },
                 );

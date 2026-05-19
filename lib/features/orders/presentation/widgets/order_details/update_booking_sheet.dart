@@ -21,8 +21,10 @@ class _UpdateBookingSheetState extends State<UpdateBookingSheet> {
   @override
   void initState() {
     super.initState();
-    _phoneController = TextEditingController(text: widget.booking.customerPhone);
-    _problemController = TextEditingController(text: widget.booking.problemDescription);
+    _phoneController =
+        TextEditingController(text: widget.booking.customerPhone);
+    _problemController =
+        TextEditingController(text: widget.booking.problemDescription);
   }
 
   @override
@@ -99,7 +101,8 @@ class _UpdateBookingSheetState extends State<UpdateBookingSheet> {
                               UpdateBookingEvent(
                                 UpdateBookingParams(
                                   bookingId: widget.booking.id,
-                                  problemDescription: _problemController.text.trim(),
+                                  problemDescription:
+                                      _problemController.text.trim(),
                                   customerPhone: _phoneController.text.trim(),
                                 ),
                               ),

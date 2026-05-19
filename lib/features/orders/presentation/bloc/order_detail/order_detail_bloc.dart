@@ -52,7 +52,8 @@ class OrderDetailBloc extends Bloc<OrderDetailEvent, OrderDetailState> {
     CancelOrderEvent event,
     Emitter<OrderDetailState> emit,
   ) async {
-    emit(state.copyWith(actionStatus: OrderActionStatus.loading, actionErrorMessage: ''));
+    emit(state.copyWith(
+        actionStatus: OrderActionStatus.loading, actionErrorMessage: ''));
 
     final result = await _cancelOrderUseCase(event.orderId);
 
@@ -73,9 +74,11 @@ class OrderDetailBloc extends Bloc<OrderDetailEvent, OrderDetailState> {
     UpdateOrderEvent event,
     Emitter<OrderDetailState> emit,
   ) async {
-    emit(state.copyWith(actionStatus: OrderActionStatus.loading, actionErrorMessage: ''));
+    emit(state.copyWith(
+        actionStatus: OrderActionStatus.loading, actionErrorMessage: ''));
 
-    final result = await _updateOrderUseCase(UpdateOrderParams(orderId: event.orderId, data: event.data));
+    final result = await _updateOrderUseCase(
+        UpdateOrderParams(orderId: event.orderId, data: event.data));
 
     await result.fold(
       (failure) async => emit(state.copyWith(
@@ -102,7 +105,8 @@ class OrderDetailBloc extends Bloc<OrderDetailEvent, OrderDetailState> {
     DeleteOrderEvent event,
     Emitter<OrderDetailState> emit,
   ) async {
-    emit(state.copyWith(actionStatus: OrderActionStatus.loading, actionErrorMessage: ''));
+    emit(state.copyWith(
+        actionStatus: OrderActionStatus.loading, actionErrorMessage: ''));
 
     final result = await _deleteOrderUseCase(event.orderId);
 

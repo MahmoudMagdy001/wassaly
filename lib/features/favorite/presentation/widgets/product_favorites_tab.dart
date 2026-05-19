@@ -48,7 +48,8 @@ class ProductFavoritesTab extends StatelessWidget {
                   hasScrollBody: false,
                   child: Center(
                     child: AppErrorWidget.failure(
-                      failure: failure ?? const UnknownFailure('An error occurred'),
+                      failure:
+                          failure ?? const UnknownFailure('An error occurred'),
                       onRetry: () => context
                           .read<FavoriteBloc>()
                           .add(const GetFavoritesEvent()),

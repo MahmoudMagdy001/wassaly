@@ -1588,4 +1588,7 @@ class SAr extends S {
   String filter_rating_stars(Object stars) {
     return '$stars نجوم وأكثر';
   }
+
+  @override
+  String get app_exit_confirm => 'برجاء الضغط مرة أخرى للخروج من التطبيق';
 }

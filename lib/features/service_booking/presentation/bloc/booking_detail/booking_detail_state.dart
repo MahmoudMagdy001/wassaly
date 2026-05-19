@@ -1,8 +1,8 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/service_booking/domain/entities/booking_entity.dart';
 
-
 enum BookingDetailStatus { initial, loading, success, failure }
+
 enum BookingActionStatus { initial, loading, success, failure }
 
 class BookingDetailState extends Equatable {
@@ -37,5 +37,6 @@ class BookingDetailState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [status, actionStatus, booking, errorMessage, actionErrorMessage];
+  List<Object?> get props =>
+      [status, actionStatus, booking, errorMessage, actionErrorMessage];
 }

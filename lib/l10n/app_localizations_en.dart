@@ -1596,4 +1596,7 @@ class SEn extends S {
   String filter_rating_stars(Object stars) {
     return '$stars stars & up';
   }
+
+  @override
+  String get app_exit_confirm => 'Please press back again to exit the app';
 }

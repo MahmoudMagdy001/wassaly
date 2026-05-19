@@ -26,9 +26,8 @@ class _CartPageState extends State<CartPage> {
         cartBloc.add(const LoadCartItemsEvent());
       }
     });
-    _connectivitySub = sl<InternetConnectionService>()
-        .connectivityRestoredStream
-        .listen((_) {
+    _connectivitySub =
+        sl<InternetConnectionService>().connectivityRestoredStream.listen((_) {
       if (mounted) _onRetryLoad(context);
     });
   }
@@ -107,8 +106,8 @@ class _CartPageState extends State<CartPage> {
                 slivers: [
                   // Cart Items List
                   SliverPadding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 16.w, vertical: 16.h),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
                     sliver: SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {

@@ -49,7 +49,8 @@ class OrdersRepositoryImpl implements OrdersRepository {
   }
 
   @override
-  Future<Either<Failure, void>> updateOrder(int orderId, Map<String, dynamic> data) async {
+  Future<Either<Failure, void>> updateOrder(
+      int orderId, Map<String, dynamic> data) async {
     try {
       await _remoteDataSource.updateOrder(orderId, data);
       return const Right(null);
@@ -72,4 +73,3 @@ class OrdersRepositoryImpl implements OrdersRepository {
     }
   }
 }
-

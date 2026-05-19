@@ -20,41 +20,115 @@ class MainLayoutPage extends StatefulWidget {
 }
 
 class _MainLayoutPageState extends State<MainLayoutPage> {
+  DateTime? _lastBackPressTime;
+  OverlayEntry? _exitOverlayEntry;
+
   @override
   void initState() {
     super.initState();
-    // Load data after the widget is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadUserDataIfNeeded();
     });
   }
 
+  @override
+  void dispose() {
+    // Cancel any pending overlay to avoid inserting into a detached overlay.
+    _exitOverlayEntry?.remove();
+    _exitOverlayEntry = null;
+    super.dispose();
+  }
+
+  /// Loads cart and favorites only when the user is authenticated AND each
+  /// slice has never been fetched (status == initial). Covers the cold-start
+  /// case; hot-auth transitions are handled by the BlocListener below.
   void _loadUserDataIfNeeded() {
     if (!mounted) return;
     final sessionState = context.read<SessionBloc>().state;
+    if (sessionState is! SessionAuthenticated) return;
 
-    if (sessionState is SessionAuthenticated) {
-      // Only load if never fetched before (status == initial).
-      // This prevents double-loading when the data was fetched but empty.
-      final cartState = context.read<CartBloc>().state;
-      if (cartState.status == CartStatus.initial) {
-        debugPrint('[MainLayout] Cart not yet loaded, loading cart items');
-        context.read<CartBloc>().add(const LoadCartItemsEvent());
-      }
+    final cartState = context.read<CartBloc>().state;
+    if (cartState.status == CartStatus.initial) {
+      context.read<CartBloc>().add(const LoadCartItemsEvent());
+    }
 
-      final favoriteState = context.read<FavoriteBloc>().state;
-      if (favoriteState.status == FavoriteStatus.initial) {
-        debugPrint('[MainLayout] Favorites not yet loaded, loading favorites');
-        context.read<FavoriteBloc>().add(const GetFavoritesEvent());
-      }
+    final favoriteState = context.read<FavoriteBloc>().state;
+    if (favoriteState.status == FavoriteStatus.initial) {
+      context.read<FavoriteBloc>().add(const GetFavoritesEvent());
     }
   }
 
   void _onTap(int index) {
+    // Re-tapping the Home tab scrolls to top / refreshes.
+    if (index == 0 && widget.navigationShell.currentIndex == 0) {
+      sl<HomeNavigationService>().scrollToTopOrRefresh();
+      return;
+    }
     widget.navigationShell.goBranch(
       index,
+      // Reset to the branch's initial location only when re-tapping the
+      // *currently active* tab (so back-stack is cleared on double-tap).
       initialLocation: index == widget.navigationShell.currentIndex,
     );
+  }
+
+  void _handleBackPress() {
+    // 1. Sub-route / dialog stacked — pop it.
+    if (context.canPop()) {
+      context.pop();
+      return;
+    }
+
+    // 2. Not on Home tab — navigate home.
+    if (widget.navigationShell.currentIndex != 0) {
+      _onTap(0);
+      return;
+    }
+
+    // 3. On Home tab — double-back to exit.
+    final now = DateTime.now();
+    final elapsed = _lastBackPressTime == null
+        ? const Duration(days: 1)
+        : now.difference(_lastBackPressTime!);
+
+    if (elapsed > const Duration(seconds: 2)) {
+      _lastBackPressTime = now;
+      _showExitOverlay();
+    } else {
+      _exitOverlayEntry?.remove();
+      _exitOverlayEntry = null;
+      SystemNavigator.pop();
+    }
+  }
+
+  void _showExitOverlay() {
+    _exitOverlayEntry?.remove();
+
+    const overlayDuration = Duration(seconds: 2);
+    const fadeDuration = Duration(milliseconds: 250);
+
+    _exitOverlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: MediaQuery.sizeOf(context).height * 0.45,
+        left: 0,
+        right: 0,
+        child: Material(
+          color: Colors.transparent,
+          child: _ExitConfirmOverlay(
+            message: context.l10n.app_exit_confirm,
+            duration: overlayDuration,
+          ),
+        ),
+      ),
+    );
+
+    Overlay.of(context).insert(_exitOverlayEntry!);
+
+    // Auto-remove after the overlay has finished its fade-out animation.
+    Future.delayed(overlayDuration + fadeDuration, () {
+      _exitOverlayEntry?.remove();
+      _exitOverlayEntry = null;
+    });
   }
 
   @override
@@ -63,87 +137,111 @@ class _MainLayoutPageState extends State<MainLayoutPage> {
 
     return MultiBlocListener(
       listeners: [
-        // Listen to SessionBloc changes and load cart/favorites when authenticated
         BlocListener<SessionBloc, SessionState>(
+          // Trigger only on the transition to authenticated, not on every rebuild.
           listenWhen: (prev, curr) =>
               prev is! SessionAuthenticated && curr is SessionAuthenticated,
-          listener: (context, state) {
-            debugPrint(
-                '[MainLayout] User authenticated, loading cart and favorites');
-            // Load cart items when user becomes authenticated
+          listener: (context, _) {
             context.read<CartBloc>().add(const LoadCartItemsEvent());
-            // Load favorite items when user becomes authenticated
             context.read<FavoriteBloc>().add(const GetFavoritesEvent());
           },
         ),
       ],
-      child: Scaffold(
-        body: widget.navigationShell,
-        // FIX 4: BlocSelector now only selects avatarUrl (single field),
-        // so the BottomNavigationBar only rebuilds when avatar changes.
-        // FIX 5: Extracted _CartBadgeIcon and _ProfileNavIcon as private
-        // widgets — cart badge rebuilds independently via its own BlocSelector,
-        // not the entire nav bar.
-        bottomNavigationBar: BlocSelector<SessionBloc, SessionState, String?>(
-          selector: (state) =>
-              state is SessionAuthenticated ? state.user.avatarUrl : null,
-          builder: (context, avatarUrl) {
-            return BottomNavigationBar(
-              currentIndex: widget.navigationShell.currentIndex.clamp(0, 3),
-              onTap: _onTap,
-              backgroundColor: cs.surface,
-              selectedItemColor: cs.primary,
-              unselectedItemColor: cs.onSurfaceVariant,
-              type: BottomNavigationBarType.fixed,
-              showUnselectedLabels: true,
-              items: [
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.home_outlined),
-                  activeIcon: const Icon(Icons.home_rounded),
-                  label: context.l10n.nav_nav_home,
-                ),
-                // FIX 5: _CartBadgeIcon — BlocSelector scoped to cartCount only,
-                // rebuilds independently without triggering full nav bar rebuild
-                BottomNavigationBarItem(
-                  icon: const _CartBadgeIcon(
-                    isActive: false,
-                    baseIcon: Icons.shopping_cart_outlined,
-                  ),
-                  activeIcon: const _CartBadgeIcon(
-                    isActive: true,
-                    baseIcon: Icons.shopping_cart_rounded,
-                  ),
-                  label: context.l10n.nav_nav_cart,
-                ),
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.favorite_outline),
-                  activeIcon: const Icon(Icons.favorite_rounded),
-                  label: context.l10n.nav_nav_favorite,
-                ),
-                // FIX 5: _ProfileNavIcon — stable widget, only rebuilds when
-                // avatarUrl changes (already passed from outer BlocSelector)
-                BottomNavigationBarItem(
-                  icon: _ProfileNavIcon(
-                    avatarUrl: avatarUrl,
-                    isActive: false,
-                  ),
-                  activeIcon: _ProfileNavIcon(
-                    avatarUrl: avatarUrl,
-                    isActive: true,
-                  ),
-                  label: context.l10n.nav_nav_profile,
-                ),
-              ],
-            );
-          },
+      child: PopScope<Object?>(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, _) {
+          if (!didPop) _handleBackPress();
+        },
+        child: Scaffold(
+          body: widget.navigationShell,
+          bottomNavigationBar: _NavBar(
+            currentIndex: widget.navigationShell.currentIndex,
+            onTap: _onTap,
+            backgroundColor: cs.surface,
+            selectedItemColor: cs.primary,
+            unselectedItemColor: cs.onSurfaceVariant,
+          ),
         ),
       ),
     );
   }
 }
 
-/// FIX 5: Extracted private widget — has its own tight BlocSelector for
-/// cartCount so only the badge rebuilds, not the entire BottomNavigationBar.
+// ---------------------------------------------------------------------------
+// Bottom navigation bar
+// ---------------------------------------------------------------------------
+
+/// Extracted into its own widget so it owns its own [BlocSelector] for
+/// [avatarUrl] — the outer Scaffold no longer rebuilds when the avatar changes.
+class _NavBar extends StatelessWidget {
+  const _NavBar({
+    required this.currentIndex,
+    required this.onTap,
+    required this.backgroundColor,
+    required this.selectedItemColor,
+    required this.unselectedItemColor,
+  });
+
+  final int currentIndex;
+  final ValueChanged<int> onTap;
+  final Color backgroundColor;
+  final Color selectedItemColor;
+  final Color unselectedItemColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<SessionBloc, SessionState, String?>(
+      selector: (state) =>
+          state is SessionAuthenticated ? state.user.avatarUrl : null,
+      builder: (context, avatarUrl) {
+        return BottomNavigationBar(
+          currentIndex: currentIndex.clamp(0, 3),
+          onTap: onTap,
+          backgroundColor: backgroundColor,
+          selectedItemColor: selectedItemColor,
+          unselectedItemColor: unselectedItemColor,
+          type: BottomNavigationBarType.fixed,
+          showUnselectedLabels: true,
+          items: [
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.home_outlined),
+              activeIcon: const Icon(Icons.home_rounded),
+              label: context.l10n.nav_nav_home,
+            ),
+            BottomNavigationBarItem(
+              icon: const _CartBadgeIcon(
+                isActive: false,
+                baseIcon: Icons.shopping_cart_outlined,
+              ),
+              activeIcon: const _CartBadgeIcon(
+                isActive: true,
+                baseIcon: Icons.shopping_cart_rounded,
+              ),
+              label: context.l10n.nav_nav_cart,
+            ),
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.favorite_outline),
+              activeIcon: const Icon(Icons.favorite_rounded),
+              label: context.l10n.nav_nav_favorite,
+            ),
+            BottomNavigationBarItem(
+              icon: _ProfileNavIcon(avatarUrl: avatarUrl, isActive: false),
+              activeIcon: _ProfileNavIcon(avatarUrl: avatarUrl, isActive: true),
+              label: context.l10n.nav_nav_profile,
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Private icon widgets
+// ---------------------------------------------------------------------------
+
+/// Cart icon with a badge — has its own tight [BlocSelector] on [cartCount]
+/// so only the badge rebuilds, not the navigation bar.
 class _CartBadgeIcon extends StatelessWidget {
   const _CartBadgeIcon({
     required this.isActive,
@@ -155,14 +253,13 @@ class _CartBadgeIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tt = context.textTheme;
     return BlocSelector<CartBloc, CartState, int>(
       selector: (state) => state.cartCount,
       builder: (context, cartCount) => Badge(
         label: cartCount > 0
             ? Text(
                 cartCount.toString(),
-                style: tt.labelSmall?.copyWith(
+                style: context.textTheme.labelSmall?.copyWith(
                   color: context.colors.onError,
                   fontWeight: FontWeight.bold,
                 ),
@@ -175,8 +272,9 @@ class _CartBadgeIcon extends StatelessWidget {
   }
 }
 
-/// FIX 5: Extracted private widget — receives avatarUrl from the outer
-/// BlocSelector so no extra subscriptions are created here.
+/// Profile icon — shows the user's avatar when available, falls back to a
+/// person icon. Receives [avatarUrl] from the parent [_NavBar] selector so
+/// no additional bloc subscription is created here.
 class _ProfileNavIcon extends StatelessWidget {
   const _ProfileNavIcon({
     required this.avatarUrl,
@@ -199,5 +297,106 @@ class _ProfileNavIcon extends StatelessWidget {
       );
     }
     return Icon(isActive ? Icons.person_rounded : Icons.person_outline);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Exit overlay
+// ---------------------------------------------------------------------------
+
+class _ExitConfirmOverlay extends StatefulWidget {
+  const _ExitConfirmOverlay({
+    required this.message,
+    required this.duration,
+  });
+
+  final String message;
+  final Duration duration;
+
+  @override
+  State<_ExitConfirmOverlay> createState() => _ExitConfirmOverlayState();
+}
+
+class _ExitConfirmOverlayState extends State<_ExitConfirmOverlay>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _scaleAnimation;
+  late final Animation<double> _fadeAnimation;
+
+  static const _animDuration = Duration(milliseconds: 250);
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this, duration: _animDuration);
+
+    _scaleAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutBack,
+      reverseCurve: Curves.easeInBack,
+    );
+    _fadeAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeIn,
+      reverseCurve: Curves.easeOut,
+    );
+
+    _controller.forward();
+
+    // Begin fade-out slightly before the overlay is removed so the animation
+    // completes before the entry is pulled from the overlay stack.
+    Future.delayed(widget.duration - _animDuration, () {
+      if (mounted) _controller.reverse();
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = context.theme.colorScheme;
+
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: ScaleTransition(
+        scale: _scaleAnimation,
+        child: Center(
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 32.w),
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+            decoration: BoxDecoration(
+              color: cs.inverseSurface.withValues(alpha: 0.95),
+              borderRadius: BorderRadius.circular(12.r),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.2),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  child: Text(
+                    widget.message,
+                    style: context.theme.textTheme.bodyMedium?.copyWith(
+                      color: cs.onInverseSurface,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

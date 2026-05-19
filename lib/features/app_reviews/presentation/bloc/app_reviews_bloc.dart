@@ -1,8 +1,10 @@
 import 'package:wassaly/core/imports/imports.dart';
-import '../../domain/usecases/get_app_reviews_usecase.dart';
-import '../../domain/usecases/add_app_review_usecase.dart';
-import '../../domain/usecases/update_app_review_usecase.dart';
+
 import '../../../auth/data/datasources/auth_local_datasource.dart';
+import '../../domain/entities/app_review_entity.dart';
+import '../../domain/usecases/add_app_review_usecase.dart';
+import '../../domain/usecases/get_app_reviews_usecase.dart';
+import '../../domain/usecases/update_app_review_usecase.dart';
 import 'app_reviews_event.dart';
 import 'app_reviews_state.dart';
 
@@ -39,12 +41,25 @@ class AppReviewsBloc extends Bloc<AppReviewsEvent, AppReviewsState> {
         status: AppStatus.failure,
         errorMessage: failure.message,
       )),
-      (reviews) => emit(state.copyWith(
-        status: AppStatus.success,
-        reviews: reviews,
-        clearError: true,
-        currentUserId: user?.id != null ? int.tryParse(user!.id.toString()) : null,
-      )),
+      (reviews) {
+        final sortedReviews = List<AppReviewEntity>.from(reviews)
+          ..sort((a, b) {
+            try {
+              final dateA = DateTime.parse(a.createdAt);
+              final dateB = DateTime.parse(b.createdAt);
+              return dateB.compareTo(dateA);
+            } catch (_) {
+              return b.id.compareTo(a.id);
+            }
+          });
+        emit(state.copyWith(
+          status: AppStatus.success,
+          reviews: sortedReviews,
+          clearError: true,
+          currentUserId:
+              user?.id != null ? int.tryParse(user!.id.toString()) : null,
+        ));
+      },
     );
   }
 
@@ -94,6 +109,15 @@ class AppReviewsBloc extends Bloc<AppReviewsEvent, AppReviewsState> {
         final updatedReviews = state.reviews.map((r) {
           return r.id == updatedReview.id ? updatedReview : r;
         }).toList();
+        updatedReviews.sort((a, b) {
+          try {
+            final dateA = DateTime.parse(a.createdAt);
+            final dateB = DateTime.parse(b.createdAt);
+            return dateB.compareTo(dateA);
+          } catch (_) {
+            return b.id.compareTo(a.id);
+          }
+        });
         emit(state.copyWith(
           actionStatus: AppStatus.success,
           reviews: updatedReviews,

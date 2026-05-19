@@ -13,7 +13,8 @@ class AppReviewsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = context.theme.colorScheme;
     final sessionState = context.watch<SessionBloc>().state;
-    final currentUserId = sessionState is SessionAuthenticated ? sessionState.user.id : null;
+    final currentUserId =
+        sessionState is SessionAuthenticated ? sessionState.user.id : null;
 
     return Scaffold(
       backgroundColor: cs.surface,
@@ -21,8 +22,7 @@ class AppReviewsPage extends StatelessWidget {
         title: Text(context.l10n.profile_app_reviews),
       ),
       floatingActionButton: BlocBuilder<AppReviewsBloc, AppReviewsState>(
-        buildWhen: (previous, current) =>
-            previous.status != current.status,
+        buildWhen: (previous, current) => previous.status != current.status,
         builder: (context, state) {
           if (!state.status.isSuccess || currentUserId == null) {
             return const SizedBox.shrink();
@@ -57,7 +57,7 @@ class AppReviewsPage extends StatelessWidget {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.actionErrorMessage ??
-                     context.l10n.errors_something_went_wrong),
+                    context.l10n.errors_something_went_wrong),
               ),
             );
           }

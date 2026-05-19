@@ -22,4 +22,3 @@ class OrderItemModel extends OrderItemEntity {
     );
   }
 }
-

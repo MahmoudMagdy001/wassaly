@@ -22,8 +22,7 @@ class ProductsSection extends StatelessWidget {
         final isLoading = productsStatus == HomeStatus.loading ||
             productsStatus == HomeStatus.initial;
 
-        if (productsStatus == HomeStatus.failure &&
-            products.data.isEmpty) {
+        if (productsStatus == HomeStatus.failure && products.data.isEmpty) {
           return const SliverToBoxAdapter(
             child: SizedBox.shrink(),
           );

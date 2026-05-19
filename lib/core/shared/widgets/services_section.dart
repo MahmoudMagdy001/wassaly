@@ -42,7 +42,8 @@ class AppServicesSection extends StatelessWidget {
               title: 'خدمة تجريبية طويلة جدا للتجربة',
               image: '',
               price: 100,
-              description: 'وصف تجريبي طويل جدا للتجربة وعرض التفاصيل بشكل كامل',
+              description:
+                  'وصف تجريبي طويل جدا للتجربة وعرض التفاصيل بشكل كامل',
               isFavorite: false,
             ),
           )

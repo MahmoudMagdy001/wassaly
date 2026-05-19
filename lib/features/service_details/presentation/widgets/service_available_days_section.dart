@@ -20,8 +20,10 @@ class ServiceAvailableDaysSection extends StatefulWidget {
 
 class _ServiceAvailableDaysSectionState
     extends State<ServiceAvailableDaysSection> {
-  final ValueNotifier<ServiceAvailableDayEntity?> _selectedDayNotifier = ValueNotifier(null);
-  final ValueNotifier<ServiceAvailableTimeEntity?> _selectedTimeNotifier = ValueNotifier(null);
+  final ValueNotifier<ServiceAvailableDayEntity?> _selectedDayNotifier =
+      ValueNotifier(null);
+  final ValueNotifier<ServiceAvailableTimeEntity?> _selectedTimeNotifier =
+      ValueNotifier(null);
 
   @override
   void dispose() {
@@ -66,7 +68,8 @@ class _ServiceAvailableDaysSectionState
                       onSelected: (selected) {
                         _selectedDayNotifier.value = selected ? day : null;
                         _selectedTimeNotifier.value = null;
-                        widget.onSelectionChanged(_selectedDayNotifier.value, _selectedTimeNotifier.value);
+                        widget.onSelectionChanged(_selectedDayNotifier.value,
+                            _selectedTimeNotifier.value);
                       },
                       selectedColor: cs.primary,
                       labelStyle: TextStyle(
@@ -106,13 +109,19 @@ class _ServiceAvailableDaysSectionState
                           label: Text(time.displayTime),
                           selected: isSelected,
                           onSelected: (selected) {
-                            _selectedTimeNotifier.value = selected ? time : null;
-                            widget.onSelectionChanged(selectedDay, _selectedTimeNotifier.value);
+                            _selectedTimeNotifier.value =
+                                selected ? time : null;
+                            widget.onSelectionChanged(
+                                selectedDay, _selectedTimeNotifier.value);
                           },
                           selectedColor: cs.primaryContainer,
                           labelStyle: TextStyle(
-                            color: isSelected ? cs.onPrimaryContainer : cs.onSurface,
-                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                            color: isSelected
+                                ? cs.onPrimaryContainer
+                                : cs.onSurface,
+                            fontWeight: isSelected
+                                ? FontWeight.bold
+                                : FontWeight.normal,
                           ),
                         );
                       }).toList(),

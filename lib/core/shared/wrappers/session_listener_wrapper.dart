@@ -30,6 +30,9 @@ class SessionListenerWrapper extends StatelessWidget {
           context.read<ProfileBloc>().add(const ProfileReset());
           context.read<CartBloc>().add(const ClearCartEvent());
           context.read<FavoriteBloc>().add(const ClearFavoritesEvent());
+          // Dismiss any active snackbar before navigating so nothing leaks
+          // onto the login screen after account deletion or logout.
+          ScaffoldMessenger.of(context).clearSnackBars();
           appRouter.go(AppRoutes.login);
         }
       },

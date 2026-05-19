@@ -47,7 +47,8 @@ class _ServiceDetailsGalleryState extends State<ServiceDetailsGallery> {
                   context,
                   imageUrls: widget.gallery,
                   initialIndex: index,
-                  heroTagBuilder: (i) => 'service_image_${i}_${widget.gallery[i]}',
+                  heroTagBuilder: (i) =>
+                      'service_image_${i}_${widget.gallery[i]}',
                 );
                 if (newIndex != null && mounted) {
                   _pageController.jumpToPage(newIndex);

@@ -40,11 +40,12 @@ class OrderModel extends OrderEntity {
       customerName: json['customer_name'] as String?,
       customerPhone: json['customer_phone'] as String?,
       deliveryAddress: json['delivery_address'] as String?,
-      governorateId: (json['governorate'] as Map<String, dynamic>?)?['id']?.toString(),
-      governorateName: (json['governorate'] as Map<String, dynamic>?)?['name'] as String?,
+      governorateId:
+          (json['governorate'] as Map<String, dynamic>?)?['id']?.toString(),
+      governorateName:
+          (json['governorate'] as Map<String, dynamic>?)?['name'] as String?,
       centerId: (json['center'] as Map<String, dynamic>?)?['id']?.toString(),
       centerName: (json['center'] as Map<String, dynamic>?)?['name'] as String?,
     );
   }
 }
-

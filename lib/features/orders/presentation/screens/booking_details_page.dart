@@ -390,9 +390,9 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                       ]),
                     ),
                   );
-              },
-            ),
-          ],
+                },
+              ),
+            ],
           ),
         ),
       ),

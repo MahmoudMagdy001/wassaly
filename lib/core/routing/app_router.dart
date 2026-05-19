@@ -38,7 +38,8 @@ import 'package:wassaly/features/provider_details/presentation/screens/provider_
 import 'package:wassaly/features/service_booking/domain/entities/booking_entity.dart';
 import 'package:wassaly/features/service_booking/presentation/screens/booking_success_page.dart';
 import 'package:wassaly/features/cart/presentation/screens/order_success_page.dart';
-import 'package:wassaly/features/cart/domain/entities/order_entity.dart' as cart_order;
+import 'package:wassaly/features/cart/domain/entities/order_entity.dart'
+    as cart_order;
 import 'package:wassaly/features/service_booking/presentation/screens/service_booking_page.dart';
 import 'package:wassaly/features/service_details/domain/entities/service_detail_entity.dart';
 import 'package:wassaly/features/service_details/presentation/screens/service_details_page.dart';
@@ -133,7 +134,8 @@ final GoRouter appRouter = GoRouter(
                     final extra = state.extra as Map<String, dynamic>?;
                     final orderId = extra?['orderId'] as int? ?? 0;
                     return BlocProvider(
-                      create: (_) => sl<OrderDetailBloc>()..add(FetchOrderDetailEvent(orderId)),
+                      create: (_) => sl<OrderDetailBloc>()
+                        ..add(FetchOrderDetailEvent(orderId)),
                       child: OrderDetailsPage(orderId: orderId),
                     );
                   },
@@ -146,11 +148,14 @@ final GoRouter appRouter = GoRouter(
                     final booking = extra?['booking'] as BookingEntity?;
                     if (booking == null) {
                       return Scaffold(
-                        body: Center(child: Text(context.l10n.errors_something_went_wrong)),
+                        body: Center(
+                            child:
+                                Text(context.l10n.errors_something_went_wrong)),
                       );
                     }
                     return BlocProvider(
-                      create: (_) => sl<BookingDetailBloc>()..add(InitializeBookingDetailEvent(booking)),
+                      create: (_) => sl<BookingDetailBloc>()
+                        ..add(InitializeBookingDetailEvent(booking)),
                       child: BookingDetailsPage(booking: booking),
                     );
                   },
@@ -179,7 +184,8 @@ final GoRouter appRouter = GoRouter(
                   path: 'app-reviews',
                   name: 'appReviews',
                   builder: (context, state) => BlocProvider(
-                    create: (_) => sl<AppReviewsBloc>()..add(const GetAppReviewsEvent()),
+                    create: (_) =>
+                        sl<AppReviewsBloc>()..add(const GetAppReviewsEvent()),
                     child: const AppReviewsPage(),
                   ),
                 ),

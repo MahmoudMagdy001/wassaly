@@ -61,4 +61,3 @@ class OrderEntity extends Equatable {
         centerName,
       ];
 }
-

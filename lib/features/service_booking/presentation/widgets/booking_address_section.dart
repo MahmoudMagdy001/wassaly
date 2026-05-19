@@ -53,11 +53,13 @@ class BookingAddressSection extends StatelessWidget {
                     state.addresses.length,
                     (index) {
                       final address = state.addresses[index];
-                      final isSelected = state.selectedAddress?.id == address.id;
+                      final isSelected =
+                          state.selectedAddress?.id == address.id;
 
                       return Padding(
                         padding: EdgeInsets.only(
-                            bottom: index == state.addresses.length - 1 ? 0 : 12.h),
+                            bottom:
+                                index == state.addresses.length - 1 ? 0 : 12.h),
                         child: InkWell(
                           onTap: () =>
                               bloc.add(ServiceBookingAddressSelected(address)),
@@ -68,7 +70,8 @@ class BookingAddressSection extends StatelessWidget {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(16.r),
                               border: Border.all(
-                                color: isSelected ? cs.primary : cs.outlineVariant,
+                                color:
+                                    isSelected ? cs.primary : cs.outlineVariant,
                                 width: isSelected ? 2 : 1,
                               ),
                               color: isSelected
@@ -109,7 +112,8 @@ class BookingAddressSection extends StatelessWidget {
                                 // Address Details
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         address.title,

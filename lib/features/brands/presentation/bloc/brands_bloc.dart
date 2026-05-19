@@ -99,7 +99,8 @@ class BrandsBloc extends Bloc<BrandsEvent, BrandsState> {
     result.fold(
       (failure) => emit(
         state.copyWith(
-          productsStatus: BrandProductsStatus.success, // revert status to success so user can retry
+          productsStatus: BrandProductsStatus
+              .success, // revert status to success so user can retry
           productsErrorMessage: failure.message,
         ),
       ),

@@ -3,7 +3,8 @@ import '../../domain/usecases/get_provider_details_usecase.dart';
 import 'provider_details_event.dart';
 import 'provider_details_state.dart';
 
-class ProviderDetailsBloc extends Bloc<ProviderDetailsEvent, ProviderDetailsState> {
+class ProviderDetailsBloc
+    extends Bloc<ProviderDetailsEvent, ProviderDetailsState> {
   final GetProviderDetailsUseCase _getProviderDetailsUseCase;
 
   ProviderDetailsBloc({

@@ -516,5 +516,6 @@
   "filter_sort_newest": "Newest",
   "filter_no_products": "No products match the selected filters.",
   "filter_active_filters": "Active Filters",
-  "filter_rating_stars": "{stars} stars & up"
+  "filter_rating_stars": "{stars} stars & up",
+  "app_exit_confirm": "Please press back again to exit the app"
 }

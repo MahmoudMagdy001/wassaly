@@ -24,91 +24,91 @@ class BookingCard extends StatelessWidget {
         child: AppCard(
           showShadow: true,
           padding: EdgeInsets.all(12.r),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 50.w,
-                height: 50.w,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.r),
-                  color: cs.primaryContainer,
-                ),
-                child: CommonImage(
-                  imageUrl: booking.service.image ?? '',
-                  width: 50.w,
-                  height: 50.w,
-                  memCacheHeight: 50 * 2,
-                ),
-              ),
-              12.horizontalSpace,
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      booking.service.name,
-                      style: tt.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+              Row(
+                children: [
+                  Container(
+                    width: 50.w,
+                    height: 50.w,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.r),
+                      color: cs.primaryContainer,
                     ),
-                    Text(
-                      booking.provider.name,
-                      style: tt.bodySmall?.copyWith(
-                        color: cs.outline,
+                    child: CommonImage(
+                      imageUrl: booking.service.image ?? '',
+                      width: 50.w,
+                      height: 50.w,
+                      memCacheHeight: 50 * 2,
+                    ),
+                  ),
+                  12.horizontalSpace,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          booking.service.name,
+                          style: tt.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          booking.provider.name,
+                          style: tt.bodySmall?.copyWith(
+                            color: cs.outline,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  _StatusBadge(status: booking.status),
+                ],
+              ),
+              Divider(height: 24.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _InfoItem(
+                    icon: Icons.calendar_today_outlined,
+                    label: booking.day,
+                  ),
+                  _InfoItem(
+                    icon: Icons.access_time,
+                    label: booking.time.to12HourFormat(),
+                  ),
+                  Text(
+                    '${booking.service.price} ${context.l10n.shared_currency_egp}',
+                    style: tt.titleMedium?.copyWith(
+                      color: cs.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              if (booking.governorate != null || booking.center != null) ...[
+                Divider(height: 24.h),
+                Row(
+                  children: [
+                    Icon(Icons.location_on_outlined,
+                        size: 14.sp, color: cs.outline),
+                    4.horizontalSpace,
+                    Expanded(
+                      child: Text(
+                        '${booking.governorate ?? ''}${booking.governorate != null && booking.center != null ? ' - ' : ''}${booking.center ?? ''}',
+                        style: tt.bodySmall?.copyWith(color: cs.outline),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
                 ),
-              ),
-              _StatusBadge(status: booking.status),
-            ],
-          ),
-          Divider(height: 24.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _InfoItem(
-                icon: Icons.calendar_today_outlined,
-                label: booking.day,
-              ),
-              _InfoItem(
-                icon: Icons.access_time,
-                label: booking.time.to12HourFormat(),
-              ),
-              Text(
-                '${booking.service.price} ${context.l10n.shared_currency_egp}',
-                style: tt.titleMedium?.copyWith(
-                  color: cs.primary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-          if (booking.governorate != null || booking.center != null) ...[
-            Divider(height: 24.h),
-            Row(
-              children: [
-                Icon(Icons.location_on_outlined,
-                    size: 14.sp, color: cs.outline),
-                4.horizontalSpace,
-                Expanded(
-                  child: Text(
-                    '${booking.governorate ?? ''}${booking.governorate != null && booking.center != null ? ' - ' : ''}${booking.center ?? ''}',
-                    style: tt.bodySmall?.copyWith(color: cs.outline),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
               ],
-            ),
-          ],
-        ],
+            ],
+          ),
+        ),
       ),
-    ),
-  ),
-);
+    );
   }
 }
 
@@ -138,12 +138,10 @@ class _StatusBadge extends StatelessWidget {
           _StatusConfig(Colors.indigo, context.l10n.order_status_confirmed),
       'completed':
           _StatusConfig(Colors.green, context.l10n.order_status_completed),
-      'مكتمل':
-          _StatusConfig(Colors.green, context.l10n.order_status_completed),
+      'مكتمل': _StatusConfig(Colors.green, context.l10n.order_status_completed),
       'cancelled':
           _StatusConfig(Colors.red, context.l10n.order_status_cancelled),
-      'ملغي':
-          _StatusConfig(Colors.red, context.l10n.order_status_cancelled),
+      'ملغي': _StatusConfig(Colors.red, context.l10n.order_status_cancelled),
     };
 
     final config =

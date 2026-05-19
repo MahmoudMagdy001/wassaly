@@ -80,14 +80,15 @@ class _AppImageFullScreenViewState extends State<AppImageFullScreenView> {
               ),
             ),
           ),
-          
+
           // Image PageView with Swipe-to-Dismiss (Dismissible)
           Positioned.fill(
             child: SafeArea(
               child: Dismissible(
                 key: const Key('full_screen_image_dismissible'),
                 direction: DismissDirection.vertical,
-                onDismissed: (_) => Navigator.of(context).pop(_currentIndexNotifier.value),
+                onDismissed: (_) =>
+                    Navigator.of(context).pop(_currentIndexNotifier.value),
                 child: PageView.builder(
                   controller: _pageController,
                   itemCount: widget.imageUrls.length,
@@ -100,7 +101,7 @@ class _AppImageFullScreenViewState extends State<AppImageFullScreenView> {
                   itemBuilder: (context, index) {
                     final imageUrl = widget.imageUrls[index];
                     final heroTag = widget.heroTagBuilder(index);
-                    
+
                     return _FullScreenImagePage(
                       imageUrl: imageUrl,
                       heroTag: heroTag,
@@ -151,13 +152,14 @@ class _AppImageFullScreenViewState extends State<AppImageFullScreenView> {
                         );
                       },
                     ),
-                  
+
                   // Close Button
                   ClipOval(
                     child: Material(
                       color: Colors.black.withValues(alpha: 0.5),
                       child: InkWell(
-                        onTap: () => Navigator.of(context).pop(_currentIndexNotifier.value),
+                        onTap: () => Navigator.of(context)
+                            .pop(_currentIndexNotifier.value),
                         child: Padding(
                           padding: EdgeInsets.all(10.r),
                           child: const Icon(

@@ -175,13 +175,11 @@ class _FilterOptionsSheetState extends State<FilterOptionsSheet> {
                         spacing: 8.w,
                         runSpacing: 8.h,
                         children: widget.categories.map((category) {
-                          final isSelected =
-                              _selectedCategoryId == category.id;
+                          final isSelected = _selectedCategoryId == category.id;
                           return ChoiceChip(
                             label: Text(category.name),
                             selected: isSelected,
-                            onSelected: (_) =>
-                                _onCategorySelected(category.id),
+                            onSelected: (_) => _onCategorySelected(category.id),
                             selectedColor: cs.primary,
                             labelStyle: TextStyle(
                               color: isSelected ? cs.onPrimary : cs.onSurface,
@@ -370,9 +368,8 @@ class _FilterOptionsSheetState extends State<FilterOptionsSheet> {
                           onSelected: (_) => _onSortSelected('newest'),
                           selectedColor: cs.primary,
                           labelStyle: TextStyle(
-                            color: _sort == 'newest'
-                                ? cs.onPrimary
-                                : cs.onSurface,
+                            color:
+                                _sort == 'newest' ? cs.onPrimary : cs.onSurface,
                           ),
                         ),
                       ],

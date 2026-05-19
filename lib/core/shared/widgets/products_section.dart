@@ -7,7 +7,7 @@ class AppProductsSection extends StatelessWidget {
   final bool isLoadingMore;
   final VoidCallback? onLoadMore;
   final bool isLoading;
-  
+
   // Grid properties
   final double childAspectRatio;
   final double? mainAxisExtent;
@@ -41,7 +41,8 @@ class AppProductsSection extends StatelessWidget {
               name: 'منتج تجريبي طويل جدا للتجربة',
               image: '',
               price: '100.00',
-              description: 'وصف تجريبي طويل جدا للتجربة وعرض التفاصيل بشكل كامل',
+              description:
+                  'وصف تجريبي طويل جدا للتجربة وعرض التفاصيل بشكل كامل',
               offers: const [],
               reviews: const [],
               isFavorite: false,

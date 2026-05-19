@@ -97,7 +97,8 @@ class AppDropdown<T> extends StatelessWidget {
                     itemExtent: 32,
                     scrollController: FixedExtentScrollController(
                       initialItem: () {
-                        final index = items.indexWhere((item) => item.value == value);
+                        final index =
+                            items.indexWhere((item) => item.value == value);
                         return index >= 0 ? index : 0;
                       }(),
                     ),

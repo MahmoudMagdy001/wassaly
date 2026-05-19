@@ -27,7 +27,8 @@ class _BookingProblemSectionState extends State<BookingProblemSection> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<ServiceBookingBloc, ServiceBookingState>(
-      listenWhen: (prev, curr) => prev.problemDescription != curr.problemDescription,
+      listenWhen: (prev, curr) =>
+          prev.problemDescription != curr.problemDescription,
       listener: (context, state) {
         if (_problemController.text != state.problemDescription) {
           _problemController.text = state.problemDescription;
@@ -41,7 +42,8 @@ class _BookingProblemSectionState extends State<BookingProblemSection> {
             hint: context.l10n.service_booking_problem_hint,
             controller: _problemController,
             maxLines: 3,
-            onChanged: (val) => bloc.add(ServiceBookingFormChanged(problemDescription: val)),
+            onChanged: (val) =>
+                bloc.add(ServiceBookingFormChanged(problemDescription: val)),
           );
         },
       ),

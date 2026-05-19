@@ -13,8 +13,7 @@ class InternetConnectionWrapper extends StatefulWidget {
       _InternetConnectionWrapperState();
 }
 
-class _InternetConnectionWrapperState
-    extends State<InternetConnectionWrapper> {
+class _InternetConnectionWrapperState extends State<InternetConnectionWrapper> {
   late final StreamSubscription<InternetStatus> _subscription;
   bool _isConnected = true;
   bool _showBanner = false;
@@ -92,8 +91,7 @@ class _InternetConnectionWrapperState
             color: Colors.transparent,
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 300),
-              padding:
-                  EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
               decoration: BoxDecoration(
                 color: _isConnected
                     ? const Color(0xFF2E7D32) // Premium green

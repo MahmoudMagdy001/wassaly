@@ -142,16 +142,17 @@ class AppSliverTopBar extends StatelessWidget {
                 border: bottom != null
                     ? null
                     : (isTransparent ? null : const Border()),
-                leading: leading ?? (canPop
-                    ? CupertinoButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () => _handleBack(context),
-                        child: Icon(
-                          CupertinoIcons.back,
-                          color: cs.primary,
-                        ),
-                      )
-                    : null),
+                leading: leading ??
+                    (canPop
+                        ? CupertinoButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: () => _handleBack(context),
+                            child: Icon(
+                              CupertinoIcons.back,
+                              color: cs.primary,
+                            ),
+                          )
+                        : null),
                 trailing: actions != null && actions!.isNotEmpty
                     ? Row(
                         mainAxisSize: MainAxisSize.min,
@@ -178,18 +179,19 @@ class AppSliverTopBar extends StatelessWidget {
       foregroundColor: cs.primary,
       title: titleWidget,
       leadingWidth: leading != null ? 56.w : (canPop ? 40.w : null),
-      leading: leading ?? (canPop
-          ? GestureDetector(
-              onTap: () => _handleBack(context),
-              child: ColoredBox(
-                color: Colors.transparent,
-                child: Icon(
-                  Icons.arrow_back,
-                  color: cs.primary,
-                ),
-              ),
-            )
-          : null),
+      leading: leading ??
+          (canPop
+              ? GestureDetector(
+                  onTap: () => _handleBack(context),
+                  child: ColoredBox(
+                    color: Colors.transparent,
+                    child: Icon(
+                      Icons.arrow_back,
+                      color: cs.primary,
+                    ),
+                  ),
+                )
+              : null),
       actions: actions ?? const [], // FIX 4: const بدل [] جديدة في كل build
       bottom: bottom,
     );

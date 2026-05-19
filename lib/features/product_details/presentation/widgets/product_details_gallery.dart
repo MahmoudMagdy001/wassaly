@@ -47,7 +47,8 @@ class _ProductDetailsGalleryState extends State<ProductDetailsGallery> {
                   context,
                   imageUrls: widget.gallery,
                   initialIndex: index,
-                  heroTagBuilder: (i) => 'product_image_${i}_${widget.gallery[i]}',
+                  heroTagBuilder: (i) =>
+                      'product_image_${i}_${widget.gallery[i]}',
                 );
                 if (newIndex != null && mounted) {
                   _pageController.jumpToPage(newIndex);

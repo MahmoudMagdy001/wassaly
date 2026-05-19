@@ -1,6 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-
 /// A reusable generic function to handle potential exceptions in async tasks
 /// and map them to the [Either] type matching [FutureEither<T>].
 ///

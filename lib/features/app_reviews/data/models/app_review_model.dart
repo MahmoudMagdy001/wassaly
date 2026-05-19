@@ -32,7 +32,8 @@ class AppReviewModel extends AppReviewEntity {
       id: json['id'] as int? ?? 0,
       rating: json['rating'] as int? ?? 0,
       comment: json['comment'] as String? ?? '',
-      user: AppReviewUserModel.fromJson(json['user'] as Map<String, dynamic>? ?? {}),
+      user: AppReviewUserModel.fromJson(
+          json['user'] as Map<String, dynamic>? ?? {}),
       createdAt: json['created_at'] as String? ?? '',
     );
   }

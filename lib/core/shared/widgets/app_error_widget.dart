@@ -177,7 +177,8 @@ class _AppErrorWidgetState extends State<AppErrorWidget> {
         ? context.l10n.errors_no_internet_title
         : (widget.title ?? _getErrorTitle(context));
 
-    final rawMessage = widget.customMessage ?? widget.message ?? _getErrorMessage(context);
+    final rawMessage =
+        widget.customMessage ?? widget.message ?? _getErrorMessage(context);
     final messageText = isNetError
         ? context.l10n.errors_no_internet_message
         : (rawMessage == 'errors_no_internet'
@@ -238,7 +239,9 @@ class _AppErrorWidgetState extends State<AppErrorWidget> {
 
   String _getErrorMessage(BuildContext context) {
     // Respect explicit legacy message if provided
-    if (widget.message != null && widget.message!.isNotEmpty) return widget.message!;
+    if (widget.message != null && widget.message!.isNotEmpty) {
+      return widget.message!;
+    }
 
     switch (widget.failure.runtimeType) {
       case const (NetworkFailure):

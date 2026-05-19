@@ -26,20 +26,29 @@ class _HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<_HomeView> {
   StreamSubscription<void>? _connectivitySub;
-
+  late final ScrollController _scrollController;
+  late final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey;
 
   @override
   void initState() {
     super.initState();
-    _connectivitySub = sl<InternetConnectionService>()
-        .connectivityRestoredStream
-        .listen((_) {
+    _scrollController = ScrollController();
+    _refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
+
+    sl<HomeNavigationService>().scrollController = _scrollController;
+    sl<HomeNavigationService>().refreshKey = _refreshIndicatorKey;
+
+    _connectivitySub =
+        sl<InternetConnectionService>().connectivityRestoredStream.listen((_) {
       if (mounted) _refreshAllSections(context);
     });
   }
 
   @override
   void dispose() {
+    sl<HomeNavigationService>().scrollController = null;
+    sl<HomeNavigationService>().refreshKey = null;
+    _scrollController.dispose();
     _connectivitySub?.cancel();
     super.dispose();
   }
@@ -77,10 +86,12 @@ class _HomeViewState extends State<_HomeView> {
     return Scaffold(
       backgroundColor: cs.surface,
       body: RefreshIndicator(
+        key: _refreshIndicatorKey,
         onRefresh: () => _refreshAllSections(context),
         color: cs.primary,
         backgroundColor: cs.surface,
         child: CustomScrollView(
+          controller: _scrollController,
           slivers: [
             // Static AppBar — never changes
             AppSliverTopBar(
@@ -115,8 +126,12 @@ class _HomeViewState extends State<_HomeView> {
                 state.errorMessage,
               ),
               builder: (context, data) {
-                final (allSectionsFailed, anySectionLoading, failure,
-                    errorMessage) = data;
+                final (
+                  allSectionsFailed,
+                  anySectionLoading,
+                  failure,
+                  errorMessage
+                ) = data;
 
                 if (allSectionsFailed && !anySectionLoading) {
                   // Show global error state when all sections failed
@@ -131,12 +146,10 @@ class _HomeViewState extends State<_HomeView> {
                                   onRetry: () => _refreshAllSections(context),
                                 )
                               : AppErrorWidget(
-                                  title:
-                                      context.l10n.errors_no_internet_title,
+                                  title: context.l10n.errors_no_internet_title,
                                   message: errorMessage.isNotEmpty
                                       ? errorMessage
-                                      : context
-                                          .l10n.errors_no_internet_message,
+                                      : context.l10n.errors_no_internet_message,
                                   onRetry: () => _refreshAllSections(context),
                                   icon: Icons.wifi_off_rounded,
                                 ),

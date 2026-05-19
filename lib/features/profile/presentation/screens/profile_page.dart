@@ -40,10 +40,9 @@ class _ProfileView extends StatelessWidget {
             prev.actionStatus != curr.actionStatus && curr.actionStatus.isDone,
         listener: (context, state) {
           if (state.actionStatus.isSuccess) {
-            if (state.user == null) {
-              context.read<OrdersBloc>().add(const ResetOrdersEvent());
-              context.go(AppRoutes.login);
-            } else {
+            // Navigation for logout/delete is handled by SessionListenerWrapper.
+            // Only show a snackbar for non-logout success actions (user still set).
+            if (state.user != null) {
               context.showTypedSnackBar(context.l10n.profile_action_success,
                   type: SnackBarType.success);
             }

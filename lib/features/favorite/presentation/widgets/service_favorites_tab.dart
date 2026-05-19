@@ -18,7 +18,8 @@ class ServiceFavoritesTab extends StatelessWidget {
       builder: (context, data) {
         final (status, serviceFavorites, failure) = data;
         final isLoading = status == FavoriteStatus.loading ||
-            (status == FavoriteStatus.refreshing && serviceFavorites.data.isEmpty);
+            (status == FavoriteStatus.refreshing &&
+                serviceFavorites.data.isEmpty);
         final isError = status == FavoriteStatus.error;
 
         return RefreshIndicator(
@@ -49,7 +50,8 @@ class ServiceFavoritesTab extends StatelessWidget {
                   hasScrollBody: false,
                   child: Center(
                     child: AppErrorWidget.failure(
-                      failure: failure ?? const UnknownFailure('An error occurred'),
+                      failure:
+                          failure ?? const UnknownFailure('An error occurred'),
                       onRetry: () => context
                           .read<FavoriteBloc>()
                           .add(const GetServiceFavoritesEvent()),

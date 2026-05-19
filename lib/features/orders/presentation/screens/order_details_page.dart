@@ -400,9 +400,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       ]),
                     ),
                   );
-              },
-            ),
-          ],
+                },
+              ),
+            ],
           ),
         ),
       ),

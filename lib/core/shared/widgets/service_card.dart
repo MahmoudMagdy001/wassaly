@@ -189,7 +189,9 @@ class _ServiceImageSection extends StatelessWidget {
                 final isToggling = status.$2;
                 return GestureDetector(
                   // FIX 10: named method reference
-                  onTap: isToggling ? null : () => _onFavoriteTap(context, isFavorite),
+                  onTap: isToggling
+                      ? null
+                      : () => _onFavoriteTap(context, isFavorite),
                   child: Container(
                     margin: EdgeInsetsDirectional.symmetric(
                         horizontal: 6.w, vertical: 6.h),

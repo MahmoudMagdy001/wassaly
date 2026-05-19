@@ -26,7 +26,8 @@ class ServiceReviewsPage extends StatelessWidget {
         listener: (context, state) {
           if (state.reviewActionStatus == ReviewActionStatus.success ||
               state.reviewActionStatus == ReviewActionStatus.failure) {
-            final message = state.reviewActionMessage == 'product_details_review_created'
+            final message = state.reviewActionMessage ==
+                    'product_details_review_created'
                 ? context.l10n.product_details_review_created
                 : state.reviewActionMessage == 'product_details_review_updated'
                     ? context.l10n.product_details_review_updated
@@ -70,7 +71,9 @@ class ServiceReviewsPage extends StatelessWidget {
                       userName: review.user.name,
                       userAvatar: review.user.avatar,
                       isCurrentUserReview: isMine,
-                      canEdit: isMine && _canEditReview(review.createdAt) && hasCompletedBooking,
+                      canEdit: isMine &&
+                          _canEditReview(review.createdAt) &&
+                          hasCompletedBooking,
                       createdAt: review.createdAt,
                       onEdit: () => _showReviewSheet(context, review),
                     );

@@ -172,11 +172,9 @@ class _EditProfileViewState extends State<_EditProfileView> {
           if (_previousActionStatus != state.actionStatus &&
               state.actionStatus.isDone) {
             if (state.actionStatus.isSuccess) {
-              // Check if this was a delete account action
               if (state.user == null) {
-                // Account was deleted, clear cache and navigate to login
-                StorageService.instance.clear();
-                context.go(AppRoutes.login);
+                // Account deleted or logged out — navigation is handled by
+                // SessionListenerWrapper via SessionLogoutRequested. Do nothing here.
               } else {
                 // Regular profile update
                 context.showTypedSnackBar(context.l10n.profile_update_success,

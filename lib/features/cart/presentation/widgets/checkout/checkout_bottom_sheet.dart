@@ -40,9 +40,8 @@ class CheckoutBottomSheet extends StatelessWidget {
             isLoading: isSubmitting,
             onPressed: (!isFormValid || isSubmitting)
                 ? null
-                : () => context
-                    .read<CheckoutBloc>()
-                    .add(const CheckoutSubmitted()),
+                : () =>
+                    context.read<CheckoutBloc>().add(const CheckoutSubmitted()),
           );
         },
       ),

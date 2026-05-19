@@ -66,8 +66,9 @@ class SubCategoryDetailView extends StatelessWidget {
   }
 
   // FIX 10: named method بدل lambda inline في build — مش بتتعمل instance جديدة في كل rebuild
-  void _onLoadMore(BuildContext context) =>
-      context.read<SubCategoryBloc>().add(LoadMoreProductsEvent(subCategory.id));
+  void _onLoadMore(BuildContext context) => context
+      .read<SubCategoryBloc>()
+      .add(LoadMoreProductsEvent(subCategory.id));
 
   @override
   Widget build(BuildContext context) {

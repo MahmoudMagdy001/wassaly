@@ -19,8 +19,10 @@ class ServiceDetailsContent extends StatefulWidget {
 }
 
 class _ServiceDetailsContentState extends State<ServiceDetailsContent> {
-  final ValueNotifier<ServiceAvailableDayEntity?> _selectedDayNotifier = ValueNotifier(null);
-  final ValueNotifier<ServiceAvailableTimeEntity?> _selectedTimeNotifier = ValueNotifier(null);
+  final ValueNotifier<ServiceAvailableDayEntity?> _selectedDayNotifier =
+      ValueNotifier(null);
+  final ValueNotifier<ServiceAvailableTimeEntity?> _selectedTimeNotifier =
+      ValueNotifier(null);
 
   @override
   void dispose() {
@@ -37,7 +39,8 @@ class _ServiceDetailsContentState extends State<ServiceDetailsContent> {
       listener: (context, state) {
         if (state.reviewActionStatus == ReviewActionStatus.success ||
             state.reviewActionStatus == ReviewActionStatus.failure) {
-          final message = state.reviewActionMessage == 'product_details_review_created'
+          final message = state.reviewActionMessage ==
+                  'product_details_review_created'
               ? context.l10n.product_details_review_created
               : state.reviewActionMessage == 'product_details_review_updated'
                   ? context.l10n.product_details_review_updated

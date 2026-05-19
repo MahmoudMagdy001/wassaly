@@ -7,7 +7,8 @@ class UpdateBookingUseCase {
 
   const UpdateBookingUseCase(this._repository);
 
-  Future<Either<Failure, BookingEntity>> call(UpdateBookingParams params) async {
+  Future<Either<Failure, BookingEntity>> call(
+      UpdateBookingParams params) async {
     return await _repository.updateBooking(params);
   }
 }

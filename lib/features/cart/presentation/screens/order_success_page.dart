@@ -1,5 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
-import 'package:wassaly/features/cart/domain/entities/order_entity.dart' as cart_order;
+import 'package:wassaly/features/cart/domain/entities/order_entity.dart'
+    as cart_order;
 
 class OrderSuccessPage extends StatelessWidget {
   final cart_order.OrderEntity order;

@@ -236,11 +236,15 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         actionStatus: AppStatus.failure,
         actionError: failure.message,
       )),
-      (_) => emit(state.copyWith(
-        actionStatus: AppStatus.success,
-        user: null,
-        clearActionError: true,
-      )),
+      (_) {
+        emit(state.copyWith(
+          actionStatus: AppStatus.success,
+          user: null,
+          clearActionError: true,
+        ));
+        // Delegate navigation to SessionListenerWrapper — same as logout all devices.
+        _sessionBloc.add(const SessionLogoutRequested());
+      },
     );
   }
 

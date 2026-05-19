@@ -243,8 +243,10 @@ class _UpdateOrderSheetState extends State<UpdateOrderSheet> {
                                                   4.verticalSpace,
                                                   Text(
                                                     address.address.cleanAddress(
-                                                        center: address.centerName,
-                                                        governorate: address.governorateName),
+                                                        center:
+                                                            address.centerName,
+                                                        governorate: address
+                                                            .governorateName),
                                                     style:
                                                         tt.bodySmall?.copyWith(
                                                       color:
@@ -279,10 +281,14 @@ class _UpdateOrderSheetState extends State<UpdateOrderSheet> {
                                   Expanded(
                                     child: Text(
                                       context.l10n.order_update_current_address(
-                                          widget.order.deliveryAddress.cleanAddress(
-                                              center: widget.order.centerName ?? '',
-                                              governorate: widget.order.governorateName ?? '')
-                                      ),
+                                          widget.order.deliveryAddress
+                                              .cleanAddress(
+                                                  center: widget
+                                                          .order.centerName ??
+                                                      '',
+                                                  governorate: widget.order
+                                                          .governorateName ??
+                                                      '')),
                                       style: tt.bodySmall?.copyWith(
                                           color: cs.onSurfaceVariant),
                                     ),
@@ -311,9 +317,11 @@ class _UpdateOrderSheetState extends State<UpdateOrderSheet> {
                         };
 
                         if (_selectedAddress != null) {
-                          final cleaned = _selectedAddress!.address.cleanAddress(
-                              center: _selectedAddress!.centerName,
-                              governorate: _selectedAddress!.governorateName);
+                          final cleaned = _selectedAddress!.address
+                              .cleanAddress(
+                                  center: _selectedAddress!.centerName,
+                                  governorate:
+                                      _selectedAddress!.governorateName);
                           updateData['delivery_address'] = cleaned;
                           updateData['customer_address'] = cleaned;
                           updateData['address'] = cleaned;
@@ -322,9 +330,11 @@ class _UpdateOrderSheetState extends State<UpdateOrderSheet> {
                           updateData['center_id'] = _selectedAddress!.centerId;
                         } else if (widget.order.deliveryAddress != null &&
                             widget.order.deliveryAddress!.isNotEmpty) {
-                          final cleaned = widget.order.deliveryAddress!.cleanAddress(
-                              center: widget.order.centerName ?? '',
-                              governorate: widget.order.governorateName ?? '');
+                          final cleaned = widget.order.deliveryAddress!
+                              .cleanAddress(
+                                  center: widget.order.centerName ?? '',
+                                  governorate:
+                                      widget.order.governorateName ?? '');
                           updateData['delivery_address'] = cleaned;
                           updateData['customer_address'] = cleaned;
                           updateData['address'] = cleaned;

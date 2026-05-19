@@ -185,9 +185,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     ]);
 
     final bannersResult = results[0] as Either<Failure, List<BannerEntity>>;
-    final categoriesResult = results[1] as Either<Failure, List<CategoryEntity>>;
-    final servicesResult = results[2] as Either<Failure, List<SubCategoryEntity>>;
-    final productsResult = results[3] as Either<Failure, PaginatedResponse<ProductEntity>>;
+    final categoriesResult =
+        results[1] as Either<Failure, List<CategoryEntity>>;
+    final servicesResult =
+        results[2] as Either<Failure, List<SubCategoryEntity>>;
+    final productsResult =
+        results[3] as Either<Failure, PaginatedResponse<ProductEntity>>;
 
     HomeStatus bannersStatus = HomeStatus.success;
     List<BannerEntity> banners = const [];
@@ -211,7 +214,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     );
 
     HomeStatus productsStatus = HomeStatus.success;
-    PaginatedResponse<ProductEntity> products = const PaginatedResponse(data: []);
+    PaginatedResponse<ProductEntity> products =
+        const PaginatedResponse(data: []);
     productsResult.fold(
       (_) => productsStatus = HomeStatus.failure,
       (data) => products = data,

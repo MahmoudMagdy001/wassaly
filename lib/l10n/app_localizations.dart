@@ -3114,6 +3114,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'{stars} stars & up'**
   String filter_rating_stars(Object stars);
+
+  /// No description provided for @app_exit_confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Please press back again to exit the app'**
+  String get app_exit_confirm;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

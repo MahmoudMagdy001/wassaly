@@ -448,10 +448,8 @@ void initDependencies() {
       () => BookingRepositoryImpl(sl()));
   sl.registerLazySingleton<ProviderDetailsRepository>(
       () => ProviderDetailsRepositoryImpl(sl()));
-  sl.registerLazySingleton<BrandsRepository>(
-      () => BrandsRepositoryImpl(sl()));
-  sl.registerLazySingleton<OffersRepository>(
-      () => OffersRepositoryImpl(sl()));
+  sl.registerLazySingleton<BrandsRepository>(() => BrandsRepositoryImpl(sl()));
+  sl.registerLazySingleton<OffersRepository>(() => OffersRepositoryImpl(sl()));
   sl.registerLazySingleton<AppReviewsRepository>(
       () => AppReviewsRepositoryImpl(sl()));
 
@@ -460,6 +458,9 @@ void initDependencies() {
 
   sl.registerLazySingleton<InternetConnectionService>(
       () => InternetConnectionService());
+
+  sl.registerLazySingleton<HomeNavigationService>(
+      () => HomeNavigationService());
 
   // DataSources
   sl.registerLazySingleton<AuthRemoteDataSource>(

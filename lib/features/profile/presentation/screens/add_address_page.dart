@@ -136,8 +136,9 @@ class _AddAddressViewState extends State<_AddAddressView> {
                           hint: context.l10n.profile_address_title_hint,
                           controller: _titleController,
                           prefixIcon: const Icon(Icons.label_outline),
-                          validator: (v) =>
-                              v!.isEmpty ? context.l10n.profile_title_required : null,
+                          validator: (v) => v!.isEmpty
+                              ? context.l10n.profile_title_required
+                              : null,
                         ),
                         16.verticalSpace,
                         AppTextField(
