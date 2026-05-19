@@ -31,6 +31,9 @@ import 'package:wassaly/features/profile/presentation/screens/addresses_page.dar
 import 'package:wassaly/features/profile/presentation/screens/edit_profile_page.dart';
 import 'package:wassaly/features/profile/presentation/screens/profile_page.dart';
 import 'package:wassaly/features/profile/presentation/screens/terms_of_service_page.dart';
+import 'package:wassaly/features/app_reviews/presentation/screens/app_reviews_page.dart';
+import 'package:wassaly/features/app_reviews/presentation/bloc/app_reviews_bloc.dart';
+import 'package:wassaly/features/app_reviews/presentation/bloc/app_reviews_event.dart';
 import 'package:wassaly/features/provider_details/presentation/screens/provider_details_page.dart';
 import 'package:wassaly/features/service_booking/domain/entities/booking_entity.dart';
 import 'package:wassaly/features/service_booking/presentation/screens/booking_success_page.dart';
@@ -47,6 +50,9 @@ import '../../features/home/presentation/bloc/home_bloc.dart';
 import '../../features/home/presentation/bloc/home_event.dart';
 import '../../features/profile/presentation/screens/privacy_policy_page.dart';
 import '../../features/search/presentation/screens/search_page.dart';
+import '../../features/products_filter/domain/entities/product_filter_params.dart';
+import '../../features/products_filter/presentation/bloc/products_filter_bloc.dart';
+import '../../features/products_filter/presentation/screens/products_filter_page.dart';
 
 final GoRouter appRouter = GoRouter(
   navigatorKey: rootNavigatorKey,
@@ -168,6 +174,14 @@ final GoRouter appRouter = GoRouter(
                       ),
                     ),
                   ],
+                ),
+                GoRoute(
+                  path: 'app-reviews',
+                  name: 'appReviews',
+                  builder: (context, state) => BlocProvider(
+                    create: (_) => sl<AppReviewsBloc>()..add(const GetAppReviewsEvent()),
+                    child: const AppReviewsPage(),
+                  ),
                 ),
               ],
             ),
@@ -296,6 +310,17 @@ final GoRouter appRouter = GoRouter(
           );
         },
       ),
+    ),
+    GoRoute(
+      path: AppRoutes.productsFilter,
+      name: 'productsFilter',
+      builder: (context, state) {
+        final params = state.extra as ProductFilterParams?;
+        return BlocProvider(
+          create: (_) => sl<ProductsFilterBloc>(),
+          child: ProductsFilterPage(initialParams: params),
+        );
+      },
     ),
     GoRoute(
       path: AppRoutes.productDetails,

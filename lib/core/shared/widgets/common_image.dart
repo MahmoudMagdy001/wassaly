@@ -18,6 +18,8 @@ class CommonImage extends StatelessWidget {
     this.borderRadius,
     this.memCacheHeight,
     this.memCacheWidth,
+    this.enableFullScreenView = false,
+    this.heroTag,
   });
 
   final String imageUrl;
@@ -30,6 +32,8 @@ class CommonImage extends StatelessWidget {
   final BorderRadius? borderRadius;
   final int? memCacheHeight;
   final int? memCacheWidth;
+  final bool enableFullScreenView;
+  final String? heroTag;
 
   /// Resolves a potentially relative path to an absolute URL.
   /// e.g. "/storage/images/foo.jpg" → "https://wasly.bynona.store/storage/images/foo.jpg"
@@ -88,9 +92,28 @@ class CommonImage extends StatelessWidget {
     }
 
     if (borderRadius != null) {
-      return ClipRRect(
+      image = ClipRRect(
         borderRadius: borderRadius!,
         child: image,
+      );
+    }
+
+    if (enableFullScreenView) {
+      final tag = heroTag ?? resolved;
+      return GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          AppImageFullScreenView.show(
+            context,
+            imageUrls: [resolved],
+            initialIndex: 0,
+            heroTagBuilder: (index) => tag,
+          );
+        },
+        child: Hero(
+          tag: tag,
+          child: image,
+        ),
       );
     }
 

@@ -171,12 +171,16 @@ class _AppReviewCardState extends State<AppReviewCard> {
             children: [
               Row(
                 children: [
-                  Text(
-                    widget.userName,
-                    style: tt.titleSmall?.copyWith(
-                      color: cs.onSurface,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14.sp,
+                  Flexible(
+                    child: Text(
+                      widget.userName,
+                      style: tt.titleSmall?.copyWith(
+                        color: cs.onSurface,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14.sp,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   if (widget.isCurrentUserReview) ...[

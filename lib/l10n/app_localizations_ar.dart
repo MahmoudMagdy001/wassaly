@@ -444,6 +444,15 @@ class SAr extends S {
   String get profile_light => 'فاتح';
 
   @override
+  String get profile_app_reviews => 'آراء عن التطبيق';
+
+  @override
+  String get profile_no_reviews => 'لا توجد آراء';
+
+  @override
+  String get profile_no_reviews_desc => 'لم يتم إضافة أي آراء بعد.';
+
+  @override
   String get profile_arabic => 'العربية';
 
   @override
@@ -1525,4 +1534,58 @@ class SAr extends S {
 
   @override
   String get booking_details_actions => 'الإجراءات';
+
+  @override
+  String get filter_title => 'تصفية المنتجات';
+
+  @override
+  String get filter_apply => 'تطبيق الفلتر';
+
+  @override
+  String get filter_reset => 'إعادة ضبط';
+
+  @override
+  String get filter_category => 'الفئة';
+
+  @override
+  String get filter_price_range => 'نطاق السعر';
+
+  @override
+  String get filter_min_price => 'الحد الأدنى للسعر';
+
+  @override
+  String get filter_max_price => 'الحد الأقصى للسعر';
+
+  @override
+  String get filter_special_offers => 'العروض الخاصة فقط';
+
+  @override
+  String get filter_ratings => 'التقييمات';
+
+  @override
+  String get filter_sort_by => 'ترتيب حسب';
+
+  @override
+  String get filter_sort_price_asc => 'السعر: من الأقل للأعلى';
+
+  @override
+  String get filter_sort_price_desc => 'السعر: من الأعلى للأقل';
+
+  @override
+  String get filter_sort_rating_desc => 'الأعلى تقييماً';
+
+  @override
+  String get filter_sort_newest => 'الأحدث';
+
+  @override
+  String get filter_no_products =>
+      'لم يتم العثور على منتجات تطابق خيارات التصفية.';
+
+  @override
+  String get filter_active_filters => 'التصفيات النشطة';
+
+  @override
+  String filter_rating_stars(Object stars) {
+    return '$stars نجوم وأكثر';
+  }
 }

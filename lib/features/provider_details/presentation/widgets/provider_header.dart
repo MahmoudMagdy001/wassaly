@@ -27,6 +27,8 @@ class ProviderHeader extends StatelessWidget {
               width: double.infinity,
               memCacheHeight: 200 * 2,
               fit: BoxFit.cover,
+              enableFullScreenView: true,
+              heroTag: 'provider_cover_${provider.id}',
             ),
             Positioned(
               bottom: -50.h,
@@ -51,6 +53,8 @@ class ProviderHeader extends StatelessWidget {
                     width: 100.w,
                     height: 90.h,
                     fit: BoxFit.cover,
+                    enableFullScreenView: true,
+                    heroTag: 'provider_avatar_${provider.id}',
                   ),
                 ),
               ),

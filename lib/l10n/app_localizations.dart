@@ -925,6 +925,24 @@ abstract class S {
   /// **'Light'**
   String get profile_light;
 
+  /// No description provided for @profile_app_reviews.
+  ///
+  /// In en, this message translates to:
+  /// **'App Reviews'**
+  String get profile_app_reviews;
+
+  /// No description provided for @profile_no_reviews.
+  ///
+  /// In en, this message translates to:
+  /// **'No Reviews'**
+  String get profile_no_reviews;
+
+  /// No description provided for @profile_no_reviews_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'No reviews have been added yet.'**
+  String get profile_no_reviews_desc;
+
   /// No description provided for @profile_arabic.
   ///
   /// In en, this message translates to:
@@ -2994,6 +3012,108 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Actions'**
   String get booking_details_actions;
+
+  /// No description provided for @filter_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter Products'**
+  String get filter_title;
+
+  /// No description provided for @filter_apply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply Filters'**
+  String get filter_apply;
+
+  /// No description provided for @filter_reset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get filter_reset;
+
+  /// No description provided for @filter_category.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get filter_category;
+
+  /// No description provided for @filter_price_range.
+  ///
+  /// In en, this message translates to:
+  /// **'Price Range'**
+  String get filter_price_range;
+
+  /// No description provided for @filter_min_price.
+  ///
+  /// In en, this message translates to:
+  /// **'Min Price'**
+  String get filter_min_price;
+
+  /// No description provided for @filter_max_price.
+  ///
+  /// In en, this message translates to:
+  /// **'Max Price'**
+  String get filter_max_price;
+
+  /// No description provided for @filter_special_offers.
+  ///
+  /// In en, this message translates to:
+  /// **'Special Offers Only'**
+  String get filter_special_offers;
+
+  /// No description provided for @filter_ratings.
+  ///
+  /// In en, this message translates to:
+  /// **'Ratings'**
+  String get filter_ratings;
+
+  /// No description provided for @filter_sort_by.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort By'**
+  String get filter_sort_by;
+
+  /// No description provided for @filter_sort_price_asc.
+  ///
+  /// In en, this message translates to:
+  /// **'Price: Low to High'**
+  String get filter_sort_price_asc;
+
+  /// No description provided for @filter_sort_price_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Price: High to Low'**
+  String get filter_sort_price_desc;
+
+  /// No description provided for @filter_sort_rating_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Highest Rated'**
+  String get filter_sort_rating_desc;
+
+  /// No description provided for @filter_sort_newest.
+  ///
+  /// In en, this message translates to:
+  /// **'Newest'**
+  String get filter_sort_newest;
+
+  /// No description provided for @filter_no_products.
+  ///
+  /// In en, this message translates to:
+  /// **'No products match the selected filters.'**
+  String get filter_no_products;
+
+  /// No description provided for @filter_active_filters.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Filters'**
+  String get filter_active_filters;
+
+  /// No description provided for @filter_rating_stars.
+  ///
+  /// In en, this message translates to:
+  /// **'{stars} stars & up'**
+  String filter_rating_stars(Object stars);
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

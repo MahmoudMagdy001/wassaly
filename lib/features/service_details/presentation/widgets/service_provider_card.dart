@@ -75,6 +75,8 @@ class ServiceProviderCard extends StatelessWidget {
                         height: 60.h,
                         memCacheHeight: 60 * 2,
                         borderRadius: BorderRadius.circular(11.r),
+                        enableFullScreenView: true,
+                        heroTag: 'service_provider_avatar_${provider.id}',
                       ),
                     ),
                     14.horizontalSpace,

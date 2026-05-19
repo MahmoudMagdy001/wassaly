@@ -86,6 +86,14 @@ class _HomeViewState extends State<_HomeView> {
             AppSliverTopBar(
               automaticallyImplyLeading: false,
               showLogo: true,
+              leading: IconButton(
+                icon: Icon(
+                  Icons.filter_list_rounded,
+                  color: cs.primary,
+                  size: 28.r,
+                ),
+                onPressed: () => context.push(AppRoutes.productsFilter),
+              ),
               actions: [
                 IconButton(
                   icon: Icon(

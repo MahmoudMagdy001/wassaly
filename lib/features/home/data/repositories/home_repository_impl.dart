@@ -27,7 +27,7 @@ class HomeRepositoryImpl implements HomeRepository {
   Future<Either<Failure, List<CategoryEntity>>> getCategories() async {
     try {
       final remoteCategories = await _remoteDataSource.getCategories();
-      return Right(remoteCategories);
+      return Right(remoteCategories.map((e) => e as CategoryEntity).toList());
     } on Failure catch (failure) {
       return Left(failure);
     } catch (e) {
@@ -39,7 +39,7 @@ class HomeRepositoryImpl implements HomeRepository {
   Future<Either<Failure, List<SubCategoryEntity>>> getPopularServices() async {
     try {
       final remoteServices = await _remoteDataSource.getPopularServices();
-      return Right(remoteServices);
+      return Right(remoteServices.map((e) => e as SubCategoryEntity).toList());
     } on Failure catch (failure) {
       return Left(failure);
     } catch (e) {

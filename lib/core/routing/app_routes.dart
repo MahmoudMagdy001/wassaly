@@ -31,12 +31,16 @@ abstract final class AppRoutes {
   static const String addAddress = '/profile/addresses/add';
   static const String privacyPolicy = '/privacy-policy';
   static const String termsOfService = '/terms-of-service';
+  static const String appReviews = '/profile/app-reviews';
 
   // SubCategory
   static const String subCategory = '/sub-category';
 
   // Search
   static const String search = '/search';
+
+  // Products Filter
+  static const String productsFilter = '/products-filter';
 
   // Product details
   static const String productDetails = '/product-details';

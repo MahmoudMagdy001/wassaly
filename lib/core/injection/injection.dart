@@ -138,6 +138,18 @@ import '../../features/offers/data/repositories/offers_repository_impl.dart';
 import '../../features/offers/domain/repositories/offers_repository.dart';
 import '../../features/offers/domain/usecases/get_offers_use_case.dart';
 import '../../features/offers/presentation/bloc/offers_bloc.dart';
+import '../../features/app_reviews/data/datasources/app_reviews_remote_datasource.dart';
+import '../../features/app_reviews/data/repositories/app_reviews_repository_impl.dart';
+import '../../features/app_reviews/domain/repositories/app_reviews_repository.dart';
+import '../../features/app_reviews/domain/usecases/get_app_reviews_usecase.dart';
+import '../../features/app_reviews/domain/usecases/add_app_review_usecase.dart';
+import '../../features/app_reviews/domain/usecases/update_app_review_usecase.dart';
+import '../../features/app_reviews/presentation/bloc/app_reviews_bloc.dart';
+import '../../features/products_filter/data/datasources/products_filter_remote_datasource.dart';
+import '../../features/products_filter/data/repositories/products_filter_repository_impl.dart';
+import '../../features/products_filter/domain/repositories/products_filter_repository.dart';
+import '../../features/products_filter/domain/usecases/get_filtered_products_usecase.dart';
+import '../../features/products_filter/presentation/bloc/products_filter_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -294,6 +306,20 @@ void initDependencies() {
         sl(),
       ));
 
+  // App Reviews
+  sl.registerFactory(() => AppReviewsBloc(
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+      ));
+
+  // Products Filter
+  sl.registerFactory(() => ProductsFilterBloc(
+        getFilteredProductsUseCase: sl(),
+        getCategoriesUseCase: sl(),
+      ));
+
   // UseCases - Auth
   sl.registerLazySingleton(() => LoginUseCase(sl()));
   sl.registerLazySingleton(() => GoogleLoginUseCase(sl()));
@@ -388,6 +414,14 @@ void initDependencies() {
   // Offers
   sl.registerLazySingleton(() => GetOffersUseCase(sl()));
 
+  // App Reviews
+  sl.registerLazySingleton(() => GetAppReviewsUseCase(sl()));
+  sl.registerLazySingleton(() => AddAppReviewUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateAppReviewUseCase(sl()));
+
+  // Products Filter
+  sl.registerLazySingleton(() => GetFilteredProductsUseCase(sl()));
+
   // Repositories
   sl.registerLazySingleton<AuthRepository>(
       () => AuthRepositoryImpl(sl(), sl(), sl(), sl()));
@@ -418,6 +452,11 @@ void initDependencies() {
       () => BrandsRepositoryImpl(sl()));
   sl.registerLazySingleton<OffersRepository>(
       () => OffersRepositoryImpl(sl()));
+  sl.registerLazySingleton<AppReviewsRepository>(
+      () => AppReviewsRepositoryImpl(sl()));
+
+  sl.registerLazySingleton<ProductsFilterRepository>(
+      () => ProductsFilterRepositoryImpl(sl()));
 
   sl.registerLazySingleton<InternetConnectionService>(
       () => InternetConnectionService());
@@ -461,4 +500,9 @@ void initDependencies() {
       () => BrandsRemoteDataSourceImpl(DioService.instance));
   sl.registerLazySingleton<OffersRemoteDataSource>(
       () => OffersRemoteDataSourceImpl(DioService.instance));
+  sl.registerLazySingleton<AppReviewsRemoteDataSource>(
+      () => AppReviewsRemoteDataSourceImpl(DioService.instance));
+
+  sl.registerLazySingleton<ProductsFilterRemoteDataSource>(
+      () => ProductsFilterRemoteDataSourceImpl(DioService.instance));
 }

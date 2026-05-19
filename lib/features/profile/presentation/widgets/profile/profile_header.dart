@@ -39,6 +39,8 @@ class ProfileHeader extends StatelessWidget {
                             fit: BoxFit.cover,
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(999)),
+                            enableFullScreenView: true,
+                            heroTag: 'profile_avatar',
                           )
                         : Icon(
                             Icons.person,

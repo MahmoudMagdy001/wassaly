@@ -6,6 +6,7 @@ class AppSliverTopBar extends StatelessWidget {
     this.title,
     this.titleWidget,
     this.actions,
+    this.leading,
     this.centerTitle = true,
     this.onPressed,
     this.isTransparent = false,
@@ -20,6 +21,7 @@ class AppSliverTopBar extends StatelessWidget {
   final String? title;
   final Widget? titleWidget;
   final List<Widget>? actions;
+  final Widget? leading;
   final VoidCallback? onPressed;
   final bool centerTitle;
   final bool isTransparent;
@@ -140,7 +142,7 @@ class AppSliverTopBar extends StatelessWidget {
                 border: bottom != null
                     ? null
                     : (isTransparent ? null : const Border()),
-                leading: canPop
+                leading: leading ?? (canPop
                     ? CupertinoButton(
                         padding: EdgeInsets.zero,
                         onPressed: () => _handleBack(context),
@@ -149,7 +151,7 @@ class AppSliverTopBar extends StatelessWidget {
                           color: cs.primary,
                         ),
                       )
-                    : const SizedBox.shrink(),
+                    : null),
                 trailing: actions != null && actions!.isNotEmpty
                     ? Row(
                         mainAxisSize: MainAxisSize.min,
@@ -175,8 +177,8 @@ class AppSliverTopBar extends StatelessWidget {
       shadowColor: Colors.transparent,
       foregroundColor: cs.primary,
       title: titleWidget,
-      leadingWidth: canPop ? 40.w : null,
-      leading: canPop
+      leadingWidth: leading != null ? 56.w : (canPop ? 40.w : null),
+      leading: leading ?? (canPop
           ? GestureDetector(
               onTap: () => _handleBack(context),
               child: ColoredBox(
@@ -187,7 +189,7 @@ class AppSliverTopBar extends StatelessWidget {
                 ),
               ),
             )
-          : null,
+          : null),
       actions: actions ?? const [], // FIX 4: const بدل [] جديدة في كل build
       bottom: bottom,
     );

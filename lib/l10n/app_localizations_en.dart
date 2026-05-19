@@ -447,6 +447,15 @@ class SEn extends S {
   String get profile_light => 'Light';
 
   @override
+  String get profile_app_reviews => 'App Reviews';
+
+  @override
+  String get profile_no_reviews => 'No Reviews';
+
+  @override
+  String get profile_no_reviews_desc => 'No reviews have been added yet.';
+
+  @override
   String get profile_arabic => 'Arabic';
 
   @override
@@ -1534,4 +1543,57 @@ class SEn extends S {
 
   @override
   String get booking_details_actions => 'Actions';
+
+  @override
+  String get filter_title => 'Filter Products';
+
+  @override
+  String get filter_apply => 'Apply Filters';
+
+  @override
+  String get filter_reset => 'Reset';
+
+  @override
+  String get filter_category => 'Category';
+
+  @override
+  String get filter_price_range => 'Price Range';
+
+  @override
+  String get filter_min_price => 'Min Price';
+
+  @override
+  String get filter_max_price => 'Max Price';
+
+  @override
+  String get filter_special_offers => 'Special Offers Only';
+
+  @override
+  String get filter_ratings => 'Ratings';
+
+  @override
+  String get filter_sort_by => 'Sort By';
+
+  @override
+  String get filter_sort_price_asc => 'Price: Low to High';
+
+  @override
+  String get filter_sort_price_desc => 'Price: High to Low';
+
+  @override
+  String get filter_sort_rating_desc => 'Highest Rated';
+
+  @override
+  String get filter_sort_newest => 'Newest';
+
+  @override
+  String get filter_no_products => 'No products match the selected filters.';
+
+  @override
+  String get filter_active_filters => 'Active Filters';
+
+  @override
+  String filter_rating_stars(Object stars) {
+    return '$stars stars & up';
+  }
 }
