@@ -21,97 +21,99 @@ class CartItemWidget extends StatelessWidget {
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
 
-    return Dismissible(
-      key: ValueKey(item.id),
-      direction: DismissDirection.endToStart,
-      onDismissed: (_) => onRemove(),
-      confirmDismiss: (_) async {
-        return await showAppDialog<bool>(
-          child: Builder(
-            builder: (ctx) => Dialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.r)),
-              child: Padding(
-                padding: EdgeInsets.all(24.w),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.delete_outline,
-                      size: 48.r,
-                      color: cs.error,
-                    ),
-                    16.verticalSpace,
-                    Text(
-                      context.l10n.cart_remove_item_title,
-                      style: tt.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: cs.onSurface,
+    return Padding(
+      padding: EdgeInsets.only(bottom: 12.h),
+      child: Dismissible(
+        key: ValueKey(item.id),
+        direction: DismissDirection.endToStart,
+        onDismissed: (_) => onRemove(),
+        confirmDismiss: (_) async {
+          return await showAppDialog<bool>(
+            child: Builder(
+              builder: (ctx) => Dialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16.r)),
+                child: Padding(
+                  padding: EdgeInsets.all(24.w),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.delete_outline,
+                        size: 48.r,
+                        color: cs.error,
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                    8.verticalSpace,
-                    Text(
-                      context.l10n.cart_remove_item_message,
-                      style: tt.bodyMedium?.copyWith(
-                        color: cs.onSurfaceVariant,
+                      16.verticalSpace,
+                      Text(
+                        context.l10n.cart_remove_item_title,
+                        style: tt.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: cs.onSurface,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                    24.verticalSpace,
-                    Row(
-                      children: [
-                        Expanded(
-                          child: AppButton(
-                            label: context.l10n.shared_cancel,
-                            variant: ButtonVariant.ghost,
-                            isFullWidth: false,
-                            onPressed: () => Navigator.of(ctx).pop(false),
-                          ),
+                      8.verticalSpace,
+                      Text(
+                        context.l10n.cart_remove_item_message,
+                        style: tt.bodyMedium?.copyWith(
+                          color: cs.onSurfaceVariant,
                         ),
-                        12.horizontalSpace,
-                        Expanded(
-                          child: AppButton(
-                            isFullWidth: true,
-                            label: context.l10n.shared_delete,
-                            variant: ButtonVariant.danger,
-                            onPressed: () => Navigator.of(ctx).pop(true),
+                        textAlign: TextAlign.center,
+                      ),
+                      24.verticalSpace,
+                      Row(
+                        children: [
+                          Expanded(
+                            child: AppButton(
+                              label: context.l10n.shared_cancel,
+                              variant: ButtonVariant.ghost,
+                              isFullWidth: false,
+                              onPressed: () => Navigator.of(ctx).pop(false),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                          12.horizontalSpace,
+                          Expanded(
+                            child: AppButton(
+                              isFullWidth: true,
+                              label: context.l10n.shared_delete,
+                              variant: ButtonVariant.danger,
+                              onPressed: () => Navigator.of(ctx).pop(true),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        );
-      },
-      background: _buildDismissBackground(context, cs),
-      child: _buildCard(context, cs, tt),
+          );
+        },
+        background: _buildDismissBackground(context, cs),
+        child: _buildCard(context, cs, tt),
+      ),
     );
   }
 
   Widget _buildDismissBackground(BuildContext context, ColorScheme cs) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 4.h),
       decoration: BoxDecoration(
-        color: cs.errorContainer,
+        color: cs.error,
         borderRadius: BorderRadius.circular(16.r),
       ),
       alignment: Alignment.centerLeft,
       padding: EdgeInsets.only(left: 20.w),
-      child: Column(
+      child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.delete_outline_rounded, color: cs.error, size: 28.r),
-          4.verticalSpace,
+          Icon(Icons.delete_outline_rounded, color: cs.onError, size: 28.r),
+          12.horizontalSpace,
           Text(
             context.l10n.cart_delete,
             style: TextStyle(
-              color: cs.error,
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w600,
+              color: cs.onError,
+              fontSize: 14.sp,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],
@@ -122,30 +124,39 @@ class CartItemWidget extends StatelessWidget {
   Widget _buildCard(BuildContext context, ColorScheme cs, TextTheme tt) {
     return AppCard(
       showShadow: true,
+      padding: EdgeInsets.all(12.r),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Product Image
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12.r),
-            child: CommonImage(
+          // 1. Product Image (Far Left in LTR, Right in RTL)
+          Container(
+            width: 100.w,
+            height: 100.w,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12.r),
+              border: Border.all(
+                color: cs.outlineVariant.withValues(alpha: 0.5),
+              ),
+            ),
+            child: AppCachedImage(
               imageUrl: item.productImage,
-              width: 100.w,
-              memCacheHeight: 100 * 3,
-              height: 100.h,
-              fit: BoxFit.fitHeight,
+              borderRadius: BorderRadius.circular(12.r),
+              fit: BoxFit.cover,
             ),
           ),
-          14.horizontalSpace,
+          16.horizontalSpace,
 
+          // 2. Product Details (Middle)
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   item.productName,
-                  style: tt.titleSmall?.copyWith(fontWeight: FontWeight.w600),
-                  maxLines: 2,
+                  style: tt.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: cs.onSurface,
+                  ),
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
                 4.verticalSpace,
@@ -154,20 +165,16 @@ class CartItemWidget extends StatelessWidget {
                   Text(
                     item.productDescription!,
                     style: tt.bodySmall?.copyWith(
-                      color: cs.onSurface.withValues(alpha: 0.7),
+                      color: cs.onSurfaceVariant,
+                      fontSize: 11.sp,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                6.verticalSpace,
+                8.verticalSpace,
                 _buildPriceSection(context, cs, tt),
-                10.verticalSpace,
-                Row(
-                  children: [
-                    _buildQuantityControl(cs, tt),
-                    const Spacer(),
-                  ],
-                ),
+                12.verticalSpace,
+                _buildQuantityControl(cs, tt),
               ],
             ),
           ),
@@ -179,7 +186,7 @@ class CartItemWidget extends StatelessWidget {
   Widget _buildQuantityControl(ColorScheme cs, TextTheme tt) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        border: Border.all(color: cs.outline.withValues(alpha: 0.5)),
+        border: Border.all(color: cs.outlineVariant),
         borderRadius: BorderRadius.circular(10.r),
         color: cs.surface,
       ),
@@ -193,12 +200,11 @@ class CartItemWidget extends StatelessWidget {
             isEnabled: item.quantity > 1,
           ),
           Container(
-            constraints: BoxConstraints(minWidth: 32.w),
-            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
+            constraints: BoxConstraints(minWidth: 40.w),
             alignment: Alignment.center,
             child: Text(
               '${item.quantity}',
-              style: tt.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+              style: tt.titleSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
           ),
           _QtyButton(
@@ -224,115 +230,61 @@ class CartItemWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Price line with original, discounted, and discount percentage
         Row(
           children: [
             if (hasOffer) ...[
-              Text(
-                originalPrice.toStringAsFixed(2),
-                style: tt.bodySmall?.copyWith(
-                  color: cs.onSurface.withValues(alpha: 0.5),
-                  decoration: TextDecoration.lineThrough,
-                  decorationColor: cs.onSurface.withValues(alpha: 0.5),
-                ),
-              ),
-              8.horizontalSpace,
-              Text(
-                discountedPrice.toStringAsFixed(2),
-                style: tt.titleMedium?.copyWith(
-                  color: cs.primary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              4.horizontalSpace,
-              Text(
-                context.l10n.shared_currency_egp,
-                style: tt.labelSmall?.copyWith(color: cs.primary),
-              ),
-              8.horizontalSpace,
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
                 decoration: BoxDecoration(
                   color: cs.errorContainer,
-                  borderRadius: BorderRadius.circular(4.r),
+                  borderRadius: BorderRadius.circular(6.r),
                 ),
                 child: Text(
                   '-${item.offers!.first.discountPercentage.toInt()}%',
                   style: tt.labelSmall?.copyWith(
                     color: cs.error,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 10.sp,
                   ),
+                ),
+              ),
+              8.horizontalSpace,
+              Text(
+                '${discountedPrice.toStringAsFixed(2)} ${context.l10n.common_currency}',
+                style: tt.titleSmall?.copyWith(
+                  color: cs.primary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              8.horizontalSpace,
+              Text(
+                originalPrice.toStringAsFixed(2),
+                style: tt.bodySmall?.copyWith(
+                  color: cs.onSurfaceVariant,
+                  decoration: TextDecoration.lineThrough,
+                  fontSize: 10.sp,
                 ),
               ),
             ] else ...[
               Text(
-                originalPrice.toStringAsFixed(2),
-                style: tt.titleMedium?.copyWith(
+                '${originalPrice.toStringAsFixed(2)} ${context.l10n.common_currency}',
+                style: tt.titleSmall?.copyWith(
                   color: cs.primary,
                   fontWeight: FontWeight.bold,
                 ),
-              ),
-              4.horizontalSpace,
-              Text(
-                context.l10n.shared_currency_egp,
-                style: tt.labelSmall?.copyWith(color: cs.primary),
               ),
             ],
           ],
         ),
-        4.verticalSpace,
-        // Total price line
-        // Wrap(
-        //   crossAxisAlignment: WrapCrossAlignment.center,
-        //   spacing: 4.w,
-        //   children: [
-        //     Text(
-        //       context.l10n.cart_total_price,
-        //       style: tt.bodySmall?.copyWith(
-        //         color: cs.onSurface.withValues(alpha: 0.7),
-        //       ),
-        //     ),
-        //     // Text(
-        //     //   '${originalTotal.toStringAsFixed(2)} ${context.l10n.shared_currency_egp}',
-        //     //   style: tt.bodyMedium?.copyWith(
-        //     //     color: hasOffer
-        //     //         ? cs.onSurface.withValues(alpha: 0.5)
-        //     //         : cs.onSurface,
-        //     //     fontWeight: FontWeight.w600,
-        //     //     decoration: hasOffer ? TextDecoration.lineThrough : null,
-        //     //     decorationColor:
-        //     //         hasOffer ? cs.onSurface.withValues(alpha: 0.5) : null,
-        //     //   ),
-        //     // ),
-        //     // Text(
-        //     //   '(${item.quantity} ${context.l10n.cart_items})',
-        //     //   style: tt.bodySmall?.copyWith(
-        //     //     color: cs.onSurface.withValues(alpha: 0.5),
-        //     //   ),
-        //     // ),
-        //   ],
-        // ),
         if (hasOffer) ...[
-          2.verticalSpace,
-          Wrap(
-            crossAxisAlignment: WrapCrossAlignment.center,
-            spacing: 4.w,
-            children: [
-              Text(
-                context.l10n.cart_total_after_discount,
-                style: tt.bodySmall?.copyWith(
-                  color: cs.primary.withValues(alpha: 0.8),
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              Text(
-                '${discountedTotal.toStringAsFixed(2)} ${context.l10n.shared_currency_egp}',
-                style: tt.bodyMedium?.copyWith(
-                  color: cs.primary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
+          4.verticalSpace,
+          Text(
+            '${context.l10n.cart_total_after_discount} ${discountedTotal.toStringAsFixed(2)} ${context.l10n.common_currency}',
+            style: tt.bodySmall?.copyWith(
+              color: cs.onSurfaceVariant,
+              fontWeight: FontWeight.bold,
+              fontSize: 11.sp,
+            ),
           ),
         ],
       ],

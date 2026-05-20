@@ -12,99 +12,132 @@ class BookingCard extends StatelessWidget {
     final tt = context.theme.textTheme;
 
     return Padding(
-      padding: EdgeInsets.only(bottom: 10.h),
-      child: InkWell(
-        onTap: () {
-          context.push(
-            AppRoutes.bookingDetails,
-            extra: {'booking': booking},
-          );
-        },
-        borderRadius: BorderRadius.circular(16.r),
-        child: AppCard(
-          showShadow: true,
-          padding: EdgeInsets.all(12.r),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    width: 50.w,
-                    height: 50.w,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8.r),
-                      color: cs.primaryContainer,
-                    ),
-                    child: CommonImage(
-                      imageUrl: booking.service.image ?? '',
-                      width: 50.w,
-                      height: 50.w,
-                      memCacheHeight: 50 * 2,
-                    ),
-                  ),
-                  12.horizontalSpace,
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          booking.service.name,
-                          style: tt.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          booking.provider.name,
-                          style: tt.bodySmall?.copyWith(
-                            color: cs.outline,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  _StatusBadge(status: booking.status),
-                ],
-              ),
-              Divider(height: 24.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _InfoItem(
-                    icon: Icons.calendar_today_outlined,
-                    label: booking.day,
-                  ),
-                  _InfoItem(
-                    icon: Icons.access_time,
-                    label: booking.time.to12HourFormat(),
-                  ),
-                  Text(
-                    '${booking.service.price} ${context.l10n.shared_currency_egp}',
-                    style: tt.titleMedium?.copyWith(
-                      color: cs.primary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-              if (booking.governorate != null || booking.center != null) ...[
-                Divider(height: 24.h),
+      padding: EdgeInsets.only(bottom: 12.h),
+      child: AppCard(
+        showShadow: true,
+        padding: EdgeInsets.zero,
+        child: InkWell(
+          onTap: () {
+            context.push(
+              AppRoutes.bookingDetails,
+              extra: {'booking': booking},
+            );
+          },
+          borderRadius: BorderRadius.circular(16.r),
+          child: Padding(
+            padding: EdgeInsets.all(16.r),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 1. Header: Status (Left) and Service Info + Image (Right)
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(Icons.location_on_outlined,
-                        size: 14.sp, color: cs.outline),
-                    4.horizontalSpace,
+                    _StatusBadge(status: booking.status),
+                    const Spacer(),
                     Expanded(
-                      child: Text(
-                        '${booking.governorate ?? ''}${booking.governorate != null && booking.center != null ? ' - ' : ''}${booking.center ?? ''}',
-                        style: tt.bodySmall?.copyWith(color: cs.outline),
-                        overflow: TextOverflow.ellipsis,
+                      flex: 4,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            booking.service.name,
+                            style: tt.titleMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: cs.onSurface,
+                            ),
+                            textAlign: TextAlign.end,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          4.verticalSpace,
+                          Text(
+                            booking.provider.name,
+                            style: tt.bodySmall?.copyWith(
+                              color: cs.onSurfaceVariant,
+                            ),
+                            textAlign: TextAlign.end,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                    12.horizontalSpace,
+                    Container(
+                      width: 56.w,
+                      height: 56.w,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.r),
+                        border: Border.all(
+                          color: cs.outlineVariant.withValues(alpha: 0.5),
+                        ),
+                      ),
+                      child: AppCachedImage(
+                        imageUrl: booking.service.image ?? '',
+                        borderRadius: BorderRadius.circular(8.r),
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ],
                 ),
+                16.verticalSpace,
+                AppDivider(color: cs.outlineVariant.withValues(alpha: 0.3)),
+                16.verticalSpace,
+
+                // 2. Middle Section: Price (Left), Time, Day (Right)
+                Row(
+                  children: [
+                    Text(
+                      '${booking.service.price} ${context.l10n.common_currency}',
+                      style: tt.titleMedium?.copyWith(
+                        color: cs.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Spacer(),
+                    _InfoItem(
+                      icon: Icons.access_time_rounded,
+                      label: booking.time.to12HourFormat(),
+                    ),
+                    16.horizontalSpace,
+                    _InfoItem(
+                      icon: Icons.calendar_today_outlined,
+                      label: booking.day,
+                    ),
+                  ],
+                ),
+
+                // 3. Footer: Location (Bottom aligned Right)
+                if (booking.governorate != null || booking.center != null) ...[
+                  16.verticalSpace,
+                  AppDivider(color: cs.outlineVariant.withValues(alpha: 0.3)),
+                  16.verticalSpace,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          '${booking.governorate ?? ''}${booking.governorate != null && booking.center != null ? ' - ' : ''}${booking.center ?? ''}',
+                          style: tt.bodySmall?.copyWith(
+                            color: cs.onSurfaceVariant,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.end,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      8.horizontalSpace,
+                      Icon(
+                        Icons.location_on_outlined,
+                        size: 16.r,
+                        color: cs.onSurfaceVariant,
+                      ),
+                    ],
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),
@@ -124,12 +157,12 @@ class _StatusBadge extends StatelessWidget {
     final normalizedStatus = status.trim().toLowerCase();
 
     final statusConfig = {
-      'pending':
-          _StatusConfig(Colors.orange, context.l10n.order_status_pending),
-      'waiting':
-          _StatusConfig(Colors.orange, context.l10n.order_status_pending),
-      'قيد الانتظار':
-          _StatusConfig(Colors.orange, context.l10n.order_status_pending),
+      'pending': _StatusConfig(
+          const Color(0xFFF59E0B), context.l10n.order_status_pending),
+      'waiting': _StatusConfig(
+          const Color(0xFFF59E0B), context.l10n.order_status_pending),
+      'قيد الانتظار': _StatusConfig(
+          const Color(0xFFF59E0B), context.l10n.order_status_pending),
       'accepted':
           _StatusConfig(Colors.blue, context.l10n.order_status_accepted),
       'تم القبول':
@@ -148,16 +181,16 @@ class _StatusBadge extends StatelessWidget {
         statusConfig[normalizedStatus] ?? _StatusConfig(cs.primary, status);
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
       decoration: BoxDecoration(
-        color: config.color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(4.r),
+        color: config.color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(6.r),
       ),
       child: Text(
         config.label,
         style: TextStyle(
           color: config.color,
-          fontSize: 10.sp,
+          fontSize: 11.sp,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -183,13 +216,17 @@ class _InfoItem extends StatelessWidget {
     final tt = context.theme.textTheme;
 
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 14.sp, color: cs.outline),
-        SizedBox(width: 4.w),
         Text(
           label,
-          style: tt.bodySmall,
+          style: tt.bodySmall?.copyWith(
+            color: cs.onSurface,
+            fontWeight: FontWeight.w500,
+          ),
         ),
+        6.horizontalSpace,
+        Icon(icon, size: 16.r, color: cs.onSurfaceVariant),
       ],
     );
   }

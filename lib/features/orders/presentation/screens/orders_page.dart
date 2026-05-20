@@ -60,22 +60,25 @@ class _OrdersView extends StatelessWidget {
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
-            AppSliverTopBar(
-              title: context.l10n.profile_my_orders,
-              centerTitle: true,
-              pinned: true,
-              floating: true,
-              snap: true,
-              bottom: TabBar(
-                controller: tabController,
-                labelColor: cs.primary,
-                unselectedLabelColor: cs.onSurfaceVariant,
-                indicatorColor: cs.primary,
-                indicatorSize: TabBarIndicatorSize.label,
-                tabs: [
-                  Tab(text: context.l10n.order_products),
-                  Tab(text: context.l10n.order_services),
-                ],
+            SliverOverlapAbsorber(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              sliver: AppSliverTopBar(
+                title: context.l10n.profile_my_orders,
+                centerTitle: true,
+                pinned: true,
+                floating: true,
+                snap: true,
+                bottom: TabBar(
+                  controller: tabController,
+                  labelColor: cs.primary,
+                  unselectedLabelColor: cs.onSurfaceVariant,
+                  indicatorColor: cs.primary,
+                  indicatorSize: TabBarIndicatorSize.label,
+                  tabs: [
+                    Tab(text: context.l10n.order_products),
+                    Tab(text: context.l10n.order_services),
+                  ],
+                ),
               ),
             ),
           ];

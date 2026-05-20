@@ -37,7 +37,7 @@ class CheckoutOrderSummarySection extends StatelessWidget {
               return Padding(
                 padding: EdgeInsets.only(bottom: 12.h),
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // Product image
                     ClipRRect(

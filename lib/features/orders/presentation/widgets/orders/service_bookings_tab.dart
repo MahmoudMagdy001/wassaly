@@ -59,8 +59,12 @@ class _ServiceBookingsTabState extends State<ServiceBookingsTab> {
           onRefresh: _onRefresh,
           child: CustomScrollView(
             slivers: [
+              SliverOverlapInjector(
+                handle:
+                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              ),
               SliverPadding(
-                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 10.h),
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
                 sliver: SliverList.builder(
                   itemCount: serviceBookings.data.length,
                   itemBuilder: (context, index) {

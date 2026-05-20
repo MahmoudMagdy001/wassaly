@@ -113,6 +113,7 @@ final GoRouter appRouter = GoRouter(
                 GoRoute(
                   path: 'edit',
                   name: 'editProfile',
+                  parentNavigatorKey: rootNavigatorKey,
                   builder: (context, state) => BlocProvider.value(
                     value: sl<ProfileBloc>(),
                     child: const EditProfilePage(),
@@ -121,6 +122,7 @@ final GoRouter appRouter = GoRouter(
                 GoRoute(
                   path: 'orders',
                   name: 'orders',
+                  parentNavigatorKey: rootNavigatorKey,
                   builder: (context, state) {
                     final extra = state.extra as Map<String, dynamic>?;
                     final initialIndex = extra?['initialIndex'] as int? ?? 0;
@@ -130,6 +132,7 @@ final GoRouter appRouter = GoRouter(
                 GoRoute(
                   path: 'orders/details',
                   name: 'orderDetails',
+                  parentNavigatorKey: rootNavigatorKey,
                   builder: (context, state) {
                     final extra = state.extra as Map<String, dynamic>?;
                     final orderId = extra?['orderId'] as int? ?? 0;
@@ -143,6 +146,7 @@ final GoRouter appRouter = GoRouter(
                 GoRoute(
                   path: 'bookings/details',
                   name: 'bookingDetails',
+                  parentNavigatorKey: rootNavigatorKey,
                   builder: (context, state) {
                     final extra = state.extra as Map<String, dynamic>?;
                     final booking = extra?['booking'] as BookingEntity?;
@@ -163,6 +167,7 @@ final GoRouter appRouter = GoRouter(
                 GoRoute(
                   path: 'addresses',
                   name: 'addresses',
+                  parentNavigatorKey: rootNavigatorKey,
                   builder: (context, state) => BlocProvider.value(
                     value: sl<ProfileBloc>(),
                     child: const AddressesPage(),
@@ -171,6 +176,7 @@ final GoRouter appRouter = GoRouter(
                     GoRoute(
                       path: 'add',
                       name: 'addAddress',
+                      parentNavigatorKey: rootNavigatorKey,
                       builder: (context, state) => BlocProvider.value(
                         value: sl<ProfileBloc>(),
                         child: AddAddressPage(
@@ -183,6 +189,7 @@ final GoRouter appRouter = GoRouter(
                 GoRoute(
                   path: 'app-reviews',
                   name: 'appReviews',
+                  parentNavigatorKey: rootNavigatorKey,
                   builder: (context, state) => BlocProvider(
                     create: (_) =>
                         sl<AppReviewsBloc>()..add(const GetAppReviewsEvent()),

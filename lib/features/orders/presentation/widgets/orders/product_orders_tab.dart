@@ -84,6 +84,10 @@ class _ProductOrdersTabState extends State<ProductOrdersTab> {
           child: CustomScrollView(
             controller: _scrollController,
             slivers: [
+              SliverOverlapInjector(
+                handle:
+                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              ),
               SliverPadding(
                 padding: EdgeInsets.all(16.r),
                 sliver: SliverList.builder(

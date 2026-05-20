@@ -291,12 +291,16 @@ class OrderItemsCard extends StatelessWidget {
 
     return AppCard(
       showShadow: true,
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-      child: ListView.builder(
+      padding: EdgeInsets.all(16.r),
+      child: ListView.separated(
         padding: EdgeInsets.zero,
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: items.length,
+        separatorBuilder: (context, index) => Padding(
+          padding: EdgeInsets.symmetric(vertical: 12.h),
+          child: AppDivider(color: cs.outlineVariant.withValues(alpha: 0.3)),
+        ),
         itemBuilder: (context, index) {
           final item = items[index];
           final product = item.product;
@@ -308,82 +312,80 @@ class OrderItemsCard extends StatelessWidget {
           final unitPrice = item.price;
           final totalItemPrice = item.totalPrice;
 
-          return Padding(
-            padding: EdgeInsets.symmetric(vertical: 0.h),
-            child: Row(
-              children: [
-                // Product Image
-                Container(
-                  width: 64.w,
-                  height: 64.w,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8.r),
-                    border: Border.all(
-                        color: cs.outlineVariant.withValues(alpha: 0.5)),
-                  ),
-                  child: AppCachedImage(
-                    imageUrl: productImage,
-                    borderRadius: BorderRadius.circular(8.r),
-                    fit: BoxFit.cover,
-                  ),
+          return Row(
+            children: [
+
+              // 1. Total Item Price (Far Left in RTL)
+              Container(
+                width: 56.w,
+                height: 56.w,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12.r),
+                  border: Border.all(
+                      color: cs.outlineVariant.withValues(alpha: 0.5)),
                 ),
-                12.horizontalSpace,
-                // Product Name, quantity and Price
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        productName,
-                        style: tt.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: cs.onSurface,
+                child: AppCachedImage(
+                  imageUrl: productImage,
+                  borderRadius: BorderRadius.circular(12.r),
+                  fit: BoxFit.cover,
+                ),
+              ),
+             const Spacer(),
+
+              Expanded(
+                flex: 4,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      productName,
+                      style: tt.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: cs.onSurface,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    4.verticalSpace,
+                    Row(
+                      children: [
+                        Text(
+                          '$quantity',
+                          style: tt.bodySmall?.copyWith(
+                            color: cs.onSurfaceVariant,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      8.verticalSpace,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                '$quantity',
-                                style: tt.bodySmall?.copyWith(
-                                  color: cs.onSurfaceVariant,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                ' × ',
-                                style: tt.bodySmall?.copyWith(
-                                  color: cs.onSurfaceVariant,
-                                ),
-                              ),
-                              Text(
-                                '$unitPrice ${context.l10n.common_currency}',
-                                style: tt.bodySmall?.copyWith(
-                                  color: cs.onSurfaceVariant,
-                                ),
-                              ),
-                            ],
+                        Text(
+                          ' × ',
+                          style: tt.bodySmall?.copyWith(
+                            color: cs.onSurfaceVariant,
                           ),
-                          Text(
-                            '$totalItemPrice ${context.l10n.common_currency}',
-                            style: tt.titleSmall?.copyWith(
-                              color: cs.primary,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        ),
+                        Text(
+                          '$unitPrice ${context.l10n.common_currency}',
+                          style: tt.bodySmall?.copyWith(
+                            color: cs.onSurfaceVariant,
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              // 3. Product Image (Far Right in RTL)
+              const Spacer(),
+
+              Text(
+                '$totalItemPrice ${context.l10n.common_currency}',
+                style: tt.titleSmall?.copyWith(
+                  color: cs.primary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              // 2. Product Details (Middle)
+
+            ],
           );
         },
       ),
