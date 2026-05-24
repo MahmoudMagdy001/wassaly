@@ -30,9 +30,7 @@ class AppReviewsPage extends StatelessWidget {
 
           return FloatingActionButton(
             onPressed: () {
-              showModalBottomSheet<void>(
-                context: context,
-                isScrollControlled: true,
+              context.showAppBottomSheet<void>(
                 builder: (_) => BlocProvider.value(
                   value: context.read<AppReviewsBloc>(),
                   child: const AppReviewFormSheet(),

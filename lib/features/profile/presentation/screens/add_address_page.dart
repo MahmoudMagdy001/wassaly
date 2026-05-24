@@ -214,7 +214,10 @@ class _AddAddressViewState extends State<_AddAddressView> {
               items: governorates.map((g) {
                 return DropdownMenuItem(
                   value: g.id,
-                  child: Text(g.name),
+                  child: Text(
+                    g.name,
+                    style: const TextStyle(),
+                  ),
                 );
               }).toList(),
               onChanged: governorateStatus.isLoading

@@ -29,6 +29,31 @@ class _SearchAppBarState extends State<SearchAppBar> {
   Widget build(BuildContext context) {
     final cs = context.theme.colorScheme;
 
+    if (context.isIOS) {
+      return AppSliverTopBar(
+        centerTitle: false,
+        titleWidget: Padding(
+          padding: EdgeInsets.symmetric(vertical: 2.h),
+          child: CupertinoSearchTextField(
+            controller: _controller,
+            autofocus: true,
+            placeholder: context.l10n.search_search_hint,
+            onChanged: (value) {
+              context.read<SearchBloc>().add(SearchQueryChanged(value));
+            },
+            onSubmitted: (value) {
+              context.read<SearchBloc>().add(const SearchSubmitted());
+            },
+            style: context.theme.textTheme.bodyLarge?.copyWith(
+              color: cs.onSurface,
+            ),
+            backgroundColor: cs.surfaceContainerHighest.withValues(alpha: 0.5),
+            borderRadius: BorderRadius.all(Radius.circular(10.r)),
+          ),
+        ),
+      );
+    }
+
     return AppSliverTopBar(
       centerTitle: false,
       titleWidget: Padding(

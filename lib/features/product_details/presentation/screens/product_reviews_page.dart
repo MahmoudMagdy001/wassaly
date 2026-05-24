@@ -115,9 +115,7 @@ class ProductReviewsPage extends StatelessWidget {
     BuildContext context,
     ProductDetailReviewEntity review,
   ) {
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
+    context.showAppBottomSheet<void>(
       builder: (_) => BlocProvider.value(
         value: context.read<ProductDetailsBloc>(),
         child: ProductReviewFormSheet(

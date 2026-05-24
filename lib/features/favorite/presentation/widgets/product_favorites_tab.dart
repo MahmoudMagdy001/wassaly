@@ -41,7 +41,7 @@ class ProductFavoritesTab extends StatelessWidget {
                   products: isLoading ? const [] : favorites.data,
                   padding:
                       EdgeInsets.symmetric(horizontal: 6.w, vertical: 10.h),
-                  mainAxisExtent: 230.h,
+                  mainAxisExtent: 235.h,
                 )
               else if (isError && favorites.data.isEmpty)
                 SliverFillRemaining(

@@ -26,66 +26,95 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   }
 
   Future<void> _onCancelOrder(OrderEntity order) async {
-    final confirmed = await showAppDialog<bool>(
-      child: Builder(
-        builder: (ctx) => Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.r),
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(24.w),
-            child: Column(
+    final confirmed = await context.showAppDialog<bool>(
+      builder: (ctx) {
+        if (ctx.isIOS) {
+          return CupertinoAlertDialog(
+            title: Text(context.l10n.order_cancel_title),
+            content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  Icons.cancel_outlined,
-                  size: 48.r,
-                  color: context.theme.colorScheme.error,
-                ),
-                16.verticalSpace,
-                Text(
-                  context.l10n.order_cancel_title,
-                  style: context.theme.textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: context.theme.colorScheme.onSurface,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
                 8.verticalSpace,
                 Text(
                   context.l10n.order_cancel_confirm_msg,
-                  style: context.theme.textTheme.bodyMedium?.copyWith(
-                    color: context.theme.colorScheme.onSurfaceVariant,
-                  ),
                   textAlign: TextAlign.center,
-                ),
-                24.verticalSpace,
-                Row(
-                  children: [
-                    Expanded(
-                      child: AppButton(
-                        label: context.l10n.shared_cancel,
-                        variant: ButtonVariant.ghost,
-                        isFullWidth: false,
-                        onPressed: () => Navigator.of(ctx).pop(false),
-                      ),
-                    ),
-                    12.horizontalSpace,
-                    Expanded(
-                      child: AppButton(
-                        isFullWidth: true,
-                        label: context.l10n.order_details_cancel_btn,
-                        variant: ButtonVariant.danger,
-                        onPressed: () => Navigator.of(ctx).pop(true),
-                      ),
-                    ),
-                  ],
                 ),
               ],
             ),
+            actions: [
+              CupertinoDialogAction(
+                onPressed: () => Navigator.of(ctx).pop(false),
+                child: Text(context.l10n.shared_cancel),
+              ),
+              CupertinoDialogAction(
+                onPressed: () => Navigator.of(ctx).pop(true),
+                isDestructiveAction: true,
+                child: Text(context.l10n.order_details_cancel_btn),
+              ),
+            ],
+          );
+        }
+
+        return Builder(
+          builder: (ctx) => Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.r),
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(24.w),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.cancel_outlined,
+                    size: 48.r,
+                    color: context.theme.colorScheme.error,
+                  ),
+                  16.verticalSpace,
+                  Text(
+                    context.l10n.order_cancel_title,
+                    style: context.theme.textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: context.theme.colorScheme.onSurface,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  8.verticalSpace,
+                  Text(
+                    context.l10n.order_cancel_confirm_msg,
+                    style: context.theme.textTheme.bodyMedium?.copyWith(
+                      color: context.theme.colorScheme.onSurfaceVariant,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  24.verticalSpace,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AppButton(
+                          label: context.l10n.shared_cancel,
+                          variant: ButtonVariant.ghost,
+                          isFullWidth: false,
+                          onPressed: () => Navigator.of(ctx).pop(false),
+                        ),
+                      ),
+                      12.horizontalSpace,
+                      Expanded(
+                        child: AppButton(
+                          isFullWidth: true,
+                          label: context.l10n.order_details_cancel_btn,
+                          variant: ButtonVariant.danger,
+                          onPressed: () => Navigator.of(ctx).pop(true),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
 
     if (!mounted) return;
@@ -96,66 +125,95 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   }
 
   Future<void> _onDeleteOrder(OrderEntity order) async {
-    final confirmed = await showAppDialog<bool>(
-      child: Builder(
-        builder: (ctx) => Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.r),
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(24.w),
-            child: Column(
+    final confirmed = await context.showAppDialog<bool>(
+      builder: (ctx) {
+        if (ctx.isIOS) {
+          return CupertinoAlertDialog(
+            title: Text(context.l10n.order_delete_title),
+            content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  Icons.delete_outline,
-                  size: 48.r,
-                  color: context.theme.colorScheme.error,
-                ),
-                16.verticalSpace,
-                Text(
-                  context.l10n.order_delete_title,
-                  style: context.theme.textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: context.theme.colorScheme.onSurface,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
                 8.verticalSpace,
                 Text(
                   context.l10n.order_delete_confirm_msg,
-                  style: context.theme.textTheme.bodyMedium?.copyWith(
-                    color: context.theme.colorScheme.onSurfaceVariant,
-                  ),
                   textAlign: TextAlign.center,
-                ),
-                24.verticalSpace,
-                Row(
-                  children: [
-                    Expanded(
-                      child: AppButton(
-                        label: context.l10n.shared_cancel,
-                        variant: ButtonVariant.ghost,
-                        isFullWidth: false,
-                        onPressed: () => Navigator.of(ctx).pop(false),
-                      ),
-                    ),
-                    12.horizontalSpace,
-                    Expanded(
-                      child: AppButton(
-                        isFullWidth: true,
-                        label: context.l10n.shared_delete,
-                        variant: ButtonVariant.danger,
-                        onPressed: () => Navigator.of(ctx).pop(true),
-                      ),
-                    ),
-                  ],
                 ),
               ],
             ),
+            actions: [
+              CupertinoDialogAction(
+                onPressed: () => Navigator.of(ctx).pop(false),
+                child: Text(context.l10n.shared_cancel),
+              ),
+              CupertinoDialogAction(
+                onPressed: () => Navigator.of(ctx).pop(true),
+                isDestructiveAction: true,
+                child: Text(context.l10n.shared_delete),
+              ),
+            ],
+          );
+        }
+
+        return Builder(
+          builder: (ctx) => Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.r),
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(24.w),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.delete_outline,
+                    size: 48.r,
+                    color: context.theme.colorScheme.error,
+                  ),
+                  16.verticalSpace,
+                  Text(
+                    context.l10n.order_delete_title,
+                    style: context.theme.textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: context.theme.colorScheme.onSurface,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  8.verticalSpace,
+                  Text(
+                    context.l10n.order_delete_confirm_msg,
+                    style: context.theme.textTheme.bodyMedium?.copyWith(
+                      color: context.theme.colorScheme.onSurfaceVariant,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  24.verticalSpace,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AppButton(
+                          label: context.l10n.shared_cancel,
+                          variant: ButtonVariant.ghost,
+                          isFullWidth: false,
+                          onPressed: () => Navigator.of(ctx).pop(false),
+                        ),
+                      ),
+                      12.horizontalSpace,
+                      Expanded(
+                        child: AppButton(
+                          isFullWidth: true,
+                          label: context.l10n.shared_delete,
+                          variant: ButtonVariant.danger,
+                          onPressed: () => Navigator.of(ctx).pop(true),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
 
     if (!mounted) return;

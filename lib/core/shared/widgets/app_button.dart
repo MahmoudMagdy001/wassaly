@@ -43,7 +43,7 @@ class AppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = context.theme.colorScheme;
-    final appColors = context.theme.extension<AppColorsExtension>()!;
+    final appColors = context.appColors;
     final isDisabled = onPressed == null || isLoading;
     final isIOS = context.isIOS;
 
@@ -108,7 +108,10 @@ class AppButton extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               if (prefixIcon != null) ...[
-                prefixIcon!,
+                if (isIOS)
+                  AppIcon.adapt(prefixIcon) ?? prefixIcon!
+                else
+                  prefixIcon!,
                 8.horizontalSpace,
               ],
               Text(
@@ -122,7 +125,10 @@ class AppButton extends StatelessWidget {
               ),
               if (suffixIcon != null) ...[
                 8.horizontalSpace,
-                suffixIcon!,
+                if (isIOS)
+                  AppIcon.adapt(suffixIcon) ?? suffixIcon!
+                else
+                  suffixIcon!,
               ],
             ],
           );
@@ -134,17 +140,43 @@ class AppButton extends StatelessWidget {
         child: SizedBox(
           width: isFullWidth ? double.infinity : buttonWidth,
           height: buttonHeight,
-          child: CupertinoButton(
-            onPressed: isDisabled ? null : onPressed,
-            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-            color: bg,
-            disabledColor: CupertinoColors.quaternarySystemFill,
-            borderRadius: BorderRadius.circular(12.r),
-            child: buttonChild,
+          child: DecoratedBox(
+            decoration: border != null
+                ? BoxDecoration(
+                    borderRadius: BorderRadius.circular(12.r),
+                    border: Border.fromBorderSide(border),
+                  )
+                : const BoxDecoration(),
+            child: CupertinoButton(
+              onPressed: isDisabled ? null : onPressed,
+              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+              color: border != null ? null : bg,
+              disabledColor: border != null
+                  ? CupertinoColors.systemGrey.withValues(alpha: 0)
+                  : bg.withValues(alpha: 0.6),
+              borderRadius: BorderRadius.circular(12.r),
+              child: buttonChild,
+            ),
           ),
         ),
       );
     }
+
+    final borderRadius = BorderRadius.circular(100.r);
+
+    final buttonStyle = TextButton.styleFrom(
+      backgroundColor: bg,
+      foregroundColor: fg,
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      shape: border != null
+          ? RoundedRectangleBorder(
+              borderRadius: borderRadius,
+              side: border,
+            )
+          : RoundedRectangleBorder(
+              borderRadius: borderRadius,
+            ),
+    );
 
     return AnimatedOpacity(
       duration: const Duration(milliseconds: 200),
@@ -152,22 +184,23 @@ class AppButton extends StatelessWidget {
       child: SizedBox(
         width: isFullWidth ? double.infinity : buttonWidth,
         height: buttonHeight,
-        child: TextButton(
-          onPressed: isDisabled ? null : onPressed,
-          style: TextButton.styleFrom(
-            backgroundColor: bg,
-            foregroundColor: fg,
-            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-            shape: border != null
-                ? RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                    side: border,
-                  )
-                : RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.r)),
-          ),
-          child: buttonChild,
-        ),
+        child: switch (variant) {
+          ButtonVariant.outline => OutlinedButton(
+              onPressed: isDisabled ? null : onPressed,
+              style: buttonStyle,
+              child: buttonChild,
+            ),
+          ButtonVariant.ghost => TextButton(
+              onPressed: isDisabled ? null : onPressed,
+              style: buttonStyle,
+              child: buttonChild,
+            ),
+          _ => FilledButton(
+              onPressed: isDisabled ? null : onPressed,
+              style: buttonStyle,
+              child: buttonChild,
+            ),
+        },
       ),
     );
   }

@@ -30,8 +30,8 @@ class BackToLoginLink extends StatelessWidget {
             ),
           ),
           4.horizontalSpace,
-          Icon(
-            Icons.arrow_back,
+          AppIcon(
+            materialIcon: Icons.arrow_back,
             size: 18.w,
             color: cs.primary,
           ),

@@ -96,8 +96,12 @@ class ProductCard extends StatelessWidget {
                     if (product.reviewCount > 0)
                       Row(
                         children: [
-                          Icon(Icons.star_rounded,
-                              size: 14.r, color: cs.secondary),
+                          AppIcon(
+                            materialIcon: Icons.star_rounded,
+                            cupertinoIcon: CupertinoIcons.star_fill,
+                            size: 14.r,
+                            color: cs.secondary,
+                          ),
                           2.horizontalSpace,
                           Text(
                             '${product.averageRating.toStringAsFixed(1)} (${product.reviewCount})',
@@ -214,10 +218,13 @@ class _ProductImageSection extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: Icon(
-                      isFavorite
+                    child: AppIcon(
+                      materialIcon: isFavorite
                           ? Icons.favorite_rounded
                           : Icons.favorite_outline_rounded,
+                      cupertinoIcon: isFavorite
+                          ? CupertinoIcons.heart_fill
+                          : CupertinoIcons.heart,
                       size: 18.r,
                       color: isFavorite ? cs.error : cs.onSurfaceVariant,
                     ),
@@ -306,7 +313,12 @@ class _PriceRow extends StatelessWidget {
               color: cs.primary,
               borderRadius: BorderRadius.circular(8.r),
             ),
-            child: Icon(Icons.remove_red_eye, size: 18.r, color: cs.onPrimary),
+            child: AppIcon(
+              materialIcon: Icons.remove_red_eye,
+              cupertinoIcon: CupertinoIcons.eye_fill,
+              size: 18.r,
+              color: cs.onPrimary,
+            ),
           ),
         ),
       ],

@@ -35,10 +35,7 @@ class _ProductsFilterPageState extends State<ProductsFilterPage> {
   }
 
   void _openFilterSheet(BuildContext context, ProductsFilterState state) {
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+    context.showAppBottomSheet<void>(
       builder: (_) => BlocProvider.value(
         value: context.read<ProductsFilterBloc>(),
         child: FilterOptionsSheet(

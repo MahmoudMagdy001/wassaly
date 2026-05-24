@@ -127,7 +127,7 @@ class _CategoryView extends StatelessWidget {
                                     subCategory: selectedSubCategory,
                                     showAppBar: false,
                                     crossAxisCount: 2,
-                                    productMainAxisExtent: 230.h,
+                                    productMainAxisExtent: 235.h,
                                     serviceMainAxisExtent: 190.h,
                                   ),
                                 ),

@@ -125,9 +125,7 @@ class ServiceReviewsPage extends StatelessWidget {
     BuildContext context,
     ServiceDetailReviewEntity review,
   ) {
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
+    context.showAppBottomSheet<void>(
       builder: (_) => BlocProvider.value(
         value: context.read<ServiceDetailsBloc>(),
         child: ServiceReviewFormSheet(

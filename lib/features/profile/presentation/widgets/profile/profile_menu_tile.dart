@@ -35,8 +35,8 @@ class ProfileMenuTile extends StatelessWidget {
                 color: cs.primaryContainer.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(8.r),
               ),
-              child: Icon(
-                icon,
+              child: AppIcon(
+                materialIcon: icon,
                 size: 20.r,
                 color: cs.primary,
               ),
@@ -65,8 +65,10 @@ class ProfileMenuTile extends StatelessWidget {
               ),
             ),
             trailing ??
-                Icon(
-                  Icons.chevron_right,
+                AppIcon(
+                  materialIcon: context.isArabic
+                      ? Icons.chevron_left
+                      : Icons.chevron_right,
                   size: 20.r,
                   color: cs.onSurfaceVariant,
                 ),

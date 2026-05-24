@@ -104,10 +104,13 @@ class ServiceDetailsInfo extends StatelessWidget {
                                       expectedIsFavorite: isFavorite,
                                     ),
                                   ),
-                          icon: Icon(
-                            isFavorite
+                          icon: AppIcon(
+                            materialIcon: isFavorite
                                 ? Icons.favorite_rounded
-                                : Icons.favorite_border_rounded,
+                                : Icons.favorite_outline_rounded,
+                            cupertinoIcon: isFavorite
+                                ? CupertinoIcons.heart_fill
+                                : CupertinoIcons.heart,
                             color: isFavorite ? cs.error : cs.outline,
                             size: 28.r,
                           ),
@@ -158,8 +161,9 @@ class ServiceDetailsInfo extends StatelessWidget {
                       ),
                       Row(
                         children: [
-                          Icon(
-                            Icons.star_rounded,
+                          AppIcon(
+                            materialIcon: Icons.star_rounded,
+                            cupertinoIcon: CupertinoIcons.star_fill,
                             size: 18.r,
                             color: cs.secondary,
                           ),
@@ -180,10 +184,14 @@ class ServiceDetailsInfo extends StatelessWidget {
                     hasCompletedBooking &&
                     !hasCurrentUserReview) ...[
                   12.verticalSpace,
-                  OutlinedButton.icon(
+                  AppButton(
                     onPressed: () => _showReviewSheet(context),
-                    icon: const Icon(Icons.rate_review_outlined),
-                    label: Text(context.l10n.product_details_add_review),
+                    prefixIcon: const AppIcon(
+                      materialIcon: Icons.rate_review_outlined,
+                      cupertinoIcon: CupertinoIcons.square_pencil,
+                    ),
+                    label: context.l10n.product_details_add_review,
+                    variant: ButtonVariant.outline,
                   ),
                 ],
                 12.verticalSpace,
@@ -228,10 +236,14 @@ class ServiceDetailsInfo extends StatelessWidget {
                   12.verticalSpace,
                   Align(
                     alignment: Alignment.center,
-                    child: TextButton.icon(
+                    child: AppButton(
                       onPressed: () => _openAllReviews(context),
-                      icon: const Icon(Icons.expand_more_rounded),
-                      label: Text(context.l10n.product_details_show_more),
+                      prefixIcon: const AppIcon(
+                        materialIcon: Icons.expand_more_rounded,
+                        cupertinoIcon: CupertinoIcons.chevron_down,
+                      ),
+                      label: context.l10n.product_details_show_more,
+                      variant: ButtonVariant.ghost,
                     ),
                   ),
                 ],
@@ -275,9 +287,7 @@ class ServiceDetailsInfo extends StatelessWidget {
     BuildContext context, {
     ServiceDetailReviewEntity? review,
   }) {
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
+    context.showAppBottomSheet<void>(
       builder: (_) => BlocProvider.value(
         value: context.read<ServiceDetailsBloc>(),
         child: ServiceReviewFormSheet(

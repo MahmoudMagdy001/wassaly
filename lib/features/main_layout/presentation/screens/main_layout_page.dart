@@ -190,48 +190,110 @@ class _NavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isIOS = context.isIOS;
+
     return BlocSelector<SessionBloc, SessionState, String?>(
       selector: (state) =>
           state is SessionAuthenticated ? state.user.avatarUrl : null,
       builder: (context, avatarUrl) {
-        return BottomNavigationBar(
-          currentIndex: currentIndex.clamp(0, 3),
-          onTap: onTap,
-          backgroundColor: backgroundColor,
-          selectedItemColor: selectedItemColor,
-          unselectedItemColor: unselectedItemColor,
-          type: BottomNavigationBarType.fixed,
-          showUnselectedLabels: true,
-          items: [
-            BottomNavigationBarItem(
-              icon: const Icon(Icons.home_outlined),
-              activeIcon: const Icon(Icons.home_rounded),
-              label: context.l10n.nav_nav_home,
-            ),
-            BottomNavigationBarItem(
-              icon: const _CartBadgeIcon(
-                isActive: false,
-                baseIcon: Icons.shopping_cart_outlined,
-              ),
-              activeIcon: const _CartBadgeIcon(
-                isActive: true,
-                baseIcon: Icons.shopping_cart_rounded,
-              ),
-              label: context.l10n.nav_nav_cart,
-            ),
-            BottomNavigationBarItem(
-              icon: const Icon(Icons.favorite_outline),
-              activeIcon: const Icon(Icons.favorite_rounded),
-              label: context.l10n.nav_nav_favorite,
-            ),
-            BottomNavigationBarItem(
-              icon: _ProfileNavIcon(avatarUrl: avatarUrl, isActive: false),
-              activeIcon: _ProfileNavIcon(avatarUrl: avatarUrl, isActive: true),
-              label: context.l10n.nav_nav_profile,
-            ),
-          ],
-        );
+        if (isIOS) {
+          return _buildCupertinoTabBar(context, avatarUrl);
+        }
+        return _buildMaterialNavBar(context, avatarUrl);
       },
+    );
+  }
+
+  Widget _buildCupertinoTabBar(BuildContext context, String? avatarUrl) {
+    final cs = context.theme.colorScheme;
+    final tt = context.theme.textTheme;
+    return CupertinoTheme(
+      data: CupertinoThemeData(
+        primaryColor: cs.primary,
+        textTheme: CupertinoTextThemeData(
+          tabLabelTextStyle: tt.labelSmall ?? const TextStyle(),
+        ),
+      ),
+      child: CupertinoTabBar(
+        currentIndex: currentIndex.clamp(0, 3),
+        onTap: onTap,
+        backgroundColor: backgroundColor,
+        activeColor: selectedItemColor,
+        inactiveColor: unselectedItemColor,
+        items: [
+          BottomNavigationBarItem(
+            icon: const Icon(CupertinoIcons.home),
+            activeIcon: const Icon(CupertinoIcons.house_fill),
+            label: context.l10n.nav_nav_home,
+          ),
+          BottomNavigationBarItem(
+            icon: const _CartBadgeIcon(
+              isActive: false,
+              baseIcon: Icons.shopping_cart_outlined,
+              cupertinoIcon: CupertinoIcons.cart,
+            ),
+            activeIcon: const _CartBadgeIcon(
+              isActive: true,
+              baseIcon: Icons.shopping_cart_rounded,
+              cupertinoIcon: CupertinoIcons.cart_fill,
+            ),
+            label: context.l10n.nav_nav_cart,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(CupertinoIcons.heart),
+            activeIcon: const Icon(CupertinoIcons.heart_fill),
+            label: context.l10n.nav_nav_favorite,
+          ),
+          BottomNavigationBarItem(
+            icon: _ProfileNavIcon(avatarUrl: avatarUrl, isActive: false),
+            activeIcon: _ProfileNavIcon(avatarUrl: avatarUrl, isActive: true),
+            label: context.l10n.nav_nav_profile,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMaterialNavBar(BuildContext context, String? avatarUrl) {
+    final tt = context.theme.textTheme;
+    return BottomNavigationBar(
+      currentIndex: currentIndex.clamp(0, 3),
+      onTap: onTap,
+      backgroundColor: backgroundColor,
+      selectedItemColor: selectedItemColor,
+      unselectedItemColor: unselectedItemColor,
+      selectedLabelStyle: tt.labelSmall?.copyWith(color: selectedItemColor),
+      unselectedLabelStyle: tt.labelSmall?.copyWith(color: unselectedItemColor),
+      type: BottomNavigationBarType.fixed,
+      showUnselectedLabels: true,
+      items: [
+        BottomNavigationBarItem(
+          icon: const AppIcon(materialIcon: Icons.home_outlined),
+          activeIcon: const AppIcon(materialIcon: Icons.home_rounded),
+          label: context.l10n.nav_nav_home,
+        ),
+        BottomNavigationBarItem(
+          icon: const _CartBadgeIcon(
+            isActive: false,
+            baseIcon: Icons.shopping_cart_outlined,
+          ),
+          activeIcon: const _CartBadgeIcon(
+            isActive: true,
+            baseIcon: Icons.shopping_cart_rounded,
+          ),
+          label: context.l10n.nav_nav_cart,
+        ),
+        BottomNavigationBarItem(
+          icon: const AppIcon(materialIcon: Icons.favorite_outline),
+          activeIcon: const AppIcon(materialIcon: Icons.favorite_rounded),
+          label: context.l10n.nav_nav_favorite,
+        ),
+        BottomNavigationBarItem(
+          icon: _ProfileNavIcon(avatarUrl: avatarUrl, isActive: false),
+          activeIcon: _ProfileNavIcon(avatarUrl: avatarUrl, isActive: true),
+          label: context.l10n.nav_nav_profile,
+        ),
+      ],
     );
   }
 }
@@ -246,13 +308,16 @@ class _CartBadgeIcon extends StatelessWidget {
   const _CartBadgeIcon({
     required this.isActive,
     required this.baseIcon,
+    this.cupertinoIcon,
   });
 
   final bool isActive;
   final IconData baseIcon;
+  final IconData? cupertinoIcon;
 
   @override
   Widget build(BuildContext context) {
+    final isIOS = context.isIOS;
     return BlocSelector<CartBloc, CartState, int>(
       selector: (state) => state.cartCount,
       builder: (context, cartCount) => Badge(
@@ -266,7 +331,9 @@ class _CartBadgeIcon extends StatelessWidget {
               )
             : null,
         isLabelVisible: cartCount > 0,
-        child: Icon(baseIcon),
+        child: isIOS && cupertinoIcon != null
+            ? Icon(cupertinoIcon)
+            : AppIcon(materialIcon: baseIcon),
       ),
     );
   }
@@ -296,7 +363,8 @@ class _ProfileNavIcon extends StatelessWidget {
         borderRadius: BorderRadius.circular(16.r),
       );
     }
-    return Icon(isActive ? Icons.person_rounded : Icons.person_outline);
+    return AppIcon(
+        materialIcon: isActive ? Icons.person_rounded : Icons.person_outline);
   }
 }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'color_schemes.dart';
@@ -94,6 +95,7 @@ ThemeData _buildTheme(
 
   return ThemeData(
     useMaterial3: true,
+    platform: defaultTargetPlatform,
     primaryColor: colorScheme.primary,
     colorScheme: colorScheme,
     textTheme: textTheme,

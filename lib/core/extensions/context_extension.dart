@@ -1,4 +1,9 @@
+import 'dart:ui';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../l10n/app_localizations.dart';
@@ -33,23 +38,74 @@ extension ContextExtension on BuildContext {
   void hideKeyboard() => FocusScope.of(this).unfocus();
 
   // ── Platform ─────────────────────────────────────────────────────────────
-  bool get isIOS => theme.platform == TargetPlatform.iOS;
-  bool get isAndroid => theme.platform == TargetPlatform.android;
+  bool get isIOS => defaultTargetPlatform == TargetPlatform.iOS;
+  bool get isAndroid => defaultTargetPlatform == TargetPlatform.android;
 
   Future<T?> showAppBottomSheet<T>({
     required WidgetBuilder builder,
     bool isScrollControlled = true,
     bool useSafeArea = true,
+    bool hasBlur = true,
+    bool enableDrag = true,
   }) {
+    final isIOS = this.isIOS;
+    if (isIOS) {
+      return showCupertinoModalPopup<T>(
+        context: this,
+        builder: (context) => GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          child: ClipRRect(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(
+                sigmaX: hasBlur ? 15 : 0,
+                sigmaY: hasBlur ? 15 : 0,
+              ),
+              child: ColoredBox(
+                color: theme.colorScheme.surface.withValues(alpha: 0.85),
+                child: SafeArea(
+                  top: false,
+                  child: builder(context),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
     return showModalBottomSheet<T>(
       context: this,
-      builder: builder,
       isScrollControlled: isScrollControlled,
+      backgroundColor: Colors.transparent,
+      barrierColor: theme.colorScheme.scrim.withValues(alpha: 0.3),
+      elevation: 0,
       useSafeArea: useSafeArea,
+      enableDrag: enableDrag,
+      showDragHandle: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(28.r),
+        ),
+      ),
+      builder: (context) => GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        child: ColoredBox(
+          color: theme.colorScheme.surface,
+          child: builder(context),
+        ),
+      ),
     );
   }
 
   Future<T?> showAppDialog<T>({required WidgetBuilder builder}) {
+    if (isIOS) {
+      return showCupertinoDialog<T>(
+        context: this,
+        barrierDismissible: true,
+        builder: builder,
+      );
+    }
     return showDialog<T>(
       context: this,
       builder: builder,

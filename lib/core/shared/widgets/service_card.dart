@@ -167,8 +167,9 @@ class _ServiceImageSection extends StatelessWidget {
                 : ColoredBox(
                     color: cs.surfaceContainerLow,
                     child: Center(
-                      child: Icon(
-                        Icons.image_not_supported_outlined,
+                      child: AppIcon(
+                        materialIcon: Icons.image_not_supported_outlined,
+                        cupertinoIcon: CupertinoIcons.photo,
                         color: cs.onSurfaceVariant,
                         size: 40.r,
                       ),
@@ -207,10 +208,13 @@ class _ServiceImageSection extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: Icon(
-                      isFavorite
+                    child: AppIcon(
+                      materialIcon: isFavorite
                           ? Icons.favorite_rounded
                           : Icons.favorite_outline_rounded,
+                      cupertinoIcon: isFavorite
+                          ? CupertinoIcons.heart_fill
+                          : CupertinoIcons.heart,
                       size: 18.r,
                       color: isFavorite ? cs.error : cs.onSurfaceVariant,
                     ),

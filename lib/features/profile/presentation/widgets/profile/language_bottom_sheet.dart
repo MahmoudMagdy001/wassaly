@@ -92,32 +92,70 @@ class LanguageBottomSheet extends StatelessWidget {
     final tt = context.theme.textTheme;
 
     return await showAppDialog<bool>(
-      child: AlertDialog(
-        title: Text(
-          context.l10n.profile_language_change_title,
-          style: tt.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: cs.onSurface,
-          ),
-        ),
-        content: Text(
-          context.l10n.profile_language_change_message,
-          style: tt.bodyMedium?.copyWith(color: cs.onSurface),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => context.pop(false),
-            child: Text(
-              context.l10n.profile_language_change_cancel,
-              style: TextStyle(color: cs.onSurface),
+      builder: (ctx) {
+        if (ctx.isIOS) {
+          return CupertinoAlertDialog(
+            title: Text(
+              context.l10n.profile_language_change_title,
+              style: tt.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: cs.onSurface,
+              ),
+            ),
+            content: Text(
+              context.l10n.profile_language_change_message,
+              style: tt.bodyMedium?.copyWith(color: cs.onSurface),
+            ),
+            actions: [
+              CupertinoDialogAction(
+                onPressed: () => context.pop(false),
+                child: Text(
+                  context.l10n.profile_language_change_cancel,
+                  style: tt.labelLarge?.copyWith(color: cs.onSurface),
+                ),
+              ),
+              CupertinoDialogAction(
+                onPressed: () => context.pop(true),
+                isDestructiveAction: false,
+                child: Text(
+                  context.l10n.profile_language_change_confirm,
+                  style: tt.labelLarge?.copyWith(color: cs.onSurface),
+                ),
+              ),
+            ],
+          );
+        }
+
+        return AlertDialog(
+          title: Text(
+            context.l10n.profile_language_change_title,
+            style: tt.titleLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: cs.onSurface,
             ),
           ),
-          AppButton(
-            label: context.l10n.profile_language_change_confirm,
-            onPressed: () => context.pop(true),
+          content: Text(
+            context.l10n.profile_language_change_message,
+            style: tt.bodyMedium?.copyWith(color: cs.onSurface),
           ),
-        ],
-      ),
+          actions: [
+            TextButton(
+              onPressed: () => context.pop(false),
+              child: Text(
+                context.l10n.profile_language_change_cancel,
+                style: TextStyle(color: cs.onSurface),
+              ),
+            ),
+            TextButton(
+              onPressed: () => context.pop(true),
+              style: TextButton.styleFrom(
+                foregroundColor: cs.onSurface,
+              ),
+              child: Text(context.l10n.profile_language_change_confirm),
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -153,88 +191,167 @@ class _LanguageOption extends StatelessWidget {
         ),
       ),
       clipBehavior: Clip.antiAlias,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          splashColor: cs.primary.withValues(alpha: 0.1),
-          highlightColor: cs.primary.withValues(alpha: 0.05),
-          child: Padding(
-            padding: EdgeInsets.all(14.r),
-            child: Row(
-              children: [
-                // Flag icon container
-                Container(
-                  width: 44.w,
-                  height: 44.h,
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? cs.primary.withValues(alpha: 0.12)
-                        : cs.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(10.r),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    flagEmoji,
-                    style: TextStyle(fontSize: 22.sp),
-                  ),
-                ),
-                14.horizontalSpace,
+      child: context.isIOS
+          ? GestureDetector(
+              onTap: onTap,
+              behavior: HitTestBehavior.opaque,
+              child: Padding(
+                padding: EdgeInsets.all(14.r),
+                child: Row(
+                  children: [
+                    // Flag icon container
+                    Container(
+                      width: 44.w,
+                      height: 44.h,
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? cs.primary.withValues(alpha: 0.12)
+                            : cs.surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        flagEmoji,
+                        style: TextStyle(fontSize: 22.sp),
+                      ),
+                    ),
+                    14.horizontalSpace,
 
-                // Text
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    // Text
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            style: tt.titleSmall?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: isSelected ? cs.primary : cs.onSurface,
+                            ),
+                          ),
+                          4.verticalSpace,
+                          Text(
+                            subtitle,
+                            style: tt.bodySmall?.copyWith(
+                              color: isSelected
+                                  ? cs.primary.withValues(alpha: 0.7)
+                                  : cs.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Check indicator
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 200),
+                      child: isSelected
+                          ? Container(
+                              key: const ValueKey('check'),
+                              width: 24.w,
+                              height: 24.h,
+                              decoration: BoxDecoration(
+                                color: cs.primary,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                CupertinoIcons.check_mark,
+                                color: cs.onPrimary,
+                                size: 14.sp,
+                              ),
+                            )
+                          : SizedBox(
+                              key: const ValueKey('empty'),
+                              width: 24.w,
+                              height: 24.h,
+                            ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: onTap,
+                splashColor: cs.primary.withValues(alpha: 0.1),
+                highlightColor: cs.primary.withValues(alpha: 0.05),
+                child: Padding(
+                  padding: EdgeInsets.all(14.r),
+                  child: Row(
                     children: [
-                      Text(
-                        title,
-                        style: tt.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: isSelected ? cs.primary : cs.onSurface,
+                      // Flag icon container
+                      Container(
+                        width: 44.w,
+                        height: 44.h,
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? cs.primary.withValues(alpha: 0.12)
+                              : cs.surfaceContainerHighest,
+                          borderRadius: BorderRadius.circular(10.r),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          flagEmoji,
+                          style: TextStyle(fontSize: 22.sp),
                         ),
                       ),
-                      4.verticalSpace,
-                      Text(
-                        subtitle,
-                        style: tt.bodySmall?.copyWith(
-                          color: isSelected
-                              ? cs.primary.withValues(alpha: 0.7)
-                              : cs.onSurfaceVariant,
+                      14.horizontalSpace,
+
+                      // Text
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              title,
+                              style: tt.titleSmall?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: isSelected ? cs.primary : cs.onSurface,
+                              ),
+                            ),
+                            4.verticalSpace,
+                            Text(
+                              subtitle,
+                              style: tt.bodySmall?.copyWith(
+                                color: isSelected
+                                    ? cs.primary.withValues(alpha: 0.7)
+                                    : cs.onSurfaceVariant,
+                              ),
+                            ),
+                          ],
                         ),
+                      ),
+
+                      // Check indicator
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 200),
+                        child: isSelected
+                            ? Container(
+                                key: const ValueKey('check'),
+                                width: 24.w,
+                                height: 24.h,
+                                decoration: BoxDecoration(
+                                  color: cs.primary,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.check_rounded,
+                                  color: cs.onPrimary,
+                                  size: 14.sp,
+                                ),
+                              )
+                            : SizedBox(
+                                key: const ValueKey('empty'),
+                                width: 24.w,
+                                height: 24.h,
+                              ),
                       ),
                     ],
                   ),
                 ),
-
-                // Check indicator
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
-                  child: isSelected
-                      ? Container(
-                          key: const ValueKey('check'),
-                          width: 24.w,
-                          height: 24.h,
-                          decoration: BoxDecoration(
-                            color: cs.primary,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.check_rounded,
-                            color: cs.onPrimary,
-                            size: 14.sp,
-                          ),
-                        )
-                      : SizedBox(
-                          key: const ValueKey('empty'),
-                          width: 24.w,
-                          height: 24.h,
-                        ),
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }

@@ -78,7 +78,7 @@ class AppServicesSection extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 20.h),
                 child: const Center(
-                  child: CircularProgressIndicator(),
+                  child: AppLoading(size: 24),
                 ),
               ),
             ),

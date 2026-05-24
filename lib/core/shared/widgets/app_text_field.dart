@@ -69,46 +69,80 @@ class AppTextField extends StatelessWidget {
     final isIOS = context.isIOS;
 
     if (isIOS) {
-      return CupertinoTextField(
-        onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
-        controller: controller,
-        placeholder: hint,
-        keyboardType: keyboardType,
-        textInputAction: textInputAction,
-        obscureText: obscureText,
-        readOnly: readOnly,
-        enabled: enabled,
-        maxLines: obscureText ? 1 : maxLines,
-        minLines: minLines,
-        autofocus: autofocus,
-        style: tt.bodyLarge?.copyWith(
-          color: cs.onSurface,
-        ),
-        decoration: BoxDecoration(
-          color: fillColor ?? cs.surfaceContainerHighest.withValues(alpha: 0.5),
-          borderRadius: BorderRadius.all(Radius.circular(12.r)),
-        ),
-        padding: contentPadding ??
-            EdgeInsets.symmetric(
-              horizontal: 16.w,
-              vertical: 12.h,
-            ),
-        prefix: prefixIcon != null
-            ? Padding(
-                padding: EdgeInsets.only(left: 12.w),
-                child: prefixIcon,
-              )
-            : null,
-        suffix: suffixIcon != null
-            ? Padding(
-                padding: EdgeInsets.only(right: 12.w),
-                child: suffixIcon,
-              )
-            : null,
-        onChanged: onChanged,
-        onSubmitted: onFieldSubmitted,
-        focusNode: focusNode,
-        clearButtonMode: OverlayVisibilityMode.editing,
+      return FormField<String>(
+        initialValue: initialValue ?? controller?.text,
+        validator: validator,
+        builder: (FormFieldState<String> field) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (label != null && hint == null)
+                Padding(
+                  padding: EdgeInsets.only(bottom: 6.h, left: 4.w, right: 4.w),
+                  child: Text(
+                    label!,
+                    style: tt.labelMedium?.copyWith(
+                      color: cs.onSurfaceVariant.withValues(alpha: 0.7),
+                    ),
+                  ),
+                ),
+              CupertinoTextField(
+                onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
+                controller: controller,
+                placeholder: hint ?? label,
+                keyboardType: keyboardType,
+                textInputAction: textInputAction,
+                obscureText: obscureText,
+                readOnly: readOnly,
+                enabled: enabled,
+                maxLines: obscureText ? 1 : maxLines,
+                minLines: minLines,
+                autofocus: autofocus,
+                style: tt.bodyLarge?.copyWith(
+                  color: cs.onSurface,
+                ),
+                cursorColor: cs.primary,
+                decoration: BoxDecoration(
+                  color: fillColor ?? cs.surfaceContainerHighest.withValues(alpha: 0.5),
+                  borderRadius: BorderRadius.all(Radius.circular(12.r)),
+                  border: field.hasError ? Border.all(color: cs.error, width: 1.2) : null,
+                ),
+                padding: contentPadding as EdgeInsets? ?? EdgeInsets.symmetric(
+                  horizontal: 16.w,
+                  vertical: 12.h,
+                ),
+                prefix: prefixIcon != null
+                    ? Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 12.w),
+                        child: AppIcon.adapt(prefixIcon),
+                      )
+                    : null,
+                suffix: suffixIcon != null
+                    ? Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 12.w),
+                        child: AppIcon.adapt(suffixIcon),
+                      )
+                    : null,
+                onChanged: (value) {
+                  field.didChange(value);
+                  if (onChanged != null) onChanged!(value);
+                },
+                onSubmitted: onFieldSubmitted,
+                focusNode: focusNode,
+                clearButtonMode: OverlayVisibilityMode.editing,
+              ),
+              if (field.hasError)
+                Padding(
+                  padding: EdgeInsets.only(top: 6.h, left: 16.w, right: 16.w),
+                  child: Text(
+                    field.errorText!,
+                    style: tt.labelMedium?.copyWith(color: cs.error),
+                  ),
+                ),
+            ],
+          );
+        },
       );
     }
 

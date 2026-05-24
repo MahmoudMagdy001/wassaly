@@ -27,61 +27,54 @@ class AvatarPickerWidget extends StatelessWidget {
     );
   }
 
-  void _showImageSourceDialog(BuildContext context) {
+  Future<void> _showImageSourceDialog(BuildContext context) {
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
 
-    showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: cs.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-      ),
-      builder: (context) {
-        return SafeArea(
-          child: Padding(
-            padding: EdgeInsets.all(20.w),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  context.l10n.auth_select_image_source,
-                  style: tt.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: cs.primary,
+    return context.showAppBottomSheet<void>(
+      builder: (_) => SafeArea(
+        child: Padding(
+          padding: EdgeInsets.all(20.w),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                context.l10n.auth_select_image_source,
+                style: tt.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: cs.primary,
+                ),
+              ),
+              20.verticalSpace,
+              Row(
+                children: [
+                  Expanded(
+                    child: _SourceButton(
+                      icon: Icons.camera_alt_outlined,
+                      label: context.l10n.auth_camera,
+                      onTap: () {
+                        context.pop();
+                        _pickImage(context, ImageSource.camera);
+                      },
+                    ),
                   ),
-                ),
-                20.verticalSpace,
-                Row(
-                  children: [
-                    Expanded(
-                      child: _SourceButton(
-                        icon: Icons.camera_alt_outlined,
-                        label: context.l10n.auth_camera,
-                        onTap: () {
-                          context.pop();
-                          _pickImage(context, ImageSource.camera);
-                        },
-                      ),
+                  16.horizontalSpace,
+                  Expanded(
+                    child: _SourceButton(
+                      icon: Icons.photo_library_outlined,
+                      label: context.l10n.auth_gallery,
+                      onTap: () {
+                        context.pop();
+                        _pickImage(context, ImageSource.gallery);
+                      },
                     ),
-                    16.horizontalSpace,
-                    Expanded(
-                      child: _SourceButton(
-                        icon: Icons.photo_library_outlined,
-                        label: context.l10n.auth_gallery,
-                        onTap: () {
-                          context.pop();
-                          _pickImage(context, ImageSource.gallery);
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -119,8 +112,8 @@ class AvatarPickerWidget extends StatelessWidget {
                         : null,
                   ),
                   child: avatarFile == null
-                      ? Icon(
-                          Icons.person_outline,
+                      ? AppIcon(
+                          materialIcon: Icons.person_outline,
                           size: 40.sp,
                           color: cs.primary.withValues(alpha: 0.5),
                         )
@@ -144,8 +137,8 @@ class AvatarPickerWidget extends StatelessWidget {
                         width: 2,
                       ),
                     ),
-                    child: Icon(
-                      avatarFile == null ? Icons.add : Icons.edit,
+                    child: AppIcon(
+                      materialIcon: avatarFile == null ? Icons.add : Icons.edit,
                       size: 16.sp,
                       color: cs.onPrimary,
                     ),
@@ -175,8 +168,8 @@ class AvatarPickerWidget extends StatelessWidget {
                             width: 2,
                           ),
                         ),
-                        child: Icon(
-                          Icons.close,
+                        child: AppIcon(
+                          materialIcon: Icons.close,
                           size: 16.sp,
                           color: cs.onError,
                         ),
@@ -227,8 +220,8 @@ class _SourceButton extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Icon(
-              icon,
+            AppIcon(
+              materialIcon: icon,
               size: 32.sp,
               color: cs.primary,
             ),

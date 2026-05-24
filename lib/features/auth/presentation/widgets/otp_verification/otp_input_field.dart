@@ -128,42 +128,66 @@ class OtpInputFieldState extends State<OtpInputField> {
                 _onKeyEvent(index, event);
                 return KeyEventResult.ignored;
               },
-              child: TextField(
-                controller: _controllers[index],
-                focusNode: _focusNodes[index],
-                keyboardType: TextInputType.number,
-                textAlign: TextAlign.center,
-                maxLength: 1,
-                style: context.theme.textTheme.headlineSmall?.copyWith(
-                  fontSize: 24.sp,
-                  fontWeight: FontWeight.w600,
-                  color: cs.onSurface,
-                ),
-                decoration: InputDecoration(
-                  counterText: '',
-                  filled: true,
-                  fillColor: cs.surfaceContainerHighest,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                    borderSide: BorderSide.none,
+              child: Builder(builder: (ctx) {
+                if (ctx.isIOS) {
+                  return CupertinoTextField(
+                    controller: _controllers[index],
+                    focusNode: _focusNodes[index],
+                    keyboardType: TextInputType.number,
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    style: context.theme.textTheme.headlineSmall?.copyWith(
+                      fontSize: 24.sp,
+                      fontWeight: FontWeight.w600,
+                      color: cs.onSurface,
+                    ),
+                    decoration: BoxDecoration(
+                      color: cs.surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                    padding: EdgeInsets.zero,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    onChanged: (value) => _onChanged(index, value),
+                  );
+                }
+
+                return TextField(
+                  controller: _controllers[index],
+                  focusNode: _focusNodes[index],
+                  keyboardType: TextInputType.number,
+                  textAlign: TextAlign.center,
+                  maxLength: 1,
+                  style: context.theme.textTheme.headlineSmall?.copyWith(
+                    fontSize: 24.sp,
+                    fontWeight: FontWeight.w600,
+                    color: cs.onSurface,
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                    borderSide: BorderSide(
-                      color: cs.primary,
-                      width: 2,
+                  decoration: InputDecoration(
+                    counterText: '',
+                    filled: true,
+                    fillColor: cs.surfaceContainerHighest,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                      borderSide: BorderSide(
+                        color: cs.primary,
+                        width: 2,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                      borderSide: BorderSide.none,
                     ),
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
-                onChanged: (value) => _onChanged(index, value),
-              ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+                  onChanged: (value) => _onChanged(index, value),
+                );
+              }),
             ),
           ),
         );

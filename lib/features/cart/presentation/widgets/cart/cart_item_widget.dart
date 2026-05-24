@@ -26,9 +26,36 @@ class CartItemWidget extends StatelessWidget {
       direction: DismissDirection.endToStart,
       onDismissed: (_) => onRemove(),
       confirmDismiss: (_) async {
-        return await showAppDialog<bool>(
-          child: Builder(
-            builder: (ctx) => Dialog(
+        return await context.showAppDialog<bool>(
+          builder: (ctx) {
+            if (ctx.isIOS) {
+              return CupertinoAlertDialog(
+                title: Text(context.l10n.cart_remove_item_title),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    8.verticalSpace,
+                    Text(
+                      context.l10n.cart_remove_item_message,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+                actions: [
+                  CupertinoDialogAction(
+                    onPressed: () => Navigator.of(ctx).pop(false),
+                    child: Text(context.l10n.shared_cancel),
+                  ),
+                  CupertinoDialogAction(
+                    onPressed: () => Navigator.of(ctx).pop(true),
+                    isDestructiveAction: true,
+                    child: Text(context.l10n.shared_delete),
+                  ),
+                ],
+              );
+            }
+
+            return Dialog(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16.r)),
               child: Padding(
@@ -83,8 +110,8 @@ class CartItemWidget extends StatelessWidget {
                   ],
                 ),
               ),
-            ),
-          ),
+            );
+          },
         );
       },
       background: _buildDismissBackground(context, cs),

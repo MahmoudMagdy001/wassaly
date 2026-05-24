@@ -22,8 +22,41 @@ class ProfileLogoutButton extends StatelessWidget {
   }
 
   void _showLogoutDialog(BuildContext context) async {
-    final result = await showAppDialog<String>(
-      child: _LogoutChoiceDialog(),
+    final result = await context.showAppDialog<String>(
+      builder: (ctx) {
+        if (ctx.isIOS) {
+          return CupertinoAlertDialog(
+            title: Text(context.l10n.profile_logout_title),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                8.verticalSpace,
+                Text(
+                  context.l10n.profile_logout_choice_message,
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+            actions: [
+              CupertinoDialogAction(
+                onPressed: () => Navigator.of(ctx).pop('this_device'),
+                child: Text(context.l10n.profile_logout_this_device),
+              ),
+              CupertinoDialogAction(
+                onPressed: () => Navigator.of(ctx).pop('all_devices'),
+                child: Text(context.l10n.profile_logout_all_devices),
+              ),
+              CupertinoDialogAction(
+                onPressed: () => Navigator.of(ctx).pop(),
+                isDestructiveAction: false,
+                child: Text(context.l10n.shared_cancel),
+              ),
+            ],
+          );
+        }
+
+        return _LogoutChoiceDialog();
+      },
     );
 
     if (!context.mounted) return;

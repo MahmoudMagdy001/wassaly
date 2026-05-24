@@ -1,4 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
+
 import '../../domain/entities/service_detail_entity.dart';
 import '../bloc/service_details_bloc.dart';
 
@@ -85,15 +86,15 @@ class _ServiceReviewFormSheetState extends State<ServiceReviewFormSheet> {
             },
           ),
           8.verticalSpace,
-          TextField(
+          AppTextField(
             controller: _commentController,
             minLines: 3,
             maxLines: 5,
-            decoration: InputDecoration(
-              hintText: context.l10n.product_details_review_comment_hint,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12.r),
-              ),
+            hint: context.l10n.product_details_review_comment_hint,
+            filled: true,
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: 12.w,
+              vertical: 12.h,
             ),
           ),
           16.verticalSpace,

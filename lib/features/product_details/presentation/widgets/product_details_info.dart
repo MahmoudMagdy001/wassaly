@@ -108,10 +108,13 @@ class ProductDetailsInfo extends StatelessWidget {
                                 expectedIsFavorite: isFavorite,
                               ),
                             ),
-                    icon: Icon(
-                      isFavorite
+                    icon: AppIcon(
+                      materialIcon: isFavorite
                           ? Icons.favorite_rounded
-                          : Icons.favorite_border_rounded,
+                          : Icons.favorite_outline_rounded,
+                      cupertinoIcon: isFavorite
+                          ? CupertinoIcons.heart_fill
+                          : CupertinoIcons.heart,
                       color: isFavorite ? cs.error : cs.outline,
                       size: 28.r,
                     ),
@@ -199,10 +202,14 @@ class _ReviewsSection extends StatelessWidget {
         _ReviewsHeader(reviews: reviews),
         if (currentUserId != null && !hasCurrentUserReview) ...[
           12.verticalSpace,
-          OutlinedButton.icon(
+          AppButton(
             onPressed: () => _showReviewSheet(context),
-            icon: const Icon(Icons.rate_review_outlined),
-            label: Text(context.l10n.product_details_add_review),
+            prefixIcon: const AppIcon(
+              materialIcon: Icons.rate_review_outlined,
+              cupertinoIcon: CupertinoIcons.square_pencil,
+            ),
+            label: context.l10n.product_details_add_review,
+            variant: ButtonVariant.outline,
           ),
         ],
         if (previewReviews.isNotEmpty) ...[
@@ -240,8 +247,9 @@ class _ReviewsSection extends StatelessWidget {
                       ),
                     ),
                     4.horizontalSpace,
-                    Icon(
-                      Icons.expand_more_rounded,
+                    AppIcon(
+                      materialIcon: Icons.expand_more_rounded,
+                      cupertinoIcon: CupertinoIcons.chevron_down,
                       size: 18.r,
                       color: cs.primary,
                     ),
@@ -287,9 +295,7 @@ class _ReviewsSection extends StatelessWidget {
     BuildContext context, {
     ProductDetailReviewEntity? review,
   }) {
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
+    context.showAppBottomSheet<void>(
       builder: (_) => BlocProvider.value(
         value: context.read<ProductDetailsBloc>(),
         child: ProductReviewFormSheet(
@@ -407,8 +413,9 @@ class _ReviewsHeader extends StatelessWidget {
         ),
         Row(
           children: [
-            Icon(
-              Icons.star_rounded,
+            AppIcon(
+              materialIcon: Icons.star_rounded,
+              cupertinoIcon: CupertinoIcons.star_fill,
               size: 18.r,
               color: cs.secondary,
             ),

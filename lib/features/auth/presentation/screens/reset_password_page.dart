@@ -83,8 +83,8 @@ class _ResetPasswordView extends StatelessWidget {
                     color: cs.primaryContainer,
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(
-                    Icons.lock_reset_outlined,
+                  child: AppIcon(
+                    materialIcon: Icons.lock_reset_outlined,
                     color: cs.primary,
                     size: 40.w,
                   ),
@@ -187,8 +187,8 @@ class _ResetPasswordView extends StatelessWidget {
       children: [
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 200),
-          child: Icon(
-            isMet ? Icons.check_circle : Icons.check_circle_outline,
+          child: AppIcon(
+            materialIcon: isMet ? Icons.check_circle : Icons.check_circle_outline,
             key: ValueKey<bool>(isMet),
             color: isMet ? Colors.green : cs.onSurfaceVariant,
             size: 16.w,

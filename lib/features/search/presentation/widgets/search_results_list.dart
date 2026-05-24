@@ -40,10 +40,8 @@ class SearchResultsList extends StatelessWidget {
               SliverToBoxAdapter(
                 child: Padding(
                   padding: EdgeInsets.all(16.w),
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      color: context.theme.colorScheme.primary,
-                    ),
+                  child: const Center(
+                    child: AppLoading(size: 24),
                   ),
                 ),
               ),

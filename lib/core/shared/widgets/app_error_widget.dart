@@ -122,8 +122,8 @@ class _AppErrorWidgetState extends State<AppErrorWidget> {
 
   Widget _buildErrorIcon(BuildContext context) {
     if (_isNetworkError(context)) {
-      return Icon(
-        Icons.wifi_off_rounded,
+      return AppIcon(
+        materialIcon: Icons.wifi_off_rounded,
         size: 80.r,
         color: context.appColors.warning, // Semantic warning
       );
@@ -132,8 +132,8 @@ class _AppErrorWidgetState extends State<AppErrorWidget> {
     // If legacy title/message/icon were provided, respect the explicit icon
     if ((widget.title != null || widget.message != null) &&
         widget.icon != Icons.error_outline_rounded) {
-      return Icon(
-        widget.icon,
+      return AppIcon(
+        materialIcon: widget.icon,
         size: 80.r,
         color: context.theme.colorScheme.onSurface,
       );
@@ -164,8 +164,8 @@ class _AppErrorWidgetState extends State<AppErrorWidget> {
         iconColor = context.theme.colorScheme.outline; // Theme outline
     }
 
-    return Icon(
-      iconData,
+    return AppIcon(
+      materialIcon: iconData,
       size: 80.r,
       color: iconColor,
     );

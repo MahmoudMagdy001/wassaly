@@ -1,5 +1,6 @@
 export 'app_button.dart';
 export 'app_cached_image.dart';
+export 'app_icon.dart';
 export 'app_card.dart';
 export 'app_divider.dart';
 export 'app_dropdown.dart';

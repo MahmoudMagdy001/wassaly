@@ -107,8 +107,21 @@ class AppDropdown<T> extends StatelessWidget {
                         onChanged!(items[index].value);
                       }
                     },
-                    children:
-                        items.map((item) => Center(child: item.child)).toList(),
+                    children: items
+                        .map(
+                          (item) => Center(
+                            child: DefaultTextStyle(
+                              style: tt.bodyLarge!.copyWith(
+                                color: enabled
+                                    ? cs.primary
+                                    : cs.onSurfaceVariant
+                                        .withValues(alpha: 0.5),
+                              ),
+                              child: item.child,
+                            ),
+                          ),
+                        )
+                        .toList(),
                   ),
                 ),
               ],
@@ -152,7 +165,7 @@ class AppDropdown<T> extends StatelessWidget {
           child: Row(
             children: [
               if (prefixIcon != null) ...[
-                prefixIcon!,
+                AppIcon.adapt(prefixIcon)!,
                 12.horizontalSpace,
               ],
               Expanded(
@@ -186,7 +199,7 @@ class AppDropdown<T> extends StatelessWidget {
                   ],
                 ),
               ),
-              suffixIcon ??
+              AppIcon.adapt(suffixIcon) ??
                   Icon(
                     CupertinoIcons.chevron_down,
                     size: 18,

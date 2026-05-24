@@ -47,8 +47,8 @@ class AppEmptyState extends StatelessWidget {
                 color: cs.primary.withValues(alpha: 0.05),
                 shape: BoxShape.circle,
               ),
-              child: Icon(
-                icon,
+              child: AppIcon(
+                materialIcon: icon,
                 size: 80.r,
                 color: cs.primary.withValues(alpha: 0.4),
               ),
