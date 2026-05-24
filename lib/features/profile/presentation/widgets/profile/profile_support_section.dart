@@ -31,7 +31,7 @@ class ProfileSupportSection extends StatelessWidget {
                 ProfileMenuTile(
                   icon: Icons.help_outline,
                   title: context.l10n.profile_help_center,
-                  onTap: () {},
+                  onTap: () => context.push(AppRoutes.helpCenter),
                 ),
                 ProfileMenuTile(
                   icon: Icons.reviews_outlined,

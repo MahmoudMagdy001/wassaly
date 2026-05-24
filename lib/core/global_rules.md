@@ -1,6 +1,7 @@
-#  FLUTTER GLOBAL RULES (Windsurf)
+# FLUTTER GLOBAL RULES (Windsurf)
 
 **ALWAYS start with imports:**
+
 ```dart
 import 'package:[PROJECT]/core/imports/core_imports.dart';
 import 'package:[PROJECT]/core/imports/packages_imports.dart';
@@ -24,6 +25,7 @@ Data → Domain, Core
 ## 🎨 UI Rules
 
 ### Theme & Colors
+
 ```dart
 final cs = context.theme.colorScheme;
 final tt = context.theme.textTheme;
@@ -31,6 +33,7 @@ color: cs.primary  // Never hard-coded colors
 ```
 
 ### Responsive Sizing
+
 ```dart
 100.w  // Width %
 20.h   // Height %
@@ -39,6 +42,7 @@ color: cs.primary  // Never hard-coded colors
 ```
 
 ### Navigation
+
 ```dart
 context.go(AppRoutes.home)      // Replace
 context.push(AppRoutes.profile) // Stack
@@ -46,6 +50,7 @@ context.pop()                   // Back
 ```
 
 ### Overlays
+
 ```dart
 context.showSnackBar('msg')
 context.showErrorSnackBar('msg')
@@ -57,7 +62,8 @@ context.showAppBottomSheet(builder: ...)
 
 ## 📦 BLoC State Management
 
-### State Must Be:
+### State Must Be
+
 - ✅ Immutable (use `final`)
 - ✅ Extends `Equatable`
 - ✅ Has `copyWith()`
@@ -65,6 +71,7 @@ context.showAppBottomSheet(builder: ...)
 - ✅ `@override List<Object?> get props`
 
 ### In UI
+
 ```dart
 // BlocBuilder with buildWhen optimization
 BlocBuilder<AuthBloc, AuthState>(

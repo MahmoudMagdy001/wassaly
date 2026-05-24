@@ -1614,4 +1614,71 @@ class SEn extends S {
 
   @override
   String get app_exit_confirm => 'Please press back again to exit the app';
+
+  @override
+  String get profile_help_center_description =>
+      'Find answers to common questions or contact our support.';
+
+  @override
+  String get profile_help_search_hint => 'Search help articles';
+
+  @override
+  String get profile_help_contact_support => 'Contact support';
+
+  @override
+  String get profile_help_start_chat => 'Start chat';
+
+  @override
+  String get profile_help_email_support => 'Email support';
+
+  @override
+  String get profile_help_phone => 'Phone';
+
+  @override
+  String get profile_help_hours => 'Mon–Fri 9:00–18:00';
+
+  @override
+  String get profile_help_faqs => 'Frequently asked questions';
+
+  @override
+  String get profile_help_faq_q1 => 'How can I track my order?';
+
+  @override
+  String get profile_help_faq_a1 =>
+      'Open Orders from your profile and tap on the order to see its status and tracking information.';
+
+  @override
+  String get profile_help_faq_q2 => 'How do I change my delivery address?';
+
+  @override
+  String get profile_help_faq_a2 =>
+      'Go to Saved Addresses in your profile, choose the address and edit or add a new one.';
+
+  @override
+  String get profile_help_faq_q3 => 'How can I return or cancel an order?';
+
+  @override
+  String get profile_help_faq_a3 =>
+      'Open the order details and use the cancel/return action when available, or contact support for help.';
+
+  @override
+  String get profile_help_links_privacy => 'Privacy policy';
+
+  @override
+  String get profile_help_links_terms => 'Terms of service';
+
+  @override
+  String get profile_help_links => 'Helpful Links';
+
+  @override
+  String get profile_help_search_no_results => 'No results found';
+
+  @override
+  String get profile_help_contacting_support => 'Contacting support...';
+
+  @override
+  String get profile_help_open_mail => 'Opening mail client...';
+
+  @override
+  String get profile_help_phone_number => '+1 800 123 4567';
 }

@@ -1606,4 +1606,71 @@ class SAr extends S {
 
   @override
   String get app_exit_confirm => 'برجاء الضغط مرة أخرى للخروج من التطبيق';
+
+  @override
+  String get profile_help_center_description =>
+      'ابحث عن إجابات للأسئلة الشائعة أو تواصل مع دعم العملاء.';
+
+  @override
+  String get profile_help_search_hint => 'ابحث في مقالات المساعدة';
+
+  @override
+  String get profile_help_contact_support => 'تواصل مع الدعم';
+
+  @override
+  String get profile_help_start_chat => 'بدء المحادثة';
+
+  @override
+  String get profile_help_email_support => 'البريد الإلكتروني للدعم';
+
+  @override
+  String get profile_help_phone => 'الهاتف';
+
+  @override
+  String get profile_help_hours => 'الاثنين–الجمعة 9:00–18:00';
+
+  @override
+  String get profile_help_faqs => 'الأسئلة الشائعة';
+
+  @override
+  String get profile_help_faq_q1 => 'كيف أتابع طلبي؟';
+
+  @override
+  String get profile_help_faq_a1 =>
+      'افتح الطلبات من ملفك الشخصي واضغط على الطلب لعرض حالته ومعلومات التتبع.';
+
+  @override
+  String get profile_help_faq_q2 => 'كيف أغير عنوان التوصيل؟';
+
+  @override
+  String get profile_help_faq_a2 =>
+      'اذهب إلى العناوين المحفوظة في ملفك الشخصي واختر العنوان لتحريره أو إضافة عنوان جديد.';
+
+  @override
+  String get profile_help_faq_q3 => 'كيف أسترجع أو ألغي طلبًا؟';
+
+  @override
+  String get profile_help_faq_a3 =>
+      'افتح تفاصيل الطلب واستخدم خيار الإلغاء/الإرجاع عند توفره، أو تواصل مع الدعم للمساعدة.';
+
+  @override
+  String get profile_help_links_privacy => 'سياسة الخصوصية';
+
+  @override
+  String get profile_help_links_terms => 'شروط الخدمة';
+
+  @override
+  String get profile_help_links => 'لينكات هامه';
+
+  @override
+  String get profile_help_search_no_results => 'لم يتم العثور على نتائج';
+
+  @override
+  String get profile_help_contacting_support => 'جاري الاتصال بالدعم...';
+
+  @override
+  String get profile_help_open_mail => 'فتح تطبيق البريد...';
+
+  @override
+  String get profile_help_phone_number => '+1 800 123 4567';
 }

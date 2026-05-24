@@ -3150,6 +3150,132 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Please press back again to exit the app'**
   String get app_exit_confirm;
+
+  /// No description provided for @profile_help_center_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Find answers to common questions or contact our support.'**
+  String get profile_help_center_description;
+
+  /// No description provided for @profile_help_search_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search help articles'**
+  String get profile_help_search_hint;
+
+  /// No description provided for @profile_help_contact_support.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact support'**
+  String get profile_help_contact_support;
+
+  /// No description provided for @profile_help_start_chat.
+  ///
+  /// In en, this message translates to:
+  /// **'Start chat'**
+  String get profile_help_start_chat;
+
+  /// No description provided for @profile_help_email_support.
+  ///
+  /// In en, this message translates to:
+  /// **'Email support'**
+  String get profile_help_email_support;
+
+  /// No description provided for @profile_help_phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get profile_help_phone;
+
+  /// No description provided for @profile_help_hours.
+  ///
+  /// In en, this message translates to:
+  /// **'Mon–Fri 9:00–18:00'**
+  String get profile_help_hours;
+
+  /// No description provided for @profile_help_faqs.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequently asked questions'**
+  String get profile_help_faqs;
+
+  /// No description provided for @profile_help_faq_q1.
+  ///
+  /// In en, this message translates to:
+  /// **'How can I track my order?'**
+  String get profile_help_faq_q1;
+
+  /// No description provided for @profile_help_faq_a1.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Orders from your profile and tap on the order to see its status and tracking information.'**
+  String get profile_help_faq_a1;
+
+  /// No description provided for @profile_help_faq_q2.
+  ///
+  /// In en, this message translates to:
+  /// **'How do I change my delivery address?'**
+  String get profile_help_faq_q2;
+
+  /// No description provided for @profile_help_faq_a2.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Saved Addresses in your profile, choose the address and edit or add a new one.'**
+  String get profile_help_faq_a2;
+
+  /// No description provided for @profile_help_faq_q3.
+  ///
+  /// In en, this message translates to:
+  /// **'How can I return or cancel an order?'**
+  String get profile_help_faq_q3;
+
+  /// No description provided for @profile_help_faq_a3.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the order details and use the cancel/return action when available, or contact support for help.'**
+  String get profile_help_faq_a3;
+
+  /// No description provided for @profile_help_links_privacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy policy'**
+  String get profile_help_links_privacy;
+
+  /// No description provided for @profile_help_links_terms.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of service'**
+  String get profile_help_links_terms;
+
+  /// No description provided for @profile_help_links.
+  ///
+  /// In en, this message translates to:
+  /// **'Helpful Links'**
+  String get profile_help_links;
+
+  /// No description provided for @profile_help_search_no_results.
+  ///
+  /// In en, this message translates to:
+  /// **'No results found'**
+  String get profile_help_search_no_results;
+
+  /// No description provided for @profile_help_contacting_support.
+  ///
+  /// In en, this message translates to:
+  /// **'Contacting support...'**
+  String get profile_help_contacting_support;
+
+  /// No description provided for @profile_help_open_mail.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening mail client...'**
+  String get profile_help_open_mail;
+
+  /// No description provided for @profile_help_phone_number.
+  ///
+  /// In en, this message translates to:
+  /// **'+1 800 123 4567'**
+  String get profile_help_phone_number;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

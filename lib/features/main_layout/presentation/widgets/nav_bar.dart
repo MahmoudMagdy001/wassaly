@@ -24,10 +24,9 @@ class MainNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<SessionBloc, SessionState, String?>(
-      selector: (state) =>
-          state is SessionAuthenticated ? state.user.avatarUrl : null,
-      builder: (context, avatarUrl) {
+    return BlocSelector<SessionBloc, SessionState, SessionAuthenticated?>(
+      selector: (state) => state is SessionAuthenticated ? state : null,
+      builder: (context, session) {
         return BottomNavigationBar(
           currentIndex: currentIndex.clamp(0, 3),
           onTap: onTap,
@@ -59,8 +58,14 @@ class MainNavBar extends StatelessWidget {
               label: context.l10n.nav_nav_favorite,
             ),
             BottomNavigationBarItem(
-              icon: _ProfileNavIcon(avatarUrl: avatarUrl, isActive: false),
-              activeIcon: _ProfileNavIcon(avatarUrl: avatarUrl, isActive: true),
+              icon: _ProfileNavIcon(
+                  avatarUrl: session?.user.avatarUrl,
+                  fullName: session?.user.name,
+                  isActive: false),
+              activeIcon: _ProfileNavIcon(
+                  avatarUrl: session?.user.avatarUrl,
+                  fullName: session?.user.name,
+                  isActive: true),
               label: context.l10n.nav_nav_profile,
             ),
           ],
@@ -102,23 +107,39 @@ class _CartBadgeIcon extends StatelessWidget {
   }
 }
 
-/// Profile icon — shows the user's avatar when available, falls back to a
-/// person icon. Receives [avatarUrl] from the parent [MainNavBar] selector so
-/// no additional bloc subscription is created here.
+/// Profile icon — shows the user's avatar when available, falls back to the
+/// first two words of the user's name (if present) or a generic person icon.
+/// Receives [avatarUrl] and [fullName] from the parent [MainNavBar] selector
+/// so no additional bloc subscription is created here.
 class _ProfileNavIcon extends StatelessWidget {
   const _ProfileNavIcon({
     required this.avatarUrl,
     required this.isActive,
+    this.fullName,
   });
 
   final String? avatarUrl;
+  final String? fullName;
   final bool isActive;
 
   @override
   Widget build(BuildContext context) {
     // Bounding size is completely fixed (32.r x 32.r) to keep the navigation bar
-    // height stable, while the inside image/icon scales smoothly when active.
+    // height stable, while the inside image/text/icon scales smoothly when active.
     final double targetSize = isActive ? 30 : 27;
+
+    String? initials;
+    final name = (fullName ?? '').trim();
+    if (name.isNotEmpty) {
+      final parts = name.split(RegExp(r'\s+'));
+      if (parts.length >= 2) {
+        initials = '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+      } else if (parts[0].length >= 2) {
+        initials = parts[0].substring(0, 2).toUpperCase();
+      } else {
+        initials = parts[0][0].toUpperCase();
+      }
+    }
 
     return SizedBox(
       width: 32.w,
@@ -149,15 +170,32 @@ class _ProfileNavIcon extends StatelessWidget {
                     imageUrl: avatarUrl!,
                     fit: BoxFit.cover,
                   )
-                : Center(
-                    child: Icon(
-                      isActive ? Icons.person_rounded : Icons.person_outline,
-                      size: (targetSize * 0.75).r,
-                      color: isActive
-                          ? context.colors.primary
-                          : context.colors.onSurfaceVariant,
-                    ),
-                  ),
+                : (initials != null
+                    ? Center(
+                        child: Text(
+                          initials,
+                          style: context.textTheme.bodySmall?.copyWith(
+                            color: isActive
+                                ? context.colors.primary
+                                : context.colors.onSurfaceVariant,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      )
+                    : Center(
+                        child: Icon(
+                          isActive
+                              ? Icons.person_rounded
+                              : Icons.person_outline,
+                          size: (targetSize * 0.75).r,
+                          color: isActive
+                              ? context.colors.primary
+                              : context.colors.onSurfaceVariant,
+                        ),
+                      )),
           ),
         ),
       ),

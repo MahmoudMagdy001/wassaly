@@ -32,6 +32,7 @@ abstract final class AppRoutes {
   static const String privacyPolicy = '/privacy-policy';
   static const String termsOfService = '/terms-of-service';
   static const String appReviews = '/profile/app-reviews';
+  static const String helpCenter = '/profile/help-center';
 
   // SubCategory
   static const String subCategory = '/sub-category';

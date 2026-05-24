@@ -30,6 +30,7 @@ import 'package:wassaly/features/profile/presentation/screens/add_address_page.d
 import 'package:wassaly/features/profile/presentation/screens/addresses_page.dart';
 import 'package:wassaly/features/profile/presentation/screens/edit_profile_page.dart';
 import 'package:wassaly/features/profile/presentation/screens/profile_page.dart';
+import 'package:wassaly/features/profile/presentation/screens/help_center_page.dart';
 import 'package:wassaly/features/profile/presentation/screens/terms_of_service_page.dart';
 import 'package:wassaly/features/app_reviews/presentation/screens/app_reviews_page.dart';
 import 'package:wassaly/features/app_reviews/presentation/bloc/app_reviews_bloc.dart';
@@ -185,6 +186,12 @@ final GoRouter appRouter = GoRouter(
                       ),
                     ),
                   ],
+                ),
+                GoRoute(
+                  path: 'help-center',
+                  name: 'helpCenter',
+                  parentNavigatorKey: rootNavigatorKey,
+                  builder: (context, state) => const HelpCenterPage(),
                 ),
                 GoRoute(
                   path: 'app-reviews',

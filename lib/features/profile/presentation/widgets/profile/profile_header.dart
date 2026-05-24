@@ -30,23 +30,64 @@ class ProfileHeader extends StatelessWidget {
                     ),
                   ),
                   child: ClipOval(
-                    child: user?.avatarUrl != null
-                        ? CommonImage(
-                            imageUrl: user!.avatarUrl!,
-                            width: 100,
-                            height: 100,
-                            memCacheHeight: 100 * 3,
-                            fit: BoxFit.cover,
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(999)),
-                            enableFullScreenView: true,
-                            heroTag: 'profile_avatar',
-                          )
-                        : Icon(
-                            Icons.person,
-                            size: 50.r,
-                            color: cs.primary,
+                    child: Builder(builder: (context) {
+                      // Compute initials from name or email
+                      String? initials;
+                      final name = (user?.name ?? '').trim();
+                      if (name.isNotEmpty) {
+                        final parts = name.split(RegExp(r'\s+'));
+                        if (parts.length >= 2) {
+                          initials =
+                              '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+                        } else if (parts[0].length >= 2) {
+                          initials = parts[0].substring(0, 2).toUpperCase();
+                        } else {
+                          initials = parts[0][0].toUpperCase();
+                        }
+                      } else if ((user?.email ?? '').isNotEmpty) {
+                        final local = user!.email.split('@').first;
+                        if (local.length >= 2) {
+                          initials = local.substring(0, 2).toUpperCase();
+                        } else if (local.isNotEmpty) {
+                          initials = local[0].toUpperCase();
+                        }
+                      }
+
+                      if (user?.avatarUrl != null &&
+                          user!.avatarUrl!.isNotEmpty) {
+                        return CommonImage(
+                          imageUrl: user.avatarUrl!,
+                          width: 100,
+                          height: 100,
+                          memCacheHeight: 100 * 3,
+                          fit: BoxFit.cover,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(999)),
+                          enableFullScreenView: true,
+                          heroTag: 'profile_avatar',
+                        );
+                      }
+
+                      if (initials != null && initials.isNotEmpty) {
+                        return Container(
+                          color: cs.surface,
+                          alignment: Alignment.center,
+                          child: Text(
+                            initials,
+                            style: context.textTheme.headlineSmall?.copyWith(
+                              color: cs.primary,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
+                        );
+                      }
+
+                      return Icon(
+                        Icons.person,
+                        size: 50.r,
+                        color: cs.primary,
+                      );
+                    }),
                   ),
                 ),
               ],
