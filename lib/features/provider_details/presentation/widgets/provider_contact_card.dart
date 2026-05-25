@@ -24,7 +24,7 @@ class ProviderContactCard extends StatelessWidget {
         await launchUrl(launchUri);
       }
     } catch (e) {
-      debugPrint('Could not launch call: $e');
+      assert(() { debugPrint('Could not launch call: $e'); return true; }());
     }
   }
 
@@ -41,7 +41,7 @@ class ProviderContactCard extends StatelessWidget {
         await launchUrl(launchUri);
       }
     } catch (e) {
-      debugPrint('Could not launch email: $e');
+      assert(() { debugPrint('Could not launch email: $e'); return true; }());
     }
   }
 

@@ -83,14 +83,14 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
     result.fold(
       (failure) => emit(state.copyWith(
-        addingProductIds: state.addingProductIds..remove(event.productId),
+        addingProductIds: {...state.addingProductIds}..remove(event.productId),
         failure: failure,
       )),
       (_) {
         final updatedIds = {...state.inCartProductIds, event.productId};
         emit(state.copyWith(
           inCartProductIds: updatedIds,
-          addingProductIds: state.addingProductIds..remove(event.productId),
+          addingProductIds: {...state.addingProductIds}..remove(event.productId),
           cartCount: state.cartCount + 1,
         ));
         // Silent reload to sync with backend without flashing loading UI
@@ -138,12 +138,12 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         items: previousItems, // Rollback
         inCartProductIds: previousIds, // Rollback
         cartCount: previousCount, // Rollback
-        addingProductIds: state.addingProductIds..remove(event.cartItemId),
+        addingProductIds: {...state.addingProductIds}..remove(event.cartItemId),
         failure: failure,
       )),
       (_) {
         emit(state.copyWith(
-          addingProductIds: state.addingProductIds..remove(event.cartItemId),
+          addingProductIds: {...state.addingProductIds}..remove(event.cartItemId),
         ));
         // Silent reload to sync with backend without flashing loading UI
         add(const LoadCartItemsEvent(silent: true));
@@ -194,12 +194,12 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     result.fold(
       (failure) => emit(state.copyWith(
         items: previousItems, // Rollback
-        addingProductIds: state.addingProductIds..remove(event.cartItemId),
+        addingProductIds: {...state.addingProductIds}..remove(event.cartItemId),
         failure: failure,
       )),
       (_) {
         emit(state.copyWith(
-          addingProductIds: state.addingProductIds..remove(event.cartItemId),
+          addingProductIds: {...state.addingProductIds}..remove(event.cartItemId),
         ));
         // Silent reload to sync with backend without flashing loading UI
         add(const LoadCartItemsEvent(silent: true));

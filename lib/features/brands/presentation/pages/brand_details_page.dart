@@ -92,7 +92,7 @@ class _BrandDetailsViewState extends State<BrandDetailsView> {
                     color: cs.surfaceContainerLow,
                     shape: BoxShape.circle,
                   ),
-                  clipBehavior: Clip.antiAlias,
+                  clipBehavior: Clip.hardEdge,
                   child: CommonImage(
                     imageUrl: widget.brandImage,
                     fit: BoxFit.contain,
