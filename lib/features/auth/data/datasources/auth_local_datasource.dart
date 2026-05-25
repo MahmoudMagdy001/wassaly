@@ -37,7 +37,7 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
     result.fold(
       (failure) => throw failure,
       (_) {
-        AppConfig.cacheToken(token);
+        AppConfig.cachedToken = token;
         AppLogger.info('Token saved to secure storage');
       },
     );
