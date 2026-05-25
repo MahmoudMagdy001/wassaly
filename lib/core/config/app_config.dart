@@ -13,7 +13,7 @@ class AppConfig {
   static String? _cachedToken;
 
   /// Call after login / token refresh to update the in-memory cache.
-  static void cacheToken(String? token) => _cachedToken = token;
+  static set cachedToken(String? token) => _cachedToken = token;
 
   /// Call on logout to clear the cached token.
   static void clearCachedToken() => _cachedToken = null;

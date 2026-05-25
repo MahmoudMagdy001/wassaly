@@ -37,7 +37,7 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
     result.fold(
       (failure) => throw failure,
       (_) {
-        AppConfig.cacheToken(token);
+        AppConfig.cachedToken = token;
         AppLogger.info('Token saved to secure storage');
       },
     );
@@ -95,7 +95,8 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
     await deleteToken();
     final result = await _secureStorage.delete(_userKey);
     result.fold(
-      (failure) => AppLogger.error('Failed to clear user cache: ${failure.message}'),
+      (failure) =>
+          AppLogger.error('Failed to clear user cache: ${failure.message}'),
       (_) => AppLogger.info('All auth data cleared from secure storage'),
     );
   }
