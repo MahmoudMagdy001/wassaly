@@ -26,7 +26,7 @@ class ServiceItem extends StatelessWidget {
               color: cs.surfaceContainerLow,
               shape: BoxShape.circle,
             ),
-            clipBehavior: Clip.antiAlias,
+            clipBehavior: Clip.hardEdge,
             child: AppCachedImage(
               imageUrl: imageUrl,
               fit: BoxFit.cover,

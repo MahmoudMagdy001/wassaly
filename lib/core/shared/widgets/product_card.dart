@@ -59,7 +59,7 @@ class ProductCard extends StatelessWidget {
                   width: isActive ? 1.5 : 1.0,
                 ),
               ),
-              clipBehavior: Clip.antiAlias,
+              clipBehavior: Clip.hardEdge,
               child: child,
             );
           },

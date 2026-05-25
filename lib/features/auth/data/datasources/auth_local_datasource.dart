@@ -36,7 +36,10 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
     final result = await _secureStorage.write(_tokenKey, token);
     result.fold(
       (failure) => throw failure,
-      (_) => AppLogger.info('Token saved to secure storage'),
+      (_) {
+        AppConfig.cacheToken(token);
+        AppLogger.info('Token saved to secure storage');
+      },
     );
   }
 
@@ -51,6 +54,7 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
 
   @override
   Future<void> deleteToken() async {
+    AppConfig.clearCachedToken();
     final result = await _secureStorage.delete(_tokenKey);
     result.fold(
       (failure) => throw failure,

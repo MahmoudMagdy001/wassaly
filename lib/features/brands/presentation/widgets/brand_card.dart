@@ -31,7 +31,7 @@ class BrandCard extends StatelessWidget {
                 color: cs.surfaceContainerLow,
                 shape: BoxShape.circle,
               ),
-              clipBehavior: Clip.antiAlias,
+              clipBehavior: Clip.hardEdge,
               child: CommonImage(
                 memCacheHeight: 64 * 3,
                 imageUrl: brand.image,

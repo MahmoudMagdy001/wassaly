@@ -25,7 +25,7 @@ class CategoryCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16.r),
           color: cs.surfaceContainerLow,
         ),
-        clipBehavior: Clip.antiAlias,
+        clipBehavior: Clip.hardEdge,
         child: Stack(
           fit: StackFit.expand,
           children: [

@@ -112,9 +112,10 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
         ? state.favoriteIds.contains(event.productId)
         : event.expectedIsFavorite;
 
-    debugPrint(
-      '[FavoriteBloc] Toggle ${event.productId} — currentlyFavorite: $isCurrentlyFavorite',
-    );
+    assert(() {
+      debugPrint('[FavoriteBloc] Toggle ${event.productId} — currentlyFavorite: $isCurrentlyFavorite');
+      return true;
+    }());
 
     // Save the entity in case we need to rollback a removal on the
     // Favorites page (where the product is already in favorites.data).
@@ -152,11 +153,6 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
       failure: null,
     ));
 
-    debugPrint(
-      '[FavoriteBloc] Optimistic — favoriteIds: ${state.favoriteIds}, '
-      'favorites.count=${state.favorites.data.length}, togglingIds: ${state.togglingIds}',
-    );
-
     // Persist the change via the domain layer.
     final result = await toggleFavoriteUseCase(
       productId: event.productId,
@@ -165,10 +161,6 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
 
     result.fold(
       (failure) {
-        debugPrint(
-          '[FavoriteBloc] Toggle FAILED for ${event.productId}: ${failure.message}',
-        );
-
         // Rollback on failure: restore the previous state.
         final rollbackIds = Set<int>.from(state.favoriteIds)
           ..add(event.productId);
@@ -192,17 +184,8 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
           togglingIds: rollbackToggling,
           failure: failure,
         ));
-
-        debugPrint(
-          '[FavoriteBloc] Rollback — favoriteIds: $rollbackIds, '
-          'favorites.count=${rollbackFavorites.data.length}',
-        );
       },
       (_) {
-        debugPrint(
-          '[FavoriteBloc] Toggle SUCCESS for ${event.productId}',
-        );
-
         // Success: clear the toggling flag.
         final updatedToggling = Set<int>.from(state.togglingIds)
           ..remove(event.productId);
@@ -211,11 +194,6 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
           togglingIds: updatedToggling,
           failure: null,
         ));
-
-        debugPrint(
-          '[FavoriteBloc] Success emit — favoriteIds: ${state.favoriteIds}, '
-          'favorites.count=${state.favorites.data.length}, togglingIds: ${state.togglingIds}',
-        );
 
         // Re-fetch only when ADDING a favorite so the new product
         // appears in the Favorites page list. Skip on removal —
@@ -232,10 +210,6 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
     Emitter<FavoriteState> emit,
   ) async {
     final isCurrentlyFavorite = event.expectedIsFavorite;
-
-    debugPrint(
-      '[FavoriteBloc] Toggle Service ${event.serviceId} — currentlyFavorite: $isCurrentlyFavorite',
-    );
 
     // Save the entity in case we need to rollback a removal on the
     // Favorites page (where the service is already in serviceFavorites.data).
@@ -283,10 +257,6 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
 
     result.fold(
       (failure) {
-        debugPrint(
-          '[FavoriteBloc] Toggle Service FAILED for ${event.serviceId}: ${failure.message}',
-        );
-
         // Rollback on failure
         final rollbackIds = Set<int>.from(state.serviceFavoriteIds);
         if (isCurrentlyFavorite) {
@@ -313,10 +283,6 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
         ));
       },
       (_) {
-        debugPrint(
-          '[FavoriteBloc] Toggle Service SUCCESS for ${event.serviceId}',
-        );
-
         // Success: clear the toggling flag.
         final updatedToggling = Set<int>.from(state.serviceTogglingIds)
           ..remove(event.serviceId);
