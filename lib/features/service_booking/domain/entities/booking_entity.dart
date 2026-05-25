@@ -229,7 +229,7 @@ class ProposeRescheduleParams extends Equatable {
   Map<String, dynamic> toJson() => {
         'booking_id': bookingId,
         'suggested_day_id': suggestedDayId,
-        'suggested_time': suggestedTimeId,
+        'suggested_time': suggestedTimeId.toString(),
         'reschedule_note': rescheduleNote,
       };
 
