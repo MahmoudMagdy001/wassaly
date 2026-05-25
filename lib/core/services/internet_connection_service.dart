@@ -100,7 +100,7 @@ class InternetConnectionService {
   void _emit(NetworkState state) {
     if (_currentState == state) return;
     _currentState = state;
-    debugPrint('[Network] State → $state');
+    assert(() { debugPrint('[Network] State → $state'); return true; }());
     _stateController.add(state);
   }
 
@@ -121,11 +121,11 @@ class InternetConnectionService {
 
       if (!_isConnected) return;
 
-      debugPrint('[Network] Ping ${sw.elapsedMilliseconds}ms');
+      assert(() { debugPrint('[Network] Ping ${sw.elapsedMilliseconds}ms'); return true; }());
       _handleLatencyResult(sw.elapsedMilliseconds >= NetworkConfig.slowPingThresholdMs);
     } catch (_) {
       if (!_isConnected) return;
-      debugPrint('[Network] Ping failed');
+      assert(() { debugPrint('[Network] Ping failed'); return true; }());
       _handleLatencyResult(true);
     }
   }

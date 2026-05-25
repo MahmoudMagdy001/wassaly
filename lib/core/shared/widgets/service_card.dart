@@ -34,10 +34,11 @@ class ServiceCard extends StatelessWidget {
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
 
-    return GestureDetector(
-      onTap: onTap ?? () => _openServiceDetails(context),
-      onLongPress: _onLongPress,
-      child: ValueListenableBuilder<int?>(
+    return RepaintBoundary(
+      child: GestureDetector(
+        onTap: onTap ?? () => _openServiceDetails(context),
+        onLongPress: _onLongPress,
+        child: ValueListenableBuilder<int?>(
         valueListenable: activeServiceMarqueeId,
         builder: (context, activeId, child) {
           final isActive = activeId == service.id;
@@ -53,7 +54,7 @@ class ServiceCard extends StatelessWidget {
                 width: isActive ? 1.5 : 1.0,
               ),
             ),
-            clipBehavior: Clip.antiAlias,
+            clipBehavior: Clip.hardEdge,
             child: child,
           );
         },
@@ -96,6 +97,7 @@ class ServiceCard extends StatelessWidget {
               ),
             ),
           ],
+        ),
         ),
       ),
     );

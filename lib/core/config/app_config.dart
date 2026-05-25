@@ -8,6 +8,16 @@ class AppConfig {
   static late final Dio dio;
   static late final String baseUrl;
 
+  /// In-memory cache for the auth token so we avoid hitting SecureStorage
+  /// (Keychain / Keystore) on every single HTTP request.
+  static String? _cachedToken;
+
+  /// Call after login / token refresh to update the in-memory cache.
+  static void cacheToken(String? token) => _cachedToken = token;
+
+  /// Call on logout to clear the cached token.
+  static void clearCachedToken() => _cachedToken = null;
+
   static Future<void> init() async {
     baseUrl = _getBaseUrl();
 
@@ -40,6 +50,7 @@ class AppConfig {
   }
 
   static void _addLoggerInterceptor() {
+    if (!kDebugMode) return;
     dio.interceptors.add(
       PrettyDioLogger(
         requestHeader: true,
@@ -81,7 +92,11 @@ class AppConfig {
     sl<InternetConnectionService>().reportLatency(latency);
   }
 
-  /// Automatically attaches the Authorization Bearer token
+  /// Automatically attaches the Authorization Bearer token.
+  ///
+  /// Uses an in-memory [_cachedToken] to avoid reading from SecureStorage
+  /// (a full Keychain/Keystore round-trip) on every single HTTP request.
+  /// Falls back to SecureStorage only once when the cache is cold.
   static void _addAuthInterceptor() {
     dio.interceptors.add(
       InterceptorsWrapper(
@@ -90,12 +105,14 @@ class AppConfig {
             return handler.next(options);
           }
 
-          final tokenResult =
-              await SecureStorageService.instance.read('auth_token');
-          final token = tokenResult.fold((_) => null, (t) => t);
+          if (_cachedToken == null) {
+            final tokenResult =
+                await SecureStorageService.instance.read('auth_token');
+            _cachedToken = tokenResult.fold((_) => null, (t) => t);
+          }
 
-          if (token != null && token.isNotEmpty) {
-            options.headers['Authorization'] = 'Bearer $token';
+          if (_cachedToken != null && _cachedToken!.isNotEmpty) {
+            options.headers['Authorization'] = 'Bearer $_cachedToken';
           }
 
           return handler.next(options);

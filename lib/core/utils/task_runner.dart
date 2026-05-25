@@ -23,7 +23,7 @@ FutureEither<T> runTask<T>(
     if (requiresNetwork && _isConnectionError(e)) {
       // Timeout added to prevent blocking when internet_connection_checker_plus
       // takes too long (5-30s) to confirm no internet via HTTP checks.
-      final hasNetwork = await InternetConnectionService()
+      final hasNetwork = await sl<InternetConnectionService>()
           .hasConnection()
           .timeout(
             const Duration(seconds: 5),

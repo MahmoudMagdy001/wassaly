@@ -140,7 +140,7 @@ class _HomeBannerState extends State<HomeBanner> {
         borderRadius: BorderRadius.circular(16.r),
         color: cs.surfaceContainerHighest,
       ),
-      clipBehavior: Clip.antiAlias,
+      clipBehavior: Clip.hardEdge,
       child: Stack(
         fit: StackFit.expand,
         children: [
