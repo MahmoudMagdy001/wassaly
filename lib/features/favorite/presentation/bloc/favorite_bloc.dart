@@ -112,10 +112,7 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
         ? state.favoriteIds.contains(event.productId)
         : event.expectedIsFavorite;
 
-    assert(() {
-      debugPrint('[FavoriteBloc] Toggle ${event.productId} — currentlyFavorite: $isCurrentlyFavorite');
-      return true;
-    }());
+    assert(() { debugPrint('[FavoriteBloc] Toggle ${event.productId} — currentlyFavorite: $isCurrentlyFavorite'); return true; }());
 
     // Save the entity in case we need to rollback a removal on the
     // Favorites page (where the product is already in favorites.data).

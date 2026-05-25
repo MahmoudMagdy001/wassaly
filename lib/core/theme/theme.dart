@@ -171,7 +171,7 @@ ThemeData _buildTheme(
 
     // Card Theme
     cardTheme: CardThemeData(
-      clipBehavior: Clip.antiAlias,
+      clipBehavior: Clip.hardEdge,
       elevation: AppDesignTokens.fallback.cardElevation,
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(

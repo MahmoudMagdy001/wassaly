@@ -194,7 +194,7 @@ class PrivacyPolicyPage extends StatelessWidget {
     try {
       await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
     } catch (e) {
-      debugPrint('Error launching URL: $e');
+      assert(() { debugPrint('Error launching URL: $e'); return true; }());
     }
   }
 }

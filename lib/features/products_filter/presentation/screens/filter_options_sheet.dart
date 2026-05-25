@@ -114,12 +114,12 @@ class _FilterOptionsSheetState extends State<FilterOptionsSheet> {
   Widget build(BuildContext context) {
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
-    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
 
     return Padding(
       padding: EdgeInsets.only(bottom: bottomInset),
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.85,
+        height: MediaQuery.sizeOf(context).height * 0.85,
         decoration: BoxDecoration(
           color: cs.surface,
           borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),

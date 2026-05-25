@@ -67,7 +67,7 @@ class AppDropdown<T> extends StatelessWidget {
           height: 250.h,
           padding: EdgeInsets.only(top: 6.h),
           margin: EdgeInsets.only(
-            bottom: MediaQuery.of(context).padding.bottom,
+            bottom: MediaQuery.paddingOf(context).bottom,
           ),
           color: cs.surface,
           child: SafeArea(

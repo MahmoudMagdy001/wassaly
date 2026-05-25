@@ -16,7 +16,7 @@ class ServiceProviderCard extends StatelessWidget {
     try {
       await launchUrl(launchUri);
     } catch (e) {
-      debugPrint('Could not launch call: $e');
+      assert(() { debugPrint('Could not launch call: $e'); return true; }());
     }
   }
 
@@ -25,7 +25,7 @@ class ServiceProviderCard extends StatelessWidget {
     try {
       await launchUrl(launchUri);
     } catch (e) {
-      debugPrint('Could not launch email: $e');
+      assert(() { debugPrint('Could not launch email: $e'); return true; }());
     }
   }
 
@@ -347,7 +347,7 @@ class _ActionButton extends StatelessWidget {
         color: backgroundColor,
         borderRadius: BorderRadius.circular(10.r),
       ),
-      clipBehavior: Clip.antiAlias,
+      clipBehavior: Clip.hardEdge,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
