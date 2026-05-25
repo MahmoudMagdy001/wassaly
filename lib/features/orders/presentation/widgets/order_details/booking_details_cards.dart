@@ -215,6 +215,12 @@ class BookingTrackerWidget extends StatelessWidget {
         color: Colors.orange,
       ),
       _TimelineStep(
+        title: context.l10n.order_status_reschedule,
+        description: context.l10n.order_tracker_reschedule_desc,
+        icon: Icons.schedule_rounded,
+        color: Colors.orange,
+      ),
+      _TimelineStep(
         title: context.l10n.order_status_accepted,
         description: context.l10n.order_tracker_accepted_desc,
         icon: Icons.check_circle_rounded,
@@ -236,22 +242,22 @@ class BookingTrackerWidget extends StatelessWidget {
         normStatus.contains('waiting') ||
         normStatus.contains('قيد الانتظار')) {
       currentStep = 0;
+    } else if (normStatus.contains('reschedule')) {
+      currentStep = 1;
     } else if (normStatus.contains('accepted') ||
         normStatus.contains('confirmed') ||
         normStatus.contains('تم القبول') ||
         normStatus.contains('مؤكد')) {
-      currentStep = 1;
+      currentStep = 2;
     } else if (normStatus.contains('completed') ||
         normStatus.contains('mektmel') ||
         normStatus.contains('مكتمل')) {
-      currentStep = 2;
+      currentStep = 3;
     } else if (normStatus.contains('cancelled') ||
         normStatus.contains('ملغي') ||
         normStatus.contains('rejected') ||
         normStatus.contains('failed')) {
       isCancelled = true;
-    } else if (normStatus.contains('reschedule')) {
-      currentStep = 0;
     }
 
     return Column(
@@ -639,15 +645,17 @@ class BookingServiceInfoCard extends StatelessWidget {
 
 class RescheduleDetailsCard extends StatelessWidget {
   final RescheduleDetailsEntity rescheduleDetails;
+  final String? bookingStatus;
 
   const RescheduleDetailsCard({
     super.key,
     required this.rescheduleDetails,
+    this.bookingStatus,
   });
 
   @override
   Widget build(BuildContext context) {
-    final cs = context.theme.colorScheme;
+    // final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
 
     return AppCard(
@@ -662,7 +670,7 @@ class RescheduleDetailsCard extends StatelessWidget {
               12.horizontalSpace,
               Expanded(
                 child: Text(
-                  context.l10n.booking_reschedule_provider_suggested,
+                  _getRescheduleHeader(context),
                   style: tt.bodyMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: Colors.orange.shade800,
@@ -710,6 +718,14 @@ class RescheduleDetailsCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _getRescheduleHeader(BuildContext context) {
+    final normalizedStatus = bookingStatus?.trim().toLowerCase();
+    if (normalizedStatus == 'reschedule_by_customer') {
+      return context.l10n.booking_reschedule_customer_suggested;
+    }
+    return context.l10n.booking_reschedule_provider_suggested;
   }
 
   Widget _buildInfoItem(

@@ -444,7 +444,19 @@ class SAr extends S {
   String get profile_dark => 'داكن';
 
   @override
+  String get profile_dark_theme_subtitle => 'استخدم المظهر الداكن دائمًا';
+
+  @override
   String get profile_light => 'فاتح';
+
+  @override
+  String get profile_light_theme_subtitle => 'استخدم المظهر الفاتح دائمًا';
+
+  @override
+  String get profile_system => 'النظام';
+
+  @override
+  String get profile_system_description => 'اتبع إعدادات مظهر الجهاز';
 
   @override
   String get profile_app_reviews => 'آراء عن التطبيق';
@@ -1071,6 +1083,9 @@ class SAr extends S {
   String get order_tracker_pending_desc => 'تم استلام طلبك وبانتظار المراجعة';
 
   @override
+  String get order_tracker_reschedule_desc => 'الطلب الآن قيد إعادة الجدولة';
+
+  @override
   String get order_tracker_accepted_desc => 'تمت الموافقة على طلبك من المتجر';
 
   @override
@@ -1554,7 +1569,12 @@ class SAr extends S {
   String get booking_reschedule_title => 'اقتراح موعد جديد';
 
   @override
-  String get booking_reschedule_provider_suggested => 'مقدم الخدمة اقترح موعداً جديداً';
+  String get booking_reschedule_provider_suggested =>
+      'مقدم الخدمة اقترح موعداً جديداً';
+
+  @override
+  String get booking_reschedule_customer_suggested =>
+      'أنت اقترحت موعداً جديداً';
 
   @override
   String get booking_reschedule_suggested_day => 'اليوم المقترح';
@@ -1575,7 +1595,8 @@ class SAr extends S {
   String get booking_reschedule_accept_title => 'قبول الموعد المقترح';
 
   @override
-  String get booking_reschedule_accept_confirm => 'هل أنت متأكد من قبول الموعد المقترح؟';
+  String get booking_reschedule_accept_confirm =>
+      'هل أنت متأكد من قبول الموعد المقترح؟';
 
   @override
   String get booking_reschedule_accept_success => 'تم قبول الموعد بنجاح';
@@ -1593,13 +1614,15 @@ class SAr extends S {
   String get booking_reschedule_propose_note_label => 'ملاحظة للمزود';
 
   @override
-  String get booking_reschedule_propose_note_hint => 'اكتب سبب اقتراح موعد آخر...';
+  String get booking_reschedule_propose_note_hint =>
+      'اكتب سبب اقتراح موعد آخر...';
 
   @override
   String get booking_reschedule_propose_submit => 'إرسال الاقتراح';
 
   @override
-  String get booking_reschedule_propose_success => 'تم إرسال اقتراح الموعد بنجاح';
+  String get booking_reschedule_propose_success =>
+      'تم إرسال اقتراح الموعد بنجاح';
 
   @override
   String get booking_reschedule_select_day => 'اختر اليوم';

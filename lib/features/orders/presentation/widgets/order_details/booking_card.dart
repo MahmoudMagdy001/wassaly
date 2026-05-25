@@ -108,6 +108,50 @@ class BookingCard extends StatelessWidget {
                   ],
                 ),
 
+                if (booking.rescheduleDetails != null &&
+                    _isRescheduleStatus(booking.status)) ...[
+                  16.verticalSpace,
+                  AppDivider(color: cs.outlineVariant.withValues(alpha: 0.3)),
+                  16.verticalSpace,
+                  Text(
+                    _getRescheduleHeader(context, booking.status),
+                    style: tt.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: cs.primary,
+                    ),
+                  ),
+                  12.verticalSpace,
+                  Row(
+                    children: [
+                      _InfoItem(
+                        icon: Icons.calendar_today_outlined,
+                        label: booking.rescheduleDetails!.suggestedDay,
+                      ),
+                      if (booking.rescheduleDetails!.suggestedTime != null) ...[
+                        16.horizontalSpace,
+                        _InfoItem(
+                          icon: Icons.access_time_rounded,
+                          label: booking.rescheduleDetails!.suggestedTime!
+                              .to12HourFormat(),
+                        ),
+                      ],
+                    ],
+                  ),
+                  if (booking.rescheduleDetails!.rescheduleNote != null &&
+                      booking
+                          .rescheduleDetails!.rescheduleNote!.isNotEmpty) ...[
+                    12.verticalSpace,
+                    Text(
+                      booking.rescheduleDetails!.rescheduleNote!,
+                      style: tt.bodySmall?.copyWith(
+                        color: cs.onSurfaceVariant,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ],
+
                 // 3. Footer: Location (Bottom aligned Right)
                 if (booking.governorate != null || booking.center != null) ...[
                   16.verticalSpace,
@@ -200,6 +244,20 @@ class _StatusBadge extends StatelessWidget {
       ),
     );
   }
+}
+
+String _getRescheduleHeader(BuildContext context, String status) {
+  final normalizedStatus = status.trim().toLowerCase();
+  if (normalizedStatus == 'reschedule_by_customer') {
+    return context.l10n.booking_reschedule_customer_suggested;
+  }
+  return context.l10n.booking_reschedule_provider_suggested;
+}
+
+bool _isRescheduleStatus(String status) {
+  final normalizedStatus = status.trim().toLowerCase();
+  return normalizedStatus == 'reschedule_by_provider' ||
+      normalizedStatus == 'reschedule_by_customer';
 }
 
 class _StatusConfig {

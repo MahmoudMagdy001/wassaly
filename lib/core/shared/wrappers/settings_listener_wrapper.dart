@@ -51,11 +51,9 @@ class SettingsListenerWrapper extends StatelessWidget {
       },
       child: BlocBuilder<SettingsBloc, SettingsState>(
         buildWhen: (prev, curr) =>
-            prev.isDarkMode != curr.isDarkMode ||
-            prev.language != curr.language,
+            prev.themeMode != curr.themeMode || prev.language != curr.language,
         builder: (context, state) {
-          final themeMode = state.isDarkMode ? ThemeMode.dark : ThemeMode.light;
-          return builder(context, themeMode, state.language);
+          return builder(context, state.themeMode, state.language);
         },
       ),
     );

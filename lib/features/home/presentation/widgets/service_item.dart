@@ -32,6 +32,8 @@ class ServiceItem extends StatelessWidget {
               ),
               clipBehavior: Clip.hardEdge,
               child: CommonImage(
+                width: 64,
+                height: 64,
                 memCacheHeight: 64 * 3,
                 imageUrl: imageUrl,
                 fit: BoxFit.cover,

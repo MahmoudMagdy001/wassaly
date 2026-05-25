@@ -447,7 +447,19 @@ class SEn extends S {
   String get profile_dark => 'Dark';
 
   @override
+  String get profile_dark_theme_subtitle => 'Always use dark mode';
+
+  @override
   String get profile_light => 'Light';
+
+  @override
+  String get profile_light_theme_subtitle => 'Always use light mode';
+
+  @override
+  String get profile_system => 'System';
+
+  @override
+  String get profile_system_description => 'Follow the device theme';
 
   @override
   String get profile_app_reviews => 'App Reviews';
@@ -1077,6 +1089,10 @@ class SEn extends S {
   String get order_tracker_pending_desc => 'Your order is pending confirmation';
 
   @override
+  String get order_tracker_reschedule_desc =>
+      'Your order is under reschedule review';
+
+  @override
   String get order_tracker_accepted_desc => 'Your order has been accepted';
 
   @override
@@ -1563,7 +1579,12 @@ class SEn extends S {
   String get booking_reschedule_title => 'Reschedule Suggestion';
 
   @override
-  String get booking_reschedule_provider_suggested => 'The provider suggested a new schedule';
+  String get booking_reschedule_provider_suggested =>
+      'The provider suggested a new schedule';
+
+  @override
+  String get booking_reschedule_customer_suggested =>
+      'You suggested a new schedule';
 
   @override
   String get booking_reschedule_suggested_day => 'Suggested Day';
@@ -1584,10 +1605,12 @@ class SEn extends S {
   String get booking_reschedule_accept_title => 'Accept Suggested Schedule';
 
   @override
-  String get booking_reschedule_accept_confirm => 'Are you sure you want to accept the suggested schedule?';
+  String get booking_reschedule_accept_confirm =>
+      'Are you sure you want to accept the suggested schedule?';
 
   @override
-  String get booking_reschedule_accept_success => 'Schedule accepted successfully';
+  String get booking_reschedule_accept_success =>
+      'Schedule accepted successfully';
 
   @override
   String get booking_reschedule_propose_title => 'Propose Alternative Schedule';
@@ -1602,13 +1625,15 @@ class SEn extends S {
   String get booking_reschedule_propose_note_label => 'Note to Provider';
 
   @override
-  String get booking_reschedule_propose_note_hint => 'Write your reason for proposing a different schedule...';
+  String get booking_reschedule_propose_note_hint =>
+      'Write your reason for proposing a different schedule...';
 
   @override
   String get booking_reschedule_propose_submit => 'Send Proposal';
 
   @override
-  String get booking_reschedule_propose_success => 'Schedule proposal sent successfully';
+  String get booking_reschedule_propose_success =>
+      'Schedule proposal sent successfully';
 
   @override
   String get booking_reschedule_select_day => 'Select Day';

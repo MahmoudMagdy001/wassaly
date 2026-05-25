@@ -2,27 +2,27 @@ part of 'settings_bloc.dart';
 
 class SettingsState extends Equatable {
   final String language;
-  final bool isDarkMode;
+  final ThemeMode themeMode;
   final bool notificationsEnabled;
 
   const SettingsState({
     this.language = 'ar',
-    this.isDarkMode = false,
+    this.themeMode = ThemeMode.system,
     this.notificationsEnabled = true,
   });
 
   SettingsState copyWith({
     String? language,
-    bool? isDarkMode,
+    ThemeMode? themeMode,
     bool? notificationsEnabled,
   }) {
     return SettingsState(
       language: language ?? this.language,
-      isDarkMode: isDarkMode ?? this.isDarkMode,
+      themeMode: themeMode ?? this.themeMode,
       notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
     );
   }
 
   @override
-  List<Object?> get props => [language, isDarkMode, notificationsEnabled];
+  List<Object?> get props => [language, themeMode, notificationsEnabled];
 }

@@ -30,6 +30,7 @@ class CategoryCard extends StatelessWidget {
           fit: StackFit.expand,
           children: [
             CommonImage(
+              height: 140,
               memCacheHeight: 140 * 2,
               imageUrl: imageUrl,
               fit: BoxFit.cover,

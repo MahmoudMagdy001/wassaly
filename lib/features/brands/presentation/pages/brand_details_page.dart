@@ -94,6 +94,10 @@ class _BrandDetailsViewState extends State<BrandDetailsView> {
                   ),
                   clipBehavior: Clip.hardEdge,
                   child: CommonImage(
+                    width: 32,
+                    height: 32,
+                    memCacheWidth: 32 * 3,
+                    memCacheHeight: 32 * 3,
                     imageUrl: widget.brandImage,
                     fit: BoxFit.contain,
                   ),

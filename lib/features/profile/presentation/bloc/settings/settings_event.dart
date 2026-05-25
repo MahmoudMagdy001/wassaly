@@ -28,6 +28,15 @@ class ThemeToggled extends SettingsEvent {
   const ThemeToggled();
 }
 
+class ThemeModeChanged extends SettingsEvent {
+  final ThemeMode themeMode;
+
+  const ThemeModeChanged(this.themeMode);
+
+  @override
+  List<Object?> get props => [themeMode];
+}
+
 class SettingsNotificationsToggled extends SettingsEvent {
   final bool enabled;
 

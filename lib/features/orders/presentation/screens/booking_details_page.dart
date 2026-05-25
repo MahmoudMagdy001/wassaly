@@ -395,70 +395,63 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                         24.verticalSpace,
 
                         // 4.5. Reschedule Details Card
-                        if (isRescheduleByProvider &&
-                            booking.rescheduleDetails != null) ...[
+                        if (booking.rescheduleDetails != null) ...[
                           _buildSectionHeader(
-                              context,
-                              context
-                                  .l10n.booking_reschedule_title),
+                              context, context.l10n.booking_reschedule_title),
                           8.verticalSpace,
                           RescheduleDetailsCard(
-                            rescheduleDetails:
-                                booking.rescheduleDetails!,
+                            rescheduleDetails: booking.rescheduleDetails!,
+                            bookingStatus: booking.status,
                           ),
-                          16.verticalSpace,
-                          BlocSelector<BookingDetailBloc,
-                              BookingDetailState, bool>(
-                            selector: (s) =>
-                                s.actionStatus ==
-                                BookingActionStatus.loading,
-                            builder: (context, isActionLoading) {
-                              return Row(
-                                children: [
-                                  Expanded(
-                                    child: AppButton(
-                                      label: context.l10n
-                                          .booking_reschedule_accept,
-                                      onPressed: isActionLoading
-                                          ? null
-                                          : () => _onAcceptReschedule(
-                                              booking),
-                                      variant:
-                                          ButtonVariant.primary,
+                          if (isRescheduleByProvider) ...[
+                            16.verticalSpace,
+                            BlocSelector<BookingDetailBloc, BookingDetailState,
+                                bool>(
+                              selector: (s) =>
+                                  s.actionStatus == BookingActionStatus.loading,
+                              builder: (context, isActionLoading) {
+                                return Row(
+                                  children: [
+                                    Expanded(
+                                      child: AppButton(
+                                        label: context
+                                            .l10n.booking_reschedule_accept,
+                                        onPressed: isActionLoading
+                                            ? null
+                                            : () =>
+                                                _onAcceptReschedule(booking),
+                                        variant: ButtonVariant.primary,
+                                      ),
                                     ),
-                                  ),
-                                  8.horizontalSpace,
-                                  Expanded(
-                                    child: AppButton(
-                                      label: context.l10n
-                                          .booking_reschedule_propose,
-                                      onPressed: isActionLoading
-                                          ? null
-                                          : () {
-                                              context
-                                                  .showAppBottomSheet<
-                                                      void>(
-                                                builder: (_) =>
-                                                    BlocProvider
-                                                        .value(
-                                                  value: context.read<
-                                                      BookingDetailBloc>(),
-                                                  child:
-                                                      ProposeRescheduleSheet(
-                                                    bookingId:
-                                                        booking.id,
+                                    8.horizontalSpace,
+                                    Expanded(
+                                      child: AppButton(
+                                        label: context
+                                            .l10n.booking_reschedule_propose,
+                                        onPressed: isActionLoading
+                                            ? null
+                                            : () {
+                                                context
+                                                    .showAppBottomSheet<void>(
+                                                  builder: (_) =>
+                                                      BlocProvider.value(
+                                                    value: context.read<
+                                                        BookingDetailBloc>(),
+                                                    child:
+                                                        ProposeRescheduleSheet(
+                                                      bookingId: booking.id,
+                                                    ),
                                                   ),
-                                                ),
-                                              );
-                                            },
-                                      variant:
-                                          ButtonVariant.secondary,
+                                                );
+                                              },
+                                        variant: ButtonVariant.secondary,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ],
                           24.verticalSpace,
                         ],
 

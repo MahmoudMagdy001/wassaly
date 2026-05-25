@@ -167,6 +167,8 @@ class _ProfileNavIcon extends StatelessWidget {
                 ? CommonImage(
                     width: targetSize,
                     height: targetSize,
+                    // memCacheWidth: (targetSize * 3).toInt(),
+                    // memCacheHeight: (targetSize * 3).toInt(),
                     imageUrl: avatarUrl!,
                     fit: BoxFit.cover,
                   )

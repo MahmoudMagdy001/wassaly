@@ -174,6 +174,7 @@ class _ProductImageSection extends StatelessWidget {
         children: [
           Positioned.fill(
             child: CommonImage(
+              height: 140,
               memCacheHeight: 140 * 3,
               imageUrl: product.image,
               fit: BoxFit.cover,

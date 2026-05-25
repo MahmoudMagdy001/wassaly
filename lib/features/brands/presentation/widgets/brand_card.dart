@@ -33,6 +33,7 @@ class BrandCard extends StatelessWidget {
               ),
               clipBehavior: Clip.hardEdge,
               child: CommonImage(
+                height: 64,
                 memCacheHeight: 64 * 3,
                 imageUrl: brand.image,
                 fit: BoxFit.cover,

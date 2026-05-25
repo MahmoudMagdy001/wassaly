@@ -115,6 +115,10 @@ class CategorySideMenu extends StatelessWidget {
                                   ),
                                   child: ClipOval(
                                     child: CommonImage(
+                                      height: 48,
+                                      width: 54,
+                                      memCacheHeight: 48 * 3,
+                                      memCacheWidth: 54 * 3,
                                       imageUrl: item.image,
                                       fit: BoxFit.cover,
                                     ),

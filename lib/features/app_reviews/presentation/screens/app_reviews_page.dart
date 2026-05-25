@@ -18,9 +18,6 @@ class AppReviewsPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: cs.surface,
-      appBar: AppBar(
-        title: Text(context.l10n.profile_app_reviews),
-      ),
       floatingActionButton: BlocBuilder<AppReviewsBloc, AppReviewsState>(
         buildWhen: (previous, current) => previous.status != current.status,
         builder: (context, state) {
@@ -43,65 +40,86 @@ class AppReviewsPage extends StatelessWidget {
           );
         },
       ),
-      body: BlocConsumer<AppReviewsBloc, AppReviewsState>(
-        listenWhen: (previous, current) =>
-            previous.actionStatus != current.actionStatus,
-        listener: (context, state) {
-          if (state.actionStatus.isSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(context.l10n.product_details_review_created),
-              ),
-            );
-          } else if (state.actionStatus.isFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.actionErrorMessage ??
-                    context.l10n.errors_something_went_wrong),
-              ),
-            );
-          }
-        },
-        builder: (context, state) {
-          if (state.status.isLoading) {
-            return const AppLoading();
-          }
+      body: CustomScrollView(
+        slivers: [
+          AppSliverTopBar(
+            title: context.l10n.profile_app_reviews,
+            floating: true,
+            snap: true,
+          ),
+          BlocConsumer<AppReviewsBloc, AppReviewsState>(
+            listenWhen: (previous, current) =>
+                previous.actionStatus != current.actionStatus,
+            listener: (context, state) {
+              if (state.actionStatus.isSuccess) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(context.l10n.product_details_review_created),
+                  ),
+                );
+              } else if (state.actionStatus.isFailure) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.actionErrorMessage ??
+                        context.l10n.errors_something_went_wrong),
+                  ),
+                );
+              }
+            },
+            builder: (context, state) {
+              if (state.status.isLoading) {
+                return const SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: AppLoading(),
+                );
+              }
 
-          if (state.status.isFailure) {
-            return AppErrorWidget(
-              message: state.errorMessage ??
-                  context.l10n.errors_something_went_wrong,
-              onRetry: () => context
-                  .read<AppReviewsBloc>()
-                  .add(const GetAppReviewsEvent()),
-            );
-          }
+              if (state.status.isFailure) {
+                return SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: AppErrorWidget(
+                    message: state.errorMessage ??
+                        context.l10n.errors_something_went_wrong,
+                    onRetry: () => context
+                        .read<AppReviewsBloc>()
+                        .add(const GetAppReviewsEvent()),
+                  ),
+                );
+              }
 
-          if (state.status.isSuccess && state.reviews.isEmpty) {
-            return AppEmptyState(
-              title: context.l10n.profile_no_reviews,
-              subtitle: context.l10n.profile_no_reviews_desc,
-              icon: Icons.reviews_outlined,
-            );
-          }
+              if (state.status.isSuccess && state.reviews.isEmpty) {
+                return SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: AppEmptyState(
+                    title: context.l10n.profile_no_reviews,
+                    subtitle: context.l10n.profile_no_reviews_desc,
+                    icon: Icons.reviews_outlined,
+                  ),
+                );
+              }
 
-          return ListView.separated(
-            padding: EdgeInsets.all(16.r),
-            itemCount: state.reviews.length,
-            separatorBuilder: (context, index) => 12.verticalSpace,
-            itemBuilder: (context, index) {
-              final review = state.reviews[index];
+              return SliverPadding(
+                padding: EdgeInsets.all(8.r),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final review = state.reviews[index];
 
-              return AppReviewCard(
-                rating: review.rating,
-                comment: review.comment,
-                userName: review.user.name,
-                userAvatar: review.user.avatar,
-                createdAt: review.createdAt,
+                      return AppReviewCard(
+                        rating: review.rating,
+                        comment: review.comment,
+                        userName: review.user.name,
+                        userAvatar: review.user.avatar,
+                        createdAt: review.createdAt,
+                      );
+                    },
+                    childCount: state.reviews.length,
+                  ),
+                ),
               );
             },
-          );
-        },
+          ),
+        ],
       ),
     );
   }

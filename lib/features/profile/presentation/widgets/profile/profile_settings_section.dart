@@ -3,6 +3,7 @@ import 'package:wassaly/features/profile/presentation/bloc/settings/settings_blo
 import 'package:wassaly/features/profile/presentation/widgets/profile/profile_menu_tile.dart';
 
 import 'language_bottom_sheet.dart';
+import 'theme_bottom_sheet.dart';
 
 class ProfileSettingsSection extends StatelessWidget {
   const ProfileSettingsSection({super.key});
@@ -51,28 +52,34 @@ class ProfileSettingsSection extends StatelessWidget {
                     );
                   },
                 ),
-                BlocSelector<SettingsBloc, SettingsState, bool>(
-                  selector: (state) => state.isDarkMode,
-                  builder: (context, isDarkMode) {
+                BlocSelector<SettingsBloc, SettingsState, ThemeMode>(
+                  selector: (state) => state.themeMode,
+                  builder: (context, themeMode) {
+                    String themeSubtitle;
+                    IconData themeIcon;
+
+                    switch (themeMode) {
+                      case ThemeMode.dark:
+                        themeSubtitle = context.l10n.profile_dark;
+                        themeIcon = Icons.dark_mode_outlined;
+                        break;
+                      case ThemeMode.light:
+                        themeSubtitle = context.l10n.profile_light;
+                        themeIcon = Icons.light_mode_outlined;
+                        break;
+                      case ThemeMode.system:
+                        themeSubtitle = context.l10n.profile_system;
+                        themeIcon = Icons.phone_iphone_outlined;
+                        break;
+                    }
+
                     return ProfileMenuTile(
-                      icon: isDarkMode
-                          ? Icons.dark_mode_outlined
-                          : Icons.light_mode_outlined,
+                      icon: themeIcon,
                       title: context.l10n.profile_theme,
-                      subtitle: isDarkMode
-                          ? context.l10n.profile_dark
-                          : context.l10n.profile_light,
-                      trailing: Switch.adaptive(
-                        value: isDarkMode,
-                        onChanged: (_) {
-                          context
-                              .read<SettingsBloc>()
-                              .add(const ThemeToggled());
-                        },
-                        activeThumbColor: cs.primary,
-                        activeTrackColor: cs.primaryContainer,
+                      subtitle: themeSubtitle,
+                      onTap: () => context.showAppBottomSheet<void>(
+                        builder: (context) => const ThemeBottomSheet(),
                       ),
-                      onTap: null,
                     );
                   },
                 ),

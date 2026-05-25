@@ -925,11 +925,35 @@ abstract class S {
   /// **'Dark'**
   String get profile_dark;
 
+  /// No description provided for @profile_dark_theme_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Always use dark mode'**
+  String get profile_dark_theme_subtitle;
+
   /// No description provided for @profile_light.
   ///
   /// In en, this message translates to:
   /// **'Light'**
   String get profile_light;
+
+  /// No description provided for @profile_light_theme_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Always use light mode'**
+  String get profile_light_theme_subtitle;
+
+  /// No description provided for @profile_system.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get profile_system;
+
+  /// No description provided for @profile_system_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow the device theme'**
+  String get profile_system_description;
 
   /// No description provided for @profile_app_reviews.
   ///
@@ -2143,6 +2167,12 @@ abstract class S {
   /// **'Your order is pending confirmation'**
   String get order_tracker_pending_desc;
 
+  /// No description provided for @order_tracker_reschedule_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Your order is under reschedule review'**
+  String get order_tracker_reschedule_desc;
+
   /// No description provided for @order_tracker_accepted_desc.
   ///
   /// In en, this message translates to:
@@ -3054,6 +3084,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'The provider suggested a new schedule'**
   String get booking_reschedule_provider_suggested;
+
+  /// No description provided for @booking_reschedule_customer_suggested.
+  ///
+  /// In en, this message translates to:
+  /// **'You suggested a new schedule'**
+  String get booking_reschedule_customer_suggested;
 
   /// No description provided for @booking_reschedule_suggested_day.
   ///

@@ -36,6 +36,8 @@ class _HelpCenterPageState extends State<HelpCenterPage> {
         slivers: [
           AppSliverTopBar(
             title: context.l10n.profile_help_center,
+            snap: true,
+            floating: true,
           ),
           SliverPadding(
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),

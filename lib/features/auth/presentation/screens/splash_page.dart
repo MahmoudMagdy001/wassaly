@@ -10,8 +10,6 @@ class SplashPage extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-
 class _SplashView extends StatefulWidget {
   const _SplashView();
 
@@ -23,13 +21,10 @@ class _SplashViewState extends State<_SplashView>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
 
-  // Animations — all driven by a single controller with staggered intervals
-  late final Animation<double> _logoSlide; // logo moves up
-  late final Animation<double> _bgFade; // factor for white → primary
-  late final Animation<double> _contentFade; // text + dots appear
-  late final Animation<double> _contentSlide; // text slides up slightly
+  late final Animation<double> _logoSlide;
+  late final Animation<double> _contentFade;
+  late final Animation<double> _contentSlide;
 
-  // Track initialization state
   final Completer<void> _initCompleter = Completer<void>();
 
   @override
@@ -41,21 +36,8 @@ class _SplashViewState extends State<_SplashView>
       duration: const Duration(milliseconds: 2000),
     );
 
-    // Start initialization in parallel with animation
     _initializeServices();
 
-    // ── Staggered intervals ──────────────────────────────────────────────
-    //
-    //  0.0 ─────── 0.35 ──── 0.65 ──── 1.0
-    //  │  bg color  │  logo↑  │ content │
-    //
-    // Background starts changing immediately
-    _bgFade = CurvedAnimation(
-      parent: _controller,
-      curve: const Interval(0, 0.4, curve: Curves.easeInOut),
-    );
-
-    // Logo slides up after bg starts (overlapping slightly)
     _logoSlide = Tween<double>(begin: 0, end: -140.h).animate(
       CurvedAnimation(
         parent: _controller,
@@ -63,7 +45,6 @@ class _SplashViewState extends State<_SplashView>
       ),
     );
 
-    // Content fades in after logo settles
     _contentFade = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(
         parent: _controller,
@@ -71,7 +52,6 @@ class _SplashViewState extends State<_SplashView>
       ),
     );
 
-    // Content slides up slightly as it fades in
     _contentSlide = Tween<double>(begin: 20, end: 0).animate(
       CurvedAnimation(
         parent: _controller,
@@ -82,10 +62,8 @@ class _SplashViewState extends State<_SplashView>
     _startAnimation();
   }
 
-  /// Initialize heavy services in parallel with splash animation
   Future<void> _initializeServices() async {
     try {
-      // الحاجات اللي كانت في AppBootstrap / main
       await dotenv.load(fileName: '.env');
       await StorageService.instance.init();
       await AppConfig.init();
@@ -100,14 +78,11 @@ class _SplashViewState extends State<_SplashView>
   }
 
   Future<void> _startAnimation() async {
-    // تقليل التأخير للحد الأدنى لتقليل الإحساس بالفجوة الزمنية
-    await Future<void>.delayed(const Duration(milliseconds: 50));
+    await Future<void>.delayed(Duration.zero);
     if (!mounted) return;
 
-    // Run animation and initialization in parallel
     final animationFuture = _controller.forward();
 
-    // Wait for both animation and initialization to complete
     await Future.wait([
       animationFuture,
       _initCompleter.future,
@@ -127,7 +102,6 @@ class _SplashViewState extends State<_SplashView>
       case SessionUnauthenticated() || SessionError():
         context.go(AppRoutes.login);
       default:
-        // Wait for BlocListener if state is still SessionInitial
         break;
     }
   }
@@ -144,8 +118,15 @@ class _SplashViewState extends State<_SplashView>
   @override
   Widget build(BuildContext context) {
     final screenH = MediaQuery.sizeOf(context).height;
-    const logoSize = 180;
-    final isDark = context.isDarkMode;
+    final topPadding = MediaQuery.paddingOf(context).top;
+
+    final isDeviceDark =
+        MediaQuery.platformBrightnessOf(context) == Brightness.dark;
+
+    final bgColor = isDeviceDark ? Colors.black : Colors.white;
+    final contentColor = isDeviceDark
+        ? Colors.white.withValues(alpha: 0.9)
+        : Colors.black.withValues(alpha: 0.9);
 
     return BlocListener<SessionBloc, SessionState>(
       listener: (context, state) {
@@ -155,55 +136,38 @@ class _SplashViewState extends State<_SplashView>
       },
       child: AnimatedBuilder(
         animation: _controller,
-        // نضع اللوجو هنا كـ child ثابت لمنع إعادة بناء الـ Widget الخاص بالصورة
         child: Container(
-          width: logoSize.w,
-          height: logoSize.h,
+          width: 180.w,
+          height: 180.h,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16.r),
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(16.r),
-            child: Image.asset(
-              'assets/images/logo.png',
-              width: logoSize.w,
-              height: logoSize.h,
-              cacheHeight: logoSize * 2,
-              cacheWidth: logoSize * 2,
+            child: const CommonImage(
+              width: 180,
+              height: 180,
+              memCacheHeight: 180 * 2,
               fit: BoxFit.contain,
+              imageUrl: 'assets/images/logo.png',
             ),
           ),
         ),
         builder: (context, logoWidget) {
-          final centerY = (screenH - logoSize) / 2;
+          // نص الشاشة الحقيقي مع الأخذ في الاعتبار الـ status bar
+          final centerY = (screenH - 180) / 2 - topPadding / 2;
           final logoY = centerY + _logoSlide.value;
-
-          // Theme-aware background colors
-          final startColor =
-              isDark ? context.colors.surface : context.colors.surface;
-          final endColor = context.colors.primary;
-
-          final bgColor = Color.lerp(
-            startColor,
-            endColor,
-            _bgFade.value,
-          );
 
           return Scaffold(
             backgroundColor: bgColor,
             body: Stack(
               children: [
-                // ── Logo ─────────────────────────────────────────────
                 Positioned(
                   top: logoY,
                   left: 0,
                   right: 0,
-                  child: Center(
-                    child: logoWidget, // استخدام النسخة الثابتة المحملة مسبقاً
-                  ),
+                  child: Center(child: logoWidget),
                 ),
-
-                // ── Subtitle (Fixed at bottom) ──────────────────────
                 Positioned(
                   bottom: 110.h,
                   left: 0,
@@ -216,23 +180,20 @@ class _SplashViewState extends State<_SplashView>
                         context.l10n.auth_splash_subtitle,
                         textAlign: TextAlign.center,
                         style: context.theme.textTheme.bodyMedium?.copyWith(
-                          color:
-                              context.colors.onPrimary.withValues(alpha: 0.9),
+                          color: contentColor,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
                   ),
                 ),
-
-                // ── Loading dots ─────────────────────────────────────
                 Positioned(
                   bottom: 60.h,
                   left: 0,
                   right: 0,
                   child: Opacity(
                     opacity: _contentFade.value,
-                    child: _PulsingDots(isDark: isDark),
+                    child: _PulsingDots(isDeviceDark: isDeviceDark),
                   ),
                 ),
               ],
@@ -244,14 +205,10 @@ class _SplashViewState extends State<_SplashView>
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// 3 نقط بتتنبض
-// ─────────────────────────────────────────────────────────────────────────────
-
 class _PulsingDots extends StatefulWidget {
-  const _PulsingDots({required this.isDark});
+  const _PulsingDots({required this.isDeviceDark});
 
-  final bool isDark;
+  final bool isDeviceDark;
 
   @override
   State<_PulsingDots> createState() => _PulsingDotsState();
@@ -280,7 +237,6 @@ class _PulsingDotsState extends State<_PulsingDots>
             ))
         .toList();
 
-    // كل نقطة تبدأ بـ delay مختلف عشان تبان wave effect
     for (var i = 0; i < _controllers.length; i++) {
       Future.delayed(Duration(milliseconds: i * 200), () {
         if (mounted) _controllers[i].repeat(reverse: true);
@@ -298,6 +254,8 @@ class _PulsingDotsState extends State<_PulsingDots>
 
   @override
   Widget build(BuildContext context) {
+    final dotColor = widget.isDeviceDark ? Colors.white : Colors.black;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(3, (i) {
@@ -310,8 +268,7 @@ class _PulsingDotsState extends State<_PulsingDots>
               height: 8.r,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: context.colors.onPrimary
-                    .withValues(alpha: _animations[i].value),
+                color: dotColor.withValues(alpha: _animations[i].value),
               ),
             );
           },

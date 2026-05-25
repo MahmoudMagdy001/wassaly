@@ -39,65 +39,65 @@ class ServiceCard extends StatelessWidget {
         onTap: onTap ?? () => _openServiceDetails(context),
         onLongPress: _onLongPress,
         child: ValueListenableBuilder<int?>(
-        valueListenable: activeServiceMarqueeId,
-        builder: (context, activeId, child) {
-          final isActive = activeId == service.id;
-          return AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            decoration: BoxDecoration(
-              color: cs.surface,
-              borderRadius: BorderRadius.circular(9.r),
-              border: Border.all(
-                color: isActive
-                    ? cs.primary.withValues(alpha: 0.6)
-                    : cs.outlineVariant.withValues(alpha: 0.5),
-                width: isActive ? 1.5 : 1.0,
-              ),
-            ),
-            clipBehavior: Clip.hardEdge,
-            child: child,
-          );
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _ServiceImageSection(service: service),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 8.h),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _ActiveServiceMarqueeText(
-                      serviceId: service.id,
-                      text: service.title,
-                      style: tt.titleSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: context.theme.colorScheme.onSurface,
-                      ),
-                    ),
-                    4.verticalSpace,
-                    if (service.description.isNotEmpty)
-                      _ActiveServiceMarqueeText(
-                        serviceId: service.id,
-                        text: service.description,
-                        style: tt.labelSmall?.copyWith(
-                          color: context.theme.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    Text(
-                      '${service.price} ${context.l10n.shared_currency_egp}',
-                      style: tt.labelMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: context.theme.colorScheme.primary,
-                      ),
-                    ),
-                  ],
+          valueListenable: activeServiceMarqueeId,
+          builder: (context, activeId, child) {
+            final isActive = activeId == service.id;
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              decoration: BoxDecoration(
+                color: cs.surface,
+                borderRadius: BorderRadius.circular(9.r),
+                border: Border.all(
+                  color: isActive
+                      ? cs.primary.withValues(alpha: 0.6)
+                      : cs.outlineVariant.withValues(alpha: 0.5),
+                  width: isActive ? 1.5 : 1.0,
                 ),
               ),
-            ),
-          ],
-        ),
+              clipBehavior: Clip.hardEdge,
+              child: child,
+            );
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _ServiceImageSection(service: service),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 8.h),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _ActiveServiceMarqueeText(
+                        serviceId: service.id,
+                        text: service.title,
+                        style: tt.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: context.theme.colorScheme.onSurface,
+                        ),
+                      ),
+                      4.verticalSpace,
+                      if (service.description.isNotEmpty)
+                        _ActiveServiceMarqueeText(
+                          serviceId: service.id,
+                          text: service.description,
+                          style: tt.labelSmall?.copyWith(
+                            color: context.theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      Text(
+                        '${service.price} ${context.l10n.shared_currency_egp}',
+                        style: tt.labelMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: context.theme.colorScheme.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -159,6 +159,7 @@ class _ServiceImageSection extends StatelessWidget {
           Positioned.fill(
             child: service.image != null && service.image!.isNotEmpty
                 ? CommonImage(
+                    height: 120,
                     imageUrl: service.image!,
                     memCacheHeight: 120 * 3,
                     fit: BoxFit.cover,
