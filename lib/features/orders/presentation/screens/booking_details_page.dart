@@ -294,28 +294,32 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                 title: context.l10n.booking_details_title,
                 onPressed: () => context.pop(_shouldRefresh),
               ),
-              BlocBuilder<BookingDetailBloc, BookingDetailState>(
-                buildWhen: (previous, current) =>
-                    previous.status != current.status ||
-                    previous.booking != current.booking ||
-                    previous.errorMessage != current.errorMessage,
-                builder: (context, state) {
-                  if (state.status == BookingDetailStatus.loading &&
-                      state.booking == null) {
+              BlocSelector<BookingDetailBloc, BookingDetailState,
+                  (BookingDetailStatus, BookingEntity?, String)>(
+                selector: (state) => (
+                  state.status,
+                  state.booking,
+                  state.errorMessage,
+                ),
+                builder: (context, data) {
+                  final (status, booking, errorMessage) = data;
+
+                  if (status == BookingDetailStatus.loading &&
+                      booking == null) {
                     return const SliverFillRemaining(
                       child: Center(child: AppLoading()),
                     );
                   }
 
-                  if (state.status == BookingDetailStatus.failure &&
-                      state.booking == null) {
+                  if (status == BookingDetailStatus.failure &&
+                      booking == null) {
                     return SliverFillRemaining(
                       hasScrollBody: false,
                       child: Center(
                         child: AppErrorWidget(
                           title: context.l10n.errors_error_occurred_title,
-                          message: state.errorMessage.isNotEmpty
-                              ? state.errorMessage
+                          message: errorMessage.isNotEmpty
+                              ? errorMessage
                               : context.l10n.errors_error_occurred_message,
                           onRetry: _onRetry,
                         ),
@@ -323,7 +327,6 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                     );
                   }
 
-                  final booking = state.booking;
                   if (booking == null) {
                     return SliverFillRemaining(
                       hasScrollBody: false,
@@ -350,12 +353,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                       normStatus.contains('مكتمل') ||
                       normStatus.contains('success');
 
-                  final canDelete = isCompleted ||
-                      isCancelled ||
-                      normStatus.contains('accepted') ||
-                      normStatus.contains('confirmed') ||
-                      normStatus.contains('تم القبول') ||
-                      normStatus.contains('مؤكد');
+                  final canDelete = isCompleted || isCancelled;
                   final isRescheduleByProvider =
                       normStatus == 'reschedule_by_provider';
                   final canCancelOrUpdate = isPending;

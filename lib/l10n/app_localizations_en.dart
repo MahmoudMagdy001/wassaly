@@ -405,6 +405,36 @@ class SEn extends S {
   String get profile_help_center => 'Help Center';
 
   @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get deleteAllNotifications => 'Delete All Notifications';
+
+  @override
+  String get deleteAllNotificationsConfirm =>
+      'Are you sure you want to delete all notifications? This action cannot be undone.';
+
+  @override
+  String get markAllAsRead => 'Mark all as read';
+
+  @override
+  String get notification_remove_title => 'Remove Notification';
+
+  @override
+  String get notification_remove_confirm =>
+      'Are you sure you want to remove this notification?';
+
+  @override
+  String get notification_no_notifications => 'No notifications yet';
+
+  @override
+  String get notification_no_notifications_desc =>
+      'When you receive notifications, they will appear here.';
+
+  @override
+  String get noMoreNotifications => 'No more notifications';
+
+  @override
   String get profile_personal_info => 'Personal Information';
 
   @override
@@ -442,6 +472,75 @@ class SEn extends S {
 
   @override
   String get profile_theme => 'Theme';
+
+  @override
+  String time_ago_years(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count years ago',
+      one: '1 year ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String time_ago_months(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count months ago',
+      one: '1 month ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String time_ago_weeks(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count weeks ago',
+      one: '1 week ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String time_ago_days(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days ago',
+      one: '1 day ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String time_ago_hours(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count hours ago',
+      one: '1 hour ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String time_ago_minutes(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count minutes ago',
+      one: '1 minute ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get time_ago_just_now => 'just now';
 
   @override
   String get profile_dark => 'Dark';

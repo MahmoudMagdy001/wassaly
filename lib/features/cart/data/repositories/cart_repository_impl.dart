@@ -19,10 +19,15 @@ class CartRepositoryImpl implements CartRepository {
   Future<Either<Failure, List<CartItemEntity>>> getCartItems() async {
     try {
       final items = await remoteDataSource.getCartItems();
-      return Right(items.map((e) => e.toEntity()).toList());
+      final entities = items.map((e) => e.toEntity()).toList();
+      // Cache cart items locally for offline access
+      await localDataSource.saveCartItemsLocally(entities);
+      return Right(entities);
+    } on NetworkFailure {
+      // Fallback to local data on network failure
+      final localData = localDataSource.getCartItemsLocally();
+      return Right(localData);
     } on ServerFailure catch (failure) {
-      return Left(failure);
-    } on NetworkFailure catch (failure) {
       return Left(failure);
     } catch (e) {
       return Left(UnknownFailure(e.toString()));

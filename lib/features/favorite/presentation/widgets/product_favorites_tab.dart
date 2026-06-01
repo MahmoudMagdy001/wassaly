@@ -6,16 +6,18 @@ import 'package:wassaly/features/home/domain/entities/product_entity.dart';
 
 class ProductFavoritesTab extends StatelessWidget {
   const ProductFavoritesTab({super.key});
+  // Manual ScrollController removed in favor of AppSliverGrid's built-in pagination
 
   @override
   Widget build(BuildContext context) {
     final cs = context.theme.colorScheme;
 
     return BlocSelector<FavoriteBloc, FavoriteState,
-        (FavoriteStatus, PaginatedResponse<ProductEntity>, Failure?)>(
-      selector: (state) => (state.status, state.favorites, state.failure),
+        (FavoriteStatus, PaginatedResponse<ProductEntity>, Failure?, bool)>(
+      selector: (state) =>
+          (state.status, state.favorites, state.failure, state.isLoadingMore),
       builder: (context, data) {
-        final (status, favorites, failure) = data;
+        final (status, favorites, failure, isLoadingMore) = data;
         final isLoading = status == FavoriteStatus.loading ||
             (status == FavoriteStatus.refreshing && favorites.data.isEmpty);
         final isError = status == FavoriteStatus.error;
@@ -39,6 +41,11 @@ class ProductFavoritesTab extends StatelessWidget {
                 AppProductsSection(
                   isLoading: isLoading,
                   products: isLoading ? const [] : favorites.data,
+                  hasMore: favorites.hasMore,
+                  isLoadingMore: isLoadingMore,
+                  onLoadMore: () => context
+                      .read<FavoriteBloc>()
+                      .add(const LoadMoreFavoritesEvent()),
                   padding:
                       EdgeInsets.symmetric(horizontal: 6.w, vertical: 10.h),
                   mainAxisExtent: 230.h,

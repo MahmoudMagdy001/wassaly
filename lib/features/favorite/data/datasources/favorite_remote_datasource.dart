@@ -5,8 +5,8 @@ import 'package:wassaly/features/sub_category/data/models/service_model.dart';
 import 'package:wassaly/features/sub_category/domain/entities/service_entity.dart';
 
 abstract class FavoriteRemoteDataSource {
-  Future<PaginatedResponse<ProductEntity>> getFavorites();
-  Future<PaginatedResponse<ServiceEntity>> getServiceFavorites();
+  Future<PaginatedResponse<ProductEntity>> getFavorites({int page = 1});
+  Future<PaginatedResponse<ServiceEntity>> getServiceFavorites({int page = 1});
   Future<void> addToFavorites(int productId);
   Future<void> removeFromFavorites(int productId);
   Future<void> addServiceToFavorites(int serviceId);
@@ -19,8 +19,11 @@ class FavoriteRemoteDataSourceImpl implements FavoriteRemoteDataSource {
   const FavoriteRemoteDataSourceImpl(this._dioService);
 
   @override
-  Future<PaginatedResponse<ProductEntity>> getFavorites() async {
-    final response = await _dioService.get('/api/favorites');
+  Future<PaginatedResponse<ProductEntity>> getFavorites({int page = 1}) async {
+    final response = await _dioService.get(
+      '/api/favorites',
+      queryParameters: {'page': page},
+    );
 
     return response.fold(
       (failure) => throw failure,
@@ -33,19 +36,28 @@ class FavoriteRemoteDataSourceImpl implements FavoriteRemoteDataSource {
           throw ServerFailure(message);
         }
 
-        final data = responseData['data'] as List<dynamic>? ?? [];
-        final pagination = responseData['pagination'] as Map<String, dynamic>?;
+        final data = responseData['data'];
+        if (data == null) {
+          return PaginatedResponse.empty();
+        }
 
-        final favorites = data
+        final List<dynamic> itemsJson;
+        if (data is Map<String, dynamic> && data.containsKey('data')) {
+          itemsJson = data['data'] as List? ?? [];
+        } else if (data is List) {
+          itemsJson = data;
+        } else {
+          itemsJson = [];
+        }
+
+        final favorites = itemsJson
             .map((item) =>
                 FavoriteModel.fromJson(item as Map<String, dynamic>).toEntity())
             .toList();
 
-        return PaginatedResponse<ProductEntity>(
+        return PaginatedResponse<ProductEntity>.fromJson(
+          json: responseData,
           data: favorites,
-          currentPage: pagination?['current_page'] as int? ?? 1,
-          lastPage: pagination?['last_page'] as int? ?? 1,
-          total: pagination?['total'] as int? ?? favorites.length,
         );
       },
     );
@@ -136,8 +148,12 @@ class FavoriteRemoteDataSourceImpl implements FavoriteRemoteDataSource {
   }
 
   @override
-  Future<PaginatedResponse<ServiceEntity>> getServiceFavorites() async {
-    final response = await _dioService.get('/api/favorites/service');
+  Future<PaginatedResponse<ServiceEntity>> getServiceFavorites(
+      {int page = 1}) async {
+    final response = await _dioService.get(
+      '/api/favorites/service',
+      queryParameters: {'page': page},
+    );
 
     return response.fold(
       (failure) => throw failure,
@@ -150,18 +166,27 @@ class FavoriteRemoteDataSourceImpl implements FavoriteRemoteDataSource {
           throw ServerFailure(message);
         }
 
-        final data = responseData['data'] as List<dynamic>? ?? [];
-        final pagination = responseData['pagination'] as Map<String, dynamic>?;
+        final data = responseData['data'];
+        if (data == null) {
+          return PaginatedResponse.empty();
+        }
 
-        final favorites = data
+        final List<dynamic> itemsJson;
+        if (data is Map<String, dynamic> && data.containsKey('data')) {
+          itemsJson = data['data'] as List? ?? [];
+        } else if (data is List) {
+          itemsJson = data;
+        } else {
+          itemsJson = [];
+        }
+
+        final favorites = itemsJson
             .map((item) => ServiceModel.fromJson(item as Map<String, dynamic>))
             .toList();
 
-        return PaginatedResponse<ServiceEntity>(
+        return PaginatedResponse<ServiceEntity>.fromJson(
+          json: responseData,
           data: favorites,
-          currentPage: pagination?['current_page'] as int? ?? 1,
-          lastPage: pagination?['last_page'] as int? ?? 1,
-          total: pagination?['total'] as int? ?? favorites.length,
         );
       },
     );

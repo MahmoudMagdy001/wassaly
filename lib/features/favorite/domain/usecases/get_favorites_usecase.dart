@@ -9,7 +9,8 @@ class GetFavoritesUseCase {
 
   const GetFavoritesUseCase(this.repository);
 
-  Future<Either<Failure, PaginatedResponse<ProductEntity>>> call() {
-    return repository.getFavorites();
+  Future<Either<Failure, PaginatedResponse<ProductEntity>>> call(
+      {int page = 1}) {
+    return repository.getFavorites(page: page);
   }
 }

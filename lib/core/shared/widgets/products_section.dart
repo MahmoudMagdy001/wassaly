@@ -103,15 +103,24 @@ class AppProductsSection extends StatelessWidget {
               );
             },
           ),
-          if (isLoadingMore)
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 20.h),
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ),
+          SliverToBoxAdapter(
+            child: Builder(
+              builder: (context) {
+                if (hasMore && !isLoadingMore && !isLoading) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    onLoadMore?.call();
+                  });
+                }
+
+                if (!isLoadingMore) return const SizedBox.shrink();
+
+                return Padding(
+                  padding: EdgeInsets.symmetric(vertical: 24.h),
+                  child: const AppLoading(),
+                );
+              },
             ),
+          ),
         ],
       ),
     );

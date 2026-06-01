@@ -97,7 +97,13 @@ class _SplashViewState extends State<_SplashView>
     if (!mounted) return;
 
     switch (state) {
-      case SessionAuthenticated():
+      case SessionAuthenticated(user: final user):
+        final userId = int.tryParse(user.id) ?? 0;
+        if (userId > 0) {
+          // Register current token AND setup refresh listener
+          FcmTokenService.instance.registerToken(userId);
+          FcmTokenService.instance.setupTokenRefresh(userId);
+        }
         context.go(AppRoutes.home);
       case SessionUnauthenticated() || SessionError():
         context.go(AppRoutes.login);

@@ -7,11 +7,14 @@ part 'google_login_state.dart';
 
 class GoogleLoginBloc extends Bloc<GoogleLoginEvent, GoogleLoginState> {
   final GoogleLoginUseCase _googleLoginUseCase;
+  final FcmTokenService _fcmTokenService;
   StreamSubscription<GoogleLoginCallbackData?>? _deepLinkSubscription;
 
   GoogleLoginBloc({
     required GoogleLoginUseCase googleLoginUseCase,
+    FcmTokenService? fcmTokenService,
   })  : _googleLoginUseCase = googleLoginUseCase,
+        _fcmTokenService = fcmTokenService ?? FcmTokenService.instance,
         super(const GoogleLoginState()) {
     on<GoogleLoginStarted>(_onGoogleLoginStarted);
     on<GoogleLoginCallbackReceived>(_onGoogleLoginCallbackReceived);
@@ -93,11 +96,18 @@ class GoogleLoginBloc extends Bloc<GoogleLoginEvent, GoogleLoginState> {
         isLoading: false,
         errorMessage: failure.message,
       )),
-      (user) => emit(state.copyWith(
-        isLoading: false,
-        user: user,
-        clearError: true,
-      )),
+      (user) {
+        final userId = int.tryParse(user.id) ?? 0;
+        if (userId > 0) {
+          _fcmTokenService.registerToken(userId);
+          _fcmTokenService.setupTokenRefresh(userId);
+        }
+        emit(state.copyWith(
+          isLoading: false,
+          user: user,
+          clearError: true,
+        ));
+      },
     );
 
     // Cancel subscription after handling

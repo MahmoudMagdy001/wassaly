@@ -1,4 +1,7 @@
 import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/features/notifications/presentation/bloc/notifications_bloc.dart';
+import 'package:wassaly/features/notifications/presentation/bloc/notifications_event.dart';
+import 'package:wassaly/features/notifications/presentation/bloc/notifications_state.dart';
 import 'package:wassaly/features/profile/presentation/bloc/settings/settings_bloc.dart';
 import 'package:wassaly/features/profile/presentation/widgets/profile/profile_menu_tile.dart';
 
@@ -84,17 +87,18 @@ class ProfileSettingsSection extends StatelessWidget {
                   },
                 ),
                 ProfileMenuTile(
-                  icon: Icons.notifications_outlined,
+                  icon: Icons.settings_suggest_outlined,
                   title: context.l10n.profile_notifications,
-                  trailing: BlocSelector<SettingsBloc, SettingsState, bool>(
-                    selector: (state) => state.notificationsEnabled,
-                    builder: (context, notificationsEnabled) {
+                  trailing:
+                      BlocSelector<NotificationsBloc, NotificationsState, bool>(
+                    selector: (state) => state.isNotificationEnabled,
+                    builder: (context, isEnabled) {
                       return Switch.adaptive(
-                        value: notificationsEnabled,
+                        value: isEnabled,
                         onChanged: (value) {
                           context
-                              .read<SettingsBloc>()
-                              .add(SettingsNotificationsToggled(value));
+                              .read<NotificationsBloc>()
+                              .add(ToggleNotificationEvent(value));
                         },
                         activeThumbColor: cs.primary,
                         activeTrackColor: cs.primaryContainer,

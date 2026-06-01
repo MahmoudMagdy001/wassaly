@@ -9,7 +9,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   static const String _languageKey = 'app_language';
   static const String _themeKey = 'theme_mode';
   static const String _legacyThemeKey = 'is_dark_mode';
-  static const String _notificationsKey = 'notifications_enabled';
 
   SettingsBloc({
     required StorageService storage,
@@ -20,7 +19,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     on<LanguageChanged>(_onLanguageChanged);
     on<ThemeToggled>(_onThemeToggled);
     on<ThemeModeChanged>(_onThemeModeChanged);
-    on<SettingsNotificationsToggled>(_onNotificationsToggled);
   }
 
   Future<void> _onSettingsInitialized(
@@ -31,7 +29,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     final language = _storage.getString(_languageKey) ?? 'ar';
     final themeModeString = _storage.getString(_themeKey);
     final legacyDarkMode = _storage.getBool(_legacyThemeKey);
-    final notificationsEnabled = _storage.getBool(_notificationsKey) ?? true;
 
     final themeMode = themeModeString != null
         ? _themeModeFromString(themeModeString)
@@ -46,7 +43,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     emit(state.copyWith(
       language: language,
       themeMode: themeMode,
-      notificationsEnabled: notificationsEnabled,
     ));
   }
 
@@ -89,15 +85,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     await _storage.setString(_themeKey, _themeModeToString(event.themeMode));
 
     emit(state.copyWith(themeMode: event.themeMode));
-  }
-
-  Future<void> _onNotificationsToggled(
-    SettingsNotificationsToggled event,
-    Emitter<SettingsState> emit,
-  ) async {
-    await _storage.setBool(_notificationsKey, event.enabled);
-
-    emit(state.copyWith(notificationsEnabled: event.enabled));
   }
 
   String _themeModeToString(ThemeMode themeMode) {

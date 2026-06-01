@@ -6,17 +6,22 @@ import 'package:wassaly/features/sub_category/domain/entities/service_entity.dar
 
 class ServiceFavoritesTab extends StatelessWidget {
   const ServiceFavoritesTab({super.key});
+  // Manual ScrollController removed in favor of AppSliverGrid's built-in pagination
 
   @override
   Widget build(BuildContext context) {
     final cs = context.theme.colorScheme;
 
     return BlocSelector<FavoriteBloc, FavoriteState,
-        (FavoriteStatus, PaginatedResponse<ServiceEntity>, Failure?)>(
-      selector: (state) =>
-          (state.serviceStatus, state.serviceFavorites, state.serviceFailure),
+        (FavoriteStatus, PaginatedResponse<ServiceEntity>, Failure?, bool)>(
+      selector: (state) => (
+        state.serviceStatus,
+        state.serviceFavorites,
+        state.serviceFailure,
+        state.isServiceLoadingMore
+      ),
       builder: (context, data) {
-        final (status, serviceFavorites, failure) = data;
+        final (status, serviceFavorites, failure, isLoadingMore) = data;
         final isLoading = status == FavoriteStatus.loading ||
             (status == FavoriteStatus.refreshing &&
                 serviceFavorites.data.isEmpty);
@@ -41,6 +46,11 @@ class ServiceFavoritesTab extends StatelessWidget {
                 AppServicesSection(
                   isLoading: isLoading,
                   services: isLoading ? const [] : serviceFavorites.data,
+                  hasMore: serviceFavorites.hasMore,
+                  isLoadingMore: isLoadingMore,
+                  onLoadMore: () => context
+                      .read<FavoriteBloc>()
+                      .add(const LoadMoreServiceFavoritesEvent()),
                   padding:
                       EdgeInsets.symmetric(horizontal: 6.w, vertical: 10.h),
                   mainAxisExtent: 190.h,

@@ -30,7 +30,7 @@ class BrandDetailsPage extends StatelessWidget {
   }
 }
 
-class BrandDetailsView extends StatefulWidget {
+class BrandDetailsView extends StatelessWidget {
   final int brandId;
   final String brandName;
   final String brandImage;
@@ -42,32 +42,12 @@ class BrandDetailsView extends StatefulWidget {
     required this.brandImage,
   });
 
-  @override
-  State<BrandDetailsView> createState() => _BrandDetailsViewState();
-}
-
-class _BrandDetailsViewState extends State<BrandDetailsView> {
-  final _scrollController = ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-  }
-
-  void _onScroll() {
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200) {
+  void _onLoadMore(BuildContext context, BrandProductsStatus status) {
+    if (status != BrandProductsStatus.loading) {
       context
           .read<BrandsBloc>()
-          .add(LoadMoreBrandProductsEvent(brandId: widget.brandId));
+          .add(LoadMoreBrandProductsEvent(brandId: brandId));
     }
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
   }
 
   @override
@@ -79,7 +59,6 @@ class _BrandDetailsViewState extends State<BrandDetailsView> {
     return Scaffold(
       backgroundColor: cs.surface,
       body: CustomScrollView(
-        controller: _scrollController,
         slivers: [
           AppSliverTopBar(
             titleWidget: Row(
@@ -98,13 +77,13 @@ class _BrandDetailsViewState extends State<BrandDetailsView> {
                     height: 32,
                     memCacheWidth: 32 * 3,
                     memCacheHeight: 32 * 3,
-                    imageUrl: widget.brandImage,
+                    imageUrl: brandImage,
                     fit: BoxFit.contain,
                   ),
                 ),
                 8.horizontalSpace,
                 Text(
-                  widget.brandName,
+                  brandName,
                   style: tt.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: cs.primary,
@@ -144,13 +123,7 @@ class _BrandDetailsViewState extends State<BrandDetailsView> {
                   mainAxisExtent: 240.h,
                   onLoadMore: isLoading
                       ? null
-                      : () {
-                          if (productsStatus != BrandProductsStatus.loading) {
-                            context.read<BrandsBloc>().add(
-                                LoadMoreBrandProductsEvent(
-                                    brandId: widget.brandId));
-                          }
-                        },
+                      : () => _onLoadMore(context, productsStatus),
                 );
               }
 
@@ -160,7 +133,7 @@ class _BrandDetailsViewState extends State<BrandDetailsView> {
                     message: productsErrorMessage,
                     onRetry: () => context
                         .read<BrandsBloc>()
-                        .add(GetBrandProductsEvent(brandId: widget.brandId)),
+                        .add(GetBrandProductsEvent(brandId: brandId)),
                   ),
                 );
               }

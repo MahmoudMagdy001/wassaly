@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:wassaly/core/imports/imports.dart';
 
 extension DateTimeExtension on DateTime {
   bool get isToday {
@@ -21,25 +22,26 @@ extension DateTimeExtension on DateTime {
     return '${year.toString().padLeft(4, '0')}-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}';
   }
 
-  String timeAgo() {
+  String timeAgo(BuildContext context) {
+    final l10n = context.l10n;
     final local = toLocal();
     final now = DateTime.now();
     final difference = now.difference(local);
 
     if (difference.inDays > 365) {
-      return '${(difference.inDays / 365).floor()} years ago';
+      return l10n.time_ago_years((difference.inDays / 365).floor());
     } else if (difference.inDays > 30) {
-      return '${(difference.inDays / 30).floor()} months ago';
+      return l10n.time_ago_months((difference.inDays / 30).floor());
     } else if (difference.inDays > 7) {
-      return '${(difference.inDays / 7).floor()} weeks ago';
+      return l10n.time_ago_weeks((difference.inDays / 7).floor());
     } else if (difference.inDays >= 1) {
-      return '${difference.inDays} days ago';
+      return l10n.time_ago_days(difference.inDays);
     } else if (difference.inHours >= 1) {
-      return '${difference.inHours} hours ago';
+      return l10n.time_ago_hours(difference.inHours);
     } else if (difference.inMinutes >= 1) {
-      return '${difference.inMinutes} minutes ago';
+      return l10n.time_ago_minutes(difference.inMinutes);
     } else {
-      return 'just now';
+      return l10n.time_ago_just_now;
     }
   }
 

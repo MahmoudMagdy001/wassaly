@@ -23,7 +23,9 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
     this.toggleServiceFavoriteUseCase,
   ) : super(const FavoriteState()) {
     on<GetFavoritesEvent>(_onGetFavorites);
+    on<LoadMoreFavoritesEvent>(_onLoadMore);
     on<GetServiceFavoritesEvent>(_onGetServiceFavorites);
+    on<LoadMoreServiceFavoritesEvent>(_onLoadMoreService);
     on<ToggleFavoriteEvent>(_onToggleFavorite);
     on<ToggleServiceFavoriteEvent>(_onToggleServiceFavorite);
     on<ClearFavoritesEvent>(_onClearFavorites);
@@ -112,7 +114,11 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
         ? state.favoriteIds.contains(event.productId)
         : event.expectedIsFavorite;
 
-    assert(() { debugPrint('[FavoriteBloc] Toggle ${event.productId} — currentlyFavorite: $isCurrentlyFavorite'); return true; }());
+    assert(() {
+      debugPrint(
+          '[FavoriteBloc] Toggle ${event.productId} — currentlyFavorite: $isCurrentlyFavorite');
+      return true;
+    }());
 
     // Save the entity in case we need to rollback a removal on the
     // Favorites page (where the product is already in favorites.data).
@@ -292,6 +298,78 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
         if (!isCurrentlyFavorite) {
           add(const GetServiceFavoritesEvent());
         }
+      },
+    );
+  }
+
+  Future<void> _onLoadMore(
+    LoadMoreFavoritesEvent event,
+    Emitter<FavoriteState> emit,
+  ) async {
+    if (state.isLoadingMore || !state.favorites.hasMore) return;
+
+    emit(state.copyWith(isLoadingMore: true));
+
+    final result =
+        await getFavoritesUseCase(page: state.favorites.currentPage + 1);
+
+    result.fold(
+      (failure) => emit(state.copyWith(
+        isLoadingMore: false,
+        status: FavoriteStatus.error,
+        failure: failure,
+      )),
+      (favorites) {
+        emit(state.copyWith(
+          isLoadingMore: false,
+          status: FavoriteStatus.success,
+          favorites: state.favorites.copyWith(
+            data: [...state.favorites.data, ...favorites.data],
+            currentPage: favorites.currentPage,
+            lastPage: favorites.lastPage,
+            total: favorites.total,
+          ),
+          favoriteIds: {
+            ...state.favoriteIds,
+            ...favorites.data.map((f) => f.id)
+          },
+        ));
+      },
+    );
+  }
+
+  Future<void> _onLoadMoreService(
+    LoadMoreServiceFavoritesEvent event,
+    Emitter<FavoriteState> emit,
+  ) async {
+    if (state.isServiceLoadingMore || !state.serviceFavorites.hasMore) return;
+
+    emit(state.copyWith(isServiceLoadingMore: true));
+
+    final result = await getServiceFavoritesUseCase(
+        page: state.serviceFavorites.currentPage + 1);
+
+    result.fold(
+      (failure) => emit(state.copyWith(
+        isServiceLoadingMore: false,
+        serviceStatus: FavoriteStatus.error,
+        serviceFailure: failure,
+      )),
+      (favorites) {
+        emit(state.copyWith(
+          isServiceLoadingMore: false,
+          serviceStatus: FavoriteStatus.success,
+          serviceFavorites: state.serviceFavorites.copyWith(
+            data: [...state.serviceFavorites.data, ...favorites.data],
+            currentPage: favorites.currentPage,
+            lastPage: favorites.lastPage,
+            total: favorites.total,
+          ),
+          serviceFavoriteIds: {
+            ...state.serviceFavoriteIds,
+            ...favorites.data.map((f) => f.id)
+          },
+        ));
       },
     );
   }

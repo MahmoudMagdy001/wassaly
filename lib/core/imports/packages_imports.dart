@@ -1,8 +1,11 @@
 export 'package:app_version_update/app_version_update.dart';
+export 'package:awesome_notifications/awesome_notifications.dart'
+    hide NotificationModel;
 export 'package:cached_network_image/cached_network_image.dart';
 export 'package:cross_file/cross_file.dart';
 export 'package:dio/dio.dart';
 export 'package:equatable/equatable.dart';
+export 'package:firebase_messaging/firebase_messaging.dart';
 export 'package:flutter_animate/flutter_animate.dart' hide ShimmerEffect;
 export 'package:flutter_bloc/flutter_bloc.dart' hide Bloc, Cubit;
 export 'package:flutter_dotenv/flutter_dotenv.dart';

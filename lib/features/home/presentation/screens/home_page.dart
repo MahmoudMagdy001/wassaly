@@ -4,6 +4,7 @@ import 'package:wassaly/features/home/presentation/bloc/home_bloc.dart';
 import 'package:wassaly/features/home/presentation/bloc/home_event.dart';
 import 'package:wassaly/features/home/presentation/bloc/home_state.dart';
 import 'package:wassaly/features/home/presentation/widgets/widgets.dart';
+import 'package:wassaly/features/notifications/presentation/widgets/notification_badge_icon.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -106,6 +107,7 @@ class _HomeViewState extends State<_HomeView> {
                 onPressed: () => context.push(AppRoutes.productsFilter),
               ),
               actions: [
+                const AppNotificationBadgeIcon(),
                 IconButton(
                   icon: Icon(
                     Icons.search,

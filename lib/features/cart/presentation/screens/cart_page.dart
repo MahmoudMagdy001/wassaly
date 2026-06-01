@@ -1,4 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/features/cart/domain/entities/cart_item_entity.dart';
 import 'package:wassaly/features/cart/presentation/bloc/cart_bloc.dart';
 import 'package:wassaly/features/cart/presentation/bloc/cart_event.dart';
 import 'package:wassaly/features/cart/presentation/bloc/cart_state.dart';
@@ -59,103 +60,133 @@ class _CartPageState extends State<CartPage> {
             title: context.l10n.cart_cart_title,
           ),
 
-          // ─── Dynamic content (only what changes with state) ─────────────────
-          BlocBuilder<CartBloc, CartState>(
-            // Only rebuild when visible content changes.
-            // Ignoring addingProductIds / inCartProductIds changes prevents
-            // flutter_animate from restarting animations mid-frame.
-            buildWhen: (prev, curr) =>
-                prev.status != curr.status ||
-                prev.items != curr.items ||
-                prev.failure != curr.failure,
-            builder: (context, state) {
-              if (state.isLoading && state.items.isEmpty) {
-                return const SliverFillRemaining(
-                  child: Center(child: AppLoading()),
-                );
-              }
-              if (state.isError && state.items.isEmpty) {
-                return SliverFillRemaining(
-                  child: Center(
-                    child: state.failure != null
-                        ? AppErrorWidget.failure(
-                            failure: state.failure!,
-                            onRetry: () => _onRetryLoad(context), // FIX 10
-                          )
-                        : AppErrorWidget(
-                            title: context.l10n.errors_error_occurred_title,
-                            message: state.errorMessage.isNotEmpty
-                                ? state.errorMessage
-                                : context.l10n.errors_error_occurred_message,
-                            onRetry: () => _onRetryLoad(context), // FIX 10
-                          ),
-                  ),
-                );
-              }
-              if (state.items.isEmpty) {
-                return SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: AppEmptyState(
-                    icon: Icons.shopping_basket_outlined,
-                    title: context.l10n.cart_empty_title,
-                    subtitle: context.l10n.cart_empty_subtitle,
-                  ),
-                );
-              }
-              return SliverMainAxisGroup(
-                slivers: [
-                  // Cart Items List
-                  SliverPadding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final item = state.items[index];
-                          return CartItemWidget(
-                            item: item,
-                            onTap: () => context.push(
-                              AppRoutes.productDetails,
-                              extra: {'productId': item.productId},
+          // ─── Dynamic content ( granular selectors for sub-components) ──────
+          // 1. Loading State
+          BlocSelector<CartBloc, CartState, bool>(
+            selector: (state) => state.isLoading && state.items.isEmpty,
+            builder: (context, isLoading) {
+              if (!isLoading) return const SliverToBoxAdapter();
+              return const SliverFillRemaining(
+                child: Center(child: AppLoading()),
+              );
+            },
+          ),
+
+          // 2. Error State
+          BlocSelector<CartBloc, CartState, (bool, Failure?, String)>(
+            selector: (state) => (
+              state.isError && state.items.isEmpty,
+              state.failure,
+              state.errorMessage
+            ),
+            builder: (context, data) {
+              final (isError, failure, errorMessage) = data;
+              if (!isError) return const SliverToBoxAdapter();
+
+              return SliverFillRemaining(
+                child: Center(
+                  child: failure != null
+                      ? AppErrorWidget.failure(
+                          failure: failure,
+                          onRetry: () => _onRetryLoad(context),
+                        )
+                      : AppErrorWidget(
+                          title: context.l10n.errors_error_occurred_title,
+                          message: errorMessage.isNotEmpty
+                              ? errorMessage
+                              : context.l10n.errors_error_occurred_message,
+                          onRetry: () => _onRetryLoad(context),
+                        ),
+                ),
+              );
+            },
+          ),
+
+          // 3. Empty State
+          BlocSelector<CartBloc, CartState, bool>(
+            selector: (state) =>
+                !state.isLoading && !state.isError && state.items.isEmpty,
+            builder: (context, isEmpty) {
+              if (!isEmpty) return const SliverToBoxAdapter();
+              return SliverFillRemaining(
+                hasScrollBody: false,
+                child: AppEmptyState(
+                  icon: Icons.shopping_basket_outlined,
+                  title: context.l10n.cart_empty_title,
+                  subtitle: context.l10n.cart_empty_subtitle,
+                ),
+              );
+            },
+          ),
+
+          // 4. Cart Items List
+          BlocSelector<CartBloc, CartState, List<CartItemEntity>>(
+            selector: (state) => state.items,
+            builder: (context, items) {
+              if (items.isEmpty) return const SliverToBoxAdapter();
+
+              return SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final item = items[index];
+                      return CartItemWidget(
+                        item: item,
+                        onTap: () => context.push(
+                          AppRoutes.productDetails,
+                          extra: {'productId': item.productId},
+                        ),
+                        onRemove: () => context
+                            .read<CartBloc>()
+                            .add(RemoveFromCartEvent(item.id)),
+                        onQuantityIncrease: () => context.read<CartBloc>().add(
+                              UpdateQuantityEvent(
+                                cartItemId: item.id,
+                                quantity: item.quantity + 1,
+                              ),
                             ),
-                            onRemove: () => context
+                        onQuantityDecrease: () {
+                          if (item.quantity > 1) {
+                            context.read<CartBloc>().add(
+                                  UpdateQuantityEvent(
+                                    cartItemId: item.id,
+                                    quantity: item.quantity - 1,
+                                  ),
+                                );
+                          } else {
+                            context
                                 .read<CartBloc>()
-                                .add(RemoveFromCartEvent(item.id)),
-                            onQuantityIncrease: () =>
-                                context.read<CartBloc>().add(
-                                      UpdateQuantityEvent(
-                                        cartItemId: item.id,
-                                        quantity: item.quantity + 1,
-                                      ),
-                                    ),
-                            onQuantityDecrease: () {
-                              if (item.quantity > 1) {
-                                context.read<CartBloc>().add(
-                                      UpdateQuantityEvent(
-                                        cartItemId: item.id,
-                                        quantity: item.quantity - 1,
-                                      ),
-                                    );
-                              } else {
-                                context
-                                    .read<CartBloc>()
-                                    .add(RemoveFromCartEvent(item.id));
-                              }
-                            },
-                          );
+                                .add(RemoveFromCartEvent(item.id));
+                          }
                         },
-                        childCount: state.items.length,
-                      ),
-                    ),
+                      );
+                    },
+                    childCount: items.length,
                   ),
-                  // Order Summary
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 32.h),
-                      child: CartOrderSummary(state: state),
-                    ),
+                ),
+              );
+            },
+          ),
+
+          // 5. Order Summary
+          BlocSelector<CartBloc, CartState, bool>(
+            selector: (state) => state.items.isNotEmpty,
+            builder: (context, hasItems) {
+              if (!hasItems) return const SliverToBoxAdapter();
+
+              return SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 32.h),
+                  child: BlocBuilder<CartBloc, CartState>(
+                    buildWhen: (prev, curr) =>
+                        prev.items != curr.items ||
+                        prev.checkoutData != curr.checkoutData,
+                    builder: (context, state) {
+                      return CartOrderSummary(state: state);
+                    },
                   ),
-                ],
+                ),
               );
             },
           ),

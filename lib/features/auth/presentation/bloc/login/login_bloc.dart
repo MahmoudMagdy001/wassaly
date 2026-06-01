@@ -9,12 +9,15 @@ part 'login_state.dart';
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final LoginUseCase _loginUseCase;
   final ResendOtpUseCase _resendOtpUseCase;
+  final FcmTokenService _fcmTokenService;
 
   LoginBloc({
     required LoginUseCase loginUseCase,
     required ResendOtpUseCase resendOtpUseCase,
+    FcmTokenService? fcmTokenService,
   })  : _loginUseCase = loginUseCase,
         _resendOtpUseCase = resendOtpUseCase,
+        _fcmTokenService = fcmTokenService ?? FcmTokenService.instance,
         super(const LoginState()) {
     on<EmailChanged>(_onEmailChanged);
     on<PasswordChanged>(_onPasswordChanged);
@@ -73,11 +76,19 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           ));
         }
       },
-      (user) => emit(state.copyWith(
-        isLoading: false,
-        user: user,
-        clearVerification: true,
-      )),
+      (user) {
+        final userId = int.tryParse(user.id) ?? 0;
+        if (userId > 0) {
+          // Fire-and-forget: register FCM token and set up refresh listener
+          _fcmTokenService.registerToken(userId);
+          _fcmTokenService.setupTokenRefresh(userId);
+        }
+        emit(state.copyWith(
+          isLoading: false,
+          user: user,
+          clearVerification: true,
+        ));
+      },
     );
   }
 

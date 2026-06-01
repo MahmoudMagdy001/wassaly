@@ -402,6 +402,35 @@ class SAr extends S {
   String get profile_help_center => 'مركز المساعدة';
 
   @override
+  String get notifications => 'الإشعارات';
+
+  @override
+  String get deleteAllNotifications => 'حذف جميع الإشعارات';
+
+  @override
+  String get deleteAllNotificationsConfirm =>
+      'هل أنت متأكد من حذف جميع الإشعارات؟ لا يمكن التراجع عن هذا الإجراء.';
+
+  @override
+  String get markAllAsRead => 'تحديد الكل كمقروء';
+
+  @override
+  String get notification_remove_title => 'حذف الإشعار';
+
+  @override
+  String get notification_remove_confirm => 'هل أنت متأكد من حذف هذا الإشعار؟';
+
+  @override
+  String get notification_no_notifications => 'لا توجد إشعارات بعد';
+
+  @override
+  String get notification_no_notifications_desc =>
+      'عندما تتلقى إشعارات، ستظهر هنا.';
+
+  @override
+  String get noMoreNotifications => 'لا توجد إشعارات أخرى';
+
+  @override
   String get profile_personal_info => 'المعلومات الشخصية';
 
   @override
@@ -439,6 +468,99 @@ class SAr extends S {
 
   @override
   String get profile_theme => 'المظهر';
+
+  @override
+  String time_ago_years(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'منذ $count سنة',
+      many: 'منذ $count سنة',
+      few: 'منذ $count سنوات',
+      two: 'منذ سنتين',
+      one: 'منذ سنة',
+      zero: 'منذ لحظات',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String time_ago_months(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'منذ $count شهر',
+      many: 'منذ $count شهر',
+      few: 'منذ $count أشهر',
+      two: 'منذ شهرين',
+      one: 'منذ شهر',
+      zero: 'منذ لحظات',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String time_ago_weeks(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'منذ $count أسبوع',
+      many: 'منذ $count أسبوع',
+      few: 'منذ $count أسابيع',
+      two: 'منذ أسبوعين',
+      one: 'منذ أسبوع',
+      zero: 'منذ لحظات',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String time_ago_days(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'منذ $count يوم',
+      many: 'منذ $count يوم',
+      few: 'منذ $count أيام',
+      two: 'منذ يومين',
+      one: 'منذ يوم',
+      zero: 'منذ لحظات',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String time_ago_hours(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'منذ $count ساعة',
+      many: 'منذ $count ساعة',
+      few: 'منذ $count ساعات',
+      two: 'منذ ساعتين',
+      one: 'منذ ساعة',
+      zero: 'منذ لحظات',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String time_ago_minutes(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'منذ $count دقيقة',
+      many: 'منذ $count دقيقة',
+      few: 'منذ $count دقائق',
+      two: 'منذ دقيقتين',
+      one: 'منذ دقيقة',
+      zero: 'منذ لحظات',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get time_ago_just_now => 'منذ لحظات';
 
   @override
   String get profile_dark => 'داكن';

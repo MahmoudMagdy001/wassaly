@@ -45,6 +45,11 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 
 	<!-- Required for image_picker -->
 	<key>NSCameraUsageDescription</key>
@@ -57,7 +62,7 @@
 	<array>
 		<dict>
 			<key>CFBundleURLName</key>
-			<string>com.wassaly.app</string>
+			<string>com.fourthpyramid.wassaly</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>wasly</string>

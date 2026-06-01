@@ -47,6 +47,14 @@ class ToggleServiceFavoriteEvent extends FavoriteEvent {
   List<Object?> get props => [serviceId, expectedIsFavorite];
 }
 
+class LoadMoreFavoritesEvent extends FavoriteEvent {
+  const LoadMoreFavoritesEvent();
+}
+
+class LoadMoreServiceFavoritesEvent extends FavoriteEvent {
+  const LoadMoreServiceFavoritesEvent();
+}
+
 class ClearFavoritesEvent extends FavoriteEvent {
   const ClearFavoritesEvent();
 }

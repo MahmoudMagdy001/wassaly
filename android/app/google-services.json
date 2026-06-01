@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "994745554804",
+    "project_id": "waslynotify",
+    "storage_bucket": "waslynotify.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:994745554804:android:718cf928a4d0efae6bfe21",
+        "android_client_info": {
+          "package_name": "com.fourthpyramid.wassaly"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWX0tumAPRuq_EbzprKsD3Ae-OEl0eRu8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

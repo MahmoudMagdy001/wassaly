@@ -15,6 +15,8 @@ class FavoriteState extends Equatable {
   final Set<int> serviceTogglingIds;
   final Failure? failure;
   final Failure? serviceFailure;
+  final bool isLoadingMore;
+  final bool isServiceLoadingMore;
 
   const FavoriteState({
     this.status = FavoriteStatus.initial,
@@ -27,6 +29,8 @@ class FavoriteState extends Equatable {
     this.serviceTogglingIds = const {},
     this.failure,
     this.serviceFailure,
+    this.isLoadingMore = false,
+    this.isServiceLoadingMore = false,
   })  : favorites = favorites ?? const PaginatedResponse(data: []),
         serviceFavorites =
             serviceFavorites ?? const PaginatedResponse(data: []);
@@ -51,6 +55,8 @@ class FavoriteState extends Equatable {
     Set<int>? serviceTogglingIds,
     Failure? failure,
     Failure? serviceFailure,
+    bool? isLoadingMore,
+    bool? isServiceLoadingMore,
   }) {
     return FavoriteState(
       status: status ?? this.status,
@@ -63,6 +69,8 @@ class FavoriteState extends Equatable {
       serviceTogglingIds: serviceTogglingIds ?? this.serviceTogglingIds,
       failure: failure,
       serviceFailure: serviceFailure,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      isServiceLoadingMore: isServiceLoadingMore ?? this.isServiceLoadingMore,
     );
   }
 

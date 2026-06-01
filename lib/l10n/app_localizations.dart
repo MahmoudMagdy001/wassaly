@@ -865,6 +865,60 @@ abstract class S {
   /// **'Help Center'**
   String get profile_help_center;
 
+  /// No description provided for @notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications;
+
+  /// No description provided for @deleteAllNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete All Notifications'**
+  String get deleteAllNotifications;
+
+  /// No description provided for @deleteAllNotificationsConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete all notifications? This action cannot be undone.'**
+  String get deleteAllNotificationsConfirm;
+
+  /// No description provided for @markAllAsRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all as read'**
+  String get markAllAsRead;
+
+  /// No description provided for @notification_remove_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Notification'**
+  String get notification_remove_title;
+
+  /// No description provided for @notification_remove_confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to remove this notification?'**
+  String get notification_remove_confirm;
+
+  /// No description provided for @notification_no_notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications yet'**
+  String get notification_no_notifications;
+
+  /// No description provided for @notification_no_notifications_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'When you receive notifications, they will appear here.'**
+  String get notification_no_notifications_desc;
+
+  /// No description provided for @noMoreNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'No more notifications'**
+  String get noMoreNotifications;
+
   /// No description provided for @profile_personal_info.
   ///
   /// In en, this message translates to:
@@ -918,6 +972,48 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Theme'**
   String get profile_theme;
+
+  /// No description provided for @time_ago_years.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 year ago} other{{count} years ago}}'**
+  String time_ago_years(num count);
+
+  /// No description provided for @time_ago_months.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 month ago} other{{count} months ago}}'**
+  String time_ago_months(num count);
+
+  /// No description provided for @time_ago_weeks.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 week ago} other{{count} weeks ago}}'**
+  String time_ago_weeks(num count);
+
+  /// No description provided for @time_ago_days.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 day ago} other{{count} days ago}}'**
+  String time_ago_days(num count);
+
+  /// No description provided for @time_ago_hours.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 hour ago} other{{count} hours ago}}'**
+  String time_ago_hours(num count);
+
+  /// No description provided for @time_ago_minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 minute ago} other{{count} minutes ago}}'**
+  String time_ago_minutes(num count);
+
+  /// No description provided for @time_ago_just_now.
+  ///
+  /// In en, this message translates to:
+  /// **'just now'**
+  String get time_ago_just_now;
 
   /// No description provided for @profile_dark.
   ///

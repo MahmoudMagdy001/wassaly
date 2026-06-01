@@ -1,6 +1,7 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
 
+import '../../domain/entities/app_review_entity.dart';
 import '../bloc/app_reviews_bloc.dart';
 import '../bloc/app_reviews_event.dart';
 import '../bloc/app_reviews_state.dart';
@@ -16,78 +17,93 @@ class AppReviewsPage extends StatelessWidget {
     final currentUserId =
         sessionState is SessionAuthenticated ? sessionState.user.id : null;
 
-    return Scaffold(
-      backgroundColor: cs.surface,
-      floatingActionButton: BlocBuilder<AppReviewsBloc, AppReviewsState>(
-        buildWhen: (previous, current) => previous.status != current.status,
-        builder: (context, state) {
-          if (!state.status.isSuccess || currentUserId == null) {
-            return const SizedBox.shrink();
-          }
-
-          return FloatingActionButton(
-            onPressed: () {
-              showModalBottomSheet<void>(
-                context: context,
-                isScrollControlled: true,
-                builder: (_) => BlocProvider.value(
-                  value: context.read<AppReviewsBloc>(),
-                  child: const AppReviewFormSheet(),
-                ),
-              );
-            },
-            child: const Icon(Icons.add_rounded),
+    return BlocListener<AppReviewsBloc, AppReviewsState>(
+      listenWhen: (previous, current) =>
+          previous.actionStatus != current.actionStatus,
+      listener: (context, state) {
+        if (state.actionStatus.isSuccess) {
+          context.showTypedSnackBar(
+            context.l10n.product_details_review_created,
+            type: SnackBarType.success,
           );
-        },
-      ),
-      body: CustomScrollView(
-        slivers: [
-          AppSliverTopBar(
-            title: context.l10n.profile_app_reviews,
-            floating: true,
-            snap: true,
-          ),
-          BlocConsumer<AppReviewsBloc, AppReviewsState>(
-            listenWhen: (previous, current) =>
-                previous.actionStatus != current.actionStatus,
-            listener: (context, state) {
-              if (state.actionStatus.isSuccess) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(context.l10n.product_details_review_created),
+        } else if (state.actionStatus.isFailure) {
+          context.showTypedSnackBar(
+            state.actionErrorMessage ??
+                context.l10n.errors_something_went_wrong,
+            type: SnackBarType.error,
+          );
+        }
+      },
+      child: Scaffold(
+        backgroundColor: cs.surface,
+        floatingActionButton:
+            BlocSelector<AppReviewsBloc, AppReviewsState, bool>(
+          selector: (state) => state.status.isSuccess && currentUserId != null,
+          builder: (context, showFab) {
+            if (!showFab) return const SizedBox.shrink();
+
+            return FloatingActionButton(
+              onPressed: () {
+                showModalBottomSheet<void>(
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (_) => BlocProvider.value(
+                    value: context.read<AppReviewsBloc>(),
+                    child: const AppReviewFormSheet(),
                   ),
                 );
-              } else if (state.actionStatus.isFailure) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.actionErrorMessage ??
-                        context.l10n.errors_something_went_wrong),
-                  ),
-                );
-              }
-            },
-            builder: (context, state) {
-              if (state.status.isLoading) {
+              },
+              child: const Icon(Icons.add_rounded),
+            );
+          },
+        ),
+        body: CustomScrollView(
+          slivers: [
+            AppSliverTopBar(
+              title: context.l10n.profile_app_reviews,
+              floating: true,
+              snap: true,
+            ),
+
+            // 1. Loading State
+            BlocSelector<AppReviewsBloc, AppReviewsState, bool>(
+              selector: (state) => state.status.isLoading,
+              builder: (context, isLoading) {
+                if (!isLoading) return const SliverToBoxAdapter();
                 return const SliverFillRemaining(
                   hasScrollBody: false,
                   child: AppLoading(),
                 );
-              }
+              },
+            ),
 
-              if (state.status.isFailure) {
+            // 2. Error State
+            BlocSelector<AppReviewsBloc, AppReviewsState, (bool, String?)>(
+              selector: (state) => (state.status.isFailure, state.errorMessage),
+              builder: (context, data) {
+                final (isFailure, errorMessage) = data;
+                if (!isFailure) return const SliverToBoxAdapter();
+
                 return SliverFillRemaining(
                   hasScrollBody: false,
                   child: AppErrorWidget(
-                    message: state.errorMessage ??
+                    message: errorMessage ??
                         context.l10n.errors_something_went_wrong,
                     onRetry: () => context
                         .read<AppReviewsBloc>()
                         .add(const GetAppReviewsEvent()),
                   ),
                 );
-              }
+              },
+            ),
 
-              if (state.status.isSuccess && state.reviews.isEmpty) {
+            // 3. Empty State
+            BlocSelector<AppReviewsBloc, AppReviewsState, bool>(
+              selector: (state) =>
+                  state.status.isSuccess && state.reviews.isEmpty,
+              builder: (context, isEmpty) {
+                if (!isEmpty) return const SliverToBoxAdapter();
+
                 return SliverFillRemaining(
                   hasScrollBody: false,
                   child: AppEmptyState(
@@ -96,30 +112,39 @@ class AppReviewsPage extends StatelessWidget {
                     icon: Icons.reviews_outlined,
                   ),
                 );
-              }
+              },
+            ),
 
-              return SliverPadding(
-                padding: EdgeInsets.all(8.r),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final review = state.reviews[index];
+            // 4. Reviews List
+            BlocSelector<AppReviewsBloc, AppReviewsState,
+                List<AppReviewEntity>>(
+              selector: (state) => state.reviews,
+              builder: (context, reviews) {
+                if (reviews.isEmpty) return const SliverToBoxAdapter();
 
-                      return AppReviewCard(
-                        rating: review.rating,
-                        comment: review.comment,
-                        userName: review.user.name,
-                        userAvatar: review.user.avatar,
-                        createdAt: review.createdAt,
-                      );
-                    },
-                    childCount: state.reviews.length,
+                return SliverPadding(
+                  padding: EdgeInsets.all(8.r),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final review = reviews[index];
+
+                        return AppReviewCard(
+                          rating: review.rating,
+                          comment: review.comment,
+                          userName: review.user.name,
+                          userAvatar: review.user.avatar,
+                          createdAt: review.createdAt,
+                        );
+                      },
+                      childCount: reviews.length,
+                    ),
                   ),
-                ),
-              );
-            },
-          ),
-        ],
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

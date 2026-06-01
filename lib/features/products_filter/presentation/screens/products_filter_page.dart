@@ -8,7 +8,7 @@ import '../bloc/products_filter_event.dart';
 import '../bloc/products_filter_state.dart';
 import 'filter_options_sheet.dart';
 
-class ProductsFilterPage extends StatefulWidget {
+class ProductsFilterPage extends StatelessWidget {
   final ProductFilterParams? initialParams;
 
   const ProductsFilterPage({
@@ -16,25 +16,8 @@ class ProductsFilterPage extends StatefulWidget {
     this.initialParams,
   });
 
-  @override
-  State<ProductsFilterPage> createState() => _ProductsFilterPageState();
-}
-
-class _ProductsFilterPageState extends State<ProductsFilterPage> {
-  @override
-  void initState() {
-    super.initState();
-    // Dispatch events to fetch categories and filter products
-    final bloc = context.read<ProductsFilterBloc>();
-    bloc.add(const FetchFilterCategoriesEvent());
-    bloc.add(
-      FilterProductsEvent(
-        params: widget.initialParams ?? const ProductFilterParams(),
-      ),
-    );
-  }
-
-  void _openFilterSheet(BuildContext context, ProductsFilterState state) {
+  void _openFilterSheet(BuildContext context, ProductFilterParams params,
+      List<CategoryEntity> categories) {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -42,8 +25,8 @@ class _ProductsFilterPageState extends State<ProductsFilterPage> {
       builder: (_) => BlocProvider.value(
         value: context.read<ProductsFilterBloc>(),
         child: FilterOptionsSheet(
-          initialParams: state.params,
-          categories: state.categories,
+          initialParams: params,
+          categories: categories,
           onApply: (newParams) {
             context.read<ProductsFilterBloc>().add(
                   FilterProductsEvent(params: newParams),
@@ -112,15 +95,16 @@ class _ProductsFilterPageState extends State<ProductsFilterPage> {
     };
   }
 
-  Widget _buildFilterChips(BuildContext context, ProductsFilterState state) {
+  Widget _buildFilterChips(BuildContext context, ProductFilterParams params,
+      List<CategoryEntity> categories) {
     final cs = context.theme.colorScheme;
     final bloc = context.read<ProductsFilterBloc>();
     final chips = <Widget>[];
 
     // Category Chip
-    if (state.params.categoryId != null && state.categories.isNotEmpty) {
-      final cat = state.categories.firstWhere(
-        (c) => c.id == state.params.categoryId,
+    if (params.categoryId != null && categories.isNotEmpty) {
+      final cat = categories.firstWhere(
+        (c) => c.id == params.categoryId,
         orElse: () => const CategoryEntity(id: 0, name: '', image: ''),
       );
       if (cat.id != 0) {
@@ -135,9 +119,9 @@ class _ProductsFilterPageState extends State<ProductsFilterPage> {
     }
 
     // Price Chip
-    if (state.params.minPrice != null || state.params.maxPrice != null) {
-      final minStr = state.params.minPrice?.toStringAsFixed(0) ?? '0';
-      final maxStr = state.params.maxPrice?.toStringAsFixed(0) ?? '∞';
+    if (params.minPrice != null || params.maxPrice != null) {
+      final minStr = params.minPrice?.toStringAsFixed(0) ?? '0';
+      final maxStr = params.maxPrice?.toStringAsFixed(0) ?? '∞';
       chips.add(
         InputChip(
           label: Text('$minStr - $maxStr ${context.l10n.shared_currency_egp}'),
@@ -148,8 +132,8 @@ class _ProductsFilterPageState extends State<ProductsFilterPage> {
     }
 
     // Ratings Chip
-    if (state.params.ratings != null && state.params.ratings!.isNotEmpty) {
-      final ratingsStr = state.params.ratings!.join(', ');
+    if (params.ratings != null && params.ratings!.isNotEmpty) {
+      final ratingsStr = params.ratings!.join(', ');
       chips.add(
         InputChip(
           label: Row(
@@ -167,7 +151,7 @@ class _ProductsFilterPageState extends State<ProductsFilterPage> {
     }
 
     // Special Offers Chip
-    if (state.params.specialOffers ?? false) {
+    if (params.specialOffers ?? false) {
       chips.add(
         InputChip(
           label: Text(context.l10n.filter_special_offers),
@@ -178,10 +162,10 @@ class _ProductsFilterPageState extends State<ProductsFilterPage> {
     }
 
     // Sort Chip
-    if (state.params.sort != null) {
+    if (params.sort != null) {
       chips.add(
         InputChip(
-          label: Text(_getSortLabel(context, state.params.sort!)),
+          label: Text(_getSortLabel(context, params.sort!)),
           onDeleted: () => _removeSort(bloc),
           deleteIconColor: cs.primary,
         ),
@@ -208,104 +192,144 @@ class _ProductsFilterPageState extends State<ProductsFilterPage> {
   Widget build(BuildContext context) {
     final cs = context.theme.colorScheme;
 
-    return BlocBuilder<ProductsFilterBloc, ProductsFilterState>(
-      builder: (context, state) {
-        return Scaffold(
-          backgroundColor: cs.surface,
-          floatingActionButton: FloatingActionButton(
-            onPressed: () => _openFilterSheet(context, state),
-            backgroundColor: cs.primary,
-            foregroundColor: cs.onPrimary,
-            child: Icon(
-              Icons.filter_list_rounded,
-              size: 28.r,
-            ),
+    return BlocProvider(
+      create: (context) => sl<ProductsFilterBloc>()
+        ..add(const FetchFilterCategoriesEvent())
+        ..add(
+          FilterProductsEvent(
+            params: initialParams ?? const ProductFilterParams(),
           ),
-          body: CustomScrollView(
-            slivers: [
-              AppSliverTopBar(
-                title: context.l10n.filter_title,
-                automaticallyImplyLeading: true,
-                actions: [
-                  if (!state.params.isEmpty)
-                    IconButton(
-                      icon: Icon(Icons.refresh_rounded, color: cs.primary),
-                      onPressed: () => context
-                          .read<ProductsFilterBloc>()
-                          .add(const ResetFiltersEvent()),
-                    ),
-                ],
+        ),
+      child: BlocSelector<ProductsFilterBloc, ProductsFilterState,
+          (AppStatus, ProductFilterParams, List<CategoryEntity>)>(
+        selector: (state) => (state.status, state.params, state.categories),
+        builder: (context, data) {
+          final (status, params, categories) = data;
+
+          return Scaffold(
+            backgroundColor: cs.surface,
+            floatingActionButton: FloatingActionButton(
+              onPressed: () => _openFilterSheet(context, params, categories),
+              backgroundColor: cs.primary,
+              foregroundColor: cs.onPrimary,
+              child: Icon(
+                Icons.filter_list_rounded,
+                size: 28.r,
               ),
-              _buildFilterChips(context, state),
-              if (state.status.isLoading)
-                const SliverFillRemaining(
-                  child: Center(
-                    child: AppLoading(),
-                  ),
-                )
-              else if (state.status.isFailure)
-                SliverFillRemaining(
-                  child: Center(
-                    child: AppErrorWidget(
-                      message: state.errorMessage ??
-                          context.l10n.errors_something_went_wrong,
-                      onRetry: () => context.read<ProductsFilterBloc>().add(
-                            FilterProductsEvent(params: state.params),
-                          ),
+            ),
+            body: CustomScrollView(
+              slivers: [
+                AppSliverTopBar(
+                  title: context.l10n.filter_title,
+                  automaticallyImplyLeading: true,
+                  actions: [
+                    if (!params.isEmpty)
+                      IconButton(
+                        icon: Icon(Icons.refresh_rounded, color: cs.primary),
+                        onPressed: () => context
+                            .read<ProductsFilterBloc>()
+                            .add(const ResetFiltersEvent()),
+                      ),
+                  ],
+                ),
+                _buildFilterChips(context, params, categories),
+                if (status.isLoading)
+                  const SliverFillRemaining(
+                    child: Center(
+                      child: AppLoading(),
                     ),
-                  ),
-                )
-              else if (state.status.isSuccess && state.products.isEmpty)
-                SliverFillRemaining(
-                  child: Center(
-                    child: AppEmptyState(
-                      title: context.l10n.filter_no_products,
-                      subtitle: context.l10n.search_try_different_search,
-                      icon: Icons.filter_alt_off_rounded,
+                  )
+                else if (status.isFailure)
+                  SliverFillRemaining(
+                    child: Center(
+                      child: BlocSelector<ProductsFilterBloc,
+                          ProductsFilterState, String?>(
+                        selector: (state) => state.errorMessage,
+                        builder: (context, errorMessage) {
+                          return AppErrorWidget(
+                            message: errorMessage ??
+                                context.l10n.errors_something_went_wrong,
+                            onRetry: () =>
+                                context.read<ProductsFilterBloc>().add(
+                                      FilterProductsEvent(params: params),
+                                    ),
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                )
-              else if (state.status.isSuccess || state.isLoadMoreLoading) ...[
-                AppSliverGrid<ProductEntity>(
-                  items: state.products,
-                  hasMore: state.hasMore,
-                  onLoadMore: () {
-                    context.read<ProductsFilterBloc>().add(
-                          FilterProductsEvent(
-                            params: state.params,
-                            isLoadMore: true,
+                  )
+                else if (status.isSuccess)
+                  BlocSelector<ProductsFilterBloc, ProductsFilterState,
+                      (List<ProductEntity>, bool, bool)>(
+                    selector: (state) => (
+                      state.products,
+                      state.hasMore,
+                      state.isLoadMoreLoading,
+                    ),
+                    builder: (context, data) {
+                      final (products, hasMore, isLoadMoreLoading) = data;
+
+                      if (products.isEmpty) {
+                        return SliverFillRemaining(
+                          child: Center(
+                            child: AppEmptyState(
+                              title: context.l10n.filter_no_products,
+                              subtitle:
+                                  context.l10n.search_try_different_search,
+                              icon: Icons.filter_alt_off_rounded,
+                            ),
                           ),
                         );
-                  },
-                  itemBuilder: (context, product, index, wrapAnimation) {
-                    return wrapAnimation(
-                      ProductCard(product: product),
-                    );
-                  },
-                ),
-                if (state.isLoadMoreLoading)
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 16.h),
-                      child: const Center(
-                        child: AppLoading(),
+                      }
+
+                      return SliverMainAxisGroup(
+                        slivers: [
+                          AppSliverGrid<ProductEntity>(
+                            items: products,
+                            hasMore: hasMore,
+                            onLoadMore: () {
+                              context.read<ProductsFilterBloc>().add(
+                                    FilterProductsEvent(
+                                      params: params,
+                                      isLoadMore: true,
+                                    ),
+                                  );
+                            },
+                            itemBuilder:
+                                (context, product, index, wrapAnimation) {
+                              return wrapAnimation(
+                                ProductCard(product: product),
+                              );
+                            },
+                          ),
+                          if (isLoadMoreLoading)
+                            SliverToBoxAdapter(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 24.h),
+                                child: const Center(
+                                  child: AppLoading(),
+                                ),
+                              ),
+                            ),
+                        ],
+                      );
+                    },
+                  )
+                else
+                  SliverFillRemaining(
+                    child: Center(
+                      child: AppEmptyState(
+                        title: context.l10n.filter_title,
+                        subtitle: context.l10n.search_search_hint,
+                        icon: Icons.filter_alt_rounded,
                       ),
                     ),
                   ),
-              ] else
-                SliverFillRemaining(
-                  child: Center(
-                    child: AppEmptyState(
-                      title: context.l10n.filter_title,
-                      subtitle: context.l10n.search_search_hint,
-                      icon: Icons.filter_alt_rounded,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        );
-      },
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

@@ -19,7 +19,7 @@ class SearchResultsList extends StatelessWidget {
       builder: (context, data) {
         final (products, hasMore, isLoadingMore) = data;
 
-        return CustomScrollView(
+        return SliverMainAxisGroup(
           slivers: [
             AppSliverGrid<ProductEntity>(
               items: products,
@@ -39,12 +39,8 @@ class SearchResultsList extends StatelessWidget {
             if (isLoadingMore)
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: EdgeInsets.all(16.w),
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      color: context.theme.colorScheme.primary,
-                    ),
-                  ),
+                  padding: EdgeInsets.symmetric(vertical: 24.h),
+                  child: const AppLoading(),
                 ),
               ),
             SliverToBoxAdapter(

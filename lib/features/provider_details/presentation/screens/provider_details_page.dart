@@ -30,18 +30,26 @@ class ProviderDetailsPage extends StatelessWidget {
               title: context.l10n.provider_details_title,
               pinned: false,
             ),
-            BlocBuilder<ProviderDetailsBloc, ProviderDetailsState>(
-              builder: (context, state) {
-                if (state.status.isLoading) {
+            BlocSelector<ProviderDetailsBloc, ProviderDetailsState,
+                (AppStatus, String, dynamic)>(
+              selector: (state) => (
+                state.status,
+                state.errorMessage,
+                state.provider,
+              ),
+              builder: (context, data) {
+                final (status, errorMessage, provider) = data;
+
+                if (status.isLoading) {
                   return const SliverFillRemaining(
                     child: Center(child: AppLoading()),
                   );
                 }
 
-                if (state.status.isFailure) {
+                if (status.isFailure) {
                   return SliverFillRemaining(
                     child: AppErrorWidget(
-                      message: state.errorMessage,
+                      message: errorMessage,
                       onRetry: () => context
                           .read<ProviderDetailsBloc>()
                           .add(FetchProviderDetailsEvent(providerId)),
@@ -49,8 +57,7 @@ class ProviderDetailsPage extends StatelessWidget {
                   );
                 }
 
-                if (state.status.isSuccess && state.provider != null) {
-                  final provider = state.provider!;
+                if (status.isSuccess && provider != null) {
                   return SliverMainAxisGroup(
                     slivers: [
                       SliverToBoxAdapter(

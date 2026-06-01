@@ -34,31 +34,13 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
         }
 
         final data = responseData['data'];
-        final pagination =
-            responseData['pagination'] as Map<String, dynamic>? ?? {};
-        final lastPage = pagination['last_page'] as int? ?? 1;
-        final total = pagination['total'] as int? ?? 0;
-        final currentPage = pagination['current_page'] as int? ?? page;
-
-        if (data == null) {
-          return PaginatedResponse(
-            data: const <OrderModel>[],
-            currentPage: currentPage,
-            lastPage: lastPage,
-            total: total,
-          );
-        }
-
-        final List<dynamic> list = data as List<dynamic>;
-        final orders = list
+        final items = (data as List? ?? [])
             .map((e) => OrderModel.fromJson(e as Map<String, dynamic>))
             .toList();
 
-        return PaginatedResponse(
-          data: orders,
-          currentPage: currentPage,
-          lastPage: lastPage,
-          total: total,
+        return PaginatedResponse.fromJson(
+          json: responseData,
+          data: items,
         );
       },
     );

@@ -255,67 +255,70 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
             },
             color: context.theme.colorScheme.primary,
             backgroundColor: context.theme.colorScheme.surface,
-            child: BlocBuilder<OrderDetailBloc, OrderDetailState>(
-            buildWhen: (previous, current) =>
-                previous.status != current.status ||
-                previous.order != current.order ||
-                previous.errorMessage != current.errorMessage,
-            builder: (context, state) {
-              if (state.status == OrderDetailStatus.failure &&
-                  state.order == null) {
-                return CustomScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  slivers: [
-                    AppSliverTopBar(
-                      title: context.l10n.order_details_title,
-                      onPressed: () => context.pop(_shouldRefresh),
-                    ),
-                    SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: Center(
-                        child: AppErrorWidget(
-                          title: context.l10n.errors_error_occurred_title,
-                          message: state.errorMessage.isNotEmpty
-                              ? state.errorMessage
-                              : context.l10n.errors_error_occurred_message,
-                          onRetry: _onRetry,
+            child: BlocSelector<OrderDetailBloc, OrderDetailState,
+                (OrderDetailStatus, OrderEntity?, String)>(
+              selector: (state) => (
+                state.status,
+                state.order,
+                state.errorMessage,
+              ),
+              builder: (context, data) {
+                final (status, stateOrder, errorMessage) = data;
+
+                if (status == OrderDetailStatus.failure && stateOrder == null) {
+                  return CustomScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    slivers: [
+                      AppSliverTopBar(
+                        title: context.l10n.order_details_title,
+                        onPressed: () => context.pop(_shouldRefresh),
+                      ),
+                      SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: Center(
+                          child: AppErrorWidget(
+                            title: context.l10n.errors_error_occurred_title,
+                            message: errorMessage.isNotEmpty
+                                ? errorMessage
+                                : context.l10n.errors_error_occurred_message,
+                            onRetry: _onRetry,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                );
-              }
+                    ],
+                  );
+                }
 
-              final showSkeleton = state.status == OrderDetailStatus.loading &&
-                  state.order == null;
-              final order = showSkeleton ? _dummyOrder : state.order;
+                final showSkeleton =
+                    status == OrderDetailStatus.loading && stateOrder == null;
+                final order = showSkeleton ? _dummyOrder : stateOrder;
 
-              if (order == null) {
-                return CustomScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  slivers: [
-                    AppSliverTopBar(
-                      title: context.l10n.order_details_title,
-                      onPressed: () => context.pop(_shouldRefresh),
-                    ),
-                    SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: Center(
-                        child: Text(
-                          context.l10n.errors_something_went_wrong,
-                          style: tt.bodyLarge,
+                if (order == null) {
+                  return CustomScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    slivers: [
+                      AppSliverTopBar(
+                        title: context.l10n.order_details_title,
+                        onPressed: () => context.pop(_shouldRefresh),
+                      ),
+                      SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: Center(
+                          child: Text(
+                            context.l10n.errors_something_went_wrong,
+                            style: tt.bodyLarge,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                );
-              }
+                    ],
+                  );
+                }
 
-              final isCancelled = order.isCancelled;
-              final canDelete = order.canDelete;
-              final canCancelOrUpdate = order.canCancelOrUpdate;
+                final isCancelled = order.isCancelled;
+                final canDelete = order.canDelete;
+                final canCancelOrUpdate = order.canCancelOrUpdate;
 
-              return Skeletonizer(
+                return Skeletonizer(
                   enabled: showSkeleton,
                   ignoreContainers: true,
                   child: CustomScrollView(
@@ -453,13 +456,13 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                     ],
                   ),
                 );
-            },
+              },
+            ),
           ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   Widget _buildSectionHeader(BuildContext context, String title) {
     final tt = context.theme.textTheme;

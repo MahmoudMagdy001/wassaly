@@ -43,37 +43,19 @@ class ProductsFilterRemoteDataSourceImpl
         final responseData = response.data as Map<String, dynamic>;
         final status = responseData['status'] as bool? ?? false;
         final message = responseData['message'] as String? ?? '';
-        final data = responseData['data'];
-
-        final pagination =
-            responseData['pagination'] as Map<String, dynamic>? ?? {};
-        final lastPage = pagination['last_page'] as int? ?? 1;
-        final total = pagination['total'] as int? ?? 0;
-        final currentPage = pagination['current_page'] as int? ?? page;
-
-        if (data == null || (data is! List) || (data).isEmpty) {
-          return PaginatedResponse(
-            data: const <ProductModel>[],
-            currentPage: currentPage,
-            lastPage: lastPage,
-            total: total,
-          );
-        }
 
         if (!status) {
           throw ServerFailure(message);
         }
 
-        final List<dynamic> list = data;
-        final products = list
+        final data = responseData['data'];
+        final items = (data as List? ?? [])
             .map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
             .toList();
 
-        return PaginatedResponse(
-          data: products,
-          currentPage: currentPage,
-          lastPage: lastPage,
-          total: total,
+        return PaginatedResponse.fromJson(
+          json: responseData,
+          data: items,
         );
       },
     );

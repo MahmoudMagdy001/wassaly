@@ -31,36 +31,16 @@ class OffersRemoteDataSourceImpl implements OffersRemoteDataSource {
         }
 
         final data = responseData['data'];
-        final pagination =
-            responseData['pagination'] as Map<String, dynamic>? ?? {};
-        final lastPage = pagination['last_page'] as int? ?? 1;
-        final total = pagination['total'] as int? ?? 0;
-        final currentPage = pagination['current_page'] as int? ?? page;
-
-        if (data == null) {
-          return PaginatedResponse(
-            data: const <ProductModel>[],
-            currentPage: currentPage,
-            lastPage: lastPage,
-            total: total,
-          );
-        }
-
-        final List<dynamic> list = data as List<dynamic>;
-        final products = list.map((e) {
+        final items = (data as List? ?? []).map((e) {
           final offerItem = e as Map<String, dynamic>;
-          // The API returns offer objects: { id, product: {...}, discount_percentage }
-          // We extract the nested product and pass it to ProductModel.fromJson
           final productData =
               offerItem['product'] as Map<String, dynamic>? ?? offerItem;
           return ProductModel.fromJson(productData);
         }).toList();
 
-        return PaginatedResponse(
-          data: products,
-          currentPage: currentPage,
-          lastPage: lastPage,
-          total: total,
+        return PaginatedResponse.fromJson(
+          json: responseData,
+          data: items,
         );
       },
     );

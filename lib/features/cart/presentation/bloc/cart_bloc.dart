@@ -1,6 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
+
 import '../../domain/entities/cart_item_entity.dart';
-import '../../domain/repositories/cart_repository.dart';
 import '../../domain/usecases/add_to_cart_usecase.dart';
 import '../../domain/usecases/get_cart_items_usecase.dart';
 import '../../domain/usecases/remove_from_cart_usecase.dart';
@@ -13,16 +13,13 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   final AddToCartUseCase addToCartUseCase;
   final RemoveFromCartUseCase removeFromCartUseCase;
   final UpdateQuantityUseCase updateQuantityUseCase;
-  final CartRepository _cartRepository;
 
   CartBloc({
     required this.getCartItemsUseCase,
     required this.addToCartUseCase,
     required this.removeFromCartUseCase,
     required this.updateQuantityUseCase,
-    required CartRepository cartRepository,
-  })  : _cartRepository = cartRepository,
-        super(const CartState()) {
+  }) : super(const CartState()) {
     on<LoadCartItemsEvent>(_onLoadCartItems);
     on<AddToCartEvent>(_onAddToCart);
     on<RemoveFromCartEvent>(_onRemoveFromCart);
@@ -57,9 +54,6 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         failure: failure,
       )),
       (items) {
-        // Save cart items locally for offline access
-        _saveCartItemsLocally(items);
-
         return emit(state.copyWith(
           status: CartStatus.success,
           items: items,
@@ -90,7 +84,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         final updatedIds = {...state.inCartProductIds, event.productId};
         emit(state.copyWith(
           inCartProductIds: updatedIds,
-          addingProductIds: {...state.addingProductIds}..remove(event.productId),
+          addingProductIds: {...state.addingProductIds}
+            ..remove(event.productId),
           cartCount: state.cartCount + 1,
         ));
         // Silent reload to sync with backend without flashing loading UI
@@ -143,7 +138,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       )),
       (_) {
         emit(state.copyWith(
-          addingProductIds: {...state.addingProductIds}..remove(event.cartItemId),
+          addingProductIds: {...state.addingProductIds}
+            ..remove(event.cartItemId),
         ));
         // Silent reload to sync with backend without flashing loading UI
         add(const LoadCartItemsEvent(silent: true));
@@ -199,7 +195,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       )),
       (_) {
         emit(state.copyWith(
-          addingProductIds: {...state.addingProductIds}..remove(event.cartItemId),
+          addingProductIds: {...state.addingProductIds}
+            ..remove(event.cartItemId),
         ));
         // Silent reload to sync with backend without flashing loading UI
         add(const LoadCartItemsEvent(silent: true));
@@ -228,14 +225,5 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     // Calculate cart count from existing cart items
     final cartCount = state.items.length;
     emit(state.copyWith(cartCount: cartCount));
-  }
-
-  // Helper method to save cart items locally
-  Future<void> _saveCartItemsLocally(List<CartItemEntity> items) async {
-    try {
-      await _cartRepository.saveCartItemsLocally(items);
-    } catch (e) {
-      // Silently fail - local storage is optional
-    }
   }
 }

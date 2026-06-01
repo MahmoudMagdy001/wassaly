@@ -49,24 +49,40 @@ class _CategoryView extends StatelessWidget {
           AppSliverTopBar(title: category.name),
 
           // FIX 2: BlocBuilder بس على الـ sliver اللي بيتغير فعلاً
-          BlocBuilder<CategoryBloc, CategoryState>(
-            builder: (context, state) {
-              if (state.status == CategoryStatus.failure) {
+          BlocSelector<
+              CategoryBloc,
+              CategoryState,
+              (
+                CategoryStatus,
+                String,
+                List<SubCategoryEntity>,
+                SubCategoryEntity?
+              )>(
+            selector: (state) => (
+              state.status,
+              state.errorMessage,
+              state.subCategories.data,
+              state.selectedSubCategory,
+            ),
+            builder: (context, data) {
+              final (status, errorMessage, subCategories, selectedSubCategory) =
+                  data;
+
+              if (status == CategoryStatus.failure) {
                 return SliverFillRemaining(
                   hasScrollBody: false,
                   child: AppErrorWidget(
                     title: context.l10n.errors_error_occurred_title,
-                    message: state.errorMessage.isNotEmpty
-                        ? state.errorMessage
+                    message: errorMessage.isNotEmpty
+                        ? errorMessage
                         : context.l10n.errors_error_occurred_message,
-                    onRetry: () => _onRetry(context), // FIX 10: named method
+                    onRetry: () => _onRetry(context),
                   ),
                 );
               }
 
-              final isLoading = state.status == CategoryStatus.loading ||
-                  state.status == CategoryStatus.initial;
-              final subCategories = state.subCategories.data;
+              final isLoading = status == CategoryStatus.loading ||
+                  status == CategoryStatus.initial;
 
               if (!isLoading && subCategories.isEmpty) {
                 return SliverFillRemaining(
@@ -89,13 +105,11 @@ class _CategoryView extends StatelessWidget {
                     )
                   : subCategories;
 
-              final selectedSubCategory = isLoading
+              final currentSubCategory = isLoading
                   ? const SubCategoryEntity(
                       id: -1, name: 'تصنيف تجريبي', image: '')
-                  : state.selectedSubCategory;
+                  : selectedSubCategory;
 
-              // FIX 3: حذف الـ Builder الزيادة — الـ BlocBuilder
-              // بيديك الـ state مباشرة
               return SliverFillRemaining(
                 hasScrollBody: true,
                 child: Skeletonizer(
@@ -106,25 +120,24 @@ class _CategoryView extends StatelessWidget {
                       CategorySideMenu(
                         isLoading: isLoading,
                         subCategories: displaySubCategories,
-                        selectedSubCategoryId: state.selectedSubCategory?.id,
+                        selectedSubCategoryId: selectedSubCategory?.id,
                       ),
                       Expanded(
-                        child: selectedSubCategory == null
+                        child: currentSubCategory == null
                             ? const SizedBox.shrink()
                             : KeyedSubtree(
-                                key: ValueKey(selectedSubCategory.id),
+                                key: ValueKey(currentSubCategory.id),
                                 child: BlocProvider(
                                   create: (context) {
                                     final bloc = sl<SubCategoryBloc>();
                                     if (!isLoading) {
                                       bloc.add(FetchSubCategoryDetailEvent(
-                                          selectedSubCategory.id));
+                                          currentSubCategory.id));
                                     }
                                     return bloc;
                                   },
-                                  // FIX 5: removed single-child Column with no siblings
                                   child: SubCategoryDetailView(
-                                    subCategory: selectedSubCategory,
+                                    subCategory: currentSubCategory,
                                     showAppBar: false,
                                     crossAxisCount: 2,
                                     productMainAxisExtent: 230.h,

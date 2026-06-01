@@ -38,7 +38,7 @@ class _ProductDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ProductDetailsBloc, ProductDetailsState>(
+    return BlocListener<ProductDetailsBloc, ProductDetailsState>(
       listenWhen: (previous, current) =>
           previous.reviewActionStatus != current.reviewActionStatus,
       listener: (context, state) {
@@ -55,35 +55,56 @@ class _ProductDetailsView extends StatelessWidget {
           );
         }
       },
-      buildWhen: (previous, current) =>
-          previous.status != current.status ||
-          previous.product != current.product ||
-          previous.relatedProductsStatus != current.relatedProductsStatus ||
-          previous.relatedProducts != current.relatedProducts,
-      builder: (context, state) {
-        if (state.status == ProductDetailsStatus.loading ||
-            state.status == ProductDetailsStatus.initial) {
-          return const _ProductDetailsSkeleton();
-        } else if (state.status == ProductDetailsStatus.failure ||
-            state.product == null) {
-          return Scaffold(
-            appBar: AppBar(title: Text(context.l10n.product_details_title)),
-            body: AppErrorWidget(
-              title: context.l10n.errors_error_occurred_title,
-              message: state.errorMessage.isNotEmpty
-                  ? state.errorMessage
-                  : context.l10n.errors_error_occurred_message,
-              onRetry: () => _onRetry(context),
-            ),
-          );
-        } else {
-          return ProductDetailsContent(
-            product: state.product!,
-            relatedProductsStatus: state.relatedProductsStatus,
-            relatedProducts: state.relatedProducts,
-          );
-        }
-      },
+      child: BlocSelector<
+          ProductDetailsBloc,
+          ProductDetailsState,
+          (
+            ProductDetailsStatus,
+            ProductDetailEntity?,
+            RelatedProductsStatus,
+            List<ProductEntity>,
+            String
+          )>(
+        selector: (state) => (
+          state.status,
+          state.product,
+          state.relatedProductsStatus,
+          state.relatedProducts,
+          state.errorMessage,
+        ),
+        builder: (context, data) {
+          final (
+            status,
+            product,
+            relatedProductsStatus,
+            relatedProducts,
+            errorMessage
+          ) = data;
+
+          if (status == ProductDetailsStatus.loading ||
+              status == ProductDetailsStatus.initial) {
+            return const _ProductDetailsSkeleton();
+          } else if (status == ProductDetailsStatus.failure ||
+              product == null) {
+            return Scaffold(
+              appBar: AppBar(title: Text(context.l10n.product_details_title)),
+              body: AppErrorWidget(
+                title: context.l10n.errors_error_occurred_title,
+                message: errorMessage.isNotEmpty
+                    ? errorMessage
+                    : context.l10n.errors_error_occurred_message,
+                onRetry: () => _onRetry(context),
+              ),
+            );
+          } else {
+            return ProductDetailsContent(
+              product: product,
+              relatedProductsStatus: relatedProductsStatus,
+              relatedProducts: relatedProducts,
+            );
+          }
+        },
+      ),
     );
   }
 }

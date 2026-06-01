@@ -1,14 +1,16 @@
 import 'package:hive_flutter/hive_flutter.dart';
-import '../../features/home/domain/entities/product_entity.dart';
-import '../../features/home/domain/entities/review_entity.dart';
-import '../../features/home/domain/entities/offer_entity.dart';
-import '../../features/sub_category/domain/entities/service_entity.dart';
+
 import '../../features/cart/domain/entities/cart_item_entity.dart';
 import '../../features/cart/domain/entities/offer_entity.dart' as cart_offer;
-import '../../features/orders/data/models/order_model.dart';
+import '../../features/home/domain/entities/offer_entity.dart';
+import '../../features/home/domain/entities/product_entity.dart';
+import '../../features/home/domain/entities/review_entity.dart';
+import '../../features/notifications/data/models/notification_model.dart';
 import '../../features/orders/data/models/order_item_model.dart';
-import '../../features/service_booking/data/models/booking_model.dart';
+import '../../features/orders/data/models/order_model.dart';
 import '../../features/orders/domain/entities/order_item_entity.dart';
+import '../../features/service_booking/data/models/booking_model.dart';
+import '../../features/sub_category/domain/entities/service_entity.dart';
 
 class ProductEntityAdapter extends TypeAdapter<ProductEntity> {
   @override
@@ -330,5 +332,34 @@ class ServiceEntityAdapter extends TypeAdapter<ServiceEntity> {
     writer.write(obj.image);
     writer.write(obj.price);
     writer.write(obj.isFavorite);
+  }
+}
+
+class NotificationModelAdapter extends TypeAdapter<NotificationModel> {
+  @override
+  final int typeId = 12;
+
+  @override
+  NotificationModel read(BinaryReader reader) {
+    return NotificationModel(
+      id: reader.read(),
+      title: reader.read(),
+      body: reader.read(),
+      type: reader.read(),
+      data: (reader.read() as Map?)?.cast<String, dynamic>() ?? {},
+      isRead: reader.read(),
+      createdAt: reader.read() as DateTime,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, NotificationModel obj) {
+    writer.write(obj.id);
+    writer.write(obj.title);
+    writer.write(obj.body);
+    writer.write(obj.type);
+    writer.write(obj.data);
+    writer.write(obj.isRead);
+    writer.write(obj.createdAt);
   }
 }

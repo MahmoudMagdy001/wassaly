@@ -1,5 +1,7 @@
 import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/features/home/domain/entities/product_entity.dart';
 import 'package:wassaly/features/home/domain/entities/sub_category_entity.dart';
+import 'package:wassaly/features/sub_category/domain/entities/sub_category_detail_entity.dart';
 import 'package:wassaly/features/sub_category/presentation/bloc/sub_category_bloc.dart';
 import 'package:wassaly/features/sub_category/presentation/bloc/sub_category_event.dart';
 import 'package:wassaly/features/sub_category/presentation/bloc/sub_category_state.dart';
@@ -85,20 +87,42 @@ class SubCategoryDetailView extends StatelessWidget {
           if (showAppBar) AppSliverTopBar(title: subCategory.name),
 
           // FIX 2: BlocBuilder بس على الـ slivers اللي بتتغير
-          BlocBuilder<SubCategoryBloc, SubCategoryState>(
-            buildWhen: (previous, current) =>
-                previous.status != current.status ||
-                previous.isLoadingMore != current.isLoadingMore ||
-                previous.products != current.products ||
-                previous.subCategory != current.subCategory,
-            builder: (context, state) {
-              if (state.status == SubCategoryStatus.failure) {
+          BlocSelector<
+              SubCategoryBloc,
+              SubCategoryState,
+              (
+                SubCategoryStatus,
+                String,
+                SubCategoryDetailEntity?,
+                PaginatedResponse<ProductEntity>,
+                bool,
+                bool
+              )>(
+            selector: (state) => (
+              state.status,
+              state.errorMessage,
+              state.subCategory,
+              state.products,
+              state.hasMoreProducts,
+              state.isLoadingMore,
+            ),
+            builder: (context, data) {
+              final (
+                status,
+                errorMessage,
+                detail,
+                products,
+                hasMoreProducts,
+                isLoadingMore
+              ) = data;
+
+              if (status == SubCategoryStatus.failure) {
                 return SliverFillRemaining(
                   hasScrollBody: false,
                   child: AppErrorWidget(
                     title: context.l10n.errors_error_occurred_title,
-                    message: state.errorMessage.isNotEmpty
-                        ? state.errorMessage
+                    message: errorMessage.isNotEmpty
+                        ? errorMessage
                         : context.l10n.errors_error_occurred_message,
                     onRetry: () => context
                         .read<SubCategoryBloc>()
@@ -107,12 +131,9 @@ class SubCategoryDetailView extends StatelessWidget {
                 );
               }
 
-              final detail = state.subCategory;
-              final isLoading = state.status == SubCategoryStatus.loading ||
-                  state.status == SubCategoryStatus.initial;
+              final isLoading = status == SubCategoryStatus.loading ||
+                  status == SubCategoryStatus.initial;
 
-              // FIX 3: نرجع SliverMainAxisGroup واحدة بدل ما نرجع
-              // sliver منفردة — BlocBuilder بيرجع widget واحدة بس
               return SliverMainAxisGroup(
                 slivers: [
                   if (isLoading ||
@@ -125,23 +146,22 @@ class SubCategoryDetailView extends StatelessWidget {
                           serviceChildAspectRatio ?? childAspectRatio ?? 0.50,
                       mainAxisExtent: 190.h,
                     ),
-                  if (isLoading || state.products.data.isNotEmpty)
+                  if (isLoading || products.data.isNotEmpty)
                     AppProductsSection(
                       isLoading: isLoading,
-                      products: isLoading ? const [] : state.products.data,
-                      hasMore: isLoading ? false : state.hasMoreProducts,
-                      isLoadingMore: isLoading ? false : state.isLoadingMore,
+                      products: isLoading ? const [] : products.data,
+                      hasMore: isLoading ? false : hasMoreProducts,
+                      isLoadingMore: isLoading ? false : isLoadingMore,
                       crossAxisCount: crossAxisCount,
                       childAspectRatio:
                           productChildAspectRatio ?? childAspectRatio ?? 0.65,
                       mainAxisExtent: productMainAxisExtent ?? mainAxisExtent,
-                      // FIX 10: named method — لا closure جديدة في كل rebuild
                       onLoadMore: isLoading ? null : () => _onLoadMore(context),
                     ),
                   if (!isLoading &&
                       detail != null &&
                       detail.services.isEmpty &&
-                      state.products.data.isEmpty)
+                      products.data.isEmpty)
                     SliverFillRemaining(
                       hasScrollBody: false,
                       child: AppEmptyState(

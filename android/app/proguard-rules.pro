@@ -55,7 +55,7 @@
 -keep public class * extends java.lang.Exception
 
 # Keep model classes (adjust package name as needed)
--keep class com.example.wassaly.** { *; }
+-keep class com.fourthpyramid.wassaly.** { *; }
 
 # Remove logging in release
 -assumenosideeffects class android.util.Log {
