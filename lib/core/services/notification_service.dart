@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
-import 'package:wassaly/core/services/storage_service.dart';
+import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/features/auth/domain/usecases/get_cached_user_usecase.dart';
 
 class NotificationConstants {
   // Channel Keys
@@ -86,6 +86,43 @@ class NotificationService {
 
     // Setup Firebase Messaging foreground listener
     FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
+
+    // Global token refresh listener: cache token and attempt registration
+    FirebaseMessaging.instance.onTokenRefresh.listen((token) async {
+      print('[FCM DEBUG] onTokenRefresh produced token: $token');
+      try {
+        await SecureStorageService.instance
+            .write(NotificationConstants.fcmTokenKey, token);
+      } catch (e) {
+        print('[FCM DEBUG] Failed to write token to secure storage: $e');
+      }
+
+      try {
+        // If there's a cached authenticated user, attempt immediate registration
+        final getCachedUser = sl<GetCachedUserUseCase>();
+        final result = await getCachedUser();
+        final user = result.fold((l) => null, (r) => r);
+        if (user != null) {
+          print(
+              '[FCM DEBUG] User found in cache: ${user.id} - registering token');
+          await FcmTokenRegistrationService.instance.registerToken(
+            userId: user.id.toString(),
+            token: token,
+          );
+        } else {
+          // No user signed in — register guest token so backend can target device
+          print('[FCM DEBUG] No signed user — registering guest token');
+          final success = await FcmTokenRegistrationService.instance
+              .registerGuestToken(token: token);
+          if (!success) {
+            // mark pending so we retry later
+            await DeviceRegistrationService.instance.markTokenPendingSync();
+          }
+        }
+      } catch (e) {
+        print('[FCM DEBUG] onTokenRefresh handling error: $e');
+      }
+    });
   }
 
   Future<void> requestPermission() async {

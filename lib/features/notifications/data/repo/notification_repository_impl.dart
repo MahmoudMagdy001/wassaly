@@ -207,6 +207,35 @@ class NotificationRepositoryImpl implements NotificationRepository {
   }
 
   @override
+  Future<void> registerGuestFcmToken({
+    required String token,
+    required String deviceId,
+  }) async {
+    print('[FCM DEBUG] registerGuestFcmToken called:');
+    print('[FCM DEBUG]   - token: ${token.substring(0, 10)}...');
+    print('[FCM DEBUG]   - deviceId: $deviceId');
+
+    final response = await _dioService.post(
+      '/api/fcm-token',
+      data: {
+        'token': token,
+        'device_id': deviceId,
+      },
+    );
+
+    return response.fold(
+      (failure) {
+        print('[FCM DEBUG] ❌ Guest token request failed: $failure');
+        throw failure;
+      },
+      (response) {
+        print('[FCM DEBUG] ✅ Guest token request successful: $response');
+        return null;
+      },
+    );
+  }
+
+  @override
   Future<bool> getNotificationStatus() async {
     final response = await _dioService.get('/api/notification/status');
 
