@@ -198,40 +198,8 @@ class _AddressCard extends StatelessWidget {
                   prefixIcon:
                       Icon(Icons.delete_outline, color: cs.error, size: 18.r),
                   onPressed: () async {
-                    final confirmed = await context.showAppDialog<bool>(
-                      builder: (ctx) {
-                        if (ctx.isIOS) {
-                          return CupertinoAlertDialog(
-                            title:
-                                Text(context.l10n.profile_delete_address_title),
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                8.verticalSpace,
-                                Text(
-                                  context.l10n.profile_delete_address_message(
-                                      address.title),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
-                            ),
-                            actions: [
-                              CupertinoDialogAction(
-                                onPressed: () => Navigator.of(ctx).pop(false),
-                                child: Text(context.l10n.shared_cancel),
-                              ),
-                              CupertinoDialogAction(
-                                onPressed: () => Navigator.of(ctx).pop(true),
-                                isDestructiveAction: true,
-                                child: Text(context.l10n.shared_delete),
-                              ),
-                            ],
-                          );
-                        }
-
-                        return _DeleteAddressDialog(
-                            addressTitle: address.title);
-                      },
+                    final confirmed = await showAppDialog<bool>(
+                      child: _DeleteAddressDialog(addressTitle: address.title),
                     );
 
                     if (!context.mounted) return;

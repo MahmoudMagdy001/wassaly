@@ -20,12 +20,18 @@ class SessionListenerWrapper extends StatelessWidget {
           return;
         }
         if (state is SessionAuthenticated) {
+          print(
+              '[FCM DEBUG] 🔐 SessionAuthenticated - User logged in: ${state.user.id}');
           // Load data for the new user
           context.read<ProfileBloc>().add(const ProfileFetched());
           context.read<CartBloc>().add(const LoadCartItemsEvent());
           context.read<FavoriteBloc>().add(const GetFavoritesEvent());
+          NotificationLifecycleService.instance
+              .registerUserNotifications(state.user.id);
           appRouter.go(AppRoutes.home);
         } else if (state is SessionUnauthenticated) {
+          print('[FCM DEBUG] 🚪 SessionUnauthenticated - User logged out');
+          NotificationLifecycleService.instance.unregister();
           // Clear data when user logs out
           context.read<ProfileBloc>().add(const ProfileReset());
           context.read<CartBloc>().add(const ClearCartEvent());

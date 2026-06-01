@@ -32,8 +32,11 @@ class ServiceReviewsPage extends StatelessWidget {
                 : state.reviewActionMessage == 'product_details_review_updated'
                     ? context.l10n.product_details_review_updated
                     : state.reviewActionMessage;
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(message)),
+            context.showTypedSnackBar(
+              message,
+              type: state.reviewActionStatus == ReviewActionStatus.success
+                  ? SnackBarType.success
+                  : SnackBarType.error,
             );
           }
         },

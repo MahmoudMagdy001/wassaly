@@ -46,17 +46,15 @@ class AppReviewsPage extends StatelessWidget {
             previous.actionStatus != current.actionStatus,
         listener: (context, state) {
           if (state.actionStatus.isSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(context.l10n.product_details_review_created),
-              ),
+            context.showTypedSnackBar(
+              context.l10n.product_details_review_created,
+              type: SnackBarType.success,
             );
           } else if (state.actionStatus.isFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.actionErrorMessage ??
-                    context.l10n.errors_something_went_wrong),
-              ),
+            context.showTypedSnackBar(
+              state.actionErrorMessage ??
+                  context.l10n.errors_something_went_wrong,
+              type: SnackBarType.error,
             );
           }
         },

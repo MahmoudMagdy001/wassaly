@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../shared/enums/snack_bar_type.dart';
+import '../shared/helpers/show_toast.dart';
 import '../theme/color_schemes.dart';
 
 extension ContextExtension on BuildContext {
@@ -117,6 +118,24 @@ extension ContextExtension on BuildContext {
     SnackBarType type = SnackBarType.info,
     Duration duration = const Duration(seconds: 3),
   }) {
+    // On iOS use the toast-style UI; otherwise use Material SnackBar.
+    if (isIOS) {
+      final status = switch (type) {
+        SnackBarType.success => 'success',
+        SnackBarType.warning => 'warning',
+        SnackBarType.error => 'error',
+        SnackBarType.info => 'info',
+      };
+      showToast(
+        this,
+        message: message,
+        status: status,
+        duration: duration,
+        autoDismiss: true,
+      );
+      return;
+    }
+
     final bg = switch (type) {
       SnackBarType.success => appColors.success,
       SnackBarType.warning => appColors.warning,

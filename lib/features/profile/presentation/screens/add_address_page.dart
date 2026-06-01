@@ -108,8 +108,13 @@ class _AddAddressViewState extends State<_AddAddressView> {
                     : context.l10n.profile_address_added,
                 type: SnackBarType.success,
               );
-              // Return true to indicate successful address creation
-              context.pop(true);
+              // Delay pop to avoid "Looking up a deactivated widget's ancestor is unsafe"
+              // when BlocSelector rebuilds synchronously in the same frame.
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (context.mounted) {
+                  context.pop(true);
+                }
+              });
             } else if (state.addressStatus.isFailure &&
                 state.addressError != null) {
               context.showTypedSnackBar(state.addressError!,
@@ -214,10 +219,7 @@ class _AddAddressViewState extends State<_AddAddressView> {
               items: governorates.map((g) {
                 return DropdownMenuItem(
                   value: g.id,
-                  child: Text(
-                    g.name,
-                    style: const TextStyle(),
-                  ),
+                  child: Text(g.name),
                 );
               }).toList(),
               onChanged: governorateStatus.isLoading

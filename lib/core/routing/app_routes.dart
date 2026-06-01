@@ -28,10 +28,11 @@ abstract final class AppRoutes {
   static const String orders = '/profile/orders';
   static const String orderDetails = '/profile/orders/details';
   static const String bookingDetails = '/profile/bookings/details';
-  static const String addAddress = '/profile/addresses/add';
+  static const String addAddress = '/add-address';
   static const String privacyPolicy = '/privacy-policy';
   static const String termsOfService = '/terms-of-service';
   static const String appReviews = '/profile/app-reviews';
+  static const String notifications = '/profile/notifications';
 
   // SubCategory
   static const String subCategory = '/sub-category';

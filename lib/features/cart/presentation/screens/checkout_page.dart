@@ -33,11 +33,9 @@ class CheckoutPage extends StatelessWidget {
           }
         } else if (state.status == CheckoutStatus.error &&
             state.errorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.errorMessage!),
-              backgroundColor: cs.error,
-            ),
+          context.showTypedSnackBar(
+            state.errorMessage!,
+            type: SnackBarType.error,
           );
         }
       },

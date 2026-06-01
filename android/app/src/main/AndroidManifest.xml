@@ -5,6 +5,11 @@
     <!-- Required for camera functionality in system_asset_picker -->
     <uses-permission android:name="android.permission.CAMERA" />
 
+    <!-- Required for Notifications -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
     <application
         android:label="وصّلي"
         android:name="${applicationName}"

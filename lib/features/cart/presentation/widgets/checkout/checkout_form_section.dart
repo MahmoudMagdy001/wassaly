@@ -15,6 +15,8 @@ class _CheckoutFormSectionState extends State<CheckoutFormSection> {
   late final TextEditingController _addressController;
   late final TextEditingController _regionController;
 
+  bool _isNavigating = false;
+
   @override
   void initState() {
     super.initState();
@@ -120,13 +122,21 @@ class _CheckoutFormSectionState extends State<CheckoutFormSection> {
                     ),
                     TextButton.icon(
                       onPressed: () async {
-                        final success =
-                            await context.push(AppRoutes.addAddress);
-                        if (success == true) {
-                          if (context.mounted) {
-                            context
-                                .read<CheckoutBloc>()
-                                .add(const CheckoutAddressesRefreshed());
+                        if (_isNavigating) return;
+                        _isNavigating = true;
+                        try {
+                          final success =
+                              await context.push(AppRoutes.addAddress);
+                          if (success == true) {
+                            if (context.mounted) {
+                              context
+                                  .read<CheckoutBloc>()
+                                  .add(const CheckoutAddressesRefreshed());
+                            }
+                          }
+                        } finally {
+                          if (mounted) {
+                            _isNavigating = false;
                           }
                         }
                       },
@@ -287,13 +297,21 @@ class _CheckoutFormSectionState extends State<CheckoutFormSection> {
                         height: ButtonSize.small,
                         prefixIcon: const Icon(Icons.add),
                         onPressed: () async {
-                          final success =
-                              await context.push(AppRoutes.addAddress);
-                          if (success == true) {
-                            if (context.mounted) {
-                              context
-                                  .read<CheckoutBloc>()
-                                  .add(const CheckoutAddressesRefreshed());
+                          if (_isNavigating) return;
+                          _isNavigating = true;
+                          try {
+                            final success =
+                                await context.push(AppRoutes.addAddress);
+                            if (success == true) {
+                              if (context.mounted) {
+                                context
+                                    .read<CheckoutBloc>()
+                                    .add(const CheckoutAddressesRefreshed());
+                              }
+                            }
+                          } finally {
+                            if (mounted) {
+                              _isNavigating = false;
                             }
                           }
                         },

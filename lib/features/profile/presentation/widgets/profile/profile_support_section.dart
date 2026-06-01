@@ -34,6 +34,11 @@ class ProfileSupportSection extends StatelessWidget {
                   onTap: () {},
                 ),
                 ProfileMenuTile(
+                  icon: Icons.notifications_outlined,
+                  title: context.l10n.profile_notifications,
+                  onTap: () => context.push(AppRoutes.notifications),
+                ),
+                ProfileMenuTile(
                   icon: Icons.reviews_outlined,
                   title: context.l10n.profile_app_reviews,
                   onTap: () => context.push(AppRoutes.appReviews),

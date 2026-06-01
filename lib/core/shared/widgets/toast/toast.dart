@@ -49,7 +49,7 @@ class ToastBar {
   final Curve? animationCurve;
 
   /// Info on each toast.
-  late final SnackBarInfo info;
+  late SnackBarInfo info;
 
   /// Initialise ToastBar with required parameters.
   ToastBar({
@@ -65,34 +65,76 @@ class ToastBar {
 
   /// Remove individual toastBars on dismiss.
   void remove() {
-    info.entry.remove();
+    try {
+      info.entry.remove();
+    } catch (_) {
+      // Entry may have already been removed (e.g. after a navigator pop).
+    }
     _toastBars.removeWhere((element) => element == this);
+    // Prune any other stale entries whose state has been disposed.
+    _toastBars = _toastBars.clean();
   }
 
   /// Push the toast in current context.
   void show(BuildContext context) {
-    final OverlayState overlayState = Navigator.of(context).overlay!;
-    info = SnackBarInfo(
-      key: GlobalKey<RawToastState>(),
-      createdAt: DateTime.now(),
-    );
-    info.entry = OverlayEntry(
-      builder: (_) => RawToast(
-        key: info.key,
-        animationDuration: animationDuration,
-        toastPosition: position,
-        animationCurve: animationCurve,
-        autoDismiss: autoDismiss,
-        getPosition: () => calculatePosition(_toastBars, this),
-        getscaleFactor: () => calculateScaleFactor(_toastBars, this),
-        snackbarDuration: toastDuration,
-        onRemove: remove,
-        child: builder.call(context),
-      ),
-    );
+    // Prune stale toasts (disposed after navigator pops / modal closes) BEFORE
+    // inserting. This is the primary guard against the
+    // `!keyReservation.contains(key)` assertion on iOS, which occurs when a
+    // GlobalKey from a dead AnimatedPositioned is still considered "reserved".
+    _toastBars = _toastBars.clean();
 
-    _toastBars.add(this);
-    overlayState.insert(info.entry);
+    // Build an OverlayEntry with a brand-new GlobalKey each time.
+    OverlayEntry buildEntry(GlobalKey<RawToastState> key) => OverlayEntry(
+          builder: (_) => RawToast(
+            key: key,
+            animationDuration: animationDuration,
+            toastPosition: position,
+            animationCurve: animationCurve,
+            autoDismiss: autoDismiss,
+            getPosition: () => calculatePosition(_toastBars, this),
+            getscaleFactor: () => calculateScaleFactor(_toastBars, this),
+            snackbarDuration: toastDuration,
+            onRemove: remove,
+            child: builder.call(context),
+          ),
+        );
+
+    // Attempt insertion, retrying with a freshly generated GlobalKey if the
+    // Navigator complains about key reservation. This avoids a hard crash in
+    // rare races where the same GlobalKey is observed as already reserved.
+    // Also fetch fresh overlay state on each attempt to handle stale overlays.
+    const maxAttempts = 3;
+    for (var attempt = 0; attempt < maxAttempts; attempt++) {
+      try {
+        // Resolve the best overlay: prefer the root navigator overlay so that
+        // toasts shown from inside a modal are still inserted at the root level
+        // (avoids stale-overlay issues when the modal is dismissed).
+        final rootCtx = rootContext;
+        OverlayState? overlayState;
+        if (rootCtx != null && rootCtx.mounted) {
+          overlayState = Navigator.maybeOf(rootCtx)?.overlay;
+        }
+        // Fall back to the provided context's navigator overlay.
+        if (overlayState == null && context.mounted) {
+          overlayState = Navigator.maybeOf(context)?.overlay;
+        }
+        if (overlayState == null) return; // No overlay available; skip toast.
+
+        final key = GlobalKey<RawToastState>();
+        info = SnackBarInfo(key: key, createdAt: DateTime.now());
+        info.entry = buildEntry(info.key);
+
+        _toastBars.add(this);
+        overlayState.insert(info.entry);
+        break;
+      } catch (e) {
+        // Clean up this entry and prune stale ones before retrying.
+        _toastBars.removeWhere((element) => element == this);
+        _toastBars = _toastBars.clean();
+        if (attempt == maxAttempts - 1) rethrow;
+        // Otherwise, try again with a fresh overlay and new key.
+      }
+    }
   }
 
   /// Remove all the toasts in the context.

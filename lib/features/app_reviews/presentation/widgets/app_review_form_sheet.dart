@@ -115,10 +115,9 @@ class _AppReviewFormSheetState extends State<AppReviewFormSheet> {
   void _submit() {
     final comment = _commentController.text.trim();
     if (comment.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content:
-                Text(context.l10n.product_details_review_comment_required)),
+      context.showTypedSnackBar(
+        context.l10n.product_details_review_comment_required,
+        type: SnackBarType.error,
       );
       return;
     }

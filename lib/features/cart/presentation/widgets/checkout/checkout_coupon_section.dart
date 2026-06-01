@@ -33,11 +33,9 @@ class _CheckoutCouponSectionState extends State<CheckoutCouponSection> {
           prev.couponError != curr.couponError && curr.couponError != null,
       listener: (context, state) {
         if (state.couponError != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.couponError!),
-              backgroundColor: cs.error,
-            ),
+          context.showTypedSnackBar(
+            state.couponError!,
+            type: SnackBarType.error,
           );
         }
       },

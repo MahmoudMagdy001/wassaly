@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get_it/get_it.dart';
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/auth/data/datasources/auth_local_datasource.dart';
@@ -35,10 +36,23 @@ import 'package:wassaly/features/sub_category/domain/repositories/sub_category_r
 import 'package:wassaly/features/sub_category/domain/usecases/get_sub_category_detail_usecase.dart';
 import 'package:wassaly/features/sub_category/presentation/bloc/sub_category_bloc.dart';
 
+import '../../features/app_reviews/data/datasources/app_reviews_remote_datasource.dart';
+import '../../features/app_reviews/data/repositories/app_reviews_repository_impl.dart';
+import '../../features/app_reviews/domain/repositories/app_reviews_repository.dart';
+import '../../features/app_reviews/domain/usecases/add_app_review_usecase.dart';
+import '../../features/app_reviews/domain/usecases/get_app_reviews_usecase.dart';
+import '../../features/app_reviews/domain/usecases/update_app_review_usecase.dart';
+import '../../features/app_reviews/presentation/bloc/app_reviews_bloc.dart';
 import '../../features/auth/domain/usecases/clear_user_session_usecase.dart';
 import '../../features/auth/domain/usecases/get_cached_user_usecase.dart';
 import '../../features/auth/domain/usecases/google_login_usecase.dart';
 import '../../features/auth/presentation/bloc/google_login/google_login_bloc.dart';
+import '../../features/brands/data/datasources/brands_remote_datasource.dart';
+import '../../features/brands/data/repositories/brands_repository_impl.dart';
+import '../../features/brands/domain/repositories/brands_repository.dart';
+import '../../features/brands/domain/usecases/get_brand_products_usecase.dart';
+import '../../features/brands/domain/usecases/get_brands_usecase.dart';
+import '../../features/brands/presentation/bloc/brands_bloc.dart';
 import '../../features/cart/data/datasources/cart_local_datasource.dart';
 import '../../features/cart/data/datasources/cart_remote_datasource.dart';
 import '../../features/cart/data/repositories/cart_repository_impl.dart';
@@ -67,6 +81,28 @@ import '../../features/home/domain/usecases/get_categories_usecase.dart';
 import '../../features/home/domain/usecases/get_popular_services_usecase.dart';
 import '../../features/home/domain/usecases/get_products_usecase.dart';
 import '../../features/home/presentation/bloc/home_bloc.dart';
+import '../../features/notifications/data/repo/notification_repository_impl.dart';
+import '../../features/notifications/domain/repositories/notification_repository.dart';
+import '../../features/notifications/domain/usecases/clear_notification_history_usecase.dart';
+import '../../features/notifications/domain/usecases/get_notification_history_usecase.dart';
+import '../../features/notifications/domain/usecases/mark_notification_read_usecase.dart';
+import '../../features/notifications/domain/usecases/save_notification_usecase.dart';
+import '../../features/notifications/presentation/bloc/notifications/notifications_bloc.dart';
+import '../../features/offers/data/datasources/offers_remote_datasource.dart';
+import '../../features/offers/data/repositories/offers_repository_impl.dart';
+import '../../features/offers/domain/repositories/offers_repository.dart';
+import '../../features/offers/domain/usecases/get_offers_use_case.dart';
+import '../../features/offers/presentation/bloc/offers_bloc.dart';
+import '../../features/orders/data/datasources/orders_remote_datasource.dart';
+import '../../features/orders/data/repositories/orders_repository_impl.dart';
+import '../../features/orders/domain/repositories/orders_repository.dart';
+import '../../features/orders/domain/usecases/cancel_order_usecase.dart';
+import '../../features/orders/domain/usecases/delete_order_usecase.dart';
+import '../../features/orders/domain/usecases/get_order_details_usecase.dart';
+import '../../features/orders/domain/usecases/get_orders_usecase.dart';
+import '../../features/orders/domain/usecases/update_order_usecase.dart';
+import '../../features/orders/presentation/bloc/order_detail/order_detail_bloc.dart';
+import '../../features/orders/presentation/bloc/orders_bloc.dart';
 import '../../features/product_details/data/datasources/product_details_remote_datasource.dart';
 import '../../features/product_details/data/repositories/product_details_repository_impl.dart';
 import '../../features/product_details/domain/repositories/product_details_repository.dart';
@@ -74,6 +110,11 @@ import '../../features/product_details/domain/usecases/create_product_review_use
 import '../../features/product_details/domain/usecases/get_product_details_usecase.dart';
 import '../../features/product_details/domain/usecases/update_product_review_usecase.dart';
 import '../../features/product_details/presentation/bloc/product_details_bloc.dart';
+import '../../features/products_filter/data/datasources/products_filter_remote_datasource.dart';
+import '../../features/products_filter/data/repositories/products_filter_repository_impl.dart';
+import '../../features/products_filter/domain/repositories/products_filter_repository.dart';
+import '../../features/products_filter/domain/usecases/get_filtered_products_usecase.dart';
+import '../../features/products_filter/presentation/bloc/products_filter_bloc.dart';
 import '../../features/profile/data/datasources/profile_remote_datasource.dart';
 import '../../features/profile/data/repositories/profile_repository_impl.dart';
 import '../../features/profile/domain/repositories/profile_repository.dart';
@@ -88,68 +129,35 @@ import '../../features/profile/domain/usecases/update_address_usecase.dart';
 import '../../features/profile/domain/usecases/update_profile_usecase.dart';
 import '../../features/profile/presentation/bloc/profile/profile_bloc.dart';
 import '../../features/profile/presentation/bloc/settings/settings_bloc.dart';
-import '../../features/search/data/datasources/search_remote_datasource.dart';
-import '../../features/search/data/repositories/search_repository_impl.dart';
-import '../../features/search/domain/repositories/search_repository.dart';
-import '../../features/search/domain/usecases/search_products_usecase.dart';
-import '../../features/search/presentation/bloc/search_bloc.dart';
-import '../../features/orders/data/datasources/orders_remote_datasource.dart';
-import '../../features/orders/data/repositories/orders_repository_impl.dart';
-import '../../features/orders/domain/repositories/orders_repository.dart';
-import '../../features/orders/domain/usecases/get_orders_usecase.dart';
-import '../../features/orders/domain/usecases/get_order_details_usecase.dart';
-import '../../features/orders/domain/usecases/cancel_order_usecase.dart';
-import '../../features/orders/domain/usecases/update_order_usecase.dart';
-import '../../features/orders/domain/usecases/delete_order_usecase.dart';
-import '../../features/orders/presentation/bloc/orders_bloc.dart';
-import '../../features/orders/presentation/bloc/order_detail/order_detail_bloc.dart';
-import '../../features/service_details/data/datasources/service_details_remote_datasource.dart';
-import '../../features/service_details/data/repositories/service_details_repository_impl.dart';
-import '../../features/service_details/domain/repositories/service_details_repository.dart';
-import '../../features/service_details/domain/usecases/get_service_details_usecase.dart';
-import '../../features/service_details/domain/usecases/toggle_service_favorite_usecase.dart'
-    as detail_favorite;
-import '../../features/service_details/domain/usecases/create_service_review_usecase.dart';
-import '../../features/service_details/domain/usecases/update_service_review_usecase.dart';
-import '../../features/service_details/presentation/bloc/service_details_bloc.dart';
-import '../../features/service_booking/data/datasources/booking_remote_datasource.dart';
-import '../../features/service_booking/data/repositories/booking_repository_impl.dart';
-import '../../features/service_booking/domain/repositories/booking_repository.dart';
-import '../../features/service_booking/domain/usecases/create_booking_usecase.dart';
-import '../../features/service_booking/domain/usecases/get_my_bookings_usecase.dart';
-import '../../features/service_booking/domain/usecases/update_booking_usecase.dart';
-import '../../features/service_booking/domain/usecases/cancel_booking_usecase.dart';
-import '../../features/service_booking/domain/usecases/delete_booking_usecase.dart';
-import '../../features/service_booking/presentation/bloc/service_booking_bloc.dart';
-import '../../features/service_booking/presentation/bloc/booking_detail/booking_detail_bloc.dart';
 import '../../features/provider_details/data/datasources/provider_details_remote_datasource.dart';
 import '../../features/provider_details/data/repositories/provider_details_repository_impl.dart';
 import '../../features/provider_details/domain/repositories/provider_details_repository.dart';
 import '../../features/provider_details/domain/usecases/get_provider_details_usecase.dart';
 import '../../features/provider_details/presentation/bloc/provider_details_bloc.dart';
-import '../../features/brands/data/datasources/brands_remote_datasource.dart';
-import '../../features/brands/data/repositories/brands_repository_impl.dart';
-import '../../features/brands/domain/repositories/brands_repository.dart';
-import '../../features/brands/domain/usecases/get_brand_products_usecase.dart';
-import '../../features/brands/domain/usecases/get_brands_usecase.dart';
-import '../../features/brands/presentation/bloc/brands_bloc.dart';
-import '../../features/offers/data/datasources/offers_remote_datasource.dart';
-import '../../features/offers/data/repositories/offers_repository_impl.dart';
-import '../../features/offers/domain/repositories/offers_repository.dart';
-import '../../features/offers/domain/usecases/get_offers_use_case.dart';
-import '../../features/offers/presentation/bloc/offers_bloc.dart';
-import '../../features/app_reviews/data/datasources/app_reviews_remote_datasource.dart';
-import '../../features/app_reviews/data/repositories/app_reviews_repository_impl.dart';
-import '../../features/app_reviews/domain/repositories/app_reviews_repository.dart';
-import '../../features/app_reviews/domain/usecases/get_app_reviews_usecase.dart';
-import '../../features/app_reviews/domain/usecases/add_app_review_usecase.dart';
-import '../../features/app_reviews/domain/usecases/update_app_review_usecase.dart';
-import '../../features/app_reviews/presentation/bloc/app_reviews_bloc.dart';
-import '../../features/products_filter/data/datasources/products_filter_remote_datasource.dart';
-import '../../features/products_filter/data/repositories/products_filter_repository_impl.dart';
-import '../../features/products_filter/domain/repositories/products_filter_repository.dart';
-import '../../features/products_filter/domain/usecases/get_filtered_products_usecase.dart';
-import '../../features/products_filter/presentation/bloc/products_filter_bloc.dart';
+import '../../features/search/data/datasources/search_remote_datasource.dart';
+import '../../features/search/data/repositories/search_repository_impl.dart';
+import '../../features/search/domain/repositories/search_repository.dart';
+import '../../features/search/domain/usecases/search_products_usecase.dart';
+import '../../features/search/presentation/bloc/search_bloc.dart';
+import '../../features/service_booking/data/datasources/booking_remote_datasource.dart';
+import '../../features/service_booking/data/repositories/booking_repository_impl.dart';
+import '../../features/service_booking/domain/repositories/booking_repository.dart';
+import '../../features/service_booking/domain/usecases/cancel_booking_usecase.dart';
+import '../../features/service_booking/domain/usecases/create_booking_usecase.dart';
+import '../../features/service_booking/domain/usecases/delete_booking_usecase.dart';
+import '../../features/service_booking/domain/usecases/get_my_bookings_usecase.dart';
+import '../../features/service_booking/domain/usecases/update_booking_usecase.dart';
+import '../../features/service_booking/presentation/bloc/booking_detail/booking_detail_bloc.dart';
+import '../../features/service_booking/presentation/bloc/service_booking_bloc.dart';
+import '../../features/service_details/data/datasources/service_details_remote_datasource.dart';
+import '../../features/service_details/data/repositories/service_details_repository_impl.dart';
+import '../../features/service_details/domain/repositories/service_details_repository.dart';
+import '../../features/service_details/domain/usecases/create_service_review_usecase.dart';
+import '../../features/service_details/domain/usecases/get_service_details_usecase.dart';
+import '../../features/service_details/domain/usecases/toggle_service_favorite_usecase.dart'
+    as detail_favorite;
+import '../../features/service_details/domain/usecases/update_service_review_usecase.dart';
+import '../../features/service_details/presentation/bloc/service_details_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -314,6 +322,14 @@ void initDependencies() {
         sl(),
       ));
 
+  // Notifications
+  sl.registerFactory(() => NotificationsBloc(
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+      ));
+
   // Products Filter
   sl.registerFactory(() => ProductsFilterBloc(
         getFilteredProductsUseCase: sl(),
@@ -419,6 +435,11 @@ void initDependencies() {
   sl.registerLazySingleton(() => AddAppReviewUseCase(sl()));
   sl.registerLazySingleton(() => UpdateAppReviewUseCase(sl()));
 
+  sl.registerLazySingleton(() => SaveNotificationUseCase(sl()));
+  sl.registerLazySingleton(() => GetNotificationHistoryUseCase(sl()));
+  sl.registerLazySingleton(() => MarkNotificationReadUseCase(sl()));
+  sl.registerLazySingleton(() => ClearNotificationHistoryUseCase(sl()));
+
   // Products Filter
   sl.registerLazySingleton(() => GetFilteredProductsUseCase(sl()));
 
@@ -452,6 +473,14 @@ void initDependencies() {
   sl.registerLazySingleton<OffersRepository>(() => OffersRepositoryImpl(sl()));
   sl.registerLazySingleton<AppReviewsRepository>(
       () => AppReviewsRepositoryImpl(sl()));
+
+  sl.registerLazySingleton<NotificationRepository>(
+      () => NotificationRepositoryImpl(
+            firebaseMessaging: FirebaseMessaging.instance,
+            secureStorage: SecureStorageService.instance,
+            storage: StorageService.instance,
+            dioService: DioService.instance,
+          ));
 
   sl.registerLazySingleton<ProductsFilterRepository>(
       () => ProductsFilterRepositoryImpl(sl()));

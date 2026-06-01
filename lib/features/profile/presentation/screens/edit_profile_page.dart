@@ -181,7 +181,11 @@ class _EditProfileViewState extends State<_EditProfileView> {
                     type: SnackBarType.success);
                 try {
                   if (context.mounted && context.canPop()) {
-                    context.pop();
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      if (context.mounted && context.canPop()) {
+                        context.pop();
+                      }
+                    });
                   }
                 } catch (_) {}
               }

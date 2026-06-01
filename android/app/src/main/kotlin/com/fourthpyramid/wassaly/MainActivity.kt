@@ -1,4 +1,4 @@
-package com.example.wassaly
+package com.fourthpyramid.wassaly
 
 import io.flutter.embedding.android.FlutterActivity
 
