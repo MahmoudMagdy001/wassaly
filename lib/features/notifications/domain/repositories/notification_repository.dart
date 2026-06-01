@@ -12,6 +12,13 @@ abstract class NotificationRepository {
     required String token,
     required String userId,
   });
+
+  /// Register a FCM token for unauthenticated (guest) device.
+  /// Backend will store token associated with device_id for guest notifications.
+  Future<void> registerGuestFcmToken({
+    required String token,
+    required String deviceId,
+  });
   Stream<String> onTokenRefresh();
   Future<bool> getNotificationStatus();
   Future<List<NotificationEntity>> fetchNotifications();

@@ -48,6 +48,41 @@ class FcmTokenRegistrationService {
     }
   }
 
+  /// Register token for unauthenticated guest device.
+  Future<bool> registerGuestToken({String? token}) async {
+    try {
+      final fcmToken = token ?? await _repository.getAndCacheFcmToken();
+      print('[FCM DEBUG] registerGuestToken retrieved token: $fcmToken');
+      if (fcmToken == null || fcmToken.isEmpty) {
+        print(
+            '[FCM DEBUG] Guest token null - marking pending and scheduling retry');
+        try {
+          await DeviceRegistrationService.instance.markTokenPendingSync();
+        } catch (_) {}
+        _scheduleRetry();
+        return false;
+      }
+
+      final deviceId = await DeviceRegistrationService.instance.getDeviceId();
+      try {
+        await _repository.registerGuestFcmToken(
+            token: fcmToken, deviceId: deviceId);
+        print('[FCM DEBUG] ✅ Guest token registration successful');
+        await DeviceRegistrationService.instance.markTokenSynced(fcmToken);
+        return true;
+      } catch (e) {
+        print('[FCM DEBUG] ❌ Guest token registration failed: $e');
+        await DeviceRegistrationService.instance.markTokenPendingSync();
+        _scheduleRetry();
+        return false;
+      }
+    } catch (e) {
+      print('[FCM DEBUG] ❌ Error in registerGuestToken: $e');
+      _scheduleRetry();
+      return false;
+    }
+  }
+
   /// Verify token hasn't changed since last app start and sync if needed.
   /// Called on app resume/startup to ensure backend always has latest token.
   Future<void> verifyAndSyncToken(String userId) async {
