@@ -1,10 +1,12 @@
 import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/features/notifications/domain/repositories/notification_repository.dart';
 
 part 'settings_event.dart';
 part 'settings_state.dart';
 
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final StorageService _storage;
+  final NotificationRepository _notificationRepository;
 
   static const String _languageKey = 'app_language';
   static const String _themeKey = 'is_dark_mode';
@@ -12,7 +14,9 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
   SettingsBloc({
     required StorageService storage,
+    required NotificationRepository notificationRepository,
   })  : _storage = storage,
+        _notificationRepository = notificationRepository,
         super(const SettingsState()) {
     on<SettingsInitialized>(_onSettingsInitialized);
     on<LanguageToggled>(_onLanguageToggled);
@@ -72,8 +76,12 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     SettingsNotificationsToggled event,
     Emitter<SettingsState> emit,
   ) async {
-    await _storage.setBool(_notificationsKey, event.enabled);
-
-    emit(state.copyWith(notificationsEnabled: event.enabled));
+    try {
+      await _notificationRepository.setNotificationsEnabled(event.enabled);
+      await _storage.setBool(_notificationsKey, event.enabled);
+      emit(state.copyWith(notificationsEnabled: event.enabled));
+    } catch (e) {
+      print('[SettingsBloc DEBUG] Error toggling notification: $e');
+    }
   }
 }

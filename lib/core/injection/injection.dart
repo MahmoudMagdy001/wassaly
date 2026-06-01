@@ -199,6 +199,7 @@ void initDependencies() {
       ));
   sl.registerLazySingleton(() => SettingsBloc(
         storage: StorageService.instance,
+        notificationRepository: sl(),
       ));
   sl.registerFactory(() => HomeBloc(
         getBannersUseCase: sl(),

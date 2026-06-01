@@ -22,6 +22,10 @@ class _NotificationAppLifecycleHandlerState
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      print('[FCM DEBUG] 🚀 App startup - verifying token');
+      _verifyNotificationsOnResume();
+    });
   }
 
   @override
@@ -45,12 +49,14 @@ class _NotificationAppLifecycleHandlerState
 
     if (sessionState is SessionAuthenticated) {
       print(
-          '[FCM DEBUG] ✅ User authenticated on resume - userId: ${sessionState.user.id}');
+          '[FCM DEBUG] ✅ User authenticated on resume/startup - userId: ${sessionState.user.id}');
       NotificationLifecycleService.instance
           .verifyNotificationsOnResume(sessionState.user.id);
     } else {
       print(
-          '[FCM DEBUG] ⚠️ User not authenticated on resume - skipping token verification');
+          '[FCM DEBUG] ℹ️ User not authenticated on resume/startup - verifying guest token');
+      NotificationLifecycleService.instance
+          .verifyGuestNotificationsOnResume();
     }
   }
 

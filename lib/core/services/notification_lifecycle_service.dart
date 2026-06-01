@@ -72,13 +72,33 @@ class NotificationLifecycleService {
     }
   }
 
+  /// Called on app startup/resume for guests to verify token is still valid.
+  /// Re-syncs guest token if it changed or if there are pending updates.
+  Future<void> verifyGuestNotificationsOnResume() async {
+    try {
+      await FcmTokenRegistrationService.instance.verifyAndSyncGuestToken();
+    } catch (_) {
+      // Silently fail - will retry on next resume
+    }
+  }
+
   /// Called on user logout.
-  /// Unlinks device from user and stops listening to token changes.
+  /// Unlinks device from user, stops listening to token changes, and registers guest notifications.
   Future<void> unregister() async {
     await _cancelTokenRefreshSubscription();
 
     // Unlink device from user account
     await FcmTokenRegistrationService.instance.unlinkDevice();
+
+    // Immediately fetch a clean guest token and register it
+    try {
+      final guestToken = await _repository.getAndCacheFcmToken();
+      if (guestToken != null && guestToken.isNotEmpty) {
+        await FcmTokenRegistrationService.instance.registerGuestToken(token: guestToken);
+      }
+    } catch (e) {
+      print('[FCM DEBUG] ❌ Error registering guest token after logout: $e');
+    }
   }
 
   void _listenForTokenRefresh(String userId) {

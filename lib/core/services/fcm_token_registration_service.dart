@@ -112,6 +112,35 @@ class FcmTokenRegistrationService {
     }
   }
 
+  /// Verify guest token hasn't changed since last app start and sync if needed.
+  /// Called on app resume/startup for guests to ensure backend has latest guest token.
+  Future<void> verifyAndSyncGuestToken() async {
+    print('[FCM DEBUG] 🔄 verifyAndSyncGuestToken called');
+    try {
+      final deviceRegService = DeviceRegistrationService.instance;
+      final currentToken = await _repository.getAndCacheFcmToken();
+      print('[FCM DEBUG] Current guest token: ${currentToken?.substring(0, 10)}...');
+
+      if (currentToken == null || currentToken.isEmpty) {
+        print('[FCM DEBUG] ⚠️ Current guest token is null/empty');
+        return;
+      }
+
+      // Check if token changed or has pending sync
+      if (deviceRegService.shouldSyncToken(currentToken) ||
+          deviceRegService.hasPendingSync()) {
+        print(
+            '[FCM DEBUG] 🔃 Guest token changed or pending sync detected - re-registering');
+        await registerGuestToken(token: currentToken);
+      } else {
+        print('[FCM DEBUG] ✅ Guest token unchanged - no sync needed');
+      }
+    } catch (e) {
+      print('[FCM DEBUG] ❌ Error in verifyAndSyncGuestToken: $e');
+      // Silently fail - retry will happen next app resume
+    }
+  }
+
   /// Unlink device from user (called on logout).
   /// Clears registration state but keeps device ID for future logins.
   Future<void> unlinkDevice() async {
