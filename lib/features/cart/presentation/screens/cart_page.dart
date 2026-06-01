@@ -4,250 +4,160 @@ import 'package:wassaly/features/cart/presentation/bloc/cart_bloc.dart';
 import 'package:wassaly/features/cart/presentation/bloc/cart_event.dart';
 import 'package:wassaly/features/cart/presentation/bloc/cart_state.dart';
 import 'package:wassaly/features/cart/presentation/widgets/cart_item_widget.dart';
+import 'package:wassaly/features/cart/presentation/widgets/cart_shimmer.dart';
+import 'package:wassaly/features/cart/presentation/widgets/empty_cart_widget.dart';
+import 'package:wassaly/features/cart/presentation/widgets/cart_order_summary.dart';
+import 'package:wassaly/features/profile/presentation/bloc/profile/profile_bloc.dart';
 
-class CartPage extends StatefulWidget {
+class CartPage extends StatelessWidget {
   const CartPage({super.key});
 
   @override
-  State<CartPage> createState() => _CartPageState();
-}
-
-class _CartPageState extends State<CartPage> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<CartBloc>().add(const LoadCartItemsEvent());
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.theme.colorScheme.surfaceContainerHighest,
-      appBar: AppBar(
-        title: Text(
-          'cart.cart_title'.tr(),
-          style: context.typography.titleLarge,
-        ),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: context.theme.colorScheme.surface,
-      ),
-      body: BlocBuilder<CartBloc, CartState>(
-        buildWhen: (previous, current) =>
-            previous.status != current.status ||
-            previous.items != current.items,
-        builder: (context, state) {
-          if (state.isLoading) {
-            return const Center(child: AppLoading());
-          }
+    final profileBloc = sl<ProfileBloc>();
+    final cartBloc = context.read<CartBloc>();
 
-          if (state.isError) {
-            return Center(
-              child: AppErrorWidget(
-                message: state.errorMessage ?? 'cart.error_loading_cart'.tr(),
-                onRetry: () =>
-                    context.read<CartBloc>().add(const LoadCartItemsEvent()),
-              ),
-            );
-          }
+    // Initialization logic moved to build (only runs once if state is initial)
+    if (cartBloc.state.status == CartStatus.initial) {
+      cartBloc.add(const LoadCartItemsEvent());
+    }
 
-          if (state.items.isEmpty) {
-            return _buildEmptyCart(context);
-          }
+    if (profileBloc.state.addressStatus == AppStatus.initial &&
+        profileBloc.state.addresses.isEmpty) {
+      profileBloc.add(const AddressesFetched());
+      profileBloc.add(const GovernoratesFetched());
+    }
 
-          return _buildCartContent(context, state);
-        },
-      ),
-    );
-  }
+    if (profileBloc.state.user == null) {
+      profileBloc.add(const ProfileFetched());
+    } else {
+      cartBloc.add(PrefillCustomerInfoEvent(
+        name: profileBloc.state.user!.name,
+        phone: profileBloc.state.user!.phone,
+      ));
+    }
 
-  // ─── Empty State ────────────────────────────────────────────────────────────
+    return BlocProvider.value(
+      value: profileBloc,
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<CartBloc, CartState>(
+            listenWhen: (previous, current) =>
+                previous.checkoutStatus != current.checkoutStatus,
+            listener: (context, state) {
+              if (state.isCheckoutSuccess && state.orderData != null) {
+                final orderData = state.orderData!;
+                final orderNumber = orderData['order_number']?.toString() ?? '';
+                final paymentMethod =
+                    orderData['payment_method']?.toString() ?? '';
+                final deliveryAddress =
+                    orderData['delivery_address']?.toString() ?? '';
 
-  Widget _buildEmptyCart(BuildContext context) {
-    final cs = context.theme.colorScheme;
-    final tt = context.theme.textTheme;
-
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          24.verticalSpace,
-          Text(
-            'cart.empty_title'.tr(),
-            style: tt.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+                context.push(AppRoutes.orderSuccess, extra: {
+                  'orderNumber': orderNumber,
+                  'paymentMethod': paymentMethod,
+                  'deliveryAddress': deliveryAddress,
+                });
+              }
+            },
           ),
-          8.verticalSpace,
-          Text(
-            'cart.empty_subtitle'.tr(),
-            style: tt.bodyMedium?.copyWith(
-              color: cs.onSurface.withValues(alpha: 0.5),
-            ),
-            textAlign: TextAlign.center,
-          ),
-          32.verticalSpace,
-          FilledButton.icon(
-            onPressed: () => context.pop(),
-            icon: const Icon(Icons.arrow_back_rounded),
-            label: Text('cart.continue_shopping'.tr()),
-            style: FilledButton.styleFrom(
-              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 14.h),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14.r),
-              ),
-            ),
+          BlocListener<ProfileBloc, ProfileState>(
+            listenWhen: (previous, current) => previous.user != current.user,
+            listener: (context, state) {
+              if (state.user != null) {
+                context.read<CartBloc>().add(PrefillCustomerInfoEvent(
+                      name: state.user!.name,
+                      phone: state.user!.phone,
+                    ));
+              }
+            },
           ),
         ],
-      ),
-    );
-  }
+        child: Scaffold(
+          backgroundColor: context.theme.colorScheme.surfaceContainerHighest,
+          appBar: AppBar(
+            title: Text(
+              'cart.cart_title'.tr(),
+              style: context.typography.titleLarge,
+            ),
+            centerTitle: true,
+            elevation: 0,
+            backgroundColor: context.theme.colorScheme.surface,
+          ),
+          body: BlocBuilder<CartBloc, CartState>(
+            buildWhen: (previous, current) =>
+                previous.status != current.status ||
+                previous.items != current.items ||
+                previous.couponStatus != current.couponStatus ||
+                previous.appliedCoupon != current.appliedCoupon ||
+                previous.couponErrorMessage != current.couponErrorMessage ||
+                previous.couponCode != current.couponCode ||
+                previous.phoneNumber != current.phoneNumber ||
+                previous.customerName != current.customerName ||
+                previous.selectedAddressId != current.selectedAddressId ||
+                previous.isCheckingOut != current.isCheckingOut,
+            builder: (context, state) {
+              if (state.isLoading) {
+                return const CartShimmer();
+              }
 
-  // ─── Cart Content ────────────────────────────────────────────────────────────
+              if (state.isError) {
+                return Center(
+                  child: AppErrorWidget(
+                    message:
+                        state.errorMessage ?? 'cart.error_loading_cart'.tr(),
+                    onRetry: () => context
+                        .read<CartBloc>()
+                        .add(const LoadCartItemsEvent()),
+                  ),
+                );
+              }
 
-  Widget _buildCartContent(BuildContext context, CartState state) {
-    return ListView.builder(
-      padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
-      itemCount: state.items.length + 1, // +1 for the summary
-      itemBuilder: (context, index) {
-        // If this is the last item, show the summary
-        if (index == state.items.length) {
-          return _buildOrderSummary(context, state);
-        }
+              if (state.items.isEmpty) {
+                return const EmptyCartWidget();
+              }
 
-        // Otherwise show cart item
-        final item = state.items[index];
-        return CartItemWidget(
-          item: item,
-          onRemove: () =>
-              context.read<CartBloc>().add(RemoveFromCartEvent(item.id)),
-          onQuantityIncrease: () => context.read<CartBloc>().add(
-                UpdateQuantityEvent(
-                  cartItemId: item.id,
-                  quantity: item.quantity + 1,
-                ),
-              ),
-          onQuantityDecrease: () {
-            if (item.quantity > 1) {
-              context.read<CartBloc>().add(
-                    UpdateQuantityEvent(
-                      cartItemId: item.id,
-                      quantity: item.quantity - 1,
-                    ),
+              return ListView.builder(
+                padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
+                itemCount: state.items.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == state.items.length) {
+                    return CartOrderSummary(state: state);
+                  }
+
+                  final item = state.items[index];
+                  return CartItemWidget(
+                    item: item,
+                    onRemove: () => context
+                        .read<CartBloc>()
+                        .add(RemoveFromCartEvent(item.id)),
+                    onQuantityIncrease: () => context.read<CartBloc>().add(
+                          UpdateQuantityEvent(
+                            cartItemId: item.id,
+                            quantity: item.quantity + 1,
+                          ),
+                        ),
+                    onQuantityDecrease: () {
+                      if (item.quantity > 1) {
+                        context.read<CartBloc>().add(
+                              UpdateQuantityEvent(
+                                cartItemId: item.id,
+                                quantity: item.quantity - 1,
+                              ),
+                            );
+                      } else {
+                        context.read<CartBloc>().add(
+                              RemoveFromCartEvent(item.id),
+                            );
+                      }
+                    },
                   );
-            } else {
-              context.read<CartBloc>().add(
-                    RemoveFromCartEvent(item.id),
-                  );
-            }
-          },
-        );
-      },
-    );
-  }
-
-  // ─── Order Summary ───────────────────────────────────────────────────────────
-
-  Widget _buildOrderSummary(BuildContext context, CartState state) {
-    final cs = context.theme.colorScheme;
-    final tt = context.theme.textTheme;
-
-    final subtotal = state.items.fold<double>(
-      0,
-      (sum, item) => sum + item.totalPrice,
-    );
-    final total = subtotal;
-
-    return Container(
-      padding: EdgeInsets.all(16.w),
-      decoration: BoxDecoration(
-        color: cs.surface,
-        borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: cs.shadow.withValues(alpha: 0.08),
-            blurRadius: 8,
-            offset: const Offset(0, -2),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          _SummaryRow(
-            label: 'cart.subtotal'.tr(),
-            value:
-                '${subtotal.toStringAsFixed(0)} ${'shared.currency_egp'.tr()}',
-          ),
-          12.verticalSpace,
-          AppDivider(color: cs.outline.withValues(alpha: 0.3), height: 1),
-          12.verticalSpace,
-          _SummaryRow(
-            label: 'cart.total'.tr(),
-            value: '${total.toStringAsFixed(0)} ${'shared.currency_egp'.tr()}',
-            isBold: true,
-            valueColor: cs.primary,
-          ),
-          16.verticalSpace,
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton(
-              onPressed: () => context.push(AppRoutes.checkout),
-              style: FilledButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 16.h),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14.r),
-                ),
-              ),
-              child: Text(
-                'cart.checkout'.tr(),
-                style: tt.titleMedium?.copyWith(
-                  color: cs.onPrimary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ─── Summary Row ─────────────────────────────────────────────────────────────
-
-class _SummaryRow extends StatelessWidget {
-  final String label;
-  final String value;
-  final bool isBold;
-  final Color? valueColor;
-
-  const _SummaryRow({
-    required this.label,
-    required this.value,
-    this.isBold = false,
-    this.valueColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = context.theme.colorScheme;
-    final tt = context.theme.textTheme;
-
-    final style = isBold
-        ? tt.titleMedium?.copyWith(fontWeight: FontWeight.w700)
-        : tt.bodyMedium?.copyWith(color: cs.onSurface.withValues(alpha: 0.6));
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(label, style: style),
-        Text(
-          value,
-          style: style?.copyWith(
-            color: valueColor ?? (isBold ? cs.onSurface : null),
+                },
+              );
+            },
           ),
         ),
-      ],
+      ),
     );
   }
 }

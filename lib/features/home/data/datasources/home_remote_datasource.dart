@@ -18,7 +18,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
 
   @override
   Future<List<BannerModel>> getBanners() async {
-    final result = await _dioService.get('/api/banners');
+    final result = await _dioService.get('/api/banners', showToast: false);
 
     return result.fold(
       (failure) => throw failure,
@@ -46,7 +46,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
 
   @override
   Future<List<CategoryModel>> getCategories() async {
-    final result = await _dioService.get('/api/categories');
+    final result = await _dioService.get('/api/categories', showToast: false);
 
     return result.fold(
       (failure) => throw failure,
@@ -74,7 +74,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
 
   @override
   Future<List<SubCategoryModel>> getPopularServices() async {
-    final result = await _dioService.get('/api/sub-categories');
+    final result = await _dioService.get('/api/sub-categories', showToast: false);
 
     return result.fold(
       (failure) => throw failure,
@@ -107,6 +107,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
     final result = await _dioService.get(
       '/api/products',
       queryParameters: {'page': page},
+      showToast: false,
     );
 
     return result.fold(

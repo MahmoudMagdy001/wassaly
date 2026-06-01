@@ -4,6 +4,7 @@ import 'package:fpdart/fpdart.dart';
 
 import '../../../../core/imports/core_imports.dart';
 import '../models/cart_item_model.dart';
+import '../models/coupon_model.dart';
 import '../models/offer_model.dart';
 
 abstract class CartRemoteDataSource {
@@ -11,6 +12,8 @@ abstract class CartRemoteDataSource {
   Future<void> addToCart(int productId, int quantity);
   Future<void> removeFromCart(int productId);
   Future<void> updateQuantity(int productId, int quantity);
+  Future<CouponModel> applyCoupon(String code);
+  Future<Map<String, dynamic>> checkout(Map<String, dynamic> checkoutData);
 
   // Local storage methods
   Future<Either<Failure, void>> saveCartItemsLocally(List<CartItemModel> items);
@@ -118,6 +121,58 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
           throw ServerFailure(responseData?['message']?.toString() ??
               'Failed to update quantity');
         }
+      },
+    );
+  }
+
+  @override
+  Future<CouponModel> applyCoupon(String code) async {
+    final response = await _dioService.post(
+      '/api/coupons/apply',
+      data: {'code': code},
+    );
+
+    return response.fold(
+      (failure) => throw failure,
+      (response) {
+        final responseData = response.data as Map<String, dynamic>?;
+        final status = responseData?['status'] as bool? ?? false;
+
+        if (!status) {
+          throw ServerFailure(
+            responseData?['message']?.toString() ?? 'Failed to apply coupon',
+          );
+        }
+
+        return CouponModel.fromResponse(responseData ?? {});
+      },
+    );
+  }
+
+  @override
+  Future<Map<String, dynamic>> checkout(
+      Map<String, dynamic> checkoutData) async {
+    final response = await _dioService.post(
+      '/api/carts/checkout',
+      data: checkoutData,
+    );
+
+    return response.fold(
+      (failure) => throw failure,
+      (response) {
+        final responseData = response.data as Map<String, dynamic>?;
+        final status = responseData?['status'] as bool? ?? false;
+
+        if (!status) {
+          throw ServerFailure(
+            responseData?['message']?.toString() ?? 'Failed to checkout',
+          );
+        }
+
+        // Clear cart locally after successful checkout
+        clearCartLocally();
+
+        return responseData?['data'] as Map<String, dynamic> ?? {};
       },
     );
   }

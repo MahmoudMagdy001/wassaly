@@ -2,6 +2,9 @@ import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
 import 'package:wassaly/features/cart/presentation/bloc/cart_bloc.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_bloc.dart';
+import 'package:wassaly/features/home/presentation/bloc/home_bloc.dart';
+import 'package:wassaly/features/home/presentation/bloc/home_event.dart';
+import 'package:wassaly/features/order/presentation/bloc/order_bloc.dart';
 import 'package:wassaly/features/profile/presentation/bloc/settings/settings_bloc.dart';
 
 /// A wrapper to initialize the chosen State Management library.
@@ -15,18 +18,28 @@ class StateWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final providers = <BlocProvider>[
-      BlocProvider<SessionBloc>(
-        create: (_) => sl<SessionBloc>(),
+    final providers = [
+      BlocProvider.value(
+        value: sl<SessionBloc>(),
       ),
-      BlocProvider<SettingsBloc>(
-        create: (_) => sl<SettingsBloc>()..add(const SettingsInitialized()),
+      BlocProvider.value(
+        value: sl<SettingsBloc>()..add(const SettingsInitialized()),
       ),
-      BlocProvider<FavoriteBloc>(
-        create: (_) => sl<FavoriteBloc>(),
+      BlocProvider.value(
+        value: sl<FavoriteBloc>(),
       ),
-      BlocProvider<CartBloc>(
-        create: (_) => sl<CartBloc>(),
+      BlocProvider.value(
+        value: sl<CartBloc>(),
+      ),
+      BlocProvider.value(
+        value: sl<HomeBloc>()
+          ..add(GetBannersEvent())
+          ..add(GetCategoriesEvent())
+          ..add(GetPopularServicesEvent())
+          ..add(GetProductsEvent()),
+      ),
+      BlocProvider.value(
+        value: sl<OrderBloc>()..add(const OrdersFetched()),
       ),
     ];
 

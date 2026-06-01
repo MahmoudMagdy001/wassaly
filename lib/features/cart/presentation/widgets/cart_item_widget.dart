@@ -36,12 +36,12 @@ class CartItemWidget extends StatelessWidget {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(ctx, false),
-                child: Text('common.cancel'.tr()),
+                child: Text('shared.cancel'.tr()),
               ),
               TextButton(
                 onPressed: () => Navigator.pop(ctx, true),
                 child: Text(
-                  'common.delete'.tr(),
+                  'shared.delete'.tr(),
                   style: TextStyle(color: cs.error),
                 ),
               ),
@@ -248,7 +248,7 @@ class CartItemWidget extends StatelessWidget {
                 color: cs.onSurface.withValues(alpha: 0.7),
               ),
             ),
-            4.horizontalSpace,
+            2.horizontalSpace,
             Text(
               '${item.totalPrice.toStringAsFixed(0)} ${'shared.currency_egp'.tr()}',
               style: tt.bodyMedium?.copyWith(
@@ -256,9 +256,9 @@ class CartItemWidget extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            8.horizontalSpace,
+            3.horizontalSpace,
             Text(
-              '(${item.quantity} ${'cart.items'.tr()})',
+              '(${item.quantity} ${'cart.items'.plural(item.quantity)})',
               style: tt.bodySmall?.copyWith(
                 color: cs.onSurface.withValues(alpha: 0.5),
               ),

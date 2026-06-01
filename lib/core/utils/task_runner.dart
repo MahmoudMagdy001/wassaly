@@ -14,6 +14,7 @@ DateTime? _lastNetworkErrorToastTime;
 FutureEither<T> runTask<T>(
   Future<T> Function() action, {
   bool requiresNetwork = false,
+  bool showToast = true,
 }) async {
   try {
     final result = await action();
@@ -23,7 +24,7 @@ FutureEither<T> runTask<T>(
       final hasNetwork = await InternetConnectionService().hasConnection();
       if (!hasNetwork) {
         AppLogger.warning('Network unavailable for task');
-        _showNetworkErrorToast();
+        if (showToast) _showNetworkErrorToast();
         return left(NetworkFailure('errors.no_internet'.tr()));
       }
     }

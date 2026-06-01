@@ -111,12 +111,11 @@ class _FavoriteViewState extends State<_FavoriteView> {
                       hasScrollBody: false,
                       child: Center(
                         child: AppErrorWidget(
-                          title: 'errors.error_title'.tr(),
-                          message:
-                              state.errorMessage ?? 'errors.unknown_error'.tr(),
+                          title: 'errors.no_internet'.tr(),
                           onRetry: () => context
                               .read<FavoriteBloc>()
                               .add(const GetFavoritesEvent()),
+                          icon: Icons.wifi_off_rounded,
                         ),
                       ),
                     )

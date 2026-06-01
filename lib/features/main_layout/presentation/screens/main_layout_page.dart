@@ -1,10 +1,15 @@
 import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/core/services/internet_connection_service.dart';
 import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
 import 'package:wassaly/features/cart/presentation/bloc/cart_bloc.dart';
 import 'package:wassaly/features/cart/presentation/bloc/cart_event.dart';
 import 'package:wassaly/features/cart/presentation/bloc/cart_state.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_bloc.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_event.dart';
+import 'package:wassaly/features/home/presentation/bloc/home_bloc.dart';
+import 'package:wassaly/features/home/presentation/bloc/home_event.dart';
+import 'package:wassaly/features/order/presentation/bloc/order_bloc.dart';
+import 'dart:async';
 
 class MainLayoutPage extends StatefulWidget {
   const MainLayoutPage({
@@ -19,6 +24,8 @@ class MainLayoutPage extends StatefulWidget {
 }
 
 class _MainLayoutPageState extends State<MainLayoutPage> {
+  StreamSubscription<InternetStatus>? _connectivitySubscription;
+
   @override
   void initState() {
     super.initState();
@@ -26,6 +33,37 @@ class _MainLayoutPageState extends State<MainLayoutPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadUserDataIfNeeded();
     });
+
+    // Auto-refresh when internet comes back
+    _connectivitySubscription =
+        InternetConnectionService().onStatusChange.listen((status) {
+      if (status == InternetStatus.connected) {
+        debugPrint('[MainLayout] Internet restored, auto-refreshing data');
+        _refreshAllData();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _connectivitySubscription?.cancel();
+    super.dispose();
+  }
+
+  void _refreshAllData() {
+    // Home
+    context.read<HomeBloc>().add(GetBannersEvent());
+    context.read<HomeBloc>().add(GetCategoriesEvent());
+    context.read<HomeBloc>().add(GetPopularServicesEvent());
+    context.read<HomeBloc>().add(GetProductsEvent());
+
+    // Orders & Favorites & Cart if authenticated
+    final sessionState = context.read<SessionBloc>().state;
+    if (sessionState is SessionAuthenticated) {
+      context.read<OrderBloc>().add(const OrdersFetched());
+      context.read<FavoriteBloc>().add(const GetFavoritesEvent());
+      context.read<CartBloc>().add(const LoadCartItemsEvent());
+    }
   }
 
   void _loadUserDataIfNeeded() {
@@ -59,11 +97,11 @@ class _MainLayoutPageState extends State<MainLayoutPage> {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (_) => sl<CartBloc>(),
+        BlocProvider.value(
+          value: sl<CartBloc>(),
         ),
-        BlocProvider(
-          create: (_) => sl<FavoriteBloc>(),
+        BlocProvider.value(
+          value: sl<FavoriteBloc>(),
         ),
       ],
       child: MultiBlocListener(

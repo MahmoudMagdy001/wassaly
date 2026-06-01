@@ -8,7 +8,11 @@
     "delete": "Delete",
     "edit": "Edit",
     "done": "Done",
-    "currency_egp": "EGP"
+    "currency_egp": "EGP",
+    "retry": "Retry",
+    "unknown_product": "Unknown Product",
+    "yes": "Yes",
+    "no": "No"
   },
   "errors": {
     "no_internet": "No internet connection. Please check your connection and try again.",
@@ -16,6 +20,10 @@
     "something_went_wrong": "Something went wrong",
     "invalid_category": "Invalid category",
     "invalid_sub_category": "Invalid sub-category"
+  },
+  "messages": {
+    "cash": "Cash on Delivery",
+    "cancelled": "Cancelled"
   },
   "home": {
     "home_title": "Home",
@@ -58,9 +66,60 @@
     "total_price": "Total",
     "subtotal": "Subtotal",
     "delivery": "Delivery Fee",
+    "discount": "Discount",
+    "delivery_address": "Delivery Address",
+    "add_new_address": "Add New Address",
+    "add_new": "Add New",
+    "contact_details": "Contact Details",
+    "payment_method": "Payment Method",
+    "payment_cash": "Cash on Delivery",
+    "phone_number": "Phone Number",
+    "address_details": "Address Details",
+    "coupon": "Coupon",
+    "enter_coupon_code": "Enter coupon code",
+    "apply_coupon": "Apply",
+    "enter_coupon_required": "Please enter a coupon code",
+    "coupon_applied": "Coupon applied",
+    "discount_label": "Discount ({code})",
+    "coupon_discount_percent": "{value}% OFF • Code: {code}",
+    "coupon_discount_fixed": "{value} EGP OFF • Code: {code}",
     "total": "Total",
     "checkout": "Checkout",
-    "items": "items"
+    "items": {
+      "zero": "No items",
+      "one": "1 item",
+      "two": "2 items",
+      "few": "{} items",
+      "many": "{} items",
+      "other": "{} items"
+    },
+    "customer_name": "Name"
+  },
+  "order": {
+    "success_title": "Your order has been confirmed!",
+    "success_message": "Thank you for shopping with us. Your order number is #{orderNumber}",
+    "delivery_details": "Delivery Details",
+    "estimated_delivery": "Estimated Delivery Time",
+    "minutes": "minutes",
+    "payment_method": "Payment Method",
+    "delivery_address": "Delivery Address",
+    "back_to_home": "Back to Home",
+    "details_title": "Order Details",
+    "items": "Products",
+    "customer_name": "Customer Name",
+    "customer_phone": "Phone Number",
+    "search_hint": "Search by order number...",
+    "cancel_order": "Cancel Order",
+    "cancel_confirm_title": "Cancel Order Confirmation",
+    "cancel_confirm_message": "Are you sure you want to cancel this order?",
+    "delete_confirm_title": "Delete Order Confirmation",
+    "delete_confirm_message": "Are you sure you want to delete this order from history? This action cannot be undone.",
+    "status_pending": "Pending",
+    "status_accepted": "Accepted",
+    "status_processing": "Processing",
+    "status_shipped": "Shipped",
+    "status_delivered": "Delivered",
+    "status_cancelled": "Cancelled"
   },
   "favorite": {
     "favorite_title": "Favorites",

@@ -15,7 +15,7 @@ class FavoriteRemoteDataSourceImpl implements FavoriteRemoteDataSource {
 
   @override
   Future<PaginatedResponse<ProductEntity>> getFavorites() async {
-    final response = await _dioService.get('/api/favorites');
+    final response = await _dioService.get('/api/favorites', showToast: false);
 
     return response.fold(
       (failure) => throw failure,

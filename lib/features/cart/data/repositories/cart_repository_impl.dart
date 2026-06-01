@@ -2,6 +2,7 @@ import 'package:fpdart/fpdart.dart';
 
 import '../../../../core/utils/failure.dart';
 import '../../domain/entities/cart_item_entity.dart';
+import '../../domain/entities/coupon_entity.dart';
 import '../../domain/repositories/cart_repository.dart';
 import '../datasources/cart_remote_datasource.dart';
 
@@ -58,6 +59,38 @@ class CartRepositoryImpl implements CartRepository {
     try {
       await remoteDataSource.updateQuantity(productId, quantity);
       return const Right(null);
+    } on ServerFailure catch (failure) {
+      return Left(failure);
+    } on NetworkFailure catch (failure) {
+      return Left(failure);
+    } catch (e) {
+      return Left(UnknownFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, CouponEntity>> applyCoupon(String code) async {
+    try {
+      final coupon = await remoteDataSource.applyCoupon(code);
+      if (!coupon.isValid) {
+        return const Left(ServerFailure('Coupon is not valid'));
+      }
+      return Right(coupon);
+    } on ServerFailure catch (failure) {
+      return Left(failure);
+    } on NetworkFailure catch (failure) {
+      return Left(failure);
+    } catch (e) {
+      return Left(UnknownFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Map<String, dynamic>>> checkout(
+      Map<String, dynamic> checkoutData) async {
+    try {
+      final result = await remoteDataSource.checkout(checkoutData);
+      return Right(result);
     } on ServerFailure catch (failure) {
       return Left(failure);
     } on NetworkFailure catch (failure) {

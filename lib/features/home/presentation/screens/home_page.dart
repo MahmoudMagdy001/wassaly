@@ -10,14 +10,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => sl<HomeBloc>()
-        ..add(GetBannersEvent())
-        ..add(GetCategoriesEvent())
-        ..add(GetPopularServicesEvent())
-        ..add(GetProductsEvent()),
-      child: const _HomeView(),
-    );
+    return const _HomeView();
   }
 }
 
@@ -72,9 +65,6 @@ class _HomeView extends StatelessWidget {
                     sliver: SliverFillRemaining(
                       child: AppErrorWidget(
                         title: 'errors.no_internet'.tr(),
-                        message: state.errorMessage.isNotEmpty
-                            ? state.errorMessage
-                            : 'Please check your internet connection and try again.',
                         onRetry: () => _refreshAllSections(context),
                         icon: Icons.wifi_off_rounded,
                       ),
