@@ -60,6 +60,9 @@ class NotificationService {
           defaultColor: const Color(0xFF9D50DD),
           ledColor: Colors.white,
           importance: NotificationImportance.High,
+          playSound: true, 
+          locked: true,
+
         )
       ],
       channelGroups: [
@@ -142,6 +145,8 @@ class NotificationService {
         body: body,
         notificationLayout: NotificationLayout.Default,
         payload: payload,
+        wakeUpScreen: true,
+
       ),
     );
   }
