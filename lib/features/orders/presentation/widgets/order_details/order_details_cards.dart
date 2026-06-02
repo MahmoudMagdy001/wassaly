@@ -247,6 +247,8 @@ class OrderItemsCard extends StatelessWidget {
                     child: AppCachedImage(
                       imageUrl: productImage,
                       borderRadius: BorderRadius.circular(12.r),
+                      memCacheWidth: 56 * 3,
+                      memCacheHeight: 56 * 3,
                       fit: BoxFit.cover,
                     ),
                   ),

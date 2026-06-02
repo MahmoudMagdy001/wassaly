@@ -32,6 +32,12 @@ class _ProposeRescheduleSheetState extends State<ProposeRescheduleSheet> {
     _loadAvailableDays();
   }
 
+  @override
+  void dispose() {
+    _noteController.dispose();
+    super.dispose();
+  }
+
   Future<void> _loadAvailableDays() async {
     final bloc = context.read<BookingDetailBloc>();
     final serviceId = bloc.state.booking?.service.id;
@@ -57,12 +63,6 @@ class _ProposeRescheduleSheetState extends State<ProposeRescheduleSheet> {
         _isLoadingDays = false;
       }),
     );
-  }
-
-  @override
-  void dispose() {
-    _noteController.dispose();
-    super.dispose();
   }
 
   @override

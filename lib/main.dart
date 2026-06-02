@@ -1,39 +1,30 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:wassaly/core/services/fcm_background_handler.dart';
+import 'package:wassaly/firebase_options.dart';
 
 import 'app.dart';
 import 'core/imports/imports.dart';
-import 'core/services/fcm_background_handler.dart';
-import 'core/services/notification_service.dart';
-import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
-      systemNavigationBarColor: Colors.white,
-      systemNavigationBarIconBrightness: Brightness.dark,
-    ),
-  );
+  // Load environment variables
+  await dotenv.load(fileName: '.env');
 
+  // Initialize Core Services
   await Future.wait([
-    Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
     StorageService.instance.init(),
+    Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
     HiveService.init(),
   ]);
 
-  // Set background messaging handler
+  // Firebase Background Message Handler
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
+  unawaited(
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]),
+  );
+
   initDependencies();
-
-  // Initialize notifications
-  await NotificationService.instance.initialize();
-
-  runApp(const StateWrapper(
-    child: App(),
-  ));
+  runApp(const App());
 }

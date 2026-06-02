@@ -4,6 +4,38 @@ import 'package:wassaly/core/imports/imports.dart';
 import '../../../../features/home/domain/entities/product_entity.dart';
 import '../../../../features/sub_category/domain/entities/service_entity.dart';
 
+// ─── Pending operation model ────────────────────────────────────────────────
+enum PendingFavoriteAction { add, remove }
+
+enum PendingFavoriteItemType { product, service }
+
+class PendingFavoriteOperation {
+  final PendingFavoriteAction action;
+  final PendingFavoriteItemType itemType;
+  final int id;
+
+  const PendingFavoriteOperation({
+    required this.action,
+    required this.itemType,
+    required this.id,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'action': action.name,
+        'itemType': itemType.name,
+        'id': id,
+      };
+
+  factory PendingFavoriteOperation.fromJson(Map<String, dynamic> json) =>
+      PendingFavoriteOperation(
+        action: PendingFavoriteAction.values.byName(json['action'] as String),
+        itemType:
+            PendingFavoriteItemType.values.byName(json['itemType'] as String),
+        id: json['id'] as int,
+      );
+}
+
+// ─── Abstract interface ──────────────────────────────────────────────────────
 abstract class FavoriteLocalDataSource {
   // Products
   Future<Either<Failure, void>> cacheProductFavorites(
@@ -24,15 +56,26 @@ abstract class FavoriteLocalDataSource {
   Set<int> getFavoriteServiceIds();
 
   Future<Either<Failure, void>> clearFavoritesLocally();
+
+  // ── Pending queue (offline operations) ───────────────────────────────────
+  Future<void> enqueuePendingOperation(PendingFavoriteOperation op);
+  List<PendingFavoriteOperation> getPendingOperations();
+  Future<void> clearPendingOperations();
 }
 
+// ─── Implementation ──────────────────────────────────────────────────────────
 class FavoriteLocalDataSourceImpl implements FavoriteLocalDataSource {
   final Box<ProductEntity> _productsBox;
   final Box<ServiceEntity> _servicesBox;
+  final Box<Map<String, dynamic>> _pendingBox;
 
   FavoriteLocalDataSourceImpl()
       : _productsBox = Hive.box<ProductEntity>(HiveService.favoriteProductsBox),
-        _servicesBox = Hive.box<ServiceEntity>(HiveService.favoriteServicesBox);
+        _servicesBox = Hive.box<ServiceEntity>(HiveService.favoriteServicesBox),
+        _pendingBox =
+            Hive.box<Map<String, dynamic>>(HiveService.favoritePendingBox);
+
+  // ── Products ───────────────────────────────────────────────────────────────
 
   @override
   Future<Either<Failure, void>> cacheProductFavorites(
@@ -69,6 +112,8 @@ class FavoriteLocalDataSourceImpl implements FavoriteLocalDataSource {
     }
   }
 
+  // ── Services ───────────────────────────────────────────────────────────────
+
   @override
   Future<Either<Failure, void>> cacheServiceFavorites(
       List<ServiceEntity> services) async {
@@ -104,6 +149,8 @@ class FavoriteLocalDataSourceImpl implements FavoriteLocalDataSource {
     }
   }
 
+  // ── Quick checks ───────────────────────────────────────────────────────────
+
   @override
   Set<int> getFavoriteProductIds() {
     return _productsBox.keys.cast<int>().toSet();
@@ -124,4 +171,39 @@ class FavoriteLocalDataSourceImpl implements FavoriteLocalDataSource {
       return left(CacheFailure('Failed to clear favorites: ${e.toString()}'));
     }
   }
+
+  // ── Pending queue ──────────────────────────────────────────────────────────
+
+  @override
+  Future<void> enqueuePendingOperation(PendingFavoriteOperation op) async {
+    // Collapse opposite operations on the same item (add then remove = no-op)
+    final existingIndex = _pendingBox.values.toList().indexWhere((m) {
+      final existing = PendingFavoriteOperation.fromJson(m);
+      return existing.itemType == op.itemType && existing.id == op.id;
+    });
+
+    if (existingIndex != -1) {
+      final existing =
+          PendingFavoriteOperation.fromJson(_pendingBox.getAt(existingIndex)!);
+      if (existing.action != op.action) {
+        // Opposite action cancels out — remove the queued entry
+        await _pendingBox.deleteAt(existingIndex);
+        return;
+      }
+      // Same action already queued — skip duplicate
+      return;
+    }
+
+    await _pendingBox.add(op.toJson());
+  }
+
+  @override
+  List<PendingFavoriteOperation> getPendingOperations() {
+    return _pendingBox.values
+        .map((m) => PendingFavoriteOperation.fromJson(m))
+        .toList();
+  }
+
+  @override
+  Future<void> clearPendingOperations() => _pendingBox.clear();
 }

@@ -1,3 +1,4 @@
+import 'package:wassaly/core/constants/app_keys.dart';
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/core/shared/bloc/safe_bloc.dart' as safe_bloc;
 import 'package:wassaly/features/notifications/domain/entities/notification_entity.dart';
@@ -45,10 +46,26 @@ class NotificationsBloc
     GetNotificationStatusEvent event,
     Emitter<NotificationsState> emit,
   ) async {
+    // 1. Load from local storage first for immediate UI update
+    final localStatus =
+        StorageService.instance.getBool(AppKeys.isNotificationsEnabled);
+    if (localStatus != null) {
+      emit(state.copyWith(isNotificationEnabled: localStatus));
+    }
+
+    // 2. Sync with backend
     final result = await getNotificationStatusUseCase();
     result.fold(
-      (failure) => null, // Ignore failure for status fetch, stay default
-      (isEnabled) => emit(state.copyWith(isNotificationEnabled: isEnabled)),
+      (failure) =>
+          null, // Ignore failure for status fetch, stay with local/default
+      (isEnabled) {
+        // Update local storage if backend differs
+        if (localStatus != isEnabled) {
+          StorageService.instance
+              .setBool(AppKeys.isNotificationsEnabled, isEnabled);
+        }
+        emit(state.copyWith(isNotificationEnabled: isEnabled));
+      },
     );
   }
 
@@ -70,10 +87,15 @@ class NotificationsBloc
         isNotificationEnabled: originalStatus,
         errorMessage: failure.message,
       )),
-      (isEnabled) => emit(state.copyWith(
-        actionStatus: AppStatus.success,
-        isNotificationEnabled: isEnabled,
-      )),
+      (isEnabled) {
+        // Save to local storage on success
+        StorageService.instance
+            .setBool(AppKeys.isNotificationsEnabled, isEnabled);
+        emit(state.copyWith(
+          actionStatus: AppStatus.success,
+          isNotificationEnabled: isEnabled,
+        ));
+      },
     );
   }
 

@@ -44,10 +44,22 @@ class OrdersRepositoryImpl implements OrdersRepository {
       final orderModel = await _remoteDataSource.getOrderDetails(orderId);
       return Right(orderModel);
     } on Failure catch (failure) {
+      if (_isOrderNotFound(failure)) {
+        return Left(NotFoundFailure(failure.message, error: failure.error));
+      }
       return Left(failure);
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }
+  }
+
+  bool _isOrderNotFound(Failure failure) {
+    if (failure is NotFoundFailure) return true;
+
+    final message = failure.message.trim().toLowerCase();
+    return message.contains('لم يتم العثور على الطلب') ||
+        message.contains('order not found') ||
+        message.contains('not found');
   }
 
   @override

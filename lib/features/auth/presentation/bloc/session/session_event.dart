@@ -36,3 +36,7 @@ class SessionUserUpdated extends SessionEvent {
   @override
   List<Object?> get props => [user];
 }
+
+class SessionConnectivityRestored extends SessionEvent {
+  const SessionConnectivityRestored();
+}

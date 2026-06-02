@@ -60,6 +60,7 @@ import '../../features/search/presentation/screens/search_page.dart';
 final GoRouter appRouter = GoRouter(
   navigatorKey: rootNavigatorKey,
   initialLocation: AppRoutes.splash,
+  observers: [RequestRouteObserver()],
   // Handle deep links for Google OAuth callbacks
   redirect: (context, state) {
     return DeepLinkService.instance.getRouteForDeepLink(state.uri);

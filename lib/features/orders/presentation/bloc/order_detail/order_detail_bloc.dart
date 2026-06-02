@@ -32,7 +32,11 @@ class OrderDetailBloc extends Bloc<OrderDetailEvent, OrderDetailState> {
     FetchOrderDetailEvent event,
     Emitter<OrderDetailState> emit,
   ) async {
-    emit(state.copyWith(status: OrderDetailStatus.loading, errorMessage: ''));
+    emit(state.copyWith(
+      status: OrderDetailStatus.loading,
+      errorMessage: '',
+      isNotFound: false,
+    ));
 
     final result = await _getOrderDetailsUseCase(event.orderId);
 
@@ -40,10 +44,13 @@ class OrderDetailBloc extends Bloc<OrderDetailEvent, OrderDetailState> {
       (failure) => emit(state.copyWith(
         status: OrderDetailStatus.failure,
         errorMessage: failure.message,
+        isNotFound: failure is NotFoundFailure,
+        clearOrder: failure is NotFoundFailure,
       )),
       (order) => emit(state.copyWith(
         status: OrderDetailStatus.success,
         order: order,
+        isNotFound: false,
       )),
     );
   }

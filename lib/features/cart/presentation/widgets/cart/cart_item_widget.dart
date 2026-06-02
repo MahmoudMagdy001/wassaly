@@ -132,8 +132,8 @@ class CartItemWidget extends StatelessWidget {
         children: [
           // 1. Product Image (Far Left in LTR, Right in RTL)
           Container(
-            width: 100.w,
-            height: 100.w,
+            width: 120,
+            height: 140,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12.r),
               border: Border.all(
@@ -143,6 +143,7 @@ class CartItemWidget extends StatelessWidget {
             child: AppCachedImage(
               imageUrl: item.productImage,
               borderRadius: BorderRadius.circular(12.r),
+              memCacheWidth: 120 * 3,
               fit: BoxFit.cover,
             ),
           ),

@@ -38,7 +38,11 @@ class _PopularServicesSectionState extends State<PopularServicesSection> {
   void _onScroll() {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
-      context.read<HomeBloc>().add(LoadMorePopularServicesEvent());
+      final bloc = context.read<HomeBloc>();
+      if (!bloc.state.isPopularServicesLoadingMore &&
+          bloc.state.popularServices.hasMore) {
+        bloc.add(LoadMorePopularServicesEvent());
+      }
     }
   }
 

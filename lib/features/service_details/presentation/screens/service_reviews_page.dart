@@ -70,9 +70,8 @@ class ServiceReviewsPage extends StatelessWidget {
                       comment: review.comment,
                       userName: review.user.name,
                       userAvatar: review.user.avatar,
-                      isCurrentUserReview: isMine,
                       canEdit: isMine &&
-                          _canEditReview(review.createdAt) &&
+                          ReviewHelper.canEditReview(review.createdAt) &&
                           hasCompletedBooking,
                       createdAt: review.createdAt,
                       onEdit: () => _showReviewSheet(context, review),
@@ -90,35 +89,6 @@ class ServiceReviewsPage extends StatelessWidget {
   String? _currentUserId(BuildContext context) {
     final sessionState = context.watch<SessionBloc>().state;
     return sessionState is SessionAuthenticated ? sessionState.user.id : null;
-  }
-
-  bool _canEditReview(String createdAt) {
-    final createdDate = DateTime.tryParse(createdAt);
-    if (createdDate == null) return false;
-
-    final now = DateTime.now();
-    final hasTimezone = RegExp(r'(z|[+-]\d{2}:?\d{2})$', caseSensitive: false)
-        .hasMatch(createdAt.trim());
-    final candidates = <DateTime>[
-      createdDate.toLocal(),
-      if (!hasTimezone)
-        DateTime.utc(
-          createdDate.year,
-          createdDate.month,
-          createdDate.day,
-          createdDate.hour,
-          createdDate.minute,
-          createdDate.second,
-          createdDate.millisecond,
-          createdDate.microsecond,
-        ).toLocal(),
-    ];
-
-    return candidates.any((date) {
-      final elapsed = now.difference(date);
-      return elapsed >= const Duration(minutes: -5) &&
-          elapsed < const Duration(hours: 1);
-    });
   }
 
   void _showReviewSheet(

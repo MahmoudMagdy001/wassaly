@@ -85,4 +85,10 @@ void initRepositoryDependencies() {
 
   sl.registerLazySingleton<HomeNavigationService>(
       () => HomeNavigationService());
+
+  sl.registerLazySingleton<CancelRequestService>(
+      () => CancelRequestService());
+
+  sl.registerLazySingleton<CancelTokenInterceptor>(
+      () => CancelTokenInterceptor(sl<CancelRequestService>()));
 }

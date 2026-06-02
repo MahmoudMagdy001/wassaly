@@ -70,3 +70,9 @@
     public void println(...);
     public void print(...);
 }
+
+# J2ObjC and Checker Framework (Commonly missing in Guava/Google libs)
+-dontwarn com.google.j2objc.annotations.**
+-dontwarn javax.annotation.**
+-dontwarn org.checkerframework.**
+-dontwarn com.google.errorprone.annotations.**

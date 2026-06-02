@@ -17,6 +17,9 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
   final GetCachedUserUseCase _getCachedUserUseCase;
   final LogoutUseCase _logoutUseCase;
   final ClearUserSessionUseCase _clearUserSessionUseCase;
+  final InternetConnectionService _internetConnectionService;
+
+  StreamSubscription<void>? _connectivitySubscription;
 
   SessionBloc({
     required LoginUseCase loginUseCase,
@@ -25,17 +28,25 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
     required GetCachedUserUseCase getCachedUserUseCase,
     required LogoutUseCase logoutUseCase,
     required ClearUserSessionUseCase clearUserSessionUseCase,
+    required InternetConnectionService internetConnectionService,
   })  : _loginUseCase = loginUseCase,
         _getSavedTokenUseCase = getSavedTokenUseCase,
         _getProfileUseCase = getProfileUseCase,
         _getCachedUserUseCase = getCachedUserUseCase,
         _logoutUseCase = logoutUseCase,
         _clearUserSessionUseCase = clearUserSessionUseCase,
+        _internetConnectionService = internetConnectionService,
         super(const SessionInitial()) {
     on<SessionLoginRequested>(_onSessionLoginRequested);
     on<SessionCheckRequested>(_onSessionCheckRequested);
     on<SessionLogoutRequested>(_onSessionLogoutRequested);
     on<SessionUserUpdated>(_onSessionUserUpdated);
+    on<SessionConnectivityRestored>(_onSessionConnectivityRestored);
+
+    _connectivitySubscription =
+        _internetConnectionService.connectivityRestoredStream.listen((_) {
+      add(const SessionConnectivityRestored());
+    });
   }
 
   Future<void> _onSessionLoginRequested(
@@ -86,6 +97,12 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
     if (user != null) {
       // Token is valid → navigate to Home
       emit(SessionAuthenticated(user));
+      // Register FCM token for existing session (app startup)
+      final userId = int.tryParse(user.id) ?? 0;
+      if (userId > 0) {
+        unawaited(FcmTokenService.instance.registerToken(userId));
+        FcmTokenService.instance.setupTokenRefresh(userId);
+      }
     } else if (failure is NetworkFailure ||
         failure is NotFoundFailure ||
         failure is ServerFailure) {
@@ -102,6 +119,12 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
         (cachedUser) {
           if (cachedUser != null) {
             emit(SessionAuthenticated(cachedUser));
+            // Register FCM token using cached user (offline startup)
+            final cachedUserId = int.tryParse(cachedUser.id) ?? 0;
+            if (cachedUserId > 0) {
+              unawaited(FcmTokenService.instance.registerToken(cachedUserId));
+              FcmTokenService.instance.setupTokenRefresh(cachedUserId);
+            }
           } else {
             emit(const SessionUnauthenticated());
           }
@@ -128,5 +151,33 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
     Emitter<SessionState> emit,
   ) {
     emit(SessionAuthenticated(event.user));
+    // Re-register token when user data changes (e.g., name or phone update might be irrelevant but safe)
+    final userId = int.tryParse(event.user.id) ?? 0;
+    if (userId > 0) {
+      unawaited(FcmTokenService.instance.registerToken(userId));
+      FcmTokenService.instance.setupTokenRefresh(userId);
+    }
+  }
+
+  Future<void> _onSessionConnectivityRestored(
+    SessionConnectivityRestored event,
+    Emitter<SessionState> emit,
+  ) async {
+    if (state is SessionAuthenticated) {
+      final user = (state as SessionAuthenticated).user;
+      final userId = int.tryParse(user.id) ?? 0;
+      if (userId > 0) {
+        AppLogger.info(
+            '[SessionBloc] Network restored. Retrying FCM token registration...');
+        unawaited(FcmTokenService.instance.registerToken(userId));
+        FcmTokenService.instance.setupTokenRefresh(userId);
+      }
+    }
+  }
+
+  @override
+  Future<void> close() {
+    _connectivitySubscription?.cancel();
+    return super.close();
   }
 }

@@ -13,4 +13,7 @@ abstract class FavoriteRepository {
   Future<Either<Failure, void>> removeFromFavorites(int productId);
   Future<Either<Failure, void>> addServiceToFavorites(int serviceId);
   Future<Either<Failure, void>> removeServiceFromFavorites(int serviceId);
+
+  /// Replays any add/remove operations that were queued while offline.
+  Future<Either<Failure, void>> syncPendingFavorites();
 }

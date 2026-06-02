@@ -29,6 +29,8 @@ class ServiceItem extends StatelessWidget {
             clipBehavior: Clip.hardEdge,
             child: AppCachedImage(
               imageUrl: imageUrl,
+              memCacheWidth: 64 * 3,
+              memCacheHeight: 64 * 3,
               fit: BoxFit.cover,
             ),
           ),

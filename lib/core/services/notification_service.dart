@@ -1,3 +1,4 @@
+import 'package:wassaly/core/constants/app_keys.dart';
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/notifications/presentation/bloc/notifications_bloc.dart';
 import 'package:wassaly/features/notifications/presentation/bloc/notifications_event.dart';
@@ -66,12 +67,19 @@ class NotificationService {
       debugPrint('Message data: ${message.data}');
 
       if (message.notification != null) {
-        showLocalNotification(
-          title: message.notification!.title ?? '',
-          body: message.notification!.body ?? '',
-          payload:
-              message.data.map((key, value) => MapEntry(key, value.toString())),
-        );
+        // Only show if notifications are enabled locally
+        final isEnabled =
+            StorageService.instance.getBool(AppKeys.isNotificationsEnabled) ??
+                true;
+
+        if (isEnabled) {
+          showLocalNotification(
+            title: message.notification!.title ?? '',
+            body: message.notification!.body ?? '',
+            payload: message.data
+                .map((key, value) => MapEntry(key, value.toString())),
+          );
+        }
       }
 
       // Update notification count and list in real-time

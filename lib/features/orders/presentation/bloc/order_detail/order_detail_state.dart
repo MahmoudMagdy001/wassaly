@@ -11,6 +11,7 @@ class OrderDetailState extends Equatable {
   final OrderEntity? order;
   final String errorMessage;
   final String actionErrorMessage;
+  final bool isNotFound;
 
   const OrderDetailState({
     this.status = OrderDetailStatus.initial,
@@ -18,6 +19,7 @@ class OrderDetailState extends Equatable {
     this.order,
     this.errorMessage = '',
     this.actionErrorMessage = '',
+    this.isNotFound = false,
   });
 
   OrderDetailState copyWith({
@@ -26,17 +28,26 @@ class OrderDetailState extends Equatable {
     OrderEntity? order,
     String? errorMessage,
     String? actionErrorMessage,
+    bool? isNotFound,
+    bool clearOrder = false,
   }) {
     return OrderDetailState(
       status: status ?? this.status,
       actionStatus: actionStatus ?? this.actionStatus,
-      order: order ?? this.order,
+      order: clearOrder ? null : order ?? this.order,
       errorMessage: errorMessage ?? this.errorMessage,
       actionErrorMessage: actionErrorMessage ?? this.actionErrorMessage,
+      isNotFound: isNotFound ?? this.isNotFound,
     );
   }
 
   @override
-  List<Object?> get props =>
-      [status, actionStatus, order, errorMessage, actionErrorMessage];
+  List<Object?> get props => [
+        status,
+        actionStatus,
+        order,
+        errorMessage,
+        actionErrorMessage,
+        isNotFound,
+      ];
 }

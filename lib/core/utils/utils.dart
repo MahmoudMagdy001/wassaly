@@ -6,5 +6,6 @@ export 'input_formatters.dart';
 export 'logger.dart';
 export 'pagination.dart';
 export 'platform_info.dart';
+export 'review_helper.dart';
 export 'task_runner.dart';
 export 'typedefs.dart';

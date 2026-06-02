@@ -1,6 +1,7 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/favorite/domain/usecases/get_favorites_usecase.dart';
 import 'package:wassaly/features/favorite/domain/usecases/get_service_favorites_usecase.dart';
+import 'package:wassaly/features/favorite/domain/usecases/sync_pending_favorites_usecase.dart';
 import 'package:wassaly/features/favorite/domain/usecases/toggle_favorite_usecase.dart';
 import 'package:wassaly/features/favorite/domain/usecases/toggle_service_favorite_usecase.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_event.dart';
@@ -13,6 +14,7 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
   final GetServiceFavoritesUseCase getServiceFavoritesUseCase;
   final ToggleFavoriteUseCase toggleFavoriteUseCase;
   final ToggleServiceFavoriteUseCase toggleServiceFavoriteUseCase;
+  final SyncPendingFavoritesUseCase syncPendingFavoritesUseCase;
 
   StreamSubscription<void>? _connectivitySub;
 
@@ -21,6 +23,7 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
     this.getServiceFavoritesUseCase,
     this.toggleFavoriteUseCase,
     this.toggleServiceFavoriteUseCase,
+    this.syncPendingFavoritesUseCase,
   ) : super(const FavoriteState()) {
     on<GetFavoritesEvent>(_onGetFavorites);
     on<LoadMoreFavoritesEvent>(_onLoadMore);
@@ -29,9 +32,12 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
     on<ToggleFavoriteEvent>(_onToggleFavorite);
     on<ToggleServiceFavoriteEvent>(_onToggleServiceFavorite);
     on<ClearFavoritesEvent>(_onClearFavorites);
+    on<SyncPendingFavoritesEvent>(_onSyncPending);
 
     _connectivitySub =
         sl<InternetConnectionService>().connectivityRestoredStream.listen((_) {
+      // Flush any queued offline ops first, then refresh the lists
+      add(const SyncPendingFavoritesEvent());
       add(const GetFavoritesEvent());
       add(const GetServiceFavoritesEvent());
     });
@@ -42,6 +48,15 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
     Emitter<FavoriteState> emit,
   ) {
     emit(const FavoriteState());
+  }
+
+  Future<void> _onSyncPending(
+    SyncPendingFavoritesEvent event,
+    Emitter<FavoriteState> emit,
+  ) async {
+    // Fire-and-forget: silently replay pending offline operations.
+    // Errors here are non-critical — they'll be retried next time.
+    await syncPendingFavoritesUseCase();
   }
 
   Future<void> _onGetFavorites(

@@ -1,17 +1,25 @@
 import 'package:intl/intl.dart';
 import 'package:wassaly/core/imports/imports.dart';
-import 'package:wassaly/features/favorite/presentation/bloc/favorite_bloc.dart';
-import 'package:wassaly/features/favorite/presentation/bloc/favorite_state.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilWrapper(
-      builder: (context) => SettingsListenerWrapper(
-        builder: (context, themeMode, language) =>
-            _buildMaterialApp(context, themeMode, language),
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark,
+      ),
+    );
+    return StateWrapper(
+      child: ScreenUtilWrapper(
+        builder: (context) => SettingsListenerWrapper(
+          builder: (context, themeMode, language) =>
+              _buildMaterialApp(context, themeMode, language),
+        ),
       ),
     );
   }
@@ -31,13 +39,8 @@ class App extends StatelessWidget {
       supportedLocales: S.supportedLocales,
       locale: Locale(language),
       builder: (context, child) {
-        return BlocListener<FavoriteBloc, FavoriteState>(
-          listenWhen: (previous, current) =>
-              previous.errorMessage != current.errorMessage,
-          listener: (context, state) {},
-          child: SessionListenerWrapper(
-            child: InternetConnectionWrapper(child: child!),
-          ),
+        return SessionListenerWrapper(
+          child: InternetConnectionWrapper(child: child!),
         );
       },
     );

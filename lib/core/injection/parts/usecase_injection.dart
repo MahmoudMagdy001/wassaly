@@ -31,6 +31,7 @@ import 'package:wassaly/features/cart/domain/usecases/update_quantity_usecase.da
 import 'package:wassaly/features/category/domain/usecases/get_category_detail_usecase.dart';
 import 'package:wassaly/features/favorite/domain/usecases/get_favorites_usecase.dart';
 import 'package:wassaly/features/favorite/domain/usecases/get_service_favorites_usecase.dart';
+import 'package:wassaly/features/favorite/domain/usecases/sync_pending_favorites_usecase.dart';
 import 'package:wassaly/features/favorite/domain/usecases/toggle_favorite_usecase.dart';
 import 'package:wassaly/features/favorite/domain/usecases/toggle_service_favorite_usecase.dart';
 import 'package:wassaly/features/home/domain/usecases/get_banners_usecase.dart';
@@ -127,6 +128,7 @@ void initUseCaseDependencies() {
   sl.registerLazySingleton(() => GetServiceFavoritesUseCase(sl()));
   sl.registerLazySingleton(() => ToggleFavoriteUseCase(sl()));
   sl.registerLazySingleton(() => ToggleServiceFavoriteUseCase(sl()));
+  sl.registerLazySingleton(() => SyncPendingFavoritesUseCase(sl()));
   sl.registerLazySingleton(() => GetProductDetailsUseCase(sl()));
   sl.registerLazySingleton(() => CreateProductReviewUseCase(sl()));
   sl.registerLazySingleton(() => UpdateProductReviewUseCase(sl()));

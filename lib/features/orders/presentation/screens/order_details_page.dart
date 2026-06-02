@@ -256,14 +256,15 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
             color: context.theme.colorScheme.primary,
             backgroundColor: context.theme.colorScheme.surface,
             child: BlocSelector<OrderDetailBloc, OrderDetailState,
-                (OrderDetailStatus, OrderEntity?, String)>(
+                (OrderDetailStatus, OrderEntity?, String, bool)>(
               selector: (state) => (
                 state.status,
                 state.order,
                 state.errorMessage,
+                state.isNotFound,
               ),
               builder: (context, data) {
-                final (status, stateOrder, errorMessage) = data;
+                final (status, stateOrder, errorMessage, isNotFound) = data;
 
                 if (status == OrderDetailStatus.failure && stateOrder == null) {
                   return CustomScrollView(
@@ -276,13 +277,17 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       SliverFillRemaining(
                         hasScrollBody: false,
                         child: Center(
-                          child: AppErrorWidget(
-                            title: context.l10n.errors_error_occurred_title,
-                            message: errorMessage.isNotEmpty
-                                ? errorMessage
-                                : context.l10n.errors_error_occurred_message,
-                            onRetry: _onRetry,
-                          ),
+                          child: isNotFound
+                              ? _buildNotFoundState(context)
+                              : AppErrorWidget(
+                                  title:
+                                      context.l10n.errors_error_occurred_title,
+                                  message: errorMessage.isNotEmpty
+                                      ? errorMessage
+                                      : context
+                                          .l10n.errors_error_occurred_message,
+                                  onRetry: _onRetry,
+                                ),
                         ),
                       ),
                     ],
@@ -476,6 +481,20 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
           fontWeight: FontWeight.bold,
         ),
       ),
+    );
+  }
+
+  Widget _buildNotFoundState(BuildContext context) {
+    final isAr = Localizations.localeOf(context).languageCode == 'ar';
+
+    return AppEmptyState(
+      icon: Icons.receipt_long_outlined,
+      title: isAr ? 'الطلب غير موجود' : 'Order not found',
+      subtitle: isAr
+          ? 'قد يكون هذا الطلب تم حذفه أو لم يعد متاحاً.'
+          : 'This order may have been deleted or is no longer available.',
+      actionLabel: isAr ? 'العودة للطلبات' : 'Back to orders',
+      onAction: () => context.pop(_shouldRefresh),
     );
   }
 }

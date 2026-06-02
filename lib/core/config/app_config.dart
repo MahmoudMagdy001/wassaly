@@ -41,12 +41,17 @@ class AppConfig {
     }
 
     // Interceptors order is important
+    _addCancelTokenInterceptor();
     _addAuthInterceptor();
     _addLanguageInterceptor();
     _addStabilityInterceptor();
 
     // Logger should be the last interceptor
     _addLoggerInterceptor();
+  }
+
+  static void _addCancelTokenInterceptor() {
+    dio.interceptors.add(sl<CancelTokenInterceptor>());
   }
 
   static void _addLoggerInterceptor() {

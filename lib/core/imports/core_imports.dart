@@ -1,6 +1,7 @@
 // Dart SDK
 export 'dart:async';
 export 'dart:io';
+export 'dart:math';
 
 export 'package:flutter/cupertino.dart' hide RefreshCallback;
 export 'package:flutter/foundation.dart';
@@ -15,6 +16,7 @@ export '../injection/injection.dart';
 export '../routing/app_router.dart';
 export '../routing/app_routes.dart';
 export '../routing/global_navigator.dart';
+export '../routing/request_route_observer.dart';
 export '../services/services.dart';
 export '../shared/shared.dart';
 export '../utils/pagination.dart';

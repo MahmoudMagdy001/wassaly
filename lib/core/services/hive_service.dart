@@ -16,6 +16,7 @@ class HiveService {
   static const String ordersBox = 'orders_box';
   static const String bookingsBox = 'bookings_box';
   static const String notificationsBox = 'notifications_box';
+  static const String favoritePendingBox = 'favorite_pending_box';
 
   static Future<void> init() async {
     await Hive.initFlutter();
@@ -42,6 +43,7 @@ class HiveService {
       Hive.openBox<OrderModel>(ordersBox),
       Hive.openBox<BookingModel>(bookingsBox),
       Hive.openBox<NotificationModel>(notificationsBox),
+      Hive.openBox<Map<String, dynamic>>(favoritePendingBox),
     ]);
 
     AppLogger.info('HiveService initialized and boxes opened');

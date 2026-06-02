@@ -44,8 +44,10 @@ class CheckoutOrderSummarySection extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8.r),
                       child: AppCachedImage(
                         imageUrl: item.productImage,
-                        width: 56.w,
-                        height: 56.w,
+                        width: 56,
+                        height: 56,
+                        memCacheWidth: 56 * 3,
+                        memCacheHeight: 56 * 3,
                         fit: BoxFit.cover,
                       ),
                     ),

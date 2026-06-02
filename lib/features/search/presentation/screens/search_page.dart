@@ -74,10 +74,7 @@ class _SearchPageContent extends StatelessWidget {
                   child: _buildEmptyState(context),
                 );
               }
-              return const SliverFillRemaining(
-                hasScrollBody: true,
-                child: SearchResultsList(),
-              );
+              return const SearchResultsList();
             },
           ),
         ],

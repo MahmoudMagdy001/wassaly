@@ -37,6 +37,7 @@ void initBlocDependencies() {
         getCachedUserUseCase: sl(),
         logoutUseCase: sl(),
         clearUserSessionUseCase: sl(),
+        internetConnectionService: sl(),
       ));
   sl.registerFactory(() => LoginBloc(
         loginUseCase: sl(),
@@ -83,6 +84,7 @@ void initBlocDependencies() {
         searchProductsUseCase: sl(),
       ));
   sl.registerLazySingleton(() => FavoriteBloc(
+        sl(),
         sl(),
         sl(),
         sl(),

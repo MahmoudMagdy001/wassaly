@@ -11,6 +11,8 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
 
   const FavoriteRepositoryImpl(this.remoteDataSource, this.localDataSource);
 
+  // ── Fetch products ─────────────────────────────────────────────────────────
+
   @override
   Future<Either<Failure, PaginatedResponse<ProductEntity>>> getFavorites(
       {int page = 1}) async {
@@ -31,6 +33,8 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
       return Left(UnknownFailure(e.toString()));
     }
   }
+
+  // ── Fetch services ─────────────────────────────────────────────────────────
 
   @override
   Future<Either<Failure, PaginatedResponse<ServiceEntity>>> getServiceFavorites(
@@ -53,11 +57,23 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
     }
   }
 
+  // ── Toggle products ────────────────────────────────────────────────────────
+
   @override
   Future<Either<Failure, void>> addToFavorites(int productId) async {
     try {
       await remoteDataSource.addToFavorites(productId);
       return const Right(null);
+    } on NetworkFailure {
+      // Queue the operation for later sync
+      await localDataSource.enqueuePendingOperation(
+        PendingFavoriteOperation(
+          action: PendingFavoriteAction.add,
+          itemType: PendingFavoriteItemType.product,
+          id: productId,
+        ),
+      );
+      return const Right(null); // Optimistic success for UI
     } on Failure catch (failure) {
       return Left(failure);
     } catch (e) {
@@ -69,6 +85,42 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
   Future<Either<Failure, void>> removeFromFavorites(int productId) async {
     try {
       await remoteDataSource.removeFromFavorites(productId);
+      await localDataSource.toggleProductFavoriteLocally(
+        ProductEntity(
+          id: productId,
+          name: '',
+          image: '',
+          price: '0.0',
+          description: '',
+          offers: const [],
+          reviews: const [],
+          isFavorite: false,
+        ),
+        false,
+      );
+      return const Right(null);
+    } on NetworkFailure {
+      // Remove locally + queue so the server is updated when back online
+      await localDataSource.toggleProductFavoriteLocally(
+        ProductEntity(
+          id: productId,
+          name: '',
+          image: '',
+          price: '0.0',
+          description: '',
+          offers: const [],
+          reviews: const [],
+          isFavorite: false,
+        ),
+        false,
+      );
+      await localDataSource.enqueuePendingOperation(
+        PendingFavoriteOperation(
+          action: PendingFavoriteAction.remove,
+          itemType: PendingFavoriteItemType.product,
+          id: productId,
+        ),
+      );
       return const Right(null);
     } on Failure catch (failure) {
       return Left(failure);
@@ -77,10 +129,21 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
     }
   }
 
+  // ── Toggle services ────────────────────────────────────────────────────────
+
   @override
   Future<Either<Failure, void>> addServiceToFavorites(int serviceId) async {
     try {
       await remoteDataSource.addServiceToFavorites(serviceId);
+      return const Right(null);
+    } on NetworkFailure {
+      await localDataSource.enqueuePendingOperation(
+        PendingFavoriteOperation(
+          action: PendingFavoriteAction.add,
+          itemType: PendingFavoriteItemType.service,
+          id: serviceId,
+        ),
+      );
       return const Right(null);
     } on Failure catch (failure) {
       return Left(failure);
@@ -94,11 +157,80 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
       int serviceId) async {
     try {
       await remoteDataSource.removeServiceFromFavorites(serviceId);
+      await localDataSource.toggleServiceFavoriteLocally(
+        ServiceEntity(
+          id: serviceId,
+          title: '',
+          description: '',
+          price: 0,
+          isFavorite: false,
+        ),
+        false,
+      );
+      return const Right(null);
+    } on NetworkFailure {
+      await localDataSource.toggleServiceFavoriteLocally(
+        ServiceEntity(
+          id: serviceId,
+          title: '',
+          description: '',
+          price: 0,
+          isFavorite: false,
+        ),
+        false,
+      );
+      await localDataSource.enqueuePendingOperation(
+        PendingFavoriteOperation(
+          action: PendingFavoriteAction.remove,
+          itemType: PendingFavoriteItemType.service,
+          id: serviceId,
+        ),
+      );
       return const Right(null);
     } on Failure catch (failure) {
       return Left(failure);
     } catch (e) {
       return Left(UnknownFailure(e.toString()));
     }
+  }
+
+  // ── Sync pending operations ────────────────────────────────────────────────
+
+  @override
+  Future<Either<Failure, void>> syncPendingFavorites() async {
+    final pending = localDataSource.getPendingOperations();
+    if (pending.isEmpty) return const Right(null);
+
+    final List<PendingFavoriteOperation> failed = [];
+
+    for (final op in pending) {
+      try {
+        switch ((op.action, op.itemType)) {
+          case (PendingFavoriteAction.add, PendingFavoriteItemType.product):
+            await remoteDataSource.addToFavorites(op.id);
+          case (PendingFavoriteAction.remove, PendingFavoriteItemType.product):
+            await remoteDataSource.removeFromFavorites(op.id);
+          case (PendingFavoriteAction.add, PendingFavoriteItemType.service):
+            await remoteDataSource.addServiceToFavorites(op.id);
+          case (PendingFavoriteAction.remove, PendingFavoriteItemType.service):
+            await remoteDataSource.removeServiceFromFavorites(op.id);
+        }
+      } catch (_) {
+        // If still offline or server error, keep the failed ops
+        failed.add(op);
+      }
+    }
+
+    // Clear the queue and re-enqueue any that still failed
+    await localDataSource.clearPendingOperations();
+    for (final op in failed) {
+      await localDataSource.enqueuePendingOperation(op);
+    }
+
+    if (failed.isNotEmpty) {
+      return Left(NetworkFailure(
+          'Synced ${pending.length - failed.length}/${pending.length} pending favorites'));
+    }
+    return const Right(null);
   }
 }

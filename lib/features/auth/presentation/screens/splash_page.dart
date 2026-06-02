@@ -1,5 +1,8 @@
 import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/core/services/notification_service.dart';
 import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
+import 'package:wassaly/features/notifications/presentation/bloc/notifications_bloc.dart';
+import 'package:wassaly/features/notifications/presentation/bloc/notifications_event.dart';
 
 class SplashPage extends StatelessWidget {
   const SplashPage({super.key});
@@ -64,16 +67,34 @@ class _SplashViewState extends State<_SplashView>
 
   Future<void> _initializeServices() async {
     try {
-      await dotenv.load(fileName: '.env');
-      await StorageService.instance.init();
+      // Core services (Hive, Firebase, Storage, Env) are now initialized in main.dart
+      // We only handle app-specific initialization here
       await AppConfig.init();
-      await DeepLinkService.instance.initialize();
+      _startDeferredServices();
     } catch (e) {
       AppLogger.error('Splash init error: $e');
     } finally {
       if (mounted && !_initCompleter.isCompleted) {
         _initCompleter.complete();
       }
+    }
+  }
+
+  void _startDeferredServices() {
+    unawaited(DeepLinkService.instance.initialize());
+    unawaited(_initializeNotifications());
+  }
+
+  Future<void> _initializeNotifications() async {
+    try {
+      await NotificationService.instance.initialize();
+      if (sl.isRegistered<NotificationsBloc>()) {
+        sl<NotificationsBloc>()
+          ..add(const GetNotificationsEvent())
+          ..add(const GetNotificationStatusEvent());
+      }
+    } catch (e) {
+      AppLogger.error('Notification init error: $e');
     }
   }
 

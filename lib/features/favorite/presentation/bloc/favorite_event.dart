@@ -58,3 +58,8 @@ class LoadMoreServiceFavoritesEvent extends FavoriteEvent {
 class ClearFavoritesEvent extends FavoriteEvent {
   const ClearFavoritesEvent();
 }
+
+/// Triggered when connectivity is restored to flush the offline pending queue.
+class SyncPendingFavoritesEvent extends FavoriteEvent {
+  const SyncPendingFavoritesEvent();
+}
