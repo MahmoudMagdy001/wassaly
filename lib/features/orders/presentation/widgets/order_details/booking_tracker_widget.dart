@@ -24,7 +24,7 @@ class BookingTrackerWidget extends StatelessWidget {
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
 
-    final List<_TimelineStep> steps = [
+    final steps = <_TimelineStep>[
       _TimelineStep(
         title: context.l10n.order_status_pending,
         description: context.l10n.order_tracker_pending_desc,
@@ -52,8 +52,8 @@ class BookingTrackerWidget extends StatelessWidget {
     ];
 
     final normStatus = status.trim().toLowerCase();
-    int currentStep = -1;
-    bool isCancelled = false;
+    var currentStep = -1;
+    var isCancelled = false;
 
     if (normStatus.contains('pending') ||
         normStatus.contains('waiting') ||
@@ -82,11 +82,11 @@ class BookingTrackerWidget extends StatelessWidget {
       children: List.generate(steps.length, (index) {
         final step = steps[index];
 
-        final bool isCompleted = !isCancelled && currentStep >= index;
-        final bool isCurrent = !isCancelled && currentStep == index;
+        final isCompleted = !isCancelled && currentStep >= index;
+        final isCurrent = !isCancelled && currentStep == index;
 
-        final double opacity = isCompleted ? 1.0 : 0.4;
-        final Color activeColor = isCompleted
+        final opacity = isCompleted ? 1.0 : 0.4;
+        final activeColor = isCompleted
             ? step.color
             : cs.onSurfaceVariant.withValues(alpha: 0.3);
 
@@ -142,7 +142,7 @@ class BookingTrackerWidget extends StatelessWidget {
                   opacity: opacity,
                   child: Padding(
                     padding: EdgeInsets.only(
-                        bottom: index == steps.length - 1 ? 0 : 20.h),
+                        bottom: index == steps.length - 1 ? 0 : 20.h,),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,

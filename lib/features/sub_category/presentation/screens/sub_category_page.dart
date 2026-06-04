@@ -15,8 +15,7 @@ class SubCategoryPage extends StatelessWidget {
   final SubCategoryEntity subCategory;
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
+  Widget build(BuildContext context) => BlocProvider(
       create: (context) => sl<SubCategoryBloc>()
         ..add(FetchSubCategoryDetailEvent(subCategory.id)),
       child: Scaffold(
@@ -24,7 +23,6 @@ class SubCategoryPage extends StatelessWidget {
         body: SubCategoryDetailView(subCategory: subCategory),
       ),
     );
-  }
 }
 
 class SubCategoryDetailView extends StatelessWidget {

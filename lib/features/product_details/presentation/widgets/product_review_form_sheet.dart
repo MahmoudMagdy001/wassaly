@@ -1,8 +1,7 @@
 import 'package:wassaly/core/imports/imports.dart';
-
-import '../../domain/entities/product_detail_entity.dart';
-import '../bloc/product_details_bloc.dart';
-import '../bloc/product_details_event.dart';
+import 'package:wassaly/features/product_details/domain/entities/product_detail_entity.dart';
+import 'package:wassaly/features/product_details/presentation/bloc/product_details_bloc.dart';
+import 'package:wassaly/features/product_details/presentation/bloc/product_details_event.dart';
 
 class ProductReviewFormSheet extends StatefulWidget {
   final int productId;
@@ -66,25 +65,23 @@ class _ProductReviewFormSheetState extends State<ProductReviewFormSheet> {
           12.verticalSpace,
           ValueListenableBuilder<int>(
             valueListenable: _ratingNotifier,
-            builder: (context, rating, child) {
-              return Row(
-                children: List.generate(
-                  5,
-                  (index) {
-                    final star = index + 1;
-                    return IconButton(
-                      onPressed: () => _ratingNotifier.value = star,
-                      icon: Icon(
-                        star <= rating
-                            ? Icons.star_rounded
-                            : Icons.star_outline_rounded,
-                        color: star <= rating ? cs.secondary : cs.outline,
-                      ),
-                    );
-                  },
-                ),
-              );
-            },
+            builder: (context, rating, child) => Row(
+              children: List.generate(
+                5,
+                (index) {
+                  final star = index + 1;
+                  return IconButton(
+                    onPressed: () => _ratingNotifier.value = star,
+                    icon: Icon(
+                      star <= rating
+                          ? Icons.star_rounded
+                          : Icons.star_outline_rounded,
+                      color: star <= rating ? cs.secondary : cs.outline,
+                    ),
+                  );
+                },
+              ),
+            ),
           ),
           8.verticalSpace,
           TextField(
@@ -116,8 +113,8 @@ class _ProductReviewFormSheetState extends State<ProductReviewFormSheet> {
     if (comment.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content:
-                Text(context.l10n.product_details_review_comment_required)),
+          content: Text(context.l10n.product_details_review_comment_required),
+        ),
       );
       return;
     }

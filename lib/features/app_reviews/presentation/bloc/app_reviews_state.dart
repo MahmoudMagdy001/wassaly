@@ -1,5 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
-import '../../domain/entities/app_review_entity.dart';
+import 'package:wassaly/features/app_reviews/domain/entities/app_review_entity.dart';
 
 class AppReviewsState extends Equatable {
   final AppStatus status;
@@ -26,8 +26,7 @@ class AppReviewsState extends Equatable {
     AppStatus? actionStatus,
     String? actionErrorMessage,
     int? currentUserId,
-  }) {
-    return AppReviewsState(
+  }) => AppReviewsState(
       status: status ?? this.status,
       reviews: reviews ?? this.reviews,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
@@ -35,7 +34,6 @@ class AppReviewsState extends Equatable {
       actionErrorMessage: actionErrorMessage,
       currentUserId: currentUserId ?? this.currentUserId,
     );
-  }
 
   @override
   List<Object?> get props => [

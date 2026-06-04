@@ -1,7 +1,7 @@
-import '../../../../core/imports/imports.dart';
-import '../../domain/usecases/get_category_detail_usecase.dart';
-import 'category_event.dart';
-import 'category_state.dart';
+import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/features/category/domain/usecases/get_category_detail_usecase.dart';
+import 'package:wassaly/features/category/presentation/bloc/category_event.dart';
+import 'package:wassaly/features/category/presentation/bloc/category_state.dart';
 
 class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
   final GetCategoryDetailUseCase _getCategoryDetailUseCase;
@@ -21,13 +21,13 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
   ) async {
     emit(state.copyWith(status: CategoryStatus.loading));
 
-    final result = await _getCategoryDetailUseCase(event.categoryId, page: 1);
+    final result = await _getCategoryDetailUseCase(event.categoryId);
 
     result.fold(
       (failure) => emit(state.copyWith(
         status: CategoryStatus.failure,
         errorMessage: failure.message,
-      )),
+      ),),
       (categoryDetail) {
         final subCategories = categoryDetail.subCategories;
         emit(state.copyWith(
@@ -36,7 +36,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
           subCategories: subCategories,
           selectedSubCategory:
               subCategories.data.isNotEmpty ? subCategories.data.first : null,
-        ));
+        ),);
       },
     );
   }
@@ -76,7 +76,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
               ...categoryDetail.subCategories.data,
             ],
           ),
-        ));
+        ),);
       },
     );
   }

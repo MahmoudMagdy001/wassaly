@@ -1,6 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-import '../repositories/service_details_repository.dart';
+import 'package:wassaly/features/service_details/domain/repositories/service_details_repository.dart';
 
 class ToggleServiceFavoriteUseCase {
   final ServiceDetailsRepository _repository;

@@ -1,6 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-import '../models/order_model.dart';
+import 'package:wassaly/features/orders/data/models/order_model.dart';
 
 abstract class OrdersRemoteDataSource {
   Future<PaginatedResponse<OrderModel>> getOrders({int page = 1});
@@ -64,7 +64,7 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
         final data = responseData['data'];
         if (data == null) {
           throw ServerFailure(
-              message.isNotEmpty ? message : 'Empty response data');
+              message.isNotEmpty ? message : 'Empty response data',);
         }
 
         return OrderModel.fromJson(data as Map<String, dynamic>);

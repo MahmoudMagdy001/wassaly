@@ -91,7 +91,7 @@ class AppCard extends StatelessWidget {
         color: cardColor,
         borderRadius: BorderRadius.circular(12.r),
         border:
-            showShadow ? null : Border.all(color: cs.outlineVariant, width: 1),
+            showShadow ? null : Border.all(color: cs.outlineVariant),
         boxShadow: showShadow
             ? [
                 BoxShadow(
@@ -158,7 +158,7 @@ class AppCard extends StatelessWidget {
               decoration: BoxDecoration(
                 border: showShadow
                     ? null
-                    : Border.all(color: cs.outlineVariant, width: 1),
+                    : Border.all(color: cs.outlineVariant),
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: content,

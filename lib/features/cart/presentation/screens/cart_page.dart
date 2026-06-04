@@ -35,7 +35,7 @@ class _CartPageState extends State<CartPage> {
 
   @override
   void dispose() {
-    _connectivitySub?.cancel();
+    unawaited(_connectivitySub?.cancel());
     super.dispose();
   }
 
@@ -133,9 +133,11 @@ class _CartPageState extends State<CartPage> {
                       final item = items[index];
                       return CartItemWidget(
                         item: item,
-                        onTap: () => context.push(
-                          AppRoutes.productDetails,
-                          extra: {'productId': item.productId},
+                        onTap: () => unawaited(
+                          context.push(
+                            AppRoutes.productDetails,
+                            extra: {'productId': item.productId},
+                          ),
                         ),
                         onRemove: () => context
                             .read<CartBloc>()
@@ -182,9 +184,7 @@ class _CartPageState extends State<CartPage> {
                     buildWhen: (prev, curr) =>
                         prev.items != curr.items ||
                         prev.checkoutData != curr.checkoutData,
-                    builder: (context, state) {
-                      return CartOrderSummary(state: state);
-                    },
+                    builder: (context, state) => CartOrderSummary(state: state),
                   ),
                 ),
               );

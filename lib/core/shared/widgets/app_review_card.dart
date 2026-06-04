@@ -142,163 +142,158 @@ class _AppReviewCardState extends State<AppReviewCard> {
     );
   }
 
-  Widget _buildHeader(ColorScheme cs, TextTheme tt) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildAvatar(cs, tt),
-        10.horizontalSpace,
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Flexible(
-                    child: Text(
-                      widget.userName,
-                      style: tt.titleSmall?.copyWith(
-                        color: cs.onSurface,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14.sp,
+  Widget _buildHeader(ColorScheme cs, TextTheme tt) => Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildAvatar(cs, tt),
+          10.horizontalSpace,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        widget.userName,
+                        style: tt.titleSmall?.copyWith(
+                          color: cs.onSurface,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14.sp,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    ),
+                    if (widget.isCurrentUserReview) ...[
+                      6.horizontalSpace,
+                      _OwnBadge(cs: cs, tt: tt),
+                    ],
+                  ],
+                ),
+                if (widget.createdAt != null &&
+                    widget.createdAt!.trim().isNotEmpty) ...[
+                  3.verticalSpace,
+                  Text(
+                    widget.createdAt!.to12HourFormat(),
+                    style: tt.bodySmall?.copyWith(
+                      color: cs.onSurfaceVariant.withValues(alpha: 0.7),
+                      fontSize: 11.sp,
                     ),
                   ),
-                  if (widget.isCurrentUserReview) ...[
-                    6.horizontalSpace,
-                    _OwnBadge(cs: cs, tt: tt),
-                  ],
                 ],
-              ),
-              if (widget.createdAt != null &&
-                  widget.createdAt!.trim().isNotEmpty) ...[
-                3.verticalSpace,
-                Text(
-                  widget.createdAt!.to12HourFormat(),
-                  style: tt.bodySmall?.copyWith(
-                    color: cs.onSurfaceVariant.withValues(alpha: 0.7),
-                    fontSize: 11.sp,
-                  ),
-                ),
               ],
-            ],
+            ),
           ),
-        ),
-        _buildStars(cs),
-      ],
-    );
-  }
+          _buildStars(cs),
+        ],
+      );
 
-  Widget _buildStars(ColorScheme cs) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: List.generate(
-        5,
-        (index) => Padding(
-          padding: EdgeInsets.only(right: 1.w),
-          child: Icon(
-            index < widget.rating
-                ? Icons.star_rounded
-                : Icons.star_outline_rounded,
-            size: 15.r,
-            color: index < widget.rating
-                ? const Color(0xFFEF9F27)
-                : cs.outlineVariant,
+  Widget _buildStars(ColorScheme cs) => Row(
+        mainAxisSize: MainAxisSize.min,
+        children: List.generate(
+          5,
+          (index) => Padding(
+            padding: EdgeInsets.only(right: 1.w),
+            child: Icon(
+              index < widget.rating
+                  ? Icons.star_rounded
+                  : Icons.star_outline_rounded,
+              size: 15.r,
+              color: index < widget.rating
+                  ? const Color(0xFFEF9F27)
+                  : cs.outlineVariant,
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
 
   /// شريط التعديل الجديد — بدل PopupMenuButton
-  Widget _buildEditBar(ColorScheme cs, TextTheme tt) {
-    return ValueListenableBuilder<Duration>(
-      valueListenable: _remainingNotifier,
-      builder: (context, remaining, _) {
-        final canEdit = widget.createdAt == null
-            ? widget.canEdit
-            : remaining > Duration.zero;
-        final isExpired = !canEdit;
+  Widget _buildEditBar(ColorScheme cs, TextTheme tt) =>
+      ValueListenableBuilder<Duration>(
+        valueListenable: _remainingNotifier,
+        builder: (context, remaining, _) {
+          final canEdit = widget.createdAt == null
+              ? widget.canEdit
+              : remaining > Duration.zero;
+          final isExpired = !canEdit;
 
-        return Container(
-          decoration: BoxDecoration(
-            color: isExpired
-                ? cs.surfaceContainerHighest.withValues(alpha: 0.3)
-                : cs.primary.withValues(alpha: 0.05),
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(16.r),
-              bottomRight: Radius.circular(16.r),
-            ),
-            border: Border(
-              top: BorderSide(
-                color: isExpired
-                    ? cs.outlineVariant.withValues(alpha: 0.4)
-                    : cs.primary.withValues(alpha: 0.15),
-                width: 0.8,
+          return Container(
+            decoration: BoxDecoration(
+              color: isExpired
+                  ? cs.surfaceContainerHighest.withValues(alpha: 0.3)
+                  : cs.primary.withValues(alpha: 0.05),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(16.r),
+                bottomRight: Radius.circular(16.r),
               ),
-            ),
-          ),
-          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 9.h),
-          child: Row(
-            children: [
-              Icon(
-                isExpired ? Icons.lock_outline_rounded : Icons.timer_outlined,
-                size: 15.r,
-                color: isExpired
-                    ? cs.onSurfaceVariant.withValues(alpha: 0.5)
-                    : cs.primary,
-              ),
-              6.horizontalSpace,
-              Expanded(
-                child: isExpired
-                    ? Text(
-                        context.l10n.product_details_edit_time_expired,
-                        style: tt.bodySmall?.copyWith(
-                          color: cs.onSurfaceVariant.withValues(alpha: 0.6),
-                          fontSize: 11.sp,
-                        ),
-                      )
-                    : Row(
-                        children: [
-                          Text(
-                            context.l10n.product_details_review_edit_window,
-                            style: tt.bodySmall?.copyWith(
-                              color: cs.onSurfaceVariant,
-                              fontSize: 11.sp,
-                            ),
-                          ),
-                          6.horizontalSpace,
-                          Text(
-                            _formatDuration(remaining),
-                            style: tt.bodySmall?.copyWith(
-                              color: cs.primary,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 13.sp,
-                              fontFeatures: const [
-                                FontFeature.tabularFigures(),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-              ),
-              if (!isExpired) ...[
-                6.horizontalSpace,
-                _EditButton(
-                  label: context.l10n.shared_edit,
-                  cs: cs,
-                  tt: tt,
-                  onTap: widget.onEdit,
+              border: Border(
+                top: BorderSide(
+                  color: isExpired
+                      ? cs.outlineVariant.withValues(alpha: 0.4)
+                      : cs.primary.withValues(alpha: 0.15),
+                  width: 0.8,
                 ),
+              ),
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 9.h),
+            child: Row(
+              children: [
+                Icon(
+                  isExpired ? Icons.lock_outline_rounded : Icons.timer_outlined,
+                  size: 15.r,
+                  color: isExpired
+                      ? cs.onSurfaceVariant.withValues(alpha: 0.5)
+                      : cs.primary,
+                ),
+                6.horizontalSpace,
+                Expanded(
+                  child: isExpired
+                      ? Text(
+                          context.l10n.product_details_edit_time_expired,
+                          style: tt.bodySmall?.copyWith(
+                            color: cs.onSurfaceVariant.withValues(alpha: 0.6),
+                            fontSize: 11.sp,
+                          ),
+                        )
+                      : Row(
+                          children: [
+                            Text(
+                              context.l10n.product_details_review_edit_window,
+                              style: tt.bodySmall?.copyWith(
+                                color: cs.onSurfaceVariant,
+                                fontSize: 11.sp,
+                              ),
+                            ),
+                            6.horizontalSpace,
+                            Text(
+                              _formatDuration(remaining),
+                              style: tt.bodySmall?.copyWith(
+                                color: cs.primary,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 13.sp,
+                                fontFeatures: const [
+                                  FontFeature.tabularFigures(),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                ),
+                if (!isExpired) ...[
+                  6.horizontalSpace,
+                  _EditButton(
+                    label: context.l10n.shared_edit,
+                    cs: cs,
+                    tt: tt,
+                    onTap: widget.onEdit,
+                  ),
+                ],
               ],
-            ],
-          ),
-        );
-      },
-    );
-  }
+            ),
+          );
+        },
+      );
 
   Widget _buildAvatar(ColorScheme cs, TextTheme tt) {
     final hasAvatar =
@@ -318,7 +313,6 @@ class _AppReviewCardState extends State<AppReviewCard> {
             height: 40,
             memCacheHeight: 40 * 3,
             imageUrl: widget.userAvatar!,
-            fit: BoxFit.cover,
           ),
         ),
       );
@@ -363,34 +357,32 @@ class _OwnBadge extends StatelessWidget {
   final TextTheme tt;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 2.h),
-      decoration: BoxDecoration(
-        color: cs.secondaryContainer,
-        borderRadius: BorderRadius.circular(20.r),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.check_circle_outline_rounded,
-            size: 10.r,
-            color: cs.onSecondaryContainer,
-          ),
-          3.horizontalSpace,
-          Text(
-            context.l10n.product_details_your_review,
-            style: tt.labelSmall?.copyWith(
+  Widget build(BuildContext context) => Container(
+        padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 2.h),
+        decoration: BoxDecoration(
+          color: cs.secondaryContainer,
+          borderRadius: BorderRadius.circular(20.r),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.check_circle_outline_rounded,
+              size: 10.r,
               color: cs.onSecondaryContainer,
-              fontWeight: FontWeight.w600,
-              fontSize: 10.sp,
             ),
-          ),
-        ],
-      ),
-    );
-  }
+            3.horizontalSpace,
+            Text(
+              context.l10n.product_details_your_review,
+              style: tt.labelSmall?.copyWith(
+                color: cs.onSecondaryContainer,
+                fontWeight: FontWeight.w600,
+                fontSize: 10.sp,
+              ),
+            ),
+          ],
+        ),
+      );
 }
 
 class _EditButton extends StatelessWidget {
@@ -406,24 +398,22 @@ class _EditButton extends StatelessWidget {
   final VoidCallback? onTap;
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 5.h),
-        decoration: BoxDecoration(
-          color: cs.primary,
-          borderRadius: BorderRadius.circular(20.r),
-        ),
-        child: Text(
-          label,
-          style: tt.labelSmall?.copyWith(
-            color: cs.onPrimary,
-            fontWeight: FontWeight.w600,
-            fontSize: 12.sp,
+  Widget build(BuildContext context) => GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 5.h),
+          decoration: BoxDecoration(
+            color: cs.primary,
+            borderRadius: BorderRadius.circular(20.r),
+          ),
+          child: Text(
+            label,
+            style: tt.labelSmall?.copyWith(
+              color: cs.onPrimary,
+              fontWeight: FontWeight.w600,
+              fontSize: 12.sp,
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
 }

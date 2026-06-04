@@ -1,5 +1,6 @@
-import 'package:wassaly/core/imports/imports.dart';
 import 'dart:ui';
+
+import 'package:wassaly/core/imports/imports.dart';
 
 /// A premium, immersive full-screen image viewer supporting multiple images.
 /// Supports swiping between images, pinch-to-zoom, pan, double-tap-to-zoom, and vertical swipe to dismiss.
@@ -21,8 +22,7 @@ class AppImageFullScreenView extends StatefulWidget {
     required List<String> imageUrls,
     int initialIndex = 0,
     required String Function(int index) heroTagBuilder,
-  }) {
-    return Navigator.of(context).push<int>(
+  }) => Navigator.of(context).push<int>(
       PageRouteBuilder<int>(
         opaque: false,
         barrierDismissible: true,
@@ -32,15 +32,12 @@ class AppImageFullScreenView extends StatefulWidget {
           initialIndex: initialIndex,
           heroTagBuilder: heroTagBuilder,
         ),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(
+        transitionsBuilder: (context, animation, secondaryAnimation, child) => FadeTransition(
             opacity: animation,
             child: child,
-          );
-        },
+          ),
       ),
     );
-  }
 
   @override
   State<AppImageFullScreenView> createState() => _AppImageFullScreenViewState();
@@ -66,8 +63,7 @@ class _AppImageFullScreenViewState extends State<AppImageFullScreenView> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       backgroundColor: Colors.transparent,
       body: Stack(
         children: [
@@ -131,8 +127,7 @@ class _AppImageFullScreenViewState extends State<AppImageFullScreenView> {
                   if (widget.imageUrls.length > 1)
                     ValueListenableBuilder<int>(
                       valueListenable: _currentIndexNotifier,
-                      builder: (context, currentIndex, _) {
-                        return Container(
+                      builder: (context, currentIndex, _) => Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: 12.w,
                             vertical: 6.h,
@@ -149,8 +144,7 @@ class _AppImageFullScreenViewState extends State<AppImageFullScreenView> {
                               fontSize: 14,
                             ),
                           ),
-                        );
-                      },
+                        ),
                     ),
 
                   // Close Button
@@ -178,7 +172,6 @@ class _AppImageFullScreenViewState extends State<AppImageFullScreenView> {
         ],
       ),
     );
-  }
 }
 
 class _FullScreenImagePage extends StatefulWidget {
@@ -224,8 +217,7 @@ class _FullScreenImagePageState extends State<_FullScreenImagePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
+  Widget build(BuildContext context) => Center(
       child: Hero(
         tag: widget.heroTag,
         child: GestureDetector(
@@ -253,5 +245,4 @@ class _FullScreenImagePageState extends State<_FullScreenImagePage> {
         ),
       ),
     );
-  }
 }

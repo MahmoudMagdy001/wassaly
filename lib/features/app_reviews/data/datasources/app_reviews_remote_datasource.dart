@@ -5,7 +5,7 @@ abstract class AppReviewsRemoteDataSource {
   Future<List<AppReviewModel>> getAppReviews();
   Future<AppReviewModel> addAppReview(int rating, String comment);
   Future<AppReviewModel> updateAppReview(
-      int reviewId, int rating, String comment);
+      int reviewId, int rating, String comment,);
 }
 
 class AppReviewsRemoteDataSourceImpl implements AppReviewsRemoteDataSource {
@@ -33,7 +33,7 @@ class AppReviewsRemoteDataSourceImpl implements AppReviewsRemoteDataSource {
           return <AppReviewModel>[];
         }
 
-        final List<dynamic> list = data as List<dynamic>;
+        final list = data as List<dynamic>;
         return list
             .map((e) => AppReviewModel.fromJson(e as Map<String, dynamic>))
             .toList();
@@ -63,14 +63,14 @@ class AppReviewsRemoteDataSourceImpl implements AppReviewsRemoteDataSource {
         }
 
         return AppReviewModel.fromJson(
-            responseData['data'] as Map<String, dynamic>);
+            responseData['data'] as Map<String, dynamic>,);
       },
     );
   }
 
   @override
   Future<AppReviewModel> updateAppReview(
-      int reviewId, int rating, String comment) async {
+      int reviewId, int rating, String comment,) async {
     final response = await _dioService.put(
       '/api/reviews/update/general',
       data: {
@@ -92,7 +92,7 @@ class AppReviewsRemoteDataSourceImpl implements AppReviewsRemoteDataSource {
         }
 
         return AppReviewModel.fromJson(
-            responseData['data'] as Map<String, dynamic>);
+            responseData['data'] as Map<String, dynamic>,);
       },
     );
   }

@@ -1,6 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/features/orders/domain/entities/order_entity.dart';
 import 'package:wassaly/features/service_booking/domain/entities/booking_entity.dart';
-import '../../domain/entities/order_entity.dart';
 
 enum OrdersStatus { initial, loading, loadingMore, success, failure }
 
@@ -25,15 +25,13 @@ class OrdersState extends Equatable {
     OrdersStatus? serviceStatus,
     PaginatedResponse<BookingEntity>? serviceBookings,
     String? errorMessage,
-  }) {
-    return OrdersState(
+  }) => OrdersState(
       status: status ?? this.status,
       orders: orders ?? this.orders,
       serviceStatus: serviceStatus ?? this.serviceStatus,
       serviceBookings: serviceBookings ?? this.serviceBookings,
       errorMessage: errorMessage ?? this.errorMessage,
     );
-  }
 
   @override
   List<Object?> get props => [

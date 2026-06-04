@@ -1,7 +1,7 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/core/shared/widgets/service_card.dart';
 
-import '../../../sub_category/domain/entities/service_entity.dart';
+import 'package:wassaly/features/sub_category/domain/entities/service_entity.dart';
 
 class ProviderServicesGrid extends StatelessWidget {
   final List<ServiceEntity> services;
@@ -33,11 +33,9 @@ class ProviderServicesGrid extends StatelessWidget {
           items: services,
           padding: EdgeInsets.zero,
           childAspectRatio: 0.74,
-          itemBuilder: (context, service, index, wrapAnimation) {
-            return wrapAnimation(
+          itemBuilder: (context, service, index, wrapAnimation) => wrapAnimation(
               ServiceCard(service: service),
-            );
-          },
+            ),
         ),
       ],
     );

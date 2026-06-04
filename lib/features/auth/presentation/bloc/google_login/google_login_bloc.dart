@@ -23,8 +23,8 @@ class GoogleLoginBloc extends Bloc<GoogleLoginEvent, GoogleLoginState> {
   }
 
   @override
-  Future<void> close() {
-    _deepLinkSubscription?.cancel();
+  Future<void> close() async {
+    await _deepLinkSubscription?.cancel();
     return super.close();
   }
 
@@ -35,20 +35,21 @@ class GoogleLoginBloc extends Bloc<GoogleLoginEvent, GoogleLoginState> {
     emit(state.copyWith(isLoading: true, clearError: true, clearUser: true));
 
     // Listen for deep link callbacks
-    _deepLinkSubscription?.cancel();
+    await _deepLinkSubscription?.cancel();
     AppLogger.info('🔍 GoogleLoginBloc: Starting to listen for deep links...');
     _deepLinkSubscription = DeepLinkService.instance.callbackStream.listen(
       (callbackData) {
         if (isClosed) return;
         AppLogger.info(
-            '🔍 GoogleLoginBloc: Received callback data: $callbackData');
+          '🔍 GoogleLoginBloc: Received callback data: $callbackData',
+        );
         if (callbackData != null) {
           add(GoogleLoginCallbackReceived(callbackData));
         } else {
           add(const GoogleLoginDeepLinkError('Invalid callback data'));
         }
       },
-      onError: (error) {
+      onError: (Object error) {
         if (isClosed) return;
         AppLogger.error('🔍 GoogleLoginBloc: Deep link error: $error');
         add(GoogleLoginDeepLinkError('Deep link error: $error'));
@@ -59,11 +60,13 @@ class GoogleLoginBloc extends Bloc<GoogleLoginEvent, GoogleLoginState> {
     final opened = await _googleLoginUseCase.openGoogleLogin();
 
     if (!opened) {
-      _deepLinkSubscription?.cancel();
-      emit(state.copyWith(
-        isLoading: false,
-        errorMessage: 'Could not open browser for Google login',
-      ));
+      await _deepLinkSubscription?.cancel();
+      emit(
+        state.copyWith(
+          isLoading: false,
+          errorMessage: 'Could not open browser for Google login',
+        ),
+      );
     }
     // Don't set isLoading to false here - we wait for the deep link callback
   }
@@ -75,10 +78,12 @@ class GoogleLoginBloc extends Bloc<GoogleLoginEvent, GoogleLoginState> {
     final callbackData = event.callbackData;
 
     if (!callbackData.isSuccess) {
-      emit(state.copyWith(
-        isLoading: false,
-        errorMessage: 'Google login was not successful',
-      ));
+      emit(
+        state.copyWith(
+          isLoading: false,
+          errorMessage: 'Google login was not successful',
+        ),
+      );
       return;
     }
 
@@ -92,50 +97,58 @@ class GoogleLoginBloc extends Bloc<GoogleLoginEvent, GoogleLoginState> {
     );
 
     result.fold(
-      (failure) => emit(state.copyWith(
-        isLoading: false,
-        errorMessage: failure.message,
-      )),
+      (failure) => emit(
+        state.copyWith(
+          isLoading: false,
+          errorMessage: failure.message,
+        ),
+      ),
       (user) {
         final userId = int.tryParse(user.id) ?? 0;
         if (userId > 0) {
-          _fcmTokenService.registerToken(userId);
+          unawaited(_fcmTokenService.registerToken(userId));
           _fcmTokenService.setupTokenRefresh(userId);
         }
-        emit(state.copyWith(
-          isLoading: false,
-          user: user,
-          clearError: true,
-        ));
+        emit(
+          state.copyWith(
+            isLoading: false,
+            user: user,
+            clearError: true,
+          ),
+        );
       },
     );
 
     // Cancel subscription after handling
-    _deepLinkSubscription?.cancel();
+    await _deepLinkSubscription?.cancel();
     _deepLinkSubscription = null;
   }
 
-  void _onGoogleLoginCancelled(
+  Future<void> _onGoogleLoginCancelled(
     GoogleLoginCancelled event,
     Emitter<GoogleLoginState> emit,
-  ) {
-    _deepLinkSubscription?.cancel();
+  ) async {
+    await _deepLinkSubscription?.cancel();
     _deepLinkSubscription = null;
-    emit(state.copyWith(
-      isLoading: false,
-      errorMessage: 'Login cancelled',
-    ));
+    emit(
+      state.copyWith(
+        isLoading: false,
+        errorMessage: 'Login cancelled',
+      ),
+    );
   }
 
-  void _onGoogleLoginDeepLinkError(
+  Future<void> _onGoogleLoginDeepLinkError(
     GoogleLoginDeepLinkError event,
     Emitter<GoogleLoginState> emit,
-  ) {
-    _deepLinkSubscription?.cancel();
+  ) async {
+    await _deepLinkSubscription?.cancel();
     _deepLinkSubscription = null;
-    emit(state.copyWith(
-      isLoading: false,
-      errorMessage: event.error,
-    ));
+    emit(
+      state.copyWith(
+        isLoading: false,
+        errorMessage: event.error,
+      ),
+    );
   }
 }

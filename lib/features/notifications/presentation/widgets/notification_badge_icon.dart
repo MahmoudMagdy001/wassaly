@@ -13,8 +13,7 @@ class AppNotificationBadgeIcon extends StatelessWidget {
   final double? size;
 
   @override
-  Widget build(BuildContext context) {
-    return BlocSelector<NotificationsBloc, NotificationsState, int>(
+  Widget build(BuildContext context) => BlocSelector<NotificationsBloc, NotificationsState, int>(
       selector: (state) => state.unreadCount,
       builder: (context, unreadCount) => Badge(
         label: unreadCount > 0
@@ -39,5 +38,4 @@ class AppNotificationBadgeIcon extends StatelessWidget {
         ),
       ),
     );
-  }
 }

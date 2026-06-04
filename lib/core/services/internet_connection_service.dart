@@ -6,8 +6,8 @@ enum NetworkState { connected, unstable, disconnected }
 
 class NetworkConfig {
   static const int pingIntervalSeconds = 5;
-  static const int slowPingThresholdMs = 450;      // Socket ping
-  static const int slowDioThresholdMs = 2800;      // HTTP requests
+  static const int slowPingThresholdMs = 450; // Socket ping
+  static const int slowDioThresholdMs = 2800; // HTTP requests
   static const int maxSlowHits = 3;
 }
 
@@ -17,13 +17,14 @@ class InternetConnectionService {
   final InternetConnection internetConnection = InternetConnection();
 
   final StreamController<NetworkState> _stateController =
-  StreamController<NetworkState>.broadcast();
+      StreamController<NetworkState>.broadcast();
 
   final StreamController<void> _connectivityRestoredController =
-  StreamController<void>.broadcast();
+      StreamController<void>.broadcast();
 
   Stream<NetworkState> get stateStream => _stateController.stream;
-  Stream<void> get connectivityRestoredStream => _connectivityRestoredController.stream;
+  Stream<void> get connectivityRestoredStream =>
+      _connectivityRestoredController.stream;
 
   NetworkState _currentState = NetworkState.connected;
   bool _isConnected = true;
@@ -62,9 +63,9 @@ class InternetConnectionService {
     _pingTimer?.cancel();
     _pingTimer = Timer.periodic(
       const Duration(seconds: NetworkConfig.pingIntervalSeconds),
-          (_) => _ping(),
+      (_) => unawaited(_ping()),
     );
-    _ping(); // Immediate check
+    unawaited(_ping()); // Immediate check
   }
 
   void stopPingCheck() {
@@ -75,8 +76,8 @@ class InternetConnectionService {
   Future<void> checkNow() => _ping();
 
   void dispose() {
-    _stateController.close();
-    _connectivityRestoredController.close();
+    unawaited(_stateController.close());
+    unawaited(_connectivityRestoredController.close());
     stopPingCheck();
   }
 
@@ -100,7 +101,10 @@ class InternetConnectionService {
   void _emit(NetworkState state) {
     if (_currentState == state) return;
     _currentState = state;
-    assert(() { debugPrint('[Network] State → $state'); return true; }());
+    assert(() {
+      debugPrint('[Network] State → $state');
+      return true;
+    }());
     _stateController.add(state);
   }
 
@@ -121,11 +125,19 @@ class InternetConnectionService {
 
       if (!_isConnected) return;
 
-      assert(() { debugPrint('[Network] Ping ${sw.elapsedMilliseconds}ms'); return true; }());
-      _handleLatencyResult(sw.elapsedMilliseconds >= NetworkConfig.slowPingThresholdMs);
-    } catch (_) {
+      assert(() {
+        debugPrint('[Network] Ping ${sw.elapsedMilliseconds}ms');
+        return true;
+      }());
+      _handleLatencyResult(
+        sw.elapsedMilliseconds >= NetworkConfig.slowPingThresholdMs,
+      );
+    } on Object catch (_) {
       if (!_isConnected) return;
-      assert(() { debugPrint('[Network] Ping failed'); return true; }());
+      assert(() {
+        debugPrint('[Network] Ping failed');
+        return true;
+      }());
       _handleLatencyResult(true);
     }
   }

@@ -1,6 +1,6 @@
-import '../../../../core/imports/imports.dart';
-import 'offer_entity.dart';
-import 'review_entity.dart';
+import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/features/home/domain/entities/offer_entity.dart';
+import 'package:wassaly/features/home/domain/entities/review_entity.dart';
 
 class ProductEntity extends Equatable {
   final int id;

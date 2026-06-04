@@ -25,15 +25,13 @@ class ResetPasswordPage extends StatelessWidget {
   final String token;
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<ResetPasswordBloc>(
-        param1: email,
-        param2: token,
-      ),
-      child: _ResetPasswordView(email: email),
-    );
-  }
+  Widget build(BuildContext context) => BlocProvider(
+        create: (_) => sl<ResetPasswordBloc>(
+          param1: email,
+          param2: token,
+        ),
+        child: _ResetPasswordView(email: email),
+      );
 }
 
 class _ResetPasswordView extends StatelessWidget {
@@ -54,17 +52,22 @@ class _ResetPasswordView extends StatelessWidget {
       listener: (context, state) {
         // Handle success
         if (state.status == ResetPasswordStatus.success) {
-          context.showTypedSnackBar(context.l10n.reset_password_success_message,
-              type: SnackBarType.success);
-          // Navigate to login and clear the navigation stack
-          context.go(AppRoutes.login);
+          context
+            ..showTypedSnackBar(
+              context.l10n.reset_password_success_message,
+              type: SnackBarType.success,
+            )
+            // Navigate to login and clear the navigation stack
+            ..go(AppRoutes.login);
         }
 
         // Handle error
         if (state.status == ResetPasswordStatus.error &&
             state.errorMessage != null) {
-          context.showTypedSnackBar(state.errorMessage!,
-              type: SnackBarType.error);
+          context.showTypedSnackBar(
+            state.errorMessage!,
+            type: SnackBarType.error,
+          );
         }
       },
       child: Scaffold(
@@ -73,7 +76,6 @@ class _ResetPasswordView extends StatelessWidget {
           child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(horizontal: 18.w),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Header Icon
                 Container(
@@ -135,7 +137,8 @@ class _ResetPasswordView extends StatelessWidget {
                         color: cs.surfaceContainerLowest,
                         borderRadius: BorderRadius.circular(12.r),
                         border: Border.all(
-                            color: cs.outline.withValues(alpha: 0.3)),
+                          color: cs.outline.withValues(alpha: 0.3),
+                        ),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

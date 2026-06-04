@@ -10,7 +10,8 @@ class InternetConnectionWrapper extends StatefulWidget {
   });
 
   @override
-  State<InternetConnectionWrapper> createState() => _InternetConnectionWrapperState();
+  State<InternetConnectionWrapper> createState() =>
+      _InternetConnectionWrapperState();
 }
 
 class _InternetConnectionWrapperState extends State<InternetConnectionWrapper> {
@@ -33,7 +34,7 @@ class _InternetConnectionWrapperState extends State<InternetConnectionWrapper> {
 
     _stateSub = svc.stateStream.listen(_onStateChanged);
 
-    _bootstrap(svc);
+    unawaited(_bootstrap(svc));
   }
 
   Future<void> _bootstrap(InternetConnectionService svc) async {
@@ -72,31 +73,34 @@ class _InternetConnectionWrapperState extends State<InternetConnectionWrapper> {
   @override
   void dispose() {
     _hideTimer?.cancel();
-    _statusSub.cancel();
-    _stateSub.cancel();
+    unawaited(_statusSub.cancel());
+    unawaited(_stateSub.cancel());
     sl<InternetConnectionService>().stopPingCheck();
     super.dispose();
   }
 
   Color get _bannerColor => switch (_state) {
-    NetworkState.disconnected => const Color(0xFFB71C1C),
-    NetworkState.unstable => const Color(0xFFE65100),
-    NetworkState.connected => const Color(0xFF2E7D32),
-  };
+        NetworkState.disconnected => const Color(0xFFB71C1C),
+        NetworkState.unstable => const Color(0xFFE65100),
+        NetworkState.connected => const Color(0xFF2E7D32),
+      };
 
   IconData get _bannerIcon => switch (_state) {
-    NetworkState.disconnected => Icons.wifi_off_rounded,
-    NetworkState.unstable => Icons.network_check_rounded,
-    NetworkState.connected => Icons.wifi_rounded,
-  };
+        NetworkState.disconnected => Icons.wifi_off_rounded,
+        NetworkState.unstable => Icons.network_check_rounded,
+        NetworkState.connected => Icons.wifi_rounded,
+      };
 
   String _bannerText(bool isAr) {
     if (_isRefreshing) return isAr ? 'جاري التحقق...' : 'Checking...';
 
     return switch (_state) {
-      NetworkState.disconnected => isAr ? 'لا يوجد اتصال بالإنترنت' : 'No internet connection',
-      NetworkState.unstable => isAr ? 'الشبكة غير مستقرة' : 'Unstable connection',
-      NetworkState.connected => isAr ? 'تم استعادة الاتصال' : 'Connection restored',
+      NetworkState.disconnected =>
+        isAr ? 'لا يوجد اتصال بالإنترنت' : 'No internet connection',
+      NetworkState.unstable =>
+        isAr ? 'الشبكة غير مستقرة' : 'Unstable connection',
+      NetworkState.connected =>
+        isAr ? 'تم استعادة الاتصال' : 'Connection restored',
     };
   }
 
@@ -138,19 +142,19 @@ class _InternetConnectionWrapperState extends State<InternetConnectionWrapper> {
                       duration: const Duration(milliseconds: 200),
                       child: _isRefreshing
                           ? SizedBox(
-                        width: 20.r,
-                        height: 20.r,
-                        child: const CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2.5,
-                        ),
-                      )
+                              width: 20.r,
+                              height: 20.r,
+                              child: const CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2.5,
+                              ),
+                            )
                           : Icon(
-                        _bannerIcon,
-                        key: ValueKey(_state),
-                        color: Colors.white,
-                        size: 22.r,
-                      ),
+                              _bannerIcon,
+                              key: ValueKey(_state),
+                              color: Colors.white,
+                              size: 22.r,
+                            ),
                     ),
                     12.horizontalSpace,
                     Expanded(

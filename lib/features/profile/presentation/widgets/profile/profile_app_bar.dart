@@ -22,7 +22,7 @@ class ProfileAppBar extends StatelessWidget {
             style: IconButton.styleFrom(
               backgroundColor: cs.primaryContainer.withValues(alpha: 0.3),
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.r)),
+                  borderRadius: BorderRadius.circular(8.r),),
             ),
           ),
           Expanded(

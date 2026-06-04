@@ -57,8 +57,7 @@ class FavoriteState extends Equatable {
     Failure? serviceFailure,
     bool? isLoadingMore,
     bool? isServiceLoadingMore,
-  }) {
-    return FavoriteState(
+  }) => FavoriteState(
       status: status ?? this.status,
       serviceStatus: serviceStatus ?? this.serviceStatus,
       favorites: favorites ?? this.favorites,
@@ -72,7 +71,6 @@ class FavoriteState extends Equatable {
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       isServiceLoadingMore: isServiceLoadingMore ?? this.isServiceLoadingMore,
     );
-  }
 
   @override
   List<Object?> get props => [

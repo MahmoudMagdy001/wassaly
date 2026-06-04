@@ -9,9 +9,7 @@ class GoogleLoginUseCase {
 
   /// Initiates Google login flow by opening external browser
   /// Returns true if browser was opened successfully
-  Future<bool> openGoogleLogin() {
-    return _repository.openGoogleLoginUrl();
-  }
+  Future<bool> openGoogleLogin() => _repository.openGoogleLoginUrl();
 
   /// Completes Google login with callback data from deep link
   FutureEither<UserEntity> completeGoogleLogin({
@@ -20,13 +18,11 @@ class GoogleLoginUseCase {
     required String fullName,
     required String email,
     String? avatar,
-  }) {
-    return _repository.googleLogin(
+  }) => _repository.googleLogin(
       token: token,
       id: id,
       fullName: fullName,
       email: email,
       avatar: avatar,
     );
-  }
 }

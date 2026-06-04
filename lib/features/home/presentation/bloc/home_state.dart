@@ -1,9 +1,9 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-import '../../domain/entities/banner_entity.dart';
-import '../../domain/entities/category_entity.dart';
-import '../../domain/entities/product_entity.dart';
-import '../../domain/entities/sub_category_entity.dart';
+import 'package:wassaly/features/home/domain/entities/banner_entity.dart';
+import 'package:wassaly/features/home/domain/entities/category_entity.dart';
+import 'package:wassaly/features/home/domain/entities/product_entity.dart';
+import 'package:wassaly/features/home/domain/entities/sub_category_entity.dart';
 
 enum HomeStatus { initial, loading, success, failure }
 
@@ -46,8 +46,7 @@ class HomeState extends Equatable {
     PaginatedResponse<ProductEntity>? products,
     bool? isProductsLoadingMore,
     Failure? failure,
-  }) {
-    return HomeState(
+  }) => HomeState(
       bannersStatus: bannersStatus ?? this.bannersStatus,
       banners: banners ?? this.banners,
       categoriesStatus: categoriesStatus ?? this.categoriesStatus,
@@ -63,7 +62,6 @@ class HomeState extends Equatable {
           isProductsLoadingMore ?? this.isProductsLoadingMore,
       failure: failure,
     );
-  }
 
   @override
   List<Object?> get props => [
@@ -81,20 +79,16 @@ class HomeState extends Equatable {
       ];
 
   /// Check if all sections failed (likely due to network error)
-  bool get allSectionsFailed {
-    return bannersStatus == HomeStatus.failure &&
+  bool get allSectionsFailed => bannersStatus == HomeStatus.failure &&
         categoriesStatus == HomeStatus.failure &&
         popularServicesStatus == HomeStatus.failure &&
         productsStatus == HomeStatus.failure;
-  }
 
   /// Check if any section is still loading
-  bool get anySectionLoading {
-    return bannersStatus == HomeStatus.loading ||
+  bool get anySectionLoading => bannersStatus == HomeStatus.loading ||
         categoriesStatus == HomeStatus.loading ||
         popularServicesStatus == HomeStatus.loading ||
         productsStatus == HomeStatus.loading;
-  }
 
   /// Get error message for backward compatibility
   String get errorMessage => failure?.message ?? '';

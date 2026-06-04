@@ -132,7 +132,7 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
       );
     } else {
       // Token is invalid (auth failure e.g. 401) → clear session and go to Login
-      _logoutUseCase();
+      await _logoutUseCase();
       emit(const SessionUnauthenticated());
     }
   }
@@ -168,7 +168,8 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
       final userId = int.tryParse(user.id) ?? 0;
       if (userId > 0) {
         AppLogger.info(
-            '[SessionBloc] Network restored. Retrying FCM token registration...');
+          '[SessionBloc] Network restored. Retrying FCM token registration...',
+        );
         unawaited(FcmTokenService.instance.registerToken(userId));
         FcmTokenService.instance.setupTokenRefresh(userId);
       }
@@ -176,8 +177,8 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
   }
 
   @override
-  Future<void> close() {
-    _connectivitySubscription?.cancel();
+  Future<void> close() async {
+    await _connectivitySubscription?.cancel();
     return super.close();
   }
 }

@@ -1,5 +1,5 @@
-import '../../domain/entities/product_detail_entity.dart';
-import '../../../service_details/data/models/service_detail_model.dart';
+import 'package:wassaly/features/product_details/domain/entities/product_detail_entity.dart';
+import 'package:wassaly/features/service_details/data/models/service_detail_model.dart';
 
 class ProductSpecificationModel extends ProductSpecificationEntity {
   const ProductSpecificationModel({
@@ -9,14 +9,13 @@ class ProductSpecificationModel extends ProductSpecificationEntity {
     required super.icon,
   });
 
-  factory ProductSpecificationModel.fromJson(Map<String, dynamic> json) {
-    return ProductSpecificationModel(
-      id: json['id'] as int? ?? 0,
-      key: json['key'] as String? ?? '',
-      value: json['value'] as String? ?? '',
-      icon: json['icon'] as String? ?? '',
-    );
-  }
+  factory ProductSpecificationModel.fromJson(Map<String, dynamic> json) =>
+      ProductSpecificationModel(
+        id: json['id'] as int? ?? 0,
+        key: json['key'] as String? ?? '',
+        value: json['value'] as String? ?? '',
+        icon: json['icon'] as String? ?? '',
+      );
 }
 
 class ProductDetailImageModel extends ProductDetailImageEntity {
@@ -25,12 +24,11 @@ class ProductDetailImageModel extends ProductDetailImageEntity {
     required super.image,
   });
 
-  factory ProductDetailImageModel.fromJson(Map<String, dynamic> json) {
-    return ProductDetailImageModel(
-      id: json['id'] as int? ?? 0,
-      image: json['image'] as String? ?? '',
-    );
-  }
+  factory ProductDetailImageModel.fromJson(Map<String, dynamic> json) =>
+      ProductDetailImageModel(
+        id: json['id'] as int? ?? 0,
+        image: json['image'] as String? ?? '',
+      );
 }
 
 class ProductReviewUserModel extends ProductReviewUserEntity {
@@ -40,13 +38,12 @@ class ProductReviewUserModel extends ProductReviewUserEntity {
     required super.avatar,
   });
 
-  factory ProductReviewUserModel.fromJson(Map<String, dynamic> json) {
-    return ProductReviewUserModel(
-      id: json['id'] as int? ?? 0,
-      name: json['name'] as String? ?? '',
-      avatar: json['avatar'] as String?,
-    );
-  }
+  factory ProductReviewUserModel.fromJson(Map<String, dynamic> json) =>
+      ProductReviewUserModel(
+        id: json['id'] as int? ?? 0,
+        name: json['name'] as String? ?? '',
+        avatar: json['avatar'] as String?,
+      );
 }
 
 class ProductDetailReviewModel extends ProductDetailReviewEntity {
@@ -58,17 +55,16 @@ class ProductDetailReviewModel extends ProductDetailReviewEntity {
     required super.user,
   });
 
-  factory ProductDetailReviewModel.fromJson(Map<String, dynamic> json) {
-    return ProductDetailReviewModel(
-      id: json['id'] as int? ?? 0,
-      rating: json['rating'] as int? ?? 0,
-      comment: json['comment'] as String? ?? '',
-      createdAt: json['created_at'] as String? ?? '',
-      user: ProductReviewUserModel.fromJson(
-        json['user'] as Map<String, dynamic>? ?? {},
-      ),
-    );
-  }
+  factory ProductDetailReviewModel.fromJson(Map<String, dynamic> json) =>
+      ProductDetailReviewModel(
+        id: json['id'] as int? ?? 0,
+        rating: json['rating'] as int? ?? 0,
+        comment: json['comment'] as String? ?? '',
+        createdAt: json['created_at'] as String? ?? '',
+        user: ProductReviewUserModel.fromJson(
+          json['user'] as Map<String, dynamic>? ?? {},
+        ),
+      );
 }
 
 class ProductMetaModel extends ProductMetaEntity {
@@ -78,13 +74,12 @@ class ProductMetaModel extends ProductMetaEntity {
     required super.image,
   });
 
-  factory ProductMetaModel.fromJson(Map<String, dynamic> json) {
-    return ProductMetaModel(
-      id: json['id'] as int? ?? 0,
-      name: json['name'] as String? ?? '',
-      image: json['image'] as String? ?? '',
-    );
-  }
+  factory ProductMetaModel.fromJson(Map<String, dynamic> json) =>
+      ProductMetaModel(
+        id: json['id'] as int? ?? 0,
+        name: json['name'] as String? ?? '',
+        image: json['image'] as String? ?? '',
+      );
 }
 
 class ProductDetailModel extends ProductDetailEntity {
@@ -104,52 +99,54 @@ class ProductDetailModel extends ProductDetailEntity {
     required super.provider,
   });
 
-  factory ProductDetailModel.fromJson(Map<String, dynamic> json) {
-    return ProductDetailModel(
-      id: json['id'] as int? ?? 0,
-      name: json['name'] as String? ?? '',
-      image: json['image'] as String? ?? '',
-      price: json['price']?.toString() ?? '0',
-      description: json['description'] as String? ?? '',
-      specifications: (json['specifications'] as List<dynamic>?)
-              ?.map((e) => ProductSpecificationModel.fromJson(e))
-              .toList() ??
-          [],
-      images: (json['images'] as List<dynamic>?)
-              ?.map((e) => ProductDetailImageModel.fromJson(e))
-              .toList() ??
-          [],
-      subCategory: json['sub_category'] == null
-          ? null
-          : ProductMetaModel.fromJson(
-              json['sub_category'] as Map<String, dynamic>,
-            ),
-      brand: json['brand'] == null
-          ? null
-          : ProductMetaModel.fromJson(
-              json['brand'] as Map<String, dynamic>,
-            ),
-      reviews: (json['reviews'] as List<dynamic>?)
-              ?.map((e) => ProductDetailReviewModel.fromJson(e))
-              .toList() ??
-          [],
-      offerPercentages: (json['offers'] as List<dynamic>?)
-              ?.map((e) =>
-                  int.tryParse(
-                    ((e as Map<String, dynamic>)['discount_percentage'])
-                            ?.toString() ??
-                        '',
-                  ) ??
-                  0)
-              .where((e) => e > 0)
-              .toList() ??
-          [],
-      isFavorite: json['is_favorite'] as bool? ?? false,
-      provider: json['provider'] == null
-          ? null
-          : ServiceProviderModel.fromJson(
-              json['provider'] as Map<String, dynamic>,
-            ),
-    );
-  }
+  factory ProductDetailModel.fromJson(Map<String, dynamic> json) =>
+      ProductDetailModel(
+        id: json['id'] as int? ?? 0,
+        name: json['name'] as String? ?? '',
+        image: json['image'] as String? ?? '',
+        price: json['price']?.toString() ?? '0',
+        description: json['description'] as String? ?? '',
+        specifications: (json['specifications'] as List<dynamic>?)
+                ?.map((e) => ProductSpecificationModel.fromJson(
+                    e as Map<String, dynamic>,),)
+                .toList() ??
+            [],
+        images: (json['images'] as List<dynamic>?)
+                ?.map((e) =>
+                    ProductDetailImageModel.fromJson(e as Map<String, dynamic>),)
+                .toList() ??
+            [],
+        subCategory: json['sub_category'] == null
+            ? null
+            : ProductMetaModel.fromJson(
+                json['sub_category'] as Map<String, dynamic>,
+              ),
+        brand: json['brand'] == null
+            ? null
+            : ProductMetaModel.fromJson(
+                json['brand'] as Map<String, dynamic>,
+              ),
+        reviews: (json['reviews'] as List<dynamic>?)
+                ?.map((e) => ProductDetailReviewModel.fromJson(
+                    e as Map<String, dynamic>,),)
+                .toList() ??
+            [],
+        offerPercentages: (json['offers'] as List<dynamic>?)
+                ?.map((e) =>
+                    int.tryParse(
+                      (e as Map<String, dynamic>)['discount_percentage']
+                              ?.toString() ??
+                          '',
+                    ) ??
+                    0,)
+                .where((e) => e > 0)
+                .toList() ??
+            [],
+        isFavorite: json['is_favorite'] as bool? ?? false,
+        provider: json['provider'] == null
+            ? null
+            : ServiceProviderModel.fromJson(
+                json['provider'] as Map<String, dynamic>,
+              ),
+      );
 }

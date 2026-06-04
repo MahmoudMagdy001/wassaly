@@ -1,4 +1,4 @@
-import '../../imports/imports.dart';
+import 'package:wassaly/core/imports/imports.dart';
 
 /// A wrapper to initialize [ScreenUtil] with design-specific constraints.
 class ScreenUtilWrapper extends StatelessWidget {
@@ -16,12 +16,10 @@ class ScreenUtilWrapper extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return ScreenUtilInit(
+  Widget build(BuildContext context) => ScreenUtilInit(
       designSize: designSize,
       minTextAdapt: minTextAdapt,
       splitScreenMode: splitScreenMode,
       builder: (context, _) => builder(context),
     );
-  }
 }

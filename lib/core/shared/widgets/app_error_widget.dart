@@ -76,30 +76,28 @@ class _AppErrorWidgetState extends State<AppErrorWidget> {
 
   @override
   void dispose() {
-    _connectivitySub?.cancel();
+    unawaited(_connectivitySub?.cancel());
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(24.w),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _buildErrorIcon(context),
-            24.h.verticalSpace,
-            _buildErrorMessage(context),
-            if (widget.showRetryButton && widget.onRetry != null) ...[
-              32.h.verticalSpace,
-              _buildRetryButton(context),
+  Widget build(BuildContext context) => Center(
+        child: Padding(
+          padding: EdgeInsets.all(24.w),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildErrorIcon(context),
+              24.h.verticalSpace,
+              _buildErrorMessage(context),
+              if (widget.showRetryButton && widget.onRetry != null) ...[
+                32.h.verticalSpace,
+                _buildRetryButton(context),
+              ],
             ],
-          ],
+          ),
         ),
-      ),
-    );
-  }
+      );
 
   bool _isNetworkError(BuildContext context) {
     if (widget.failure is NetworkFailure) return true;
@@ -156,9 +154,8 @@ class _AppErrorWidgetState extends State<AppErrorWidget> {
         iconColor = context.theme.colorScheme.error; // Theme error
         break;
       case const (ServerFailure):
-        iconData = isIOS
-            ? CupertinoIcons.exclamationmark_circle
-            : Icons.error_rounded;
+        iconData =
+            isIOS ? CupertinoIcons.exclamationmark_circle : Icons.error_rounded;
         iconColor = context.theme.colorScheme.error; // Theme error
         break;
       case const (CacheFailure):
@@ -180,7 +177,7 @@ class _AppErrorWidgetState extends State<AppErrorWidget> {
   }
 
   Widget _buildErrorMessage(BuildContext context) {
-    final bool isNetError = _isNetworkError(context);
+    final isNetError = _isNetworkError(context);
     final titleText = isNetError
         ? context.l10n.errors_no_internet_title
         : (widget.title ?? _getErrorTitle(context));
@@ -217,15 +214,11 @@ class _AppErrorWidgetState extends State<AppErrorWidget> {
     );
   }
 
-  Widget _buildRetryButton(BuildContext context) {
-    return AppButton(
-      label: context.l10n.retry,
-      variant: ButtonVariant.secondary,
-      height: ButtonSize.medium,
-      isFullWidth: false,
-      onPressed: widget.onRetry,
-    );
-  }
+  Widget _buildRetryButton(BuildContext context) => AppButton(
+        label: context.l10n.retry,
+        variant: ButtonVariant.secondary,
+        onPressed: widget.onRetry,
+      );
 
   String _getErrorTitle(BuildContext context) {
     // Respect explicit legacy title if provided

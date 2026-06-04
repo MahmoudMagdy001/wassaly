@@ -1,10 +1,9 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
-
-import '../../domain/entities/product_detail_entity.dart';
-import '../bloc/product_details_bloc.dart';
-import '../bloc/product_details_state.dart';
-import '../widgets/product_review_form_sheet.dart';
+import 'package:wassaly/features/product_details/domain/entities/product_detail_entity.dart';
+import 'package:wassaly/features/product_details/presentation/bloc/product_details_bloc.dart';
+import 'package:wassaly/features/product_details/presentation/bloc/product_details_state.dart';
+import 'package:wassaly/features/product_details/presentation/widgets/product_review_form_sheet.dart';
 
 class ProductReviewsPage extends StatelessWidget {
   final int productId;
@@ -63,7 +62,8 @@ class ProductReviewsPage extends StatelessWidget {
                       userName: review.user.name,
                       userAvatar: review.user.avatar,
                       isCurrentUserReview: isMine,
-                      canEdit: isMine && ReviewHelper.canEditReview(review.createdAt),
+                      canEdit: isMine &&
+                          ReviewHelper.canEditReview(review.createdAt),
                       createdAt: review.createdAt,
                       onEdit: () => _showReviewSheet(context, review),
                     );
@@ -86,14 +86,14 @@ class ProductReviewsPage extends StatelessWidget {
     BuildContext context,
     ProductDetailReviewEntity review,
   ) {
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      builder: (_) => BlocProvider.value(
-        value: context.read<ProductDetailsBloc>(),
-        child: ProductReviewFormSheet(
-          productId: productId,
-          review: review,
+    unawaited(
+      context.showAppBottomSheet<void>(
+        builder: (_) => BlocProvider.value(
+          value: context.read<ProductDetailsBloc>(),
+          child: ProductReviewFormSheet(
+            productId: productId,
+            review: review,
+          ),
         ),
       ),
     );

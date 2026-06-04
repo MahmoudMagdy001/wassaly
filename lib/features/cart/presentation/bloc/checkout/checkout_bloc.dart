@@ -1,21 +1,20 @@
 import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/features/cart/domain/entities/cart_item_entity.dart';
+import 'package:wassaly/features/cart/domain/entities/coupon_entity.dart';
+import 'package:wassaly/features/cart/domain/entities/order_entity.dart';
+import 'package:wassaly/features/cart/domain/entities/place_order_params.dart';
+import 'package:wassaly/features/cart/domain/usecases/apply_coupon_usecase.dart';
+import 'package:wassaly/features/cart/domain/usecases/get_user_addresses_usecase.dart';
+import 'package:wassaly/features/cart/domain/usecases/get_user_data_usecase.dart';
+import 'package:wassaly/features/cart/domain/usecases/place_order_usecase.dart';
+import 'package:wassaly/features/cart/presentation/bloc/cart_state.dart';
 import 'package:wassaly/features/orders/presentation/bloc/orders_bloc.dart';
 import 'package:wassaly/features/orders/presentation/bloc/orders_event.dart';
-
-import '../../../../../features/cart/domain/entities/cart_item_entity.dart';
-import '../../../../../features/cart/domain/entities/coupon_entity.dart';
-import '../../../../../features/cart/domain/entities/order_entity.dart';
-import '../../../../../features/cart/domain/entities/place_order_params.dart';
-import '../../../../../features/cart/domain/usecases/apply_coupon_usecase.dart';
-import '../../../../../features/cart/domain/usecases/get_user_addresses_usecase.dart';
-import '../../../../../features/cart/domain/usecases/get_user_data_usecase.dart';
-import '../../../../../features/cart/domain/usecases/place_order_usecase.dart';
-import '../../../../../features/profile/domain/entities/address_entity.dart';
-import '../../../../../features/profile/domain/entities/center_entity.dart';
-import '../../../../../features/profile/domain/entities/governorate_entity.dart';
-import '../../../../../features/profile/domain/usecases/get_centers_usecase.dart';
-import '../../../../../features/profile/domain/usecases/get_governorates_usecase.dart';
-import '../cart_state.dart';
+import 'package:wassaly/features/profile/domain/entities/address_entity.dart';
+import 'package:wassaly/features/profile/domain/entities/center_entity.dart';
+import 'package:wassaly/features/profile/domain/entities/governorate_entity.dart';
+import 'package:wassaly/features/profile/domain/usecases/get_centers_usecase.dart';
+import 'package:wassaly/features/profile/domain/usecases/get_governorates_usecase.dart';
 
 part 'checkout_event.dart';
 part 'checkout_state.dart';
@@ -61,7 +60,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
   double _calculateSubtotal(List<CartItemEntity> items) => items.fold(
       0,
       (sum, item) =>
-          sum + (double.tryParse(item.price) ?? 0.0) * item.quantity);
+          sum + (double.tryParse(item.price) ?? 0.0) * item.quantity,);
 
   double _calculateProductDiscounts(List<CartItemEntity> items) =>
       items.fold(0, (sum, item) {
@@ -83,7 +82,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
   }
 
   double _calculateTotal(double subtotal, double productDiscounts,
-          double shipping, double discount) =>
+          double shipping, double discount,) =>
       max(0, subtotal - productDiscounts + shipping - discount);
 
   // ─── Event Handlers ──────────────────────────────────────────────────────────
@@ -101,8 +100,8 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     final checkoutData = cartState.checkoutData;
     final user = checkoutData?.user;
 
-    String prefilledName = user?.name ?? '';
-    String prefilledPhone = user?.phone ?? '';
+    var prefilledName = user?.name ?? '';
+    var prefilledPhone = user?.phone ?? '';
     final prefilledAddress = checkoutData?.selectedAddress?.address ?? '';
     final prefilledGovernorateId =
         checkoutData?.selectedAddress?.governorateId ??
@@ -122,7 +121,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
       selectedAddress: checkoutData?.selectedAddress,
       isLoadingGovernorates: true,
       isLoadingAddresses: cartState.addresses.isEmpty,
-    ));
+    ),);
 
     // Fetch user data if not provided in cartState
     if (prefilledName.isEmpty || prefilledPhone.isEmpty) {
@@ -136,7 +135,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
             emit(state.copyWith(
               customerName: prefilledName,
               customerPhone: prefilledPhone,
-            ));
+            ),);
           }
         },
       );
@@ -150,7 +149,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
         (addresses) => emit(state.copyWith(
           addresses: addresses,
           isLoadingAddresses: false,
-        )),
+        ),),
       );
     }
 
@@ -161,7 +160,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
         status: CheckoutStatus.error,
         errorMessage: failure.message,
         isLoadingGovernorates: false,
-      )),
+      ),),
       (governorates) {
         double shippingFee = 0;
         if (prefilledGovernorateId != null) {
@@ -180,7 +179,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
           isLoadingGovernorates: false,
           shippingFee: shippingFee,
           total: total,
-        ));
+        ),);
 
         // Load centers if governorate is pre-selected
         if (prefilledGovernorateId != null) {
@@ -199,7 +198,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
         .firstOrNull;
     final shippingFee = gov?.shippingCost ?? 0.0;
     final total = _calculateTotal(state.subtotal, state.productDiscounts,
-        shippingFee, state.discountAmount);
+        shippingFee, state.discountAmount,);
 
     emit(state.copyWith(
       selectedGovernorateId: event.governorateId,
@@ -210,7 +209,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
       total: total,
       isLoadingCenters: true,
       clearGovernorateError: true,
-    ));
+    ),);
 
     final result =
         await _getCentersUseCase(GetCentersParams(event.governorateId));
@@ -219,12 +218,12 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
       (failure) => emit(state.copyWith(
         isLoadingCenters: false,
         errorMessage: failure.message,
-      )),
+      ),),
       (centers) => emit(state.copyWith(
         centers: centers,
         isLoadingCenters: false,
         selectedCenterId: event.centerId ?? state.selectedCenterId,
-      )),
+      ),),
     );
   }
 
@@ -235,7 +234,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     emit(state.copyWith(
       selectedCenterId: event.centerId,
       clearCenterError: true,
-    ));
+    ),);
   }
 
   void _onFormChanged(
@@ -248,7 +247,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
       customerAddress: event.customerAddress ?? state.customerAddress,
       region: event.region ?? state.region,
       couponCode: event.couponCode ?? state.couponCode,
-    ));
+    ),);
   }
 
   Future<void> _onCouponApplied(
@@ -260,7 +259,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     emit(state.copyWith(
       isApplyingCoupon: true,
       clearCouponError: true,
-    ));
+    ),);
 
     final result = await _applyCouponUseCase(event.code.trim());
 
@@ -268,19 +267,19 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
       (failure) => emit(state.copyWith(
         isApplyingCoupon: false,
         couponError: failure.message,
-      )),
+      ),),
       (coupon) {
         final discount =
             _calculateDiscount(coupon, state.subtotal - state.productDiscounts);
         final total = _calculateTotal(state.subtotal, state.productDiscounts,
-            state.shippingFee, discount);
+            state.shippingFee, discount,);
         emit(state.copyWith(
           isApplyingCoupon: false,
           appliedCoupon: coupon,
           discountAmount: discount,
           total: total,
           clearCouponError: true,
-        ));
+        ),);
       },
     );
   }
@@ -290,14 +289,14 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     Emitter<CheckoutState> emit,
   ) {
     final total = _calculateTotal(
-        state.subtotal, state.productDiscounts, state.shippingFee, 0);
+        state.subtotal, state.productDiscounts, state.shippingFee, 0,);
     emit(state.copyWith(
       clearAppliedCoupon: true,
       discountAmount: 0,
       total: total,
       couponCode: '',
       clearCouponError: true,
-    ));
+    ),);
   }
 
   Future<void> _onCheckoutSubmitted(
@@ -332,7 +331,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
         addressError: addressError,
         governorateError: governorateError,
         centerError: centerError,
-      ));
+      ),);
       return;
     }
 
@@ -355,13 +354,13 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
       (failure) => emit(state.copyWith(
         status: CheckoutStatus.error,
         errorMessage: failure.message,
-      )),
+      ),),
       (order) {
         _ordersBloc.add(const GetOrdersEvent());
         emit(state.copyWith(
           status: CheckoutStatus.success,
           placedOrder: order,
-        ));
+        ),);
       },
     );
   }
@@ -381,11 +380,11 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
       clearGovernorateError: true,
       clearCenterError: true,
       clearAddressError: true,
-    ));
+    ),);
 
     // Load centers for the new governorate and set the center
     add(CheckoutGovernorateSelected(address.governorateId,
-        centerId: address.centerId));
+        centerId: address.centerId,),);
   }
 
   Future<void> _onAddressesRefreshed(
@@ -400,7 +399,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
         emit(state.copyWith(
           addresses: addresses,
           isLoadingAddresses: false,
-        ));
+        ),);
         // If a new address was just added, it's likely the last one in the list
         // or we could just select the first one if none is selected
         if (addresses.isNotEmpty && state.selectedAddress == null) {

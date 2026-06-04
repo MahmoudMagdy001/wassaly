@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../l10n/app_localizations.dart';
-import '../shared/enums/snack_bar_type.dart';
-import '../theme/color_schemes.dart';
+import 'package:wassaly/core/shared/enums/snack_bar_type.dart';
+import 'package:wassaly/core/theme/color_schemes.dart';
+import 'package:wassaly/l10n/app_localizations.dart';
 
 extension ContextExtension on BuildContext {
   S get l10n => S.of(this)!;
@@ -100,9 +99,9 @@ extension ContextExtension on BuildContext {
   // ── Routing shortcuts ────────────────────────────────────────────────────
   String get currentRoute {
     final router = GoRouter.of(this);
-    final RouteMatch lastMatch =
+    final lastMatch =
         router.routerDelegate.currentConfiguration.last;
-    final RouteMatchList matchList = lastMatch is ImperativeRouteMatch
+    final matchList = lastMatch is ImperativeRouteMatch
         ? lastMatch.matches
         : router.routerDelegate.currentConfiguration;
     return matchList.uri.toString();

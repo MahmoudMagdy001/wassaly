@@ -1,5 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
-import '../repositories/orders_repository.dart';
+import 'package:wassaly/features/orders/domain/repositories/orders_repository.dart';
 
 class UpdateOrderParams {
   final int orderId;
@@ -16,7 +16,5 @@ class UpdateOrderUseCase {
 
   const UpdateOrderUseCase(this._repository);
 
-  Future<Either<Failure, void>> call(UpdateOrderParams params) async {
-    return await _repository.updateOrder(params.orderId, params.data);
-  }
+  Future<Either<Failure, void>> call(UpdateOrderParams params) async => _repository.updateOrder(params.orderId, params.data);
 }

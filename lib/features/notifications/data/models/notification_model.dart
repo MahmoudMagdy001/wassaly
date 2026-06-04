@@ -11,8 +11,7 @@ class NotificationModel extends NotificationEntity {
     required super.createdAt,
   });
 
-  factory NotificationModel.fromJson(Map<String, dynamic> json) {
-    return NotificationModel(
+  factory NotificationModel.fromJson(Map<String, dynamic> json) => NotificationModel(
       id: int.tryParse(json['id']?.toString() ?? '') ?? 0,
       title: json['title']?.toString() ?? '',
       body: json['body']?.toString() ?? '',
@@ -28,10 +27,8 @@ class NotificationModel extends NotificationEntity {
           ? DateTime.parse(json['created_at'].toString())
           : DateTime.now(),
     );
-  }
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'id': id,
       'title': title,
       'body': body,
@@ -40,5 +37,4 @@ class NotificationModel extends NotificationEntity {
       'is_read': isRead,
       'created_at': createdAt.toIso8601String(),
     };
-  }
 }

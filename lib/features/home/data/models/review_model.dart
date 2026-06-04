@@ -1,4 +1,4 @@
-import '../../domain/entities/review_entity.dart';
+import 'package:wassaly/features/home/domain/entities/review_entity.dart';
 
 class ReviewModel extends ReviewEntity {
   const ReviewModel({
@@ -8,12 +8,10 @@ class ReviewModel extends ReviewEntity {
     required super.createdAt,
   });
 
-  factory ReviewModel.fromJson(Map<String, dynamic> json) {
-    return ReviewModel(
+  factory ReviewModel.fromJson(Map<String, dynamic> json) => ReviewModel(
       id: json['id'] as int? ?? 0,
       rating: json['rating'] as int? ?? 0,
       comment: json['comment'] as String? ?? '',
       createdAt: json['created_at'] as String? ?? '',
     );
-  }
 }

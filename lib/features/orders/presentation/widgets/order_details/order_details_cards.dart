@@ -163,7 +163,7 @@ class OrderDeliveryInfoCard extends StatelessWidget {
   }
 
   Widget _buildInfoRow(
-      BuildContext context, IconData icon, String title, String content) {
+      BuildContext context, IconData icon, String title, String content,) {
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
 
@@ -242,14 +242,13 @@ class OrderItemsCard extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12.r),
                       border: Border.all(
-                          color: cs.outlineVariant.withValues(alpha: 0.5)),
+                          color: cs.outlineVariant.withValues(alpha: 0.5),),
                     ),
                     child: AppCachedImage(
                       imageUrl: productImage,
                       borderRadius: BorderRadius.circular(12.r),
                       memCacheWidth: 56 * 3,
                       memCacheHeight: 56 * 3,
-                      fit: BoxFit.cover,
                     ),
                   ),
                   12.horizontalSpace,
@@ -311,7 +310,7 @@ class OrderItemsCard extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 12.h),
                   child: AppDivider(
-                      color: cs.outlineVariant.withValues(alpha: 0.3)),
+                      color: cs.outlineVariant.withValues(alpha: 0.3),),
                 ),
             ],
           );
@@ -411,7 +410,7 @@ class OrderReceiptSummaryCard extends StatelessWidget {
   }
 
   Widget _buildReceiptRow(BuildContext context, String title, String value,
-      {bool isDiscount = false}) {
+      {bool isDiscount = false,}) {
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
 

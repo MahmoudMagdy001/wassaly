@@ -39,7 +39,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
       return Right(user);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure('Unexpected error: $e'));
     }
   }
@@ -52,7 +52,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
       return const Right(null);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure('Unexpected error: $e'));
     }
   }
@@ -65,7 +65,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
       return const Right(null);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure('Unexpected error: $e'));
     }
   }
@@ -77,7 +77,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
       return Right(addresses);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure('Unexpected error: $e'));
     }
   }
@@ -99,7 +99,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
       return Right(result);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure('Unexpected error: $e'));
     }
   }
@@ -111,7 +111,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
       return Right(governorates);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure('Unexpected error: $e'));
     }
   }
@@ -127,7 +127,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
       return Right(centers);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure('Unexpected error: $e'));
     }
   }
@@ -151,7 +151,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
       return Right(result);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure('Unexpected error: $e'));
     }
   }
@@ -163,7 +163,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
       return const Right(null);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure('Unexpected error: $e'));
     }
   }

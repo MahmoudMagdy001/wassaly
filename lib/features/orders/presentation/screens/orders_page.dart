@@ -28,15 +28,17 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
       initialIndex: widget.initialIndex,
     );
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _ordersBloc.add(const GetOrdersEvent());
-      _ordersBloc.add(const GetServiceBookingsEvent());
+      _ordersBloc
+        ..add(const GetOrdersEvent())
+        ..add(const GetServiceBookingsEvent());
     });
 
     _connectivitySub =
         sl<InternetConnectionService>().connectivityRestoredStream.listen((_) {
       if (mounted) {
-        _ordersBloc.add(const GetOrdersEvent());
-        _ordersBloc.add(const GetServiceBookingsEvent());
+        _ordersBloc
+          ..add(const GetOrdersEvent())
+          ..add(const GetServiceBookingsEvent());
       }
     });
   }
@@ -44,17 +46,15 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
   @override
   void dispose() {
     _tabController.dispose();
-    _connectivitySub?.cancel();
+    unawaited(_connectivitySub?.cancel());
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: _ordersBloc,
-      child: _OrdersView(tabController: _tabController),
-    );
-  }
+  Widget build(BuildContext context) => BlocProvider.value(
+        value: _ordersBloc,
+        child: _OrdersView(tabController: _tabController),
+      );
 }
 
 class _OrdersView extends StatelessWidget {
@@ -68,31 +68,26 @@ class _OrdersView extends StatelessWidget {
 
     return Scaffold(
       body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return [
-            SliverOverlapAbsorber(
-              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-              sliver: AppSliverTopBar(
-                title: context.l10n.profile_my_orders,
-                centerTitle: true,
-                pinned: true,
-                floating: true,
-                snap: true,
-                bottom: TabBar(
-                  controller: tabController,
-                  labelColor: cs.primary,
-                  unselectedLabelColor: cs.onSurfaceVariant,
-                  indicatorColor: cs.primary,
-                  indicatorSize: TabBarIndicatorSize.label,
-                  tabs: [
-                    Tab(text: context.l10n.order_products),
-                    Tab(text: context.l10n.order_services),
-                  ],
-                ),
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverOverlapAbsorber(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            sliver: AppSliverTopBar(
+              title: context.l10n.profile_my_orders,
+              pinned: true,
+              bottom: TabBar(
+                controller: tabController,
+                labelColor: cs.primary,
+                unselectedLabelColor: cs.onSurfaceVariant,
+                indicatorColor: cs.primary,
+                indicatorSize: TabBarIndicatorSize.label,
+                tabs: [
+                  Tab(text: context.l10n.order_products),
+                  Tab(text: context.l10n.order_services),
+                ],
               ),
             ),
-          ];
-        },
+          ),
+        ],
         body: TabBarView(
           controller: tabController,
           children: const [

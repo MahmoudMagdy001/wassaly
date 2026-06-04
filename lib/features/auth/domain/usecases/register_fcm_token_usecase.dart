@@ -18,11 +18,9 @@ class RegisterFcmTokenUseCase {
 
   const RegisterFcmTokenUseCase(this._repository);
 
-  FutureEither<void> call(FcmTokenParams params) {
-    return _repository.registerFcmToken(
+  FutureEither<void> call(FcmTokenParams params) => _repository.registerFcmToken(
       token: params.token,
       deviceId: params.deviceId,
       userId: params.userId,
     );
-  }
 }

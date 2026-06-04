@@ -25,7 +25,7 @@ class CancelTokenInterceptor extends Interceptor {
     final key = explicitKey ?? blocKey ?? routeKey;
 
     if (key != null) {
-      final token = _cancelRequestService.getCancelToken(key);
+      final token = _cancelRequestService.getCancelToken(key as Object);
       options.cancelToken = token;
     }
 

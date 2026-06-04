@@ -1,15 +1,13 @@
 import 'package:fpdart/fpdart.dart';
-
-import '../../../../core/utils/failure.dart';
-import '../entities/coupon_entity.dart';
-import '../repositories/cart_repository.dart';
+import 'package:wassaly/core/utils/failure.dart';
+import 'package:wassaly/features/cart/domain/entities/coupon_entity.dart';
+import 'package:wassaly/features/cart/domain/repositories/cart_repository.dart';
 
 class ApplyCouponUseCase {
   final CartRepository repository;
 
   ApplyCouponUseCase(this.repository);
 
-  Future<Either<Failure, CouponEntity>> call(String code) {
-    return repository.applyCoupon(code);
-  }
+  Future<Either<Failure, CouponEntity>> call(String code) =>
+      repository.applyCoupon(code);
 }

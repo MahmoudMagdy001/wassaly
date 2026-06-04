@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import 'offer_entity.dart';
+import 'package:wassaly/features/cart/domain/entities/offer_entity.dart';
 
 class CartItemEntity extends Equatable {
   final int id;
@@ -38,8 +38,7 @@ class CartItemEntity extends Equatable {
     int? quantity,
     double? unitPrice,
     double? totalPrice,
-  }) {
-    return CartItemEntity(
+  }) => CartItemEntity(
       id: id ?? this.id,
       productId: productId ?? this.productId,
       productName: productName ?? this.productName,
@@ -51,7 +50,6 @@ class CartItemEntity extends Equatable {
       unitPrice: unitPrice ?? this.unitPrice,
       totalPrice: totalPrice ?? this.totalPrice,
     );
-  }
 
   @override
   List<Object?> get props => [
@@ -64,6 +62,6 @@ class CartItemEntity extends Equatable {
         offers,
         quantity,
         unitPrice,
-        totalPrice
+        totalPrice,
       ];
 }

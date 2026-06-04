@@ -95,7 +95,8 @@ class CheckoutPage extends StatelessWidget {
                         final cartState = context.read<CheckoutBloc>().state;
                         context.read<CheckoutBloc>().add(
                               CheckoutInitialized(
-                                  cartState: cartState as CartState),
+                                cartState: cartState as CartState,
+                              ),
                             );
                       },
                     ),

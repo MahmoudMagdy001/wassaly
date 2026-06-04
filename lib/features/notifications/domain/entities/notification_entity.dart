@@ -27,8 +27,7 @@ class NotificationEntity extends Equatable {
     Map<String, dynamic>? data,
     bool? isRead,
     DateTime? createdAt,
-  }) {
-    return NotificationEntity(
+  }) => NotificationEntity(
       id: id ?? this.id,
       title: title ?? this.title,
       body: body ?? this.body,
@@ -37,7 +36,6 @@ class NotificationEntity extends Equatable {
       isRead: isRead ?? this.isRead,
       createdAt: createdAt ?? this.createdAt,
     );
-  }
 
   @override
   List<Object?> get props => [id, title, body, type, data, isRead, createdAt];

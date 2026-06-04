@@ -1,9 +1,8 @@
 import 'package:fpdart/fpdart.dart';
-
-import '../../../../core/utils/failure.dart';
-import '../entities/order_entity.dart';
-import '../entities/place_order_params.dart';
-import '../repositories/cart_repository.dart';
+import 'package:wassaly/core/utils/failure.dart';
+import 'package:wassaly/features/cart/domain/entities/order_entity.dart';
+import 'package:wassaly/features/cart/domain/entities/place_order_params.dart';
+import 'package:wassaly/features/cart/domain/repositories/cart_repository.dart';
 
 class PlaceOrderUseCase {
   final CartRepository _repository;

@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import 'cart_item_entity.dart';
+import 'package:wassaly/features/cart/domain/entities/cart_item_entity.dart';
 
 class PlaceOrderParams extends Equatable {
   final String customerName;

@@ -38,15 +38,13 @@ class AppDivider extends StatelessWidget {
   final Color? color;
 
   @override
-  Widget build(BuildContext context) {
-    return Divider(
+  Widget build(BuildContext context) => Divider(
       height: height,
       thickness: thickness,
       indent: indent,
       endIndent: endIndent,
       color: color ?? context.theme.colorScheme.outlineVariant,
     );
-  }
 }
 
 /// A themed vertical divider using [ColorScheme.outlineVariant].
@@ -76,13 +74,11 @@ class AppVerticalDivider extends StatelessWidget {
   final Color? color;
 
   @override
-  Widget build(BuildContext context) {
-    return VerticalDivider(
+  Widget build(BuildContext context) => VerticalDivider(
       width: width,
       thickness: thickness,
       indent: indent,
       endIndent: endIndent,
       color: color ?? context.theme.colorScheme.outlineVariant,
     );
-  }
 }

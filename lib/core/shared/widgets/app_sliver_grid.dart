@@ -28,7 +28,7 @@ class AppSliverGrid<T> extends StatelessWidget {
 
   final List<T> items;
   final Widget Function(BuildContext context, T item, int index,
-      Widget Function(Widget child) wrapAnimation) itemBuilder;
+      Widget Function(Widget child) wrapAnimation,) itemBuilder;
   final Key Function(T item)? itemKey;
   final bool hasMore;
   final VoidCallback? onLoadMore;
@@ -93,9 +93,9 @@ class AppSliverGrid<T> extends StatelessWidget {
           },
           childCount: items.length,
           findChildIndexCallback: itemKey != null
-              ? (Key key) {
+              ? (key) {
                   if (key is ValueKey) {
-                    for (int i = 0; i < items.length; i++) {
+                    for (var i = 0; i < items.length; i++) {
                       if (itemKey!(items[i]) == key) return i;
                     }
                   }

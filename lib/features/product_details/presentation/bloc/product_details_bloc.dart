@@ -1,12 +1,11 @@
 import 'package:wassaly/core/imports/imports.dart';
-
-import '../../../sub_category/domain/usecases/get_sub_category_detail_usecase.dart';
-import '../../domain/entities/product_detail_entity.dart';
-import '../../domain/usecases/create_product_review_usecase.dart';
-import '../../domain/usecases/get_product_details_usecase.dart';
-import '../../domain/usecases/update_product_review_usecase.dart';
-import 'product_details_event.dart';
-import 'product_details_state.dart';
+import 'package:wassaly/features/product_details/domain/entities/product_detail_entity.dart';
+import 'package:wassaly/features/product_details/domain/usecases/create_product_review_usecase.dart';
+import 'package:wassaly/features/product_details/domain/usecases/get_product_details_usecase.dart';
+import 'package:wassaly/features/product_details/domain/usecases/update_product_review_usecase.dart';
+import 'package:wassaly/features/product_details/presentation/bloc/product_details_event.dart';
+import 'package:wassaly/features/product_details/presentation/bloc/product_details_state.dart';
+import 'package:wassaly/features/sub_category/domain/usecases/get_sub_category_detail_usecase.dart';
 
 class ProductDetailsBloc
     extends Bloc<ProductDetailsEvent, ProductDetailsState> {
@@ -217,8 +216,7 @@ class ProductDetailsBloc
 
   List<ProductDetailReviewEntity> _sortReviewsNewestFirst(
     List<ProductDetailReviewEntity> reviews,
-  ) {
-    return List<ProductDetailReviewEntity>.from(reviews)
+  ) => List<ProductDetailReviewEntity>.from(reviews)
       ..sort((a, b) {
         final dateA = a.createdAt.toLocalDateTime();
         final dateB = b.createdAt.toLocalDateTime();
@@ -227,5 +225,4 @@ class ProductDetailsBloc
         }
         return b.id.compareTo(a.id);
       });
-  }
 }

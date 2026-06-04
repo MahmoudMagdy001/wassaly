@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -22,7 +24,7 @@ class GlobalNavigator {
   static void push(String route, {Object? extra}) {
     final context = _context;
     if (context != null) {
-      context.push(route, extra: extra);
+      unawaited(context.push(route, extra: extra));
     }
   }
 

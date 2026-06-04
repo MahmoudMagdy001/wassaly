@@ -47,7 +47,12 @@ class _PopularServicesSectionState extends State<PopularServicesSection> {
   }
 
   void _onServiceTap(BuildContext context, SubCategoryEntity service) =>
-      context.push(AppRoutes.subCategory, extra: {'subCategory': service});
+      unawaited(
+        context.push(
+          AppRoutes.subCategory,
+          extra: {'subCategory': service},
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +79,6 @@ class _PopularServicesSectionState extends State<PopularServicesSection> {
             popularServicesStatus == HomeStatus.initial) {
           return SliverToBoxAdapter(
             child: Skeletonizer(
-              enabled: true,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -98,13 +102,14 @@ class _PopularServicesSectionState extends State<PopularServicesSection> {
                         SliverPadding(
                           padding: EdgeInsets.symmetric(horizontal: 8.w),
                           sliver: SliverList.builder(
-                            itemCount: PopularServicesSection._dummyServices.length,
-                            itemBuilder: (context, index) {
-                              return ServiceItem(
-                                name: PopularServicesSection._dummyServices[index].name,
-                                imageUrl: PopularServicesSection._dummyServices[index].image,
-                              );
-                            },
+                            itemCount:
+                                PopularServicesSection._dummyServices.length,
+                            itemBuilder: (context, index) => ServiceItem(
+                              name: PopularServicesSection
+                                  ._dummyServices[index].name,
+                              imageUrl: PopularServicesSection
+                                  ._dummyServices[index].image,
+                            ),
                           ),
                         ),
                       ],

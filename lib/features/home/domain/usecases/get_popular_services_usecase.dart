@@ -1,6 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
-import '../entities/sub_category_entity.dart';
-import '../repositories/home_repository.dart';
+import 'package:wassaly/features/home/domain/entities/sub_category_entity.dart';
+import 'package:wassaly/features/home/domain/repositories/home_repository.dart';
 
 class GetPopularServicesUseCase {
   final HomeRepository repository;
@@ -8,7 +8,5 @@ class GetPopularServicesUseCase {
   GetPopularServicesUseCase(this.repository);
 
   Future<Either<Failure, PaginatedResponse<SubCategoryEntity>>> call(
-      {int page = 1}) async {
-    return await repository.getPopularServices(page: page);
-  }
+      {int page = 1,}) async => repository.getPopularServices(page: page);
 }

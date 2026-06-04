@@ -16,18 +16,16 @@ class OtpVerificationPage extends StatelessWidget {
   final VerificationType verificationType;
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<OtpVerificationBloc>(
-        param1: email,
-        param2: verificationType,
-      ),
-      child: _OtpVerificationView(
-        email: email,
-        verificationType: verificationType,
-      ),
-    );
-  }
+  Widget build(BuildContext context) => BlocProvider(
+        create: (_) => sl<OtpVerificationBloc>(
+          param1: email,
+          param2: verificationType,
+        ),
+        child: _OtpVerificationView(
+          email: email,
+          verificationType: verificationType,
+        ),
+      );
 }
 
 class _OtpVerificationView extends StatefulWidget {
@@ -81,21 +79,28 @@ class _OtpVerificationViewState extends State<_OtpVerificationView> {
       listener: (context, state) {
         if (state.verificationStatus ==
             OtpVerificationStatus.verifiedForRegister) {
-          context.showTypedSnackBar(context.l10n.otp_verification_success,
-              type: SnackBarType.success);
-          context.go(AppRoutes.login);
+          context
+            ..showTypedSnackBar(
+              context.l10n.otp_verification_success,
+              type: SnackBarType.success,
+            )
+            ..go(AppRoutes.login);
         }
 
         if (state.verificationStatus ==
             OtpVerificationStatus.verifiedForForgotPassword) {
-          context.showTypedSnackBar(context.l10n.otp_verification_success,
-              type: SnackBarType.success);
+          context.showTypedSnackBar(
+            context.l10n.otp_verification_success,
+            type: SnackBarType.success,
+          );
           if (state.resetToken != null) {
-            context.push(
-              AppRoutes.resetPassword,
-              extra: ResetPasswordArgs(
-                email: state.email,
-                token: state.resetToken!,
+            unawaited(
+              context.push(
+                AppRoutes.resetPassword,
+                extra: ResetPasswordArgs(
+                  email: state.email,
+                  token: state.resetToken!,
+                ),
               ),
             );
           }
@@ -103,26 +108,35 @@ class _OtpVerificationViewState extends State<_OtpVerificationView> {
 
         if (state.verificationStatus ==
             OtpVerificationStatus.verifiedForLogin) {
-          context.showTypedSnackBar(context.l10n.otp_verification_success,
-              type: SnackBarType.success);
-          context.go(AppRoutes.login);
+          context
+            ..showTypedSnackBar(
+              context.l10n.otp_verification_success,
+              type: SnackBarType.success,
+            )
+            ..go(AppRoutes.login);
         }
 
         if (state.verificationStatus == OtpVerificationStatus.error &&
             state.errorMessage != null) {
-          context.showTypedSnackBar(state.errorMessage!,
-              type: SnackBarType.error);
+          context.showTypedSnackBar(
+            state.errorMessage!,
+            type: SnackBarType.error,
+          );
         }
 
         if (state.resendStatus == ResendOtpStatus.success) {
-          context.showTypedSnackBar(context.l10n.otp_resend_success,
-              type: SnackBarType.success);
+          context.showTypedSnackBar(
+            context.l10n.otp_resend_success,
+            type: SnackBarType.success,
+          );
         }
 
         if (state.resendStatus == ResendOtpStatus.error &&
             state.errorMessage != null) {
-          context.showTypedSnackBar(state.errorMessage!,
-              type: SnackBarType.error);
+          context.showTypedSnackBar(
+            state.errorMessage!,
+            type: SnackBarType.error,
+          );
         }
       },
       child: Scaffold(
@@ -131,7 +145,6 @@ class _OtpVerificationViewState extends State<_OtpVerificationView> {
           child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(horizontal: 18.w),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 OtpVerificationHeader(email: widget.email),
                 OtpInputField(
@@ -139,7 +152,6 @@ class _OtpVerificationViewState extends State<_OtpVerificationView> {
                   length: 6,
                   onChanged: _onOtpChanged,
                   onCompleted: _onOtpCompleted,
-                  autoFocus: true,
                 ),
                 32.verticalSpace,
                 ResendOtpWidget(onResend: _onResendPressed),
@@ -158,7 +170,6 @@ class _OtpVerificationViewState extends State<_OtpVerificationView> {
                       onPressed: canVerify ? _onVerifyPressed : null,
                       isLoading: isLoading,
                       isFullWidth: true,
-                      height: ButtonSize.medium,
                       variant: ButtonVariant.success,
                       suffixIcon: !isLoading
                           ? Icon(

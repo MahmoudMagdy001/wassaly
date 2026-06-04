@@ -40,8 +40,7 @@ class ProductsFilterState extends Equatable {
     String? errorMessage,
     bool? isLoadMoreLoading,
     bool clearError = false,
-  }) {
-    return ProductsFilterState(
+  }) => ProductsFilterState(
       status: status ?? this.status,
       categoriesStatus: categoriesStatus ?? this.categoriesStatus,
       products: products ?? this.products,
@@ -53,7 +52,6 @@ class ProductsFilterState extends Equatable {
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       isLoadMoreLoading: isLoadMoreLoading ?? this.isLoadMoreLoading,
     );
-  }
 
   bool get hasMore => currentPage < lastPage;
 

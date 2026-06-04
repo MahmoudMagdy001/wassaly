@@ -27,8 +27,7 @@ class SignupPasswordField extends StatelessWidget {
       selector: (state) => isConfirmPassword
           ? state.isConfirmPasswordVisible
           : state.isPasswordVisible,
-      builder: (context, isVisible) {
-        return ClipRRect(
+      builder: (context, isVisible) => ClipRRect(
           borderRadius: BorderRadius.circular(12.r),
           child: AppTextField(
             controller: controller,
@@ -50,8 +49,7 @@ class SignupPasswordField extends StatelessWidget {
               ),
             ),
           ),
-        );
-      },
+        ),
     );
   }
 }

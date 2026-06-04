@@ -28,8 +28,7 @@ class ServiceDetailsState extends Equatable {
     String? errorMessage,
     String? reviewActionMessage,
     bool? isFavoriteLoading,
-  }) {
-    return ServiceDetailsState(
+  }) => ServiceDetailsState(
       status: status ?? this.status,
       reviewActionStatus: reviewActionStatus ?? this.reviewActionStatus,
       service: service ?? this.service,
@@ -37,7 +36,6 @@ class ServiceDetailsState extends Equatable {
       reviewActionMessage: reviewActionMessage ?? this.reviewActionMessage,
       isFavoriteLoading: isFavoriteLoading ?? this.isFavoriteLoading,
     );
-  }
 
   @override
   List<Object?> get props => [

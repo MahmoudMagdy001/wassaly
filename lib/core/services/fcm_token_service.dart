@@ -23,13 +23,14 @@ class FcmTokenService {
     _logger.i('[FcmTokenService] registerToken started for user $userId');
     try {
       String? token;
-      int retryCount = 0;
+      var retryCount = 0;
       const maxRetries = 3;
 
       while (token == null && retryCount < maxRetries) {
         if (retryCount > 0) {
           _logger.i(
-              '[FcmTokenService] FCM token was null, retrying ($retryCount/$maxRetries) after 2s...');
+            '[FcmTokenService] FCM token was null, retrying ($retryCount/$maxRetries) after 2s...',
+          );
           await Future<void>.delayed(const Duration(seconds: 2));
         }
 
@@ -39,12 +40,14 @@ class FcmTokenService {
 
       if (token == null) {
         _logger.e(
-            '[FcmTokenService] ❌ FCM token is still NULL after $maxRetries attempts. Registration aborted.');
+          '[FcmTokenService] ❌ FCM token is still NULL after $maxRetries attempts. Registration aborted.',
+        );
         return;
       }
 
       _logger.i(
-          '[FcmTokenService] FCM token obtained: ${token.substring(0, 10)}...');
+        '[FcmTokenService] FCM token obtained: ${token.substring(0, 10)}...',
+      );
       final deviceId = await _getDeviceId();
 
       final result = await _registerFcmTokenUseCase(
@@ -55,11 +58,13 @@ class FcmTokenService {
         (failure) => _logger
             .w('[FcmTokenService] Registration failed: ${failure.message}'),
         (_) => _logger.i(
-            '[FcmTokenService] Token registered successfully for user $userId'),
+          '[FcmTokenService] Token registered successfully for user $userId',
+        ),
       );
-    } catch (e) {
+    } on Object catch (e) {
       _logger.e(
-          '[FcmTokenService] Unexpected error during token registration: $e');
+        '[FcmTokenService] Unexpected error during token registration: $e',
+      );
     }
   }
 
@@ -68,7 +73,8 @@ class FcmTokenService {
     FirebaseMessaging.instance.onTokenRefresh.listen(
       (newToken) async {
         _logger.i(
-            '[FcmTokenService] Token refreshed — re-registering for user $userId');
+          '[FcmTokenService] Token refreshed — re-registering for user $userId',
+        );
         final deviceId = await _getDeviceId();
 
         final result = await _registerFcmTokenUseCase(
@@ -76,12 +82,14 @@ class FcmTokenService {
         );
         result.fold(
           (failure) => _logger.w(
-              '[FcmTokenService] Refresh registration failed: ${failure.message}'),
+            '[FcmTokenService] Refresh registration failed: ${failure.message}',
+          ),
           (_) => _logger
               .i('[FcmTokenService] Refresh token registered for user $userId'),
         );
       },
-      onError: (e) => _logger.e('[FcmTokenService] onTokenRefresh error: $e'),
+      onError: (Object e) =>
+          _logger.e('[FcmTokenService] onTokenRefresh error: $e'),
     );
   }
 
@@ -95,7 +103,7 @@ class FcmTokenService {
         final info = await deviceInfo.iosInfo;
         return info.identifierForVendor ?? 'unknown-ios';
       }
-    } catch (_) {}
+    } on Object catch (_) {}
     return 'unknown-device';
   }
 }

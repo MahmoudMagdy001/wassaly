@@ -59,7 +59,7 @@ class BookingAddressSection extends StatelessWidget {
                       return Padding(
                         padding: EdgeInsets.only(
                             bottom:
-                                index == state.addresses.length - 1 ? 0 : 12.h),
+                                index == state.addresses.length - 1 ? 0 : 12.h,),
                         child: InkWell(
                           onTap: () =>
                               bloc.add(ServiceBookingAddressSelected(address)),
@@ -185,12 +185,10 @@ class BookingAddressSection extends StatelessWidget {
               AppDropdown<String>(
                 label: context.l10n.checkout_governorate,
                 value: state.selectedGovernorateId,
-                items: state.governorates.map((gov) {
-                  return DropdownMenuItem(
+                items: state.governorates.map((gov) => DropdownMenuItem(
                     value: gov.id,
                     child: Text(gov.name),
-                  );
-                }).toList(),
+                  ),).toList(),
                 onChanged: (val) {
                   if (val != null) {
                     bloc.add(ServiceBookingGovernorateSelected(val));
@@ -212,12 +210,10 @@ class BookingAddressSection extends StatelessWidget {
               AppDropdown<String>(
                 label: context.l10n.checkout_center,
                 value: state.selectedCenterId,
-                items: state.centers.map((center) {
-                  return DropdownMenuItem(
+                items: state.centers.map((center) => DropdownMenuItem(
                     value: center.id,
                     child: Text(center.name),
-                  );
-                }).toList(),
+                  ),).toList(),
                 onChanged: (val) {
                   if (val != null) {
                     bloc.add(ServiceBookingCenterSelected(val));

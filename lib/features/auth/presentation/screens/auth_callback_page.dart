@@ -30,7 +30,7 @@ class _AuthCallbackPageState extends State<AuthCallbackPage> {
     super.initState();
     // Use addPostFrameCallback to ensure the widget tree is fully built
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _handleAuthCallback();
+      unawaited(_handleAuthCallback());
     });
   }
 
@@ -41,9 +41,12 @@ class _AuthCallbackPageState extends State<AuthCallbackPage> {
 
     if (token == null || token.isEmpty || id == null || email == null) {
       if (mounted) {
-        context.showTypedSnackBar(context.l10n.auth_login_failed,
-            type: SnackBarType.error);
-        context.go(AppRoutes.login);
+        context
+          ..showTypedSnackBar(
+            context.l10n.auth_login_failed,
+            type: SnackBarType.error,
+          )
+          ..go(AppRoutes.login);
       }
       return;
     }
@@ -59,17 +62,20 @@ class _AuthCallbackPageState extends State<AuthCallbackPage> {
     if (mounted) {
       result.fold(
         (failure) {
-          context.showTypedSnackBar(context.l10n.auth_login_failed,
-              type: SnackBarType.error);
-          context.go(AppRoutes.login);
+          context
+            ..showTypedSnackBar(
+              context.l10n.auth_login_failed,
+              type: SnackBarType.error,
+            )
+            ..go(AppRoutes.login);
         },
         (user) {
           // Notify SessionBloc about the logged-in user so avatar appears immediately
           sl<SessionBloc>().add(SessionUserUpdated(user));
 
-          context.showTypedSnackBar(context.l10n.auth_login_success,
-              type: SnackBarType.info);
-          context.go(AppRoutes.home);
+          context
+            ..showTypedSnackBar(context.l10n.auth_login_success)
+            ..go(AppRoutes.home);
         },
       );
     }

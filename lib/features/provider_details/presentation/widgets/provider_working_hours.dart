@@ -1,6 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-import '../../domain/entities/provider_detail_entity.dart';
+import 'package:wassaly/features/provider_details/domain/entities/provider_detail_entity.dart';
 
 class ProviderWorkingHours extends StatelessWidget {
   final ProviderDetailEntity provider;
@@ -56,13 +56,12 @@ class ProviderWorkingHours extends StatelessWidget {
   }
 
   Widget _buildInfoRow(BuildContext context, String label, String value,
-      {Color? valueColor}) {
-    return Row(
+      {Color? valueColor,}) => Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(label,
             style: context.theme.textTheme.bodyMedium
-                ?.copyWith(color: context.theme.colorScheme.outline)),
+                ?.copyWith(color: context.theme.colorScheme.outline),),
         Text(
           value,
           style: context.theme.textTheme.bodyMedium?.copyWith(
@@ -72,7 +71,6 @@ class ProviderWorkingHours extends StatelessWidget {
         ),
       ],
     );
-  }
 
   String _formatTime(String time) {
     final parts = time.split(':');

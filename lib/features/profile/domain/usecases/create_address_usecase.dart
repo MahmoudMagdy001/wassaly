@@ -21,12 +21,10 @@ class CreateAddressUseCase {
 
   const CreateAddressUseCase(this._repository);
 
-  FutureEither<AddressEntity> call(CreateAddressParams params) {
-    return _repository.createAddress(
+  FutureEither<AddressEntity> call(CreateAddressParams params) => _repository.createAddress(
       title: params.title,
       address: params.address,
       governorateId: params.governorateId,
       centerId: params.centerId,
     );
-  }
 }

@@ -1,4 +1,4 @@
-import '../../domain/entities/banner_entity.dart';
+import 'package:wassaly/features/home/domain/entities/banner_entity.dart';
 
 class BannerModel extends BannerEntity {
   const BannerModel({
@@ -9,13 +9,11 @@ class BannerModel extends BannerEntity {
     required super.type,
   });
 
-  factory BannerModel.fromJson(Map<String, dynamic> json) {
-    return BannerModel(
+  factory BannerModel.fromJson(Map<String, dynamic> json) => BannerModel(
       id: json['id'] as int? ?? 0,
       title: json['title'] as String? ?? '',
       description: json['description'] as String? ?? '',
       image: json['image'] as String? ?? '',
       type: json['type'] as String? ?? '',
     );
-  }
 }

@@ -57,7 +57,6 @@ class _HomeBannerState extends State<HomeBanner> {
         if (bannersStatus == HomeStatus.loading ||
             bannersStatus == HomeStatus.initial) {
           return Skeletonizer(
-            enabled: true,
             child: Column(
               children: [
                 CarouselSlider.builder(
@@ -67,10 +66,12 @@ class _HomeBannerState extends State<HomeBanner> {
                     viewportFraction: 0.84,
                     enlargeCenterPage: true,
                   ),
-                  itemBuilder: (context, index, realIndex) {
-                    return _buildBannerItem(
-                        context, cs, tt, HomeBanner._dummyBanners[index]);
-                  },
+                  itemBuilder: (context, index, realIndex) => _buildBannerItem(
+                    context,
+                    cs,
+                    tt,
+                    HomeBanner._dummyBanners[index],
+                  ),
                 ),
                 12.verticalSpace,
                 AnimatedSmoothIndicator(
@@ -81,7 +82,6 @@ class _HomeBannerState extends State<HomeBanner> {
                     dotWidth: 6.w,
                     activeDotColor: cs.primary,
                     dotColor: cs.outlineVariant,
-                    expansionFactor: 3,
                   ),
                 ),
               ],
@@ -102,14 +102,12 @@ class _HomeBannerState extends State<HomeBanner> {
                 viewportFraction: 0.84,
                 enlargeCenterPage: true,
                 autoPlay: true,
-                autoPlayInterval: const Duration(seconds: 4),
                 onPageChanged: (index, reason) {
                   _currentIndexNotifier.value = index;
                 },
               ),
-              itemBuilder: (context, index, realIndex) {
-                return _buildBannerItem(context, cs, tt, banners[index]);
-              },
+              itemBuilder: (context, index, realIndex) =>
+                  _buildBannerItem(context, cs, tt, banners[index]),
             ),
             12.verticalSpace,
             ValueListenableBuilder<int>(
@@ -122,7 +120,6 @@ class _HomeBannerState extends State<HomeBanner> {
                   dotWidth: 6.w,
                   activeDotColor: cs.primary,
                   dotColor: cs.outlineVariant,
-                  expansionFactor: 3,
                 ),
               ),
             ),
@@ -133,94 +130,96 @@ class _HomeBannerState extends State<HomeBanner> {
   }
 
   Widget _buildBannerItem(
-      BuildContext context, ColorScheme cs, TextTheme tt, BannerEntity banner) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16.r),
-        color: cs.surfaceContainerHighest,
-      ),
-      clipBehavior: Clip.hardEdge,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          // Background Image
-          CommonImage(
-            imageUrl: banner.image,
-            fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
-            memCacheHeight: 160 * 2,
-          ),
+    BuildContext context,
+    ColorScheme cs,
+    TextTheme tt,
+    BannerEntity banner,
+  ) =>
+      Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16.r),
+          color: cs.surfaceContainerHighest,
+        ),
+        clipBehavior: Clip.hardEdge,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            // Background Image
+            CommonImage(
+              imageUrl: banner.image,
+              width: double.infinity,
+              height: double.infinity,
+              memCacheHeight: 160 * 2,
+            ),
 
-          // Gradient Overlay
-          DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.transparent,
-                  cs.onSurface.withValues(alpha: 0.7),
+            // Gradient Overlay
+            DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    cs.onSurface.withValues(alpha: 0.7),
+                  ],
+                ),
+              ),
+            ),
+
+            // Content
+            Padding(
+              padding: EdgeInsets.all(16.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    banner.title,
+                    style: tt.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: cs.onPrimary,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    banner.description,
+                    style: tt.titleSmall?.copyWith(
+                      color: cs.onPrimary.withValues(alpha: 0.8),
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  8.verticalSpace,
+                  AppButton(
+                    label: context.l10n.home_browse_now,
+                    onPressed: () {
+                      switch (banner.type) {
+                        case 'product_page':
+                          unawaited(context.push(AppRoutes.search));
+                          break;
+                        case 'coupon_page':
+                          unawaited(context.push(AppRoutes.offers));
+                          break;
+                        case 'home_page':
+                        default:
+                          // Do nothing for home_page or unknown types
+                          break;
+                      }
+                    },
+                    variant: ButtonVariant.success,
+                    height: ButtonSize.small,
+                    suffixIcon: Icon(
+                      Icons.arrow_forward,
+                      size: 14,
+                      color: cs.onPrimary,
+                    ),
+                  ),
                 ],
               ),
             ),
-          ),
-
-          // Content
-          Padding(
-            padding: EdgeInsets.all(16.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(
-                  banner.title,
-                  style: tt.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: cs.onPrimary,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text(
-                  banner.description,
-                  style: tt.titleSmall?.copyWith(
-                    color: cs.onPrimary.withValues(alpha: 0.8),
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                8.verticalSpace,
-                AppButton(
-                  label: context.l10n.home_browse_now,
-                  onPressed: () {
-                    switch (banner.type) {
-                      case 'product_page':
-                        context.push(AppRoutes.search);
-                        break;
-                      case 'coupon_page':
-                        context.push(AppRoutes.offers);
-                        break;
-                      case 'home_page':
-                      default:
-                        // Do nothing for home_page or unknown types
-                        break;
-                    }
-                  },
-                  variant: ButtonVariant.success,
-                  height: ButtonSize.small,
-                  suffixIcon: Icon(
-                    Icons.arrow_forward,
-                    size: 14,
-                    color: cs.onPrimary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+          ],
+        ),
+      );
 }

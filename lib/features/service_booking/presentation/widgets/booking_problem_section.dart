@@ -25,8 +25,7 @@ class _BookingProblemSectionState extends State<BookingProblemSection> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return BlocListener<ServiceBookingBloc, ServiceBookingState>(
+  Widget build(BuildContext context) => BlocListener<ServiceBookingBloc, ServiceBookingState>(
       listenWhen: (prev, curr) =>
           prev.problemDescription != curr.problemDescription,
       listener: (context, state) {
@@ -48,5 +47,4 @@ class _BookingProblemSectionState extends State<BookingProblemSection> {
         },
       ),
     );
-  }
 }

@@ -1,7 +1,7 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-import '../../../home/domain/entities/product_entity.dart';
-import '../../../sub_category/domain/entities/service_entity.dart';
+import 'package:wassaly/features/home/domain/entities/product_entity.dart';
+import 'package:wassaly/features/sub_category/domain/entities/service_entity.dart';
 
 class ProviderDetailReviewEntity extends Equatable {
   final int? id;
@@ -111,8 +111,7 @@ class ProviderDetailEntity extends Equatable {
     List<ProviderDetailReviewEntity>? reviews,
     List<ServiceEntity>? services,
     List<ProductEntity>? products,
-  }) {
-    return ProviderDetailEntity(
+  }) => ProviderDetailEntity(
       id: id ?? this.id,
       user: user ?? this.user,
       title: title ?? this.title,
@@ -132,7 +131,6 @@ class ProviderDetailEntity extends Equatable {
       services: services ?? this.services,
       products: products ?? this.products,
     );
-  }
 
   @override
   List<Object?> get props => [

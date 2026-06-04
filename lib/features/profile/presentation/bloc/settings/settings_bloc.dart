@@ -43,7 +43,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     emit(state.copyWith(
       language: language,
       themeMode: themeMode,
-    ));
+    ),);
   }
 
   Future<void> _onLanguageToggled(
@@ -87,9 +87,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     emit(state.copyWith(themeMode: event.themeMode));
   }
 
-  String _themeModeToString(ThemeMode themeMode) {
-    return themeMode.toString().split('.').last;
-  }
+  String _themeModeToString(ThemeMode themeMode) => themeMode.toString().split('.').last;
 
   ThemeMode _themeModeFromString(String themeModeString) {
     switch (themeModeString) {

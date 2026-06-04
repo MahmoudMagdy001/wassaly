@@ -11,22 +11,17 @@ class VersionUpdateService {
   FutureEither<AppVersionResult?> checkForUpdate({
     String? appleId,
     String? playStoreId,
-  }) async {
-    return runTask(() async {
-      return await AppVersionUpdate.checkForUpdates(
+  }) async => runTask(() async => AppVersionUpdate.checkForUpdates(
         appleId: appleId,
         playStoreId: playStoreId,
-      );
-    }, requiresNetwork: true);
-  }
+      ), requiresNetwork: true,);
 
   /// High-level method to check for updates and show the dialog automatically if available.
   FutureEither<void> checkAndShowUpdate({
     String? appleId,
     String? playStoreId,
     bool mandatory = false,
-  }) async {
-    return runTask(() async {
+  }) async => runTask(() async {
       final result = await AppVersionUpdate.checkForUpdates(
         appleId: appleId,
         playStoreId: playStoreId,
@@ -47,8 +42,7 @@ class VersionUpdateService {
           );
         }
       }
-    }, requiresNetwork: true);
-  }
+    }, requiresNetwork: true,);
 
   /// Display a platform-specific update dialog.
   FutureEither<void> showUpdateAlert({
@@ -58,8 +52,7 @@ class VersionUpdateService {
     String? content,
     String? cancelText,
     String? updateText,
-  }) async {
-    return runTask(() async {
+  }) async => runTask(() async {
       final context = rootContext;
       if (context == null) return;
 
@@ -73,7 +66,6 @@ class VersionUpdateService {
         updateButtonText: updateText ?? 'UPDATE',
       );
     });
-  }
 
   /// Display a platform-specific update bottom sheet.
   FutureEither<void> showUpdateBottomSheet({
@@ -81,8 +73,7 @@ class VersionUpdateService {
     bool mandatory = false,
     String? title,
     Widget? content,
-  }) async {
-    return runTask(() async {
+  }) async => runTask(() async {
       final context = rootContext;
       if (context == null) return;
 
@@ -94,15 +85,13 @@ class VersionUpdateService {
         content: content,
       );
     });
-  }
 
   /// Display a dedicated update page.
   FutureEither<void> showUpdatePage({
     required AppVersionResult updateResult,
     bool mandatory = false,
     Widget? page,
-  }) async {
-    return runTask(() async {
+  }) async => runTask(() async {
       final context = rootContext;
       if (context == null) return;
 
@@ -113,5 +102,4 @@ class VersionUpdateService {
         page: page,
       );
     });
-  }
 }

@@ -165,8 +165,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           email: data.email,
           name: data.fullName,
           phone: data.phone,
-          avatarUrl: null,
-          token: null,
         );
       },
     );

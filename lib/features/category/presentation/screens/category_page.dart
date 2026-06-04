@@ -18,13 +18,11 @@ class CategoryPage extends StatelessWidget {
   final CategoryEntity category;
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
+  Widget build(BuildContext context) => BlocProvider(
       create: (context) =>
           sl<CategoryBloc>()..add(FetchCategoryDetailEvent(category.id)),
       child: _CategoryView(category: category),
     );
-  }
 }
 
 class _CategoryView extends StatelessWidget {
@@ -107,11 +105,10 @@ class _CategoryView extends StatelessWidget {
 
               final currentSubCategory = isLoading
                   ? const SubCategoryEntity(
-                      id: -1, name: 'تصنيف تجريبي', image: '')
+                      id: -1, name: 'تصنيف تجريبي', image: '',)
                   : selectedSubCategory;
 
               return SliverFillRemaining(
-                hasScrollBody: true,
                 child: Skeletonizer(
                   enabled: isLoading,
                   ignoreContainers: true,
@@ -132,14 +129,13 @@ class _CategoryView extends StatelessWidget {
                                     final bloc = sl<SubCategoryBloc>();
                                     if (!isLoading) {
                                       bloc.add(FetchSubCategoryDetailEvent(
-                                          currentSubCategory.id));
+                                          currentSubCategory.id,),);
                                     }
                                     return bloc;
                                   },
                                   child: SubCategoryDetailView(
                                     subCategory: currentSubCategory,
                                     showAppBar: false,
-                                    crossAxisCount: 2,
                                     productMainAxisExtent: 230.h,
                                     serviceMainAxisExtent: 190.h,
                                   ),

@@ -1,8 +1,8 @@
 import 'package:wassaly/core/imports/imports.dart';
-import '../../domain/entities/order_entity.dart';
-import '../../domain/repositories/orders_repository.dart';
-import '../datasources/orders_remote_datasource.dart';
-import '../datasources/orders_local_datasource.dart';
+import 'package:wassaly/features/orders/data/datasources/orders_local_datasource.dart';
+import 'package:wassaly/features/orders/data/datasources/orders_remote_datasource.dart';
+import 'package:wassaly/features/orders/domain/entities/order_entity.dart';
+import 'package:wassaly/features/orders/domain/repositories/orders_repository.dart';
 
 class OrdersRepositoryImpl implements OrdersRepository {
   final OrdersRemoteDataSource _remoteDataSource;
@@ -17,22 +17,34 @@ class OrdersRepositoryImpl implements OrdersRepository {
     try {
       final remoteOrdersResponse =
           await _remoteDataSource.getOrders(page: page);
-      
+
       await _localDataSource.cacheOrders(remoteOrdersResponse.data, page: page);
 
       return Right(remoteOrdersResponse.map((model) => model as OrderEntity));
     } on Failure catch (failure) {
       final cached = _localDataSource.getCachedOrders(page: page);
       if (cached.isNotEmpty) {
-        return Right(PaginatedResponse(
-            data: cached, currentPage: page, lastPage: page, total: cached.length));
+        return Right(
+          PaginatedResponse(
+            data: cached,
+            currentPage: page,
+            lastPage: page,
+            total: cached.length,
+          ),
+        );
       }
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       final cached = _localDataSource.getCachedOrders(page: page);
       if (cached.isNotEmpty) {
-        return Right(PaginatedResponse(
-            data: cached, currentPage: page, lastPage: page, total: cached.length));
+        return Right(
+          PaginatedResponse(
+            data: cached,
+            currentPage: page,
+            lastPage: page,
+            total: cached.length,
+          ),
+        );
       }
       return Left(ServerFailure(e.toString()));
     }
@@ -48,7 +60,7 @@ class OrdersRepositoryImpl implements OrdersRepository {
         return Left(NotFoundFailure(failure.message, error: failure.error));
       }
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }
@@ -69,20 +81,22 @@ class OrdersRepositoryImpl implements OrdersRepository {
       return const Right(null);
     } on Failure catch (failure) {
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }
 
   @override
   Future<Either<Failure, void>> updateOrder(
-      int orderId, Map<String, dynamic> data) async {
+    int orderId,
+    Map<String, dynamic> data,
+  ) async {
     try {
       await _remoteDataSource.updateOrder(orderId, data);
       return const Right(null);
     } on Failure catch (failure) {
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }
@@ -94,7 +108,7 @@ class OrdersRepositoryImpl implements OrdersRepository {
       return const Right(null);
     } on Failure catch (failure) {
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }

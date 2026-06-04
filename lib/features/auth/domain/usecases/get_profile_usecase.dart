@@ -7,7 +7,5 @@ class GetProfileUseCase {
 
   const GetProfileUseCase(this._repository);
 
-  FutureEither<UserEntity> call() {
-    return _repository.getProfile();
-  }
+  FutureEither<UserEntity> call() => _repository.getProfile();
 }

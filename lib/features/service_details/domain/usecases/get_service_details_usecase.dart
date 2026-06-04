@@ -1,7 +1,7 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-import '../entities/service_detail_entity.dart';
-import '../repositories/service_details_repository.dart';
+import 'package:wassaly/features/service_details/domain/entities/service_detail_entity.dart';
+import 'package:wassaly/features/service_details/domain/repositories/service_details_repository.dart';
 
 class GetServiceDetailsUseCase {
   final ServiceDetailsRepository _repository;

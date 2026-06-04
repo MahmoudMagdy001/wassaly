@@ -40,6 +40,14 @@ class NotificationsBloc
     on<NotificationReceivedEvent>(_onNotificationReceived);
     on<GetNotificationStatusEvent>(_onGetNotificationStatus);
     on<ToggleNotificationEvent>(_onToggleNotification);
+    on<ResetNotificationsEvent>(_onReset);
+  }
+
+  void _onReset(
+    ResetNotificationsEvent event,
+    Emitter<NotificationsState> emit,
+  ) {
+    emit(const NotificationsState());
   }
 
   Future<void> _onGetNotificationStatus(
@@ -61,8 +69,10 @@ class NotificationsBloc
       (isEnabled) {
         // Update local storage if backend differs
         if (localStatus != isEnabled) {
-          StorageService.instance
-              .setBool(AppKeys.isNotificationsEnabled, isEnabled);
+          unawaited(
+            StorageService.instance
+                .setBool(AppKeys.isNotificationsEnabled, isEnabled),
+          );
         }
         emit(state.copyWith(isNotificationEnabled: isEnabled));
       },
@@ -75,26 +85,34 @@ class NotificationsBloc
   ) async {
     final originalStatus = state.isNotificationEnabled;
     // Optimistic update
-    emit(state.copyWith(
-      actionStatus: AppStatus.loading,
-      isNotificationEnabled: event.isEnabled,
-    ));
+    emit(
+      state.copyWith(
+        actionStatus: AppStatus.loading,
+        isNotificationEnabled: event.isEnabled,
+      ),
+    );
 
     final result = await toggleNotificationUseCase(event.isEnabled);
     result.fold(
-      (failure) => emit(state.copyWith(
-        actionStatus: AppStatus.failure,
-        isNotificationEnabled: originalStatus,
-        errorMessage: failure.message,
-      )),
+      (failure) => emit(
+        state.copyWith(
+          actionStatus: AppStatus.failure,
+          isNotificationEnabled: originalStatus,
+          errorMessage: failure.message,
+        ),
+      ),
       (isEnabled) {
         // Save to local storage on success
-        StorageService.instance
-            .setBool(AppKeys.isNotificationsEnabled, isEnabled);
-        emit(state.copyWith(
-          actionStatus: AppStatus.success,
-          isNotificationEnabled: isEnabled,
-        ));
+        unawaited(
+          StorageService.instance
+              .setBool(AppKeys.isNotificationsEnabled, isEnabled),
+        );
+        emit(
+          state.copyWith(
+            actionStatus: AppStatus.success,
+            isNotificationEnabled: isEnabled,
+          ),
+        );
       },
     );
   }
@@ -117,27 +135,30 @@ class NotificationsBloc
   ) async {
     if (!event.isRefresh) emit(state.copyWith(status: AppStatus.loading));
 
-    final result = await getNotificationsUseCase(page: 1);
+    final result = await getNotificationsUseCase();
     result.fold(
-      (failure) => emit(state.copyWith(
-        status: AppStatus.failure,
-        errorMessage: failure.message,
-      )),
-      (page) => emit(state.copyWith(
-        status: AppStatus.success,
-        notifications: page.data,
-        currentPage: page.currentPage,
-        hasMore: page.hasMore,
-        unreadCount: page.totalUnread > 0
-            ? page.totalUnread
-            : _calculateUnreadCount(page.data),
-      )),
+      (failure) => emit(
+        state.copyWith(
+          status: AppStatus.failure,
+          errorMessage: failure.message,
+        ),
+      ),
+      (page) => emit(
+        state.copyWith(
+          status: AppStatus.success,
+          notifications: page.data,
+          currentPage: page.currentPage,
+          hasMore: page.hasMore,
+          unreadCount: page.totalUnread > 0
+              ? page.totalUnread
+              : _calculateUnreadCount(page.data),
+        ),
+      ),
     );
   }
 
-  int _calculateUnreadCount(List<NotificationEntity> notifications) {
-    return notifications.where((n) => !n.isRead).length;
-  }
+  int _calculateUnreadCount(List<NotificationEntity> notifications) =>
+      notifications.where((n) => !n.isRead).length;
 
   // -------------------------------------------------------------------------
   // Load next page — guards against double calls & empty hasMore
@@ -153,22 +174,26 @@ class NotificationsBloc
     final nextPage = state.currentPage + 1;
     final result = await getNotificationsUseCase(page: nextPage);
     result.fold(
-      (failure) => emit(state.copyWith(
-        isLoadingMore: false,
-        actionStatus: AppStatus.failure,
-        errorMessage: failure.message,
-      )),
+      (failure) => emit(
+        state.copyWith(
+          isLoadingMore: false,
+          actionStatus: AppStatus.failure,
+          errorMessage: failure.message,
+        ),
+      ),
       (page) {
         final allNotifications = [...state.notifications, ...page.data];
-        emit(state.copyWith(
-          isLoadingMore: false,
-          notifications: allNotifications,
-          currentPage: page.currentPage,
-          hasMore: page.hasMore,
-          unreadCount: page.totalUnread > 0
-              ? page.totalUnread
-              : state.unreadCount, // PRESERVE TOTAL COUNT
-        ));
+        emit(
+          state.copyWith(
+            isLoadingMore: false,
+            notifications: allNotifications,
+            currentPage: page.currentPage,
+            hasMore: page.hasMore,
+            unreadCount: page.totalUnread > 0
+                ? page.totalUnread
+                : state.unreadCount, // PRESERVE TOTAL COUNT
+          ),
+        );
       },
     );
   }
@@ -196,20 +221,24 @@ class NotificationsBloc
     final newUnreadCount =
         wasUnread ? (state.unreadCount - 1).clamp(0, 9999) : state.unreadCount;
 
-    emit(state.copyWith(
-      actionStatus: AppStatus.loading,
-      notifications: updatedNotifications,
-      unreadCount: newUnreadCount,
-    ));
+    emit(
+      state.copyWith(
+        actionStatus: AppStatus.loading,
+        notifications: updatedNotifications,
+        unreadCount: newUnreadCount,
+      ),
+    );
 
     final result = await markAsReadUseCase(event.id);
     result.fold(
-      (failure) => emit(state.copyWith(
-        actionStatus: AppStatus.failure,
-        notifications: originalNotifications,
-        unreadCount: originalUnreadCount,
-        errorMessage: failure.message,
-      )),
+      (failure) => emit(
+        state.copyWith(
+          actionStatus: AppStatus.failure,
+          notifications: originalNotifications,
+          unreadCount: originalUnreadCount,
+          errorMessage: failure.message,
+        ),
+      ),
       (_) => emit(state.copyWith(actionStatus: AppStatus.success)),
     );
   }
@@ -233,20 +262,24 @@ class NotificationsBloc
     final newUnreadCount =
         wasUnread ? (state.unreadCount - 1).clamp(0, 9999) : state.unreadCount;
 
-    emit(state.copyWith(
-      actionStatus: AppStatus.loading,
-      notifications: updatedNotifications,
-      unreadCount: newUnreadCount,
-    ));
+    emit(
+      state.copyWith(
+        actionStatus: AppStatus.loading,
+        notifications: updatedNotifications,
+        unreadCount: newUnreadCount,
+      ),
+    );
 
     final result = await deleteNotificationUseCase(event.id);
     result.fold(
-      (failure) => emit(state.copyWith(
-        actionStatus: AppStatus.failure,
-        notifications: originalNotifications,
-        unreadCount: originalUnreadCount,
-        errorMessage: failure.message,
-      )),
+      (failure) => emit(
+        state.copyWith(
+          actionStatus: AppStatus.failure,
+          notifications: originalNotifications,
+          unreadCount: originalUnreadCount,
+          errorMessage: failure.message,
+        ),
+      ),
       (_) => emit(state.copyWith(actionStatus: AppStatus.success)),
     );
   }
@@ -261,29 +294,34 @@ class NotificationsBloc
     final originalNotifications = state.notifications;
     final originalUnreadCount = state.unreadCount;
 
-    final updatedNotifications = state.notifications.map((n) {
-      return n.copyWith(isRead: true);
-    }).toList();
+    final updatedNotifications =
+        state.notifications.map((n) => n.copyWith(isRead: true)).toList();
 
-    emit(state.copyWith(
-      actionStatus: AppStatus.loading,
-      notifications: updatedNotifications,
-      unreadCount: 0,
-    ));
+    emit(
+      state.copyWith(
+        actionStatus: AppStatus.loading,
+        notifications: updatedNotifications,
+        unreadCount: 0,
+      ),
+    );
 
     final result = await readAllNotificationsUseCase();
     result.fold(
-      (failure) => emit(state.copyWith(
-        actionStatus: AppStatus.failure,
-        notifications: originalNotifications,
-        unreadCount: originalUnreadCount,
-        errorMessage: failure.message,
-      )),
-      (_) => emit(state.copyWith(
-        actionStatus: AppStatus.success,
-        notifications: updatedNotifications,
-        unreadCount: 0,
-      )),
+      (failure) => emit(
+        state.copyWith(
+          actionStatus: AppStatus.failure,
+          notifications: originalNotifications,
+          unreadCount: originalUnreadCount,
+          errorMessage: failure.message,
+        ),
+      ),
+      (_) => emit(
+        state.copyWith(
+          actionStatus: AppStatus.success,
+          notifications: updatedNotifications,
+          unreadCount: 0,
+        ),
+      ),
     );
   }
 
@@ -298,27 +336,33 @@ class NotificationsBloc
     final originalUnreadCount = state.unreadCount;
     final originalHasMore = state.hasMore;
 
-    emit(state.copyWith(
-      actionStatus: AppStatus.loading,
-      notifications: const [],
-      hasMore: false,
-      unreadCount: 0,
-    ));
+    emit(
+      state.copyWith(
+        actionStatus: AppStatus.loading,
+        notifications: const [],
+        hasMore: false,
+        unreadCount: 0,
+      ),
+    );
 
     final result = await deleteAllNotificationsUseCase();
     result.fold(
-      (failure) => emit(state.copyWith(
-        actionStatus: AppStatus.failure,
-        notifications: originalNotifications,
-        unreadCount: originalUnreadCount,
-        hasMore: originalHasMore,
-        errorMessage: failure.message,
-      )),
-      (_) => emit(state.copyWith(
-        actionStatus: AppStatus.success,
-        notifications: const [],
-        unreadCount: 0,
-      )),
+      (failure) => emit(
+        state.copyWith(
+          actionStatus: AppStatus.failure,
+          notifications: originalNotifications,
+          unreadCount: originalUnreadCount,
+          hasMore: originalHasMore,
+          errorMessage: failure.message,
+        ),
+      ),
+      (_) => emit(
+        state.copyWith(
+          actionStatus: AppStatus.success,
+          notifications: const [],
+          unreadCount: 0,
+        ),
+      ),
     );
   }
 }

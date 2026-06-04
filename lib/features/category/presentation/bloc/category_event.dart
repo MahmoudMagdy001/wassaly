@@ -1,5 +1,5 @@
-import '../../../../core/imports/imports.dart';
-import '../../../home/domain/entities/sub_category_entity.dart';
+import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/features/home/domain/entities/sub_category_entity.dart';
 
 abstract class CategoryEvent extends Equatable {
   const CategoryEvent();

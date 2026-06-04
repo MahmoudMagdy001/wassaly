@@ -1,14 +1,12 @@
 import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/features/auth/domain/entities/user_entity.dart';
 import 'package:wassaly/features/profile/presentation/bloc/profile/profile_bloc.dart';
-
-import '../../../../auth/domain/entities/user_entity.dart';
 
 class ProfileHeader extends StatelessWidget {
   const ProfileHeader({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocSelector<ProfileBloc, ProfileState, UserEntity?>(
+  Widget build(BuildContext context) => BlocSelector<ProfileBloc, ProfileState, UserEntity?>(
       selector: (state) => state.user,
       builder: (context, user) {
         final cs = context.theme.colorScheme;
@@ -60,7 +58,6 @@ class ProfileHeader extends StatelessWidget {
                           width: 100,
                           height: 100,
                           memCacheHeight: 100 * 3,
-                          fit: BoxFit.cover,
                           borderRadius:
                               const BorderRadius.all(Radius.circular(999)),
                           enableFullScreenView: true,
@@ -87,7 +84,7 @@ class ProfileHeader extends StatelessWidget {
                         size: 50.r,
                         color: cs.primary,
                       );
-                    }),
+                    },),
                   ),
                 ),
               ],
@@ -138,5 +135,4 @@ class ProfileHeader extends StatelessWidget {
         );
       },
     );
-  }
 }

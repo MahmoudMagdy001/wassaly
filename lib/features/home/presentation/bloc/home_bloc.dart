@@ -1,15 +1,14 @@
 import 'package:wassaly/core/imports/imports.dart';
-
-import '../../domain/entities/category_entity.dart';
-import '../../domain/entities/product_entity.dart';
-import '../../domain/entities/sub_category_entity.dart';
-import '../../domain/entities/banner_entity.dart';
-import '../../domain/usecases/get_banners_usecase.dart';
-import '../../domain/usecases/get_categories_usecase.dart';
-import '../../domain/usecases/get_popular_services_usecase.dart';
-import '../../domain/usecases/get_products_usecase.dart';
-import 'home_event.dart';
-import 'home_state.dart';
+import 'package:wassaly/features/home/domain/entities/banner_entity.dart';
+import 'package:wassaly/features/home/domain/entities/category_entity.dart';
+import 'package:wassaly/features/home/domain/entities/product_entity.dart';
+import 'package:wassaly/features/home/domain/entities/sub_category_entity.dart';
+import 'package:wassaly/features/home/domain/usecases/get_banners_usecase.dart';
+import 'package:wassaly/features/home/domain/usecases/get_categories_usecase.dart';
+import 'package:wassaly/features/home/domain/usecases/get_popular_services_usecase.dart';
+import 'package:wassaly/features/home/domain/usecases/get_products_usecase.dart';
+import 'package:wassaly/features/home/presentation/bloc/home_event.dart';
+import 'package:wassaly/features/home/presentation/bloc/home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final GetBannersUseCase getBannersUseCase;
@@ -33,58 +32,74 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   Future<void> _onGetBanners(
-      GetBannersEvent event, Emitter<HomeState> emit) async {
-    emit(state.copyWith(
-      bannersStatus: HomeStatus.loading,
-      failure: null,
-    ));
+    GetBannersEvent event,
+    Emitter<HomeState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        bannersStatus: HomeStatus.loading,
+      ),
+    );
 
     final result = await getBannersUseCase();
 
     result.fold(
       (failure) {
-        emit(state.copyWith(
-          bannersStatus: HomeStatus.failure,
-          failure: failure,
-        ));
+        emit(
+          state.copyWith(
+            bannersStatus: HomeStatus.failure,
+            failure: failure,
+          ),
+        );
       },
       (banners) {
-        emit(state.copyWith(
-          bannersStatus: HomeStatus.success,
-          banners: banners,
-        ));
+        emit(
+          state.copyWith(
+            bannersStatus: HomeStatus.success,
+            banners: banners,
+          ),
+        );
       },
     );
   }
 
   Future<void> _onGetPopularServices(
-      GetPopularServicesEvent event, Emitter<HomeState> emit) async {
-    emit(state.copyWith(
-      popularServicesStatus: HomeStatus.loading,
-      popularServices: const PaginatedResponse(data: []),
-      failure: null,
-    ));
+    GetPopularServicesEvent event,
+    Emitter<HomeState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        popularServicesStatus: HomeStatus.loading,
+        popularServices: const PaginatedResponse(data: []),
+      ),
+    );
 
-    final result = await getPopularServicesUseCase(page: 1);
+    final result = await getPopularServicesUseCase();
 
     result.fold(
       (failure) {
-        emit(state.copyWith(
-          popularServicesStatus: HomeStatus.failure,
-          failure: failure,
-        ));
+        emit(
+          state.copyWith(
+            popularServicesStatus: HomeStatus.failure,
+            failure: failure,
+          ),
+        );
       },
       (paginatedResponse) {
-        emit(state.copyWith(
-          popularServicesStatus: HomeStatus.success,
-          popularServices: paginatedResponse,
-        ));
+        emit(
+          state.copyWith(
+            popularServicesStatus: HomeStatus.success,
+            popularServices: paginatedResponse,
+          ),
+        );
       },
     );
   }
 
   Future<void> _onLoadMorePopularServices(
-      LoadMorePopularServicesEvent event, Emitter<HomeState> emit) async {
+    LoadMorePopularServicesEvent event,
+    Emitter<HomeState> emit,
+  ) async {
     if (state.popularServicesStatus == HomeStatus.loading ||
         state.isPopularServicesLoadingMore ||
         !state.popularServices.hasMore) {
@@ -102,70 +117,88 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         emit(state.copyWith(isPopularServicesLoadingMore: false));
       },
       (paginatedResponse) {
-        emit(state.copyWith(
-          isPopularServicesLoadingMore: false,
-          popularServices: paginatedResponse.copyWith(
-            data: [...state.popularServices.data, ...paginatedResponse.data],
+        emit(
+          state.copyWith(
+            isPopularServicesLoadingMore: false,
+            popularServices: paginatedResponse.copyWith(
+              data: [...state.popularServices.data, ...paginatedResponse.data],
+            ),
           ),
-        ));
+        );
       },
     );
   }
 
   Future<void> _onGetCategories(
-      GetCategoriesEvent event, Emitter<HomeState> emit) async {
-    emit(state.copyWith(
-      categoriesStatus: HomeStatus.loading,
-      categories: const <CategoryEntity>[],
-      failure: null,
-    ));
+    GetCategoriesEvent event,
+    Emitter<HomeState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        categoriesStatus: HomeStatus.loading,
+        categories: const <CategoryEntity>[],
+      ),
+    );
 
     final result = await getCategoriesUseCase();
 
     result.fold(
       (failure) {
-        emit(state.copyWith(
-          categoriesStatus: HomeStatus.failure,
-          failure: failure,
-        ));
+        emit(
+          state.copyWith(
+            categoriesStatus: HomeStatus.failure,
+            failure: failure,
+          ),
+        );
       },
       (categories) {
-        emit(state.copyWith(
-          categoriesStatus: HomeStatus.success,
-          categories: categories,
-        ));
+        emit(
+          state.copyWith(
+            categoriesStatus: HomeStatus.success,
+            categories: categories,
+          ),
+        );
       },
     );
   }
 
   Future<void> _onGetProducts(
-      GetProductsEvent event, Emitter<HomeState> emit) async {
-    emit(state.copyWith(
-      productsStatus: HomeStatus.loading,
-      products: const PaginatedResponse<ProductEntity>(data: []),
-      failure: null,
-    ));
+    GetProductsEvent event,
+    Emitter<HomeState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        productsStatus: HomeStatus.loading,
+        products: const PaginatedResponse<ProductEntity>(data: []),
+      ),
+    );
 
-    final result = await getProductsUseCase(page: 1);
+    final result = await getProductsUseCase();
 
     result.fold(
       (failure) {
-        emit(state.copyWith(
-          productsStatus: HomeStatus.failure,
-          failure: failure,
-        ));
+        emit(
+          state.copyWith(
+            productsStatus: HomeStatus.failure,
+            failure: failure,
+          ),
+        );
       },
       (paginatedResponse) {
-        emit(state.copyWith(
-          productsStatus: HomeStatus.success,
-          products: paginatedResponse,
-        ));
+        emit(
+          state.copyWith(
+            productsStatus: HomeStatus.success,
+            products: paginatedResponse,
+          ),
+        );
       },
     );
   }
 
   Future<void> _onLoadMoreProducts(
-      LoadMoreProductsEvent event, Emitter<HomeState> emit) async {
+    LoadMoreProductsEvent event,
+    Emitter<HomeState> emit,
+  ) async {
     if (state.productsStatus == HomeStatus.loading ||
         state.isProductsLoadingMore ||
         !state.products.hasMore) {
@@ -183,35 +216,40 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         emit(state.copyWith(isProductsLoadingMore: false));
       },
       (paginatedResponse) {
-        emit(state.copyWith(
-          isProductsLoadingMore: false,
-          products: paginatedResponse.copyWith(
-            data: [...state.products.data, ...paginatedResponse.data],
+        emit(
+          state.copyWith(
+            isProductsLoadingMore: false,
+            products: paginatedResponse.copyWith(
+              data: [...state.products.data, ...paginatedResponse.data],
+            ),
           ),
-        ));
+        );
       },
     );
   }
 
   Future<void> _onHomeInitialize(
-      HomeInitializeEvent event, Emitter<HomeState> emit) async {
-    emit(state.copyWith(
-      bannersStatus: HomeStatus.loading,
-      categoriesStatus: HomeStatus.loading,
-      popularServicesStatus: HomeStatus.loading,
-      productsStatus: HomeStatus.loading,
-      banners: const [],
-      categories: const [],
-      popularServices: const PaginatedResponse(data: []),
-      products: const PaginatedResponse(data: []),
-      failure: null,
-    ));
+    HomeInitializeEvent event,
+    Emitter<HomeState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        bannersStatus: HomeStatus.loading,
+        categoriesStatus: HomeStatus.loading,
+        popularServicesStatus: HomeStatus.loading,
+        productsStatus: HomeStatus.loading,
+        banners: const [],
+        categories: const [],
+        popularServices: const PaginatedResponse(data: []),
+        products: const PaginatedResponse(data: []),
+      ),
+    );
 
     final results = await Future.wait([
       getBannersUseCase(),
       getCategoriesUseCase(),
-      getPopularServicesUseCase(page: 1),
-      getProductsUseCase(page: 1),
+      getPopularServicesUseCase(),
+      getProductsUseCase(),
     ]);
 
     final bannersResult = results[0] as Either<Failure, List<BannerEntity>>;
@@ -222,31 +260,29 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     final productsResult =
         results[3] as Either<Failure, PaginatedResponse<ProductEntity>>;
 
-    HomeStatus bannersStatus = HomeStatus.success;
-    List<BannerEntity> banners = const [];
+    var bannersStatus = HomeStatus.success;
+    var banners = const <BannerEntity>[];
     bannersResult.fold(
       (_) => bannersStatus = HomeStatus.failure,
       (data) => banners = data,
     );
 
-    HomeStatus categoriesStatus = HomeStatus.success;
-    List<CategoryEntity> categories = const [];
+    var categoriesStatus = HomeStatus.success;
+    var categories = const <CategoryEntity>[];
     categoriesResult.fold(
       (_) => categoriesStatus = HomeStatus.failure,
       (data) => categories = data,
     );
 
-    HomeStatus servicesStatus = HomeStatus.success;
-    PaginatedResponse<SubCategoryEntity> services =
-        const PaginatedResponse(data: []);
+    var servicesStatus = HomeStatus.success;
+    var services = const PaginatedResponse<SubCategoryEntity>(data: []);
     servicesResult.fold(
       (_) => servicesStatus = HomeStatus.failure,
       (data) => services = data,
     );
 
-    HomeStatus productsStatus = HomeStatus.success;
-    PaginatedResponse<ProductEntity> products =
-        const PaginatedResponse(data: []);
+    var productsStatus = HomeStatus.success;
+    var products = const PaginatedResponse<ProductEntity>(data: []);
     productsResult.fold(
       (_) => productsStatus = HomeStatus.failure,
       (data) => products = data,
@@ -258,16 +294,18 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     servicesResult.fold((f) => firstFailure ??= f, (_) {});
     productsResult.fold((f) => firstFailure ??= f, (_) {});
 
-    emit(state.copyWith(
-      bannersStatus: bannersStatus,
-      banners: banners,
-      categoriesStatus: categoriesStatus,
-      categories: categories,
-      popularServicesStatus: servicesStatus,
-      popularServices: services,
-      productsStatus: productsStatus,
-      products: products,
-      failure: firstFailure,
-    ));
+    emit(
+      state.copyWith(
+        bannersStatus: bannersStatus,
+        banners: banners,
+        categoriesStatus: categoriesStatus,
+        categories: categories,
+        popularServicesStatus: servicesStatus,
+        popularServices: services,
+        productsStatus: productsStatus,
+        products: products,
+        failure: firstFailure,
+      ),
+    );
   }
 }

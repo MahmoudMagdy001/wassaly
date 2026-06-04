@@ -1,4 +1,4 @@
-import '../../domain/entities/offer_entity.dart';
+import 'package:wassaly/features/cart/domain/entities/offer_entity.dart';
 
 class OfferModel {
   final int id;
@@ -9,32 +9,24 @@ class OfferModel {
     required this.discountPercentage,
   });
 
-  factory OfferModel.fromEntity(OfferEntity entity) {
-    return OfferModel(
+  factory OfferModel.fromEntity(OfferEntity entity) => OfferModel(
       id: entity.id,
       discountPercentage: entity.discountPercentage,
     );
-  }
 
-  factory OfferModel.fromJson(Map<String, dynamic> json) {
-    return OfferModel(
+  factory OfferModel.fromJson(Map<String, dynamic> json) => OfferModel(
       id: json['id'] as int? ?? 0,
       discountPercentage:
           (json['discount_percentage'] as num?)?.toDouble() ?? 0.0,
     );
-  }
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'id': id,
       'discount_percentage': discountPercentage,
     };
-  }
 
-  OfferEntity toEntity() {
-    return OfferEntity(
+  OfferEntity toEntity() => OfferEntity(
       id: id,
       discountPercentage: discountPercentage,
     );
-  }
 }

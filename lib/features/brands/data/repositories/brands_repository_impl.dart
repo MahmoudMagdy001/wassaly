@@ -1,9 +1,8 @@
 import 'package:wassaly/core/imports/imports.dart';
-
-import '../../../home/domain/entities/product_entity.dart';
-import '../../domain/entities/brand_entity.dart';
-import '../../domain/repositories/brands_repository.dart';
-import '../datasources/brands_remote_datasource.dart';
+import 'package:wassaly/features/brands/data/datasources/brands_remote_datasource.dart';
+import 'package:wassaly/features/brands/domain/entities/brand_entity.dart';
+import 'package:wassaly/features/brands/domain/repositories/brands_repository.dart';
+import 'package:wassaly/features/home/domain/entities/product_entity.dart';
 
 class BrandsRepositoryImpl implements BrandsRepository {
   final BrandsRemoteDataSource _remoteDataSource;
@@ -17,7 +16,7 @@ class BrandsRepositoryImpl implements BrandsRepository {
       return Right(brands);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }
@@ -35,7 +34,7 @@ class BrandsRepositoryImpl implements BrandsRepository {
       return Right(products);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }

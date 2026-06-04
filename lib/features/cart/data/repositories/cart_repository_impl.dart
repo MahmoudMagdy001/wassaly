@@ -1,13 +1,12 @@
 import 'package:fpdart/fpdart.dart';
-
-import '../../../../core/utils/failure.dart';
-import '../../domain/entities/cart_item_entity.dart';
-import '../../domain/entities/coupon_entity.dart';
-import '../../domain/entities/order_entity.dart';
-import '../../domain/entities/place_order_params.dart';
-import '../../domain/repositories/cart_repository.dart';
-import '../datasources/cart_local_datasource.dart';
-import '../datasources/cart_remote_datasource.dart';
+import 'package:wassaly/core/utils/failure.dart';
+import 'package:wassaly/features/cart/data/datasources/cart_local_datasource.dart';
+import 'package:wassaly/features/cart/data/datasources/cart_remote_datasource.dart';
+import 'package:wassaly/features/cart/domain/entities/cart_item_entity.dart';
+import 'package:wassaly/features/cart/domain/entities/coupon_entity.dart';
+import 'package:wassaly/features/cart/domain/entities/order_entity.dart';
+import 'package:wassaly/features/cart/domain/entities/place_order_params.dart';
+import 'package:wassaly/features/cart/domain/repositories/cart_repository.dart';
 
 class CartRepositoryImpl implements CartRepository {
   final CartRemoteDataSource remoteDataSource;
@@ -29,7 +28,7 @@ class CartRepositoryImpl implements CartRepository {
       return Right(localData);
     } on ServerFailure catch (failure) {
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure(e.toString()));
     }
   }
@@ -43,7 +42,7 @@ class CartRepositoryImpl implements CartRepository {
       return Left(failure);
     } on NetworkFailure catch (failure) {
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure(e.toString()));
     }
   }
@@ -57,14 +56,16 @@ class CartRepositoryImpl implements CartRepository {
       return Left(failure);
     } on NetworkFailure catch (failure) {
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure(e.toString()));
     }
   }
 
   @override
   Future<Either<Failure, void>> updateQuantity(
-      int cartItemId, int quantity) async {
+    int cartItemId,
+    int quantity,
+  ) async {
     try {
       await remoteDataSource.updateQuantity(cartItemId, quantity);
       return const Right(null);
@@ -72,7 +73,7 @@ class CartRepositoryImpl implements CartRepository {
       return Left(failure);
     } on NetworkFailure catch (failure) {
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure(e.toString()));
     }
   }
@@ -86,14 +87,15 @@ class CartRepositoryImpl implements CartRepository {
       return Left(failure);
     } on NetworkFailure catch (failure) {
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure(e.toString()));
     }
   }
 
   @override
   Future<Either<Failure, OrderEntity>> placeOrder(
-      PlaceOrderParams params) async {
+    PlaceOrderParams params,
+  ) async {
     try {
       final orderModel = await remoteDataSource.placeOrder(params);
       return Right(orderModel.toEntity());
@@ -101,34 +103,29 @@ class CartRepositoryImpl implements CartRepository {
       return Left(failure);
     } on NetworkFailure catch (failure) {
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure(e.toString()));
     }
   }
 
   @override
   Future<Either<Failure, void>> saveCartItemsLocally(
-      List<CartItemEntity> items) async {
-    return localDataSource.saveCartItemsLocally(items);
-  }
+    List<CartItemEntity> items,
+  ) async =>
+      localDataSource.saveCartItemsLocally(items);
 
   @override
-  List<CartItemEntity> getCartItemsLocally() {
-    return localDataSource.getCartItemsLocally();
-  }
+  List<CartItemEntity> getCartItemsLocally() =>
+      localDataSource.getCartItemsLocally();
 
   @override
-  bool isProductInCartLocally(int productId) {
-    return localDataSource.isProductInCartLocally(productId);
-  }
+  bool isProductInCartLocally(int productId) =>
+      localDataSource.isProductInCartLocally(productId);
 
   @override
-  int getCartCountLocally() {
-    return localDataSource.getCartCountLocally();
-  }
+  int getCartCountLocally() => localDataSource.getCartCountLocally();
 
   @override
-  Future<Either<Failure, void>> clearCartLocally() async {
-    return localDataSource.clearCartLocally();
-  }
+  Future<Either<Failure, void>> clearCartLocally() async =>
+      localDataSource.clearCartLocally();
 }

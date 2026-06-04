@@ -1,9 +1,8 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/profile/domain/entities/address_entity.dart';
+import 'package:wassaly/features/profile/domain/entities/center_entity.dart';
+import 'package:wassaly/features/profile/domain/entities/governorate_entity.dart';
 import 'package:wassaly/features/profile/presentation/bloc/profile/profile_bloc.dart';
-
-import '../../domain/entities/center_entity.dart';
-import '../../domain/entities/governorate_entity.dart';
 
 class AddAddressPage extends StatelessWidget {
   final AddressEntity? address;
@@ -11,9 +10,7 @@ class AddAddressPage extends StatelessWidget {
   const AddAddressPage({this.address, super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return _AddAddressView(address: address);
-  }
+  Widget build(BuildContext context) => _AddAddressView(address: address);
 }
 
 class _AddAddressView extends StatefulWidget {
@@ -38,8 +35,7 @@ class _AddAddressViewState extends State<_AddAddressView> {
   @override
   void initState() {
     super.initState();
-    final bloc = context.read<ProfileBloc>();
-    bloc.add(const GovernoratesFetched());
+    final bloc = context.read<ProfileBloc>()..add(const GovernoratesFetched());
 
     if (_isEditing) {
       _titleController.text = widget.address!.title;
@@ -62,161 +58,171 @@ class _AddAddressViewState extends State<_AddAddressView> {
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
     if (_selectedGovernorateId.value == null) {
-      context.showTypedSnackBar(context.l10n.profile_select_governorate,
-          type: SnackBarType.error);
+      context.showTypedSnackBar(
+        context.l10n.profile_select_governorate,
+        type: SnackBarType.error,
+      );
       return;
     }
     if (_selectedCenterId.value == null) {
-      context.showTypedSnackBar(context.l10n.profile_select_center,
-          type: SnackBarType.error);
+      context.showTypedSnackBar(
+        context.l10n.profile_select_center,
+        type: SnackBarType.error,
+      );
       return;
     }
 
     if (_isEditing) {
-      context.read<ProfileBloc>().add(AddressUpdated(
-            addressId: widget.address!.id,
-            title: _titleController.text.trim(),
-            address: _addressController.text.trim(),
-            governorateId: _selectedGovernorateId.value!,
-            centerId: _selectedCenterId.value!,
-          ));
+      context.read<ProfileBloc>().add(
+            AddressUpdated(
+              addressId: widget.address!.id,
+              title: _titleController.text.trim(),
+              address: _addressController.text.trim(),
+              governorateId: _selectedGovernorateId.value!,
+              centerId: _selectedCenterId.value!,
+            ),
+          );
     } else {
-      context.read<ProfileBloc>().add(AddressCreated(
-            title: _titleController.text.trim(),
-            address: _addressController.text.trim(),
-            governorateId: _selectedGovernorateId.value!,
-            centerId: _selectedCenterId.value!,
-          ));
+      context.read<ProfileBloc>().add(
+            AddressCreated(
+              title: _titleController.text.trim(),
+              address: _addressController.text.trim(),
+              governorateId: _selectedGovernorateId.value!,
+              centerId: _selectedCenterId.value!,
+            ),
+          );
     }
   }
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      behavior: HitTestBehavior.translucent,
-      child: Scaffold(
-        body: BlocListener<ProfileBloc, ProfileState>(
-          listenWhen: (prev, curr) =>
-              prev.addressStatus != curr.addressStatus &&
-              curr.addressStatus.isDone,
-          listener: (context, state) {
-            if (state.addressStatus.isSuccess) {
-              context.showTypedSnackBar(
-                _isEditing
-                    ? context.l10n.profile_address_updated
-                    : context.l10n.profile_address_added,
-                type: SnackBarType.success,
-              );
-              // Return true to indicate successful address creation
-              context.pop(true);
-            } else if (state.addressStatus.isFailure &&
-                state.addressError != null) {
-              context.showTypedSnackBar(state.addressError!,
-                  type: SnackBarType.error);
-            }
-          },
-          child: CustomScrollView(
-            slivers: [
-              AppSliverTopBar(
-                title: _isEditing
-                    ? context.l10n.profile_edit_address
-                    : context.l10n.profile_add_address,
-                centerTitle: true,
-              ),
-              SliverPadding(
-                padding: EdgeInsets.all(16.w),
-                sliver: SliverToBoxAdapter(
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        AppTextField(
-                          label: context.l10n.profile_address_title,
-                          hint: context.l10n.profile_address_title_hint,
-                          controller: _titleController,
-                          prefixIcon: const Icon(Icons.label_outline),
-                          validator: (v) => v!.isEmpty
-                              ? context.l10n.profile_title_required
-                              : null,
-                        ),
-                        16.verticalSpace,
-                        AppTextField(
-                          label: context.l10n.profile_address_details,
-                          hint: context.l10n.profile_address_details_hint,
-                          controller: _addressController,
-                          prefixIcon: const Icon(Icons.location_on_outlined),
-                          maxLines: 3,
-                          validator: (v) => v!.isEmpty
-                              ? context.l10n.profile_address_required
-                              : null,
-                        ),
-                        16.verticalSpace,
-                        _buildGovernorateDropdown(context),
-                        16.verticalSpace,
-                        _buildCenterDropdown(context),
-                        32.verticalSpace,
-                        BlocSelector<ProfileBloc, ProfileState, AppStatus>(
-                          selector: (state) => state.addressStatus,
-                          builder: (context, addressStatus) {
-                            return AppButton(
+  Widget build(BuildContext context) => GestureDetector(
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        behavior: HitTestBehavior.translucent,
+        child: Scaffold(
+          body: BlocListener<ProfileBloc, ProfileState>(
+            listenWhen: (prev, curr) =>
+                prev.addressStatus != curr.addressStatus &&
+                curr.addressStatus.isDone,
+            listener: (context, state) {
+              if (state.addressStatus.isSuccess) {
+                context
+                  ..showTypedSnackBar(
+                    _isEditing
+                        ? context.l10n.profile_address_updated
+                        : context.l10n.profile_address_added,
+                    type: SnackBarType.success,
+                  )
+                  // Return true to indicate successful address creation
+                  ..pop(true);
+              } else if (state.addressStatus.isFailure &&
+                  state.addressError != null) {
+                context.showTypedSnackBar(
+                  state.addressError!,
+                  type: SnackBarType.error,
+                );
+              }
+            },
+            child: CustomScrollView(
+              slivers: [
+                AppSliverTopBar(
+                  title: _isEditing
+                      ? context.l10n.profile_edit_address
+                      : context.l10n.profile_add_address,
+                ),
+                SliverPadding(
+                  padding: EdgeInsets.all(16.w),
+                  sliver: SliverToBoxAdapter(
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          AppTextField(
+                            label: context.l10n.profile_address_title,
+                            hint: context.l10n.profile_address_title_hint,
+                            controller: _titleController,
+                            prefixIcon: const Icon(Icons.label_outline),
+                            validator: (v) => v!.isEmpty
+                                ? context.l10n.profile_title_required
+                                : null,
+                          ),
+                          16.verticalSpace,
+                          AppTextField(
+                            label: context.l10n.profile_address_details,
+                            hint: context.l10n.profile_address_details_hint,
+                            controller: _addressController,
+                            prefixIcon: const Icon(Icons.location_on_outlined),
+                            maxLines: 3,
+                            validator: (v) => v!.isEmpty
+                                ? context.l10n.profile_address_required
+                                : null,
+                          ),
+                          16.verticalSpace,
+                          _buildGovernorateDropdown(context),
+                          16.verticalSpace,
+                          _buildCenterDropdown(context),
+                          32.verticalSpace,
+                          BlocSelector<ProfileBloc, ProfileState, AppStatus>(
+                            selector: (state) => state.addressStatus,
+                            builder: (context, addressStatus) => AppButton(
                               label: context.l10n.profile_save_address,
                               isFullWidth: true,
                               isLoading: addressStatus.isLoading,
                               onPressed: _submit,
-                            );
-                          },
-                        ),
-                      ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
 
-  Widget _buildGovernorateDropdown(BuildContext context) {
-    return BlocSelector<ProfileBloc, ProfileState,
-        (AppStatus, List<GovernorateEntity>, String?)>(
-      selector: (state) =>
-          (state.governorateStatus, state.governorates, state.governorateError),
-      builder: (context, data) {
-        final (governorateStatus, governorates, governorateError) = data;
+  Widget _buildGovernorateDropdown(BuildContext context) => BlocSelector<
+          ProfileBloc,
+          ProfileState,
+          (AppStatus, List<GovernorateEntity>, String?)>(
+        selector: (state) => (
+          state.governorateStatus,
+          state.governorates,
+          state.governorateError
+        ),
+        builder: (context, data) {
+          final (governorateStatus, governorates, governorateError) = data;
 
-        if (governorateStatus.isFailure && governorateError != null) {
-          return AppDropdown<String>(
-            label: context.l10n.profile_governorate,
-            prefixIcon: const Icon(Icons.map_outlined),
-            value: null,
-            items: const [],
-            enabled: false,
-            suffixIcon: Icon(
-              Icons.error_outline,
-              color: context.theme.colorScheme.error,
-            ),
-          );
-        }
-
-        return ValueListenableBuilder<String?>(
-          valueListenable: _selectedGovernorateId,
-          builder: (context, selectedGovernorateId, child) {
+          if (governorateStatus.isFailure && governorateError != null) {
             return AppDropdown<String>(
+              label: context.l10n.profile_governorate,
+              prefixIcon: const Icon(Icons.map_outlined),
+              items: const [],
+              enabled: false,
+              suffixIcon: Icon(
+                Icons.error_outline,
+                color: context.theme.colorScheme.error,
+              ),
+            );
+          }
+
+          return ValueListenableBuilder<String?>(
+            valueListenable: _selectedGovernorateId,
+            builder: (context, selectedGovernorateId, child) =>
+                AppDropdown<String>(
               label: context.l10n.profile_governorate,
               prefixIcon: const Icon(Icons.map_outlined),
               value: selectedGovernorateId,
               menuMaxHeight: 300.h,
               isExpanded: false,
-              alignment: AlignmentDirectional.centerStart,
-              items: governorates.map((g) {
-                return DropdownMenuItem(
-                  value: g.id,
-                  child: Text(g.name),
-                );
-              }).toList(),
+              items: governorates
+                  .map(
+                    (g) => DropdownMenuItem(
+                      value: g.id,
+                      child: Text(g.name),
+                    ),
+                  )
+                  .toList(),
               onChanged: governorateStatus.isLoading
                   ? null
                   : (value) {
@@ -239,43 +245,41 @@ class _AddAddressViewState extends State<_AddAddressView> {
                       ),
                     )
                   : null,
-            );
-          },
-        );
-      },
-    );
-  }
+            ),
+          );
+        },
+      );
 
-  Widget _buildCenterDropdown(BuildContext context) {
-    return BlocSelector<ProfileBloc, ProfileState,
-        (AppStatus, List<CenterEntity>)>(
-      selector: (state) => (state.centerStatus, state.centers),
-      builder: (context, data) {
-        final (centerStatus, centers) = data;
-        return ValueListenableBuilder<String?>(
-          valueListenable: _selectedGovernorateId,
-          builder: (context, selectedGovernorateId, child) {
-            final hasGovernorate = selectedGovernorateId != null;
-            final isLoading = centerStatus.isLoading;
-            final isDisabled = !hasGovernorate || isLoading;
+  Widget _buildCenterDropdown(BuildContext context) =>
+      BlocSelector<ProfileBloc, ProfileState, (AppStatus, List<CenterEntity>)>(
+        selector: (state) => (state.centerStatus, state.centers),
+        builder: (context, data) {
+          final (centerStatus, centers) = data;
+          return ValueListenableBuilder<String?>(
+            valueListenable: _selectedGovernorateId,
+            builder: (context, selectedGovernorateId, child) {
+              final hasGovernorate = selectedGovernorateId != null;
+              final isLoading = centerStatus.isLoading;
+              final isDisabled = !hasGovernorate || isLoading;
 
-            return ValueListenableBuilder<String?>(
-              valueListenable: _selectedCenterId,
-              builder: (context, selectedCenterId, child) {
-                return AppDropdown<String>(
+              return ValueListenableBuilder<String?>(
+                valueListenable: _selectedCenterId,
+                builder: (context, selectedCenterId, child) =>
+                    AppDropdown<String>(
                   label: context.l10n.profile_center,
                   prefixIcon: const Icon(Icons.location_city_outlined),
                   value: selectedCenterId,
                   enabled: !isDisabled && centers.isNotEmpty,
                   menuMaxHeight: 300.h,
                   isExpanded: false,
-                  alignment: AlignmentDirectional.centerStart,
-                  items: centers.map((c) {
-                    return DropdownMenuItem(
-                      value: c.id,
-                      child: Text(c.name),
-                    );
-                  }).toList(),
+                  items: centers
+                      .map(
+                        (c) => DropdownMenuItem(
+                          value: c.id,
+                          child: Text(c.name),
+                        ),
+                      )
+                      .toList(),
                   onChanged: isDisabled
                       ? null
                       : (value) {
@@ -293,12 +297,10 @@ class _AddAddressViewState extends State<_AddAddressView> {
                           ),
                         )
                       : null,
-                );
-              },
-            );
-          },
-        );
-      },
-    );
-  }
+                ),
+              );
+            },
+          );
+        },
+      );
 }

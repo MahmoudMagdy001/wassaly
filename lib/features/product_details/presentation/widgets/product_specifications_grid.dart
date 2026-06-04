@@ -1,6 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-import '../../domain/entities/product_detail_entity.dart';
+import 'package:wassaly/features/product_details/domain/entities/product_detail_entity.dart';
 
 class ProductSpecificationsGrid extends StatelessWidget {
   final List<ProductSpecificationEntity> specifications;
@@ -42,7 +42,7 @@ class ProductSpecificationsGrid extends StatelessWidget {
                   Expanded(
                     child: secondIndex < specifications.length
                         ? _buildItem(
-                            context, cs, tt, specifications[secondIndex])
+                            context, cs, tt, specifications[secondIndex],)
                         : const SizedBox.shrink(),
                   ),
                 ],
@@ -59,8 +59,7 @@ class ProductSpecificationsGrid extends StatelessWidget {
     ColorScheme cs,
     TextTheme tt,
     ProductSpecificationEntity item,
-  ) {
-    return Container(
+  ) => Container(
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
       decoration: BoxDecoration(
         color: cs.surfaceContainerHighest.withValues(alpha: 0.35),
@@ -106,5 +105,4 @@ class ProductSpecificationsGrid extends StatelessWidget {
         ],
       ),
     );
-  }
 }

@@ -10,7 +10,5 @@ class GetServiceFavoritesUseCase {
   GetServiceFavoritesUseCase(this.repository);
 
   Future<Either<Failure, PaginatedResponse<ServiceEntity>>> call(
-      {int page = 1}) {
-    return repository.getServiceFavorites(page: page);
-  }
+      {int page = 1,}) => repository.getServiceFavorites(page: page);
 }

@@ -27,7 +27,6 @@ class CategorySideMenu extends StatelessWidget {
         border: BorderDirectional(
           end: BorderSide(
             color: cs.outlineVariant.withValues(alpha: 0.3),
-            width: 1,
           ),
         ),
       ),
@@ -57,7 +56,7 @@ class CategorySideMenu extends StatelessWidget {
                         width: double.infinity,
                         duration: const Duration(milliseconds: 300),
                         padding: EdgeInsets.symmetric(
-                            horizontal: 4.w, vertical: 12.h),
+                            horizontal: 4.w, vertical: 12.h,),
                         decoration: BoxDecoration(
                           color: isSelected
                               ? cs.primary.withValues(alpha: 0.08)
@@ -109,7 +108,7 @@ class CategorySideMenu extends StatelessWidget {
                                               ),
                                               blurRadius: 8,
                                               offset: const Offset(0, 4),
-                                            )
+                                            ),
                                           ]
                                         : null,
                                   ),
@@ -120,7 +119,6 @@ class CategorySideMenu extends StatelessWidget {
                                       memCacheHeight: 48 * 3,
                                       memCacheWidth: 54 * 3,
                                       imageUrl: item.image,
-                                      fit: BoxFit.cover,
                                     ),
                                   ),
                                 ),

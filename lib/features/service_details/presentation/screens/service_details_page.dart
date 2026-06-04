@@ -18,8 +18,7 @@ class ServiceDetailsPage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return MultiBlocProvider(
+  Widget build(BuildContext context) => MultiBlocProvider(
       providers: [
         BlocProvider(
           create: (context) => sl<ServiceDetailsBloc>()
@@ -66,5 +65,4 @@ class ServiceDetailsPage extends StatelessWidget {
         },
       ),
     );
-  }
 }

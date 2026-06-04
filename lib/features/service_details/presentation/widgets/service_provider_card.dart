@@ -1,7 +1,6 @@
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wassaly/core/imports/imports.dart';
-
-import '../../domain/entities/service_detail_entity.dart';
+import 'package:wassaly/features/service_details/domain/entities/service_detail_entity.dart';
 
 class ServiceProviderCard extends StatelessWidget {
   final ServiceProviderEntity provider;
@@ -12,20 +11,26 @@ class ServiceProviderCard extends StatelessWidget {
   });
 
   Future<void> _makeCall(String phoneNumber) async {
-    final Uri launchUri = Uri(scheme: 'tel', path: phoneNumber);
+    final launchUri = Uri(scheme: 'tel', path: phoneNumber);
     try {
       await launchUrl(launchUri);
-    } catch (e) {
-      assert(() { debugPrint('Could not launch call: $e'); return true; }());
+    } on Exception catch (e) {
+      assert(() {
+        debugPrint('Could not launch call: $e');
+        return true;
+      }());
     }
   }
 
   Future<void> _sendEmail(String email) async {
-    final Uri launchUri = Uri(scheme: 'mailto', path: email);
+    final launchUri = Uri(scheme: 'mailto', path: email);
     try {
       await launchUrl(launchUri);
-    } catch (e) {
-      assert(() { debugPrint('Could not launch email: $e'); return true; }());
+    } on Exception catch (e) {
+      assert(() {
+        debugPrint('Could not launch email: $e');
+        return true;
+      }());
     }
   }
 
@@ -33,7 +38,7 @@ class ServiceProviderCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
-    final bool isActive = provider.user.isActive == 1;
+    final isActive = provider.user.isActive == 1;
 
     return AppCard(
       showShadow: true,
@@ -59,7 +64,6 @@ class ServiceProviderCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12.r),
                         border: Border.all(
                           color: cs.outlineVariant.withValues(alpha: 0.5),
-                          width: 1,
                         ),
                         boxShadow: [
                           BoxShadow(
@@ -98,7 +102,9 @@ class ServiceProviderCard extends StatelessWidget {
                             children: [
                               Container(
                                 padding: EdgeInsets.symmetric(
-                                    horizontal: 6.w, vertical: 2.h),
+                                  horizontal: 6.w,
+                                  vertical: 2.h,
+                                ),
                                 decoration: BoxDecoration(
                                   color: cs.tertiaryContainer,
                                   borderRadius: BorderRadius.circular(6.r),
@@ -224,7 +230,8 @@ class ServiceProviderCard extends StatelessWidget {
                             Flexible(
                               child: Text(
                                 context.l10n.profile_orders_count(
-                                    provider.successfulOrdersCount),
+                                  provider.successfulOrdersCount,
+                                ),
                                 style: tt.labelMedium?.copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: cs.onSecondaryContainer,

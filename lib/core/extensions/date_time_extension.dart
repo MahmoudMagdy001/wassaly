@@ -14,13 +14,9 @@ extension DateTimeExtension on DateTime {
         day == yesterday.day;
   }
 
-  bool isSameDay(DateTime other) {
-    return year == other.year && month == other.month && day == other.day;
-  }
+  bool isSameDay(DateTime other) => year == other.year && month == other.month && day == other.day;
 
-  String get toIso8601DateOnly {
-    return '${year.toString().padLeft(4, '0')}-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}';
-  }
+  String get toIso8601DateOnly => '${year.toString().padLeft(4, '0')}-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}';
 
   String timeAgo(BuildContext context) {
     final l10n = context.l10n;
@@ -46,15 +42,11 @@ extension DateTimeExtension on DateTime {
   }
 
   /// Formats the time to 12-hour format, showing minutes and AM/PM only (no seconds).
-  String to12HourTime() {
-    return DateFormat('h:mm a', Intl.getCurrentLocale()).format(toLocal());
-  }
+  String to12HourTime() => DateFormat('h:mm a', Intl.getCurrentLocale()).format(toLocal());
 
   /// Formats the full date-time to show the date and 12-hour time with minutes only.
-  String to12HourDateTime() {
-    return DateFormat('yyyy-MM-dd h:mm a', Intl.getCurrentLocale())
+  String to12HourDateTime() => DateFormat('yyyy-MM-dd h:mm a', Intl.getCurrentLocale())
         .format(toLocal());
-  }
 }
 
 extension StringDateTimeExtension on String {
@@ -97,22 +89,22 @@ extension StringDateTimeExtension on String {
     }
 
     // Fallback for time-only strings (e.g. "15:30") which are usually local-agnostic
-    final String cleanTime = trim();
+    final cleanTime = trim();
     if (cleanTime.isEmpty) return this;
 
-    final bool isAmPm = cleanTime.toLowerCase().contains('am') ||
+    final isAmPm = cleanTime.toLowerCase().contains('am') ||
         cleanTime.toLowerCase().contains('pm') ||
         cleanTime.contains('ص') ||
         cleanTime.contains('م');
 
     final spaceParts = cleanTime.split(RegExp(r'\s+'));
-    final String timePart = spaceParts[0];
+    final timePart = spaceParts[0];
 
     final parts = timePart.split(':');
     if (parts.isNotEmpty) {
-      int? hour = int.tryParse(parts[0]);
+      var hour = int.tryParse(parts[0]);
       if (hour != null && hour >= 0 && hour <= 24) {
-        final int minute = parts.length > 1 ? (int.tryParse(parts[1]) ?? 0) : 0;
+        final minute = parts.length > 1 ? (int.tryParse(parts[1]) ?? 0) : 0;
 
         if (isAmPm && spaceParts.length > 1) {
           final period = spaceParts[1].toLowerCase();

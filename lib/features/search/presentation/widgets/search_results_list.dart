@@ -8,8 +8,7 @@ class SearchResultsList extends StatelessWidget {
   const SearchResultsList({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocSelector<SearchBloc, SearchState,
+  Widget build(BuildContext context) => BlocSelector<SearchBloc, SearchState,
         (List<ProductEntity>, bool, bool)>(
       selector: (state) => (
         state.products.data,
@@ -28,13 +27,11 @@ class SearchResultsList extends StatelessWidget {
                 context.read<SearchBloc>().add(const SearchLoadMore());
               },
               padding: EdgeInsets.symmetric(horizontal: 4.w),
-              itemBuilder: (context, product, index, wrapAnimation) {
-                return wrapAnimation(
+              itemBuilder: (context, product, index, wrapAnimation) => wrapAnimation(
                   ProductCard(
                     product: product,
                   ),
-                );
-              },
+                ),
             ),
             if (isLoadingMore)
               SliverToBoxAdapter(
@@ -50,5 +47,4 @@ class SearchResultsList extends StatelessWidget {
         );
       },
     );
-  }
 }

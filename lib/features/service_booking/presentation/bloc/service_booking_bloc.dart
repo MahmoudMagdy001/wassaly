@@ -1,17 +1,16 @@
 import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/features/cart/domain/usecases/get_user_addresses_usecase.dart';
+import 'package:wassaly/features/cart/domain/usecases/get_user_data_usecase.dart';
 import 'package:wassaly/features/orders/presentation/bloc/orders_bloc.dart';
 import 'package:wassaly/features/orders/presentation/bloc/orders_event.dart';
-
-import '../../../../features/cart/domain/usecases/get_user_addresses_usecase.dart';
-import '../../../../features/cart/domain/usecases/get_user_data_usecase.dart';
-import '../../../../features/profile/domain/entities/address_entity.dart';
-import '../../../../features/profile/domain/entities/center_entity.dart';
-import '../../../../features/profile/domain/entities/governorate_entity.dart';
-import '../../../../features/profile/domain/usecases/get_centers_usecase.dart';
-import '../../../../features/profile/domain/usecases/get_governorates_usecase.dart';
-import '../../../service_details/domain/entities/service_detail_entity.dart';
-import '../../domain/entities/booking_entity.dart';
-import '../../domain/usecases/create_booking_usecase.dart';
+import 'package:wassaly/features/profile/domain/entities/address_entity.dart';
+import 'package:wassaly/features/profile/domain/entities/center_entity.dart';
+import 'package:wassaly/features/profile/domain/entities/governorate_entity.dart';
+import 'package:wassaly/features/profile/domain/usecases/get_centers_usecase.dart';
+import 'package:wassaly/features/profile/domain/usecases/get_governorates_usecase.dart';
+import 'package:wassaly/features/service_booking/domain/entities/booking_entity.dart';
+import 'package:wassaly/features/service_booking/domain/usecases/create_booking_usecase.dart';
+import 'package:wassaly/features/service_details/domain/entities/service_detail_entity.dart';
 
 part 'service_booking_event.dart';
 part 'service_booking_state.dart';
@@ -62,7 +61,7 @@ class ServiceBookingBloc
       selectedTime: event.preselectedTime,
       isLoadingGovernorates: true,
       isLoadingAddresses: true,
-    ));
+    ),);
 
     // Fetch user data for pre-filling
     final userResult = await _getUserDataUseCase();
@@ -74,7 +73,7 @@ class ServiceBookingBloc
             customerName: user.name ?? '',
             customerPhone: user.phone ?? '',
             customerEmail: user.email,
-          ));
+          ),);
         }
       },
     );
@@ -87,7 +86,7 @@ class ServiceBookingBloc
         emit(state.copyWith(
           addresses: addresses,
           isLoadingAddresses: false,
-        ));
+        ),);
         if (addresses.isNotEmpty) {
           add(ServiceBookingAddressSelected(addresses.first));
         }
@@ -101,12 +100,12 @@ class ServiceBookingBloc
         status: ServiceBookingStatus.error,
         errorMessage: failure.message,
         isLoadingGovernorates: false,
-      )),
+      ),),
       (governorates) => emit(state.copyWith(
         status: ServiceBookingStatus.initial,
         governorates: governorates,
         isLoadingGovernorates: false,
-      )),
+      ),),
     );
   }
 
@@ -118,7 +117,7 @@ class ServiceBookingBloc
       selectedDay: event.day,
       clearSelectedTime: true,
       clearDayError: true,
-    ));
+    ),);
   }
 
   void _onTimeSelected(
@@ -128,7 +127,7 @@ class ServiceBookingBloc
     emit(state.copyWith(
       selectedTime: event.time,
       clearTimeError: true,
-    ));
+    ),);
   }
 
   Future<void> _onGovernorateSelected(
@@ -142,7 +141,7 @@ class ServiceBookingBloc
       centers: const [],
       isLoadingCenters: true,
       clearGovernorateError: true,
-    ));
+    ),);
 
     final result =
         await _getCentersUseCase(GetCentersParams(event.governorateId));
@@ -151,12 +150,12 @@ class ServiceBookingBloc
       (failure) => emit(state.copyWith(
         isLoadingCenters: false,
         errorMessage: failure.message,
-      )),
+      ),),
       (centers) => emit(state.copyWith(
         centers: centers,
         isLoadingCenters: false,
         selectedCenterId: event.centerId ?? state.selectedCenterId,
-      )),
+      ),),
     );
   }
 
@@ -167,7 +166,7 @@ class ServiceBookingBloc
     emit(state.copyWith(
       selectedCenterId: event.centerId,
       clearCenterError: true,
-    ));
+    ),);
   }
 
   Future<void> _onAddressSelected(
@@ -181,11 +180,11 @@ class ServiceBookingBloc
       selectedCenterId: address.centerId,
       clearGovernorateError: true,
       clearCenterError: true,
-    ));
+    ),);
 
     // Load centers for the pre-selected governorate
     add(ServiceBookingGovernorateSelected(address.governorateId,
-        centerId: address.centerId));
+        centerId: address.centerId,),);
   }
 
   Future<void> _onAddressesRefreshed(
@@ -200,7 +199,7 @@ class ServiceBookingBloc
         emit(state.copyWith(
           addresses: addresses,
           isLoadingAddresses: false,
-        ));
+        ),);
         if (addresses.isNotEmpty && state.selectedAddress == null) {
           add(ServiceBookingAddressSelected(addresses.first));
         }
@@ -220,7 +219,7 @@ class ServiceBookingBloc
       clearNameError: event.name != null,
       clearPhoneError: event.phone != null,
       clearEmailError: event.email != null,
-    ));
+    ),);
   }
 
   Future<void> _onSubmitted(
@@ -250,7 +249,7 @@ class ServiceBookingBloc
         timeError: timeError,
         governorateError: governorateError,
         centerError: centerError,
-      ));
+      ),);
       return;
     }
 
@@ -274,13 +273,13 @@ class ServiceBookingBloc
       (failure) => emit(state.copyWith(
         status: ServiceBookingStatus.error,
         errorMessage: failure.message,
-      )),
+      ),),
       (booking) {
         _ordersBloc.add(const GetServiceBookingsEvent());
         emit(state.copyWith(
           status: ServiceBookingStatus.success,
           booking: booking,
-        ));
+        ),);
       },
     );
   }

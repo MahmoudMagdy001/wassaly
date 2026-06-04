@@ -5,13 +5,12 @@ import 'package:wassaly/features/favorite/presentation/bloc/favorite_event.dart'
     as fav_event;
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_state.dart';
 import 'package:wassaly/features/orders/presentation/bloc/orders_bloc.dart';
+import 'package:wassaly/features/service_details/domain/entities/service_detail_entity.dart';
 import 'package:wassaly/features/service_details/presentation/bloc/service_details_bloc.dart';
 import 'package:wassaly/features/service_details/presentation/screens/service_reviews_page.dart';
+import 'package:wassaly/features/service_details/presentation/widgets/service_available_days_section.dart';
+import 'package:wassaly/features/service_details/presentation/widgets/service_provider_card.dart';
 import 'package:wassaly/features/service_details/presentation/widgets/service_review_form_sheet.dart';
-
-import '../../domain/entities/service_detail_entity.dart';
-import 'service_available_days_section.dart';
-import 'service_provider_card.dart';
 
 class ServiceDetailsInfo extends StatelessWidget {
   final ServiceDetailEntity service;
@@ -36,10 +35,12 @@ class ServiceDetailsInfo extends StatelessWidget {
     final bookingsState = context.watch<OrdersBloc>().state;
     final bookings = bookingsState.serviceBookings.data;
 
-    final hasCompletedBooking = bookings.any((b) =>
-        b.service.id == service.id &&
-        (b.status.trim().toLowerCase() == 'completed' ||
-            b.status.trim() == 'مكتمل'));
+    final hasCompletedBooking = bookings.any(
+      (b) =>
+          b.service.id == service.id &&
+          (b.status.trim().toLowerCase() == 'completed' ||
+              b.status.trim() == 'مكتمل'),
+    );
 
     final hasCurrentUserReview = currentUserId != null &&
         service.reviews
@@ -71,7 +72,9 @@ class ServiceDetailsInfo extends StatelessWidget {
                           if (service.category != null)
                             Container(
                               padding: EdgeInsets.symmetric(
-                                  horizontal: 12.w, vertical: 4.h),
+                                horizontal: 12.w,
+                                vertical: 4.h,
+                              ),
                               decoration: BoxDecoration(
                                 color: cs.primaryContainer,
                                 borderRadius: BorderRadius.circular(8.r),
@@ -227,7 +230,6 @@ class ServiceDetailsInfo extends StatelessWidget {
                 children: [
                   12.verticalSpace,
                   Align(
-                    alignment: Alignment.center,
                     child: TextButton.icon(
                       onPressed: () => _openAllReviews(context),
                       icon: const Icon(Icons.expand_more_rounded),
@@ -246,25 +248,27 @@ class ServiceDetailsInfo extends StatelessWidget {
     BuildContext context, {
     ServiceDetailReviewEntity? review,
   }) {
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      builder: (_) => BlocProvider.value(
-        value: context.read<ServiceDetailsBloc>(),
-        child: ServiceReviewFormSheet(
-          serviceId: service.id,
-          review: review,
+    unawaited(
+      context.showAppBottomSheet<void>(
+        builder: (_) => BlocProvider.value(
+          value: context.read<ServiceDetailsBloc>(),
+          child: ServiceReviewFormSheet(
+            serviceId: service.id,
+            review: review,
+          ),
         ),
       ),
     );
   }
 
   void _openAllReviews(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => BlocProvider.value(
-          value: context.read<ServiceDetailsBloc>(),
-          child: ServiceReviewsPage(serviceId: service.id),
+    unawaited(
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => BlocProvider.value(
+            value: context.read<ServiceDetailsBloc>(),
+            child: ServiceReviewsPage(serviceId: service.id),
+          ),
         ),
       ),
     );

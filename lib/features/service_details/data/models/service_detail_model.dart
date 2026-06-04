@@ -1,4 +1,4 @@
-import '../../domain/entities/service_detail_entity.dart';
+import 'package:wassaly/features/service_details/domain/entities/service_detail_entity.dart';
 
 class ServiceReviewUserModel extends ServiceReviewUserEntity {
   const ServiceReviewUserModel({
@@ -8,14 +8,13 @@ class ServiceReviewUserModel extends ServiceReviewUserEntity {
     required super.type,
   });
 
-  factory ServiceReviewUserModel.fromJson(Map<String, dynamic> json) {
-    return ServiceReviewUserModel(
-      id: json['id'] as int,
-      name: json['name'] as String,
-      avatar: json['avatar'] as String?,
-      type: json['type'] as String,
-    );
-  }
+  factory ServiceReviewUserModel.fromJson(Map<String, dynamic> json) =>
+      ServiceReviewUserModel(
+        id: json['id'] as int,
+        name: json['name'] as String,
+        avatar: json['avatar'] as String?,
+        type: json['type'] as String,
+      );
 }
 
 class ServiceDetailReviewModel extends ServiceDetailReviewEntity {
@@ -27,16 +26,15 @@ class ServiceDetailReviewModel extends ServiceDetailReviewEntity {
     required super.user,
   });
 
-  factory ServiceDetailReviewModel.fromJson(Map<String, dynamic> json) {
-    return ServiceDetailReviewModel(
-      id: json['id'] as int,
-      rating: (json['rating'] as num).toInt(),
-      comment: json['comment'] as String,
-      createdAt: json['created_at'] as String,
-      user:
-          ServiceReviewUserModel.fromJson(json['user'] as Map<String, dynamic>),
-    );
-  }
+  factory ServiceDetailReviewModel.fromJson(Map<String, dynamic> json) =>
+      ServiceDetailReviewModel(
+        id: json['id'] as int,
+        rating: (json['rating'] as num).toInt(),
+        comment: json['comment'] as String,
+        createdAt: json['created_at'] as String,
+        user: ServiceReviewUserModel.fromJson(
+            json['user'] as Map<String, dynamic>,),
+      );
 }
 
 class ServiceAvailableTimeModel extends ServiceAvailableTimeEntity {
@@ -45,12 +43,11 @@ class ServiceAvailableTimeModel extends ServiceAvailableTimeEntity {
     required super.time,
   });
 
-  factory ServiceAvailableTimeModel.fromJson(Map<String, dynamic> json) {
-    return ServiceAvailableTimeModel(
-      id: json['id'] as int,
-      time: json['time'] as String,
-    );
-  }
+  factory ServiceAvailableTimeModel.fromJson(Map<String, dynamic> json) =>
+      ServiceAvailableTimeModel(
+        id: json['id'] as int,
+        time: json['time'] as String,
+      );
 }
 
 class ServiceAvailableDayModel extends ServiceAvailableDayEntity {
@@ -61,17 +58,16 @@ class ServiceAvailableDayModel extends ServiceAvailableDayEntity {
     required super.availableTimes,
   });
 
-  factory ServiceAvailableDayModel.fromJson(Map<String, dynamic> json) {
-    return ServiceAvailableDayModel(
-      id: json['id'] as int,
-      nameAr: json['name_ar'] as String,
-      nameEn: json['name_en'] as String,
-      availableTimes: (json['available_times'] as List<dynamic>)
-          .map((e) =>
-              ServiceAvailableTimeModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
-  }
+  factory ServiceAvailableDayModel.fromJson(Map<String, dynamic> json) =>
+      ServiceAvailableDayModel(
+        id: json['id'] as int,
+        nameAr: json['name_ar'] as String,
+        nameEn: json['name_en'] as String,
+        availableTimes: (json['available_times'] as List<dynamic>)
+            .map((e) =>
+                ServiceAvailableTimeModel.fromJson(e as Map<String, dynamic>),)
+            .toList(),
+      );
 }
 
 class ServiceProviderUserModel extends ServiceProviderUserEntity {
@@ -85,17 +81,16 @@ class ServiceProviderUserModel extends ServiceProviderUserEntity {
     required super.isActive,
   });
 
-  factory ServiceProviderUserModel.fromJson(Map<String, dynamic> json) {
-    return ServiceProviderUserModel(
-      id: json['id'] as int,
-      name: json['name'] as String,
-      email: json['email'] as String,
-      phone: json['phone'] as String,
-      avatar: json['avatar'] as String?,
-      type: json['type'] as String,
-      isActive: json['is_active'] as int,
-    );
-  }
+  factory ServiceProviderUserModel.fromJson(Map<String, dynamic> json) =>
+      ServiceProviderUserModel(
+        id: json['id'] as int,
+        name: json['name'] as String,
+        email: json['email'] as String,
+        phone: json['phone'] as String,
+        avatar: json['avatar'] as String?,
+        type: json['type'] as String,
+        isActive: json['is_active'] as int,
+      );
 }
 
 class ServiceProviderModel extends ServiceProviderEntity {
@@ -110,19 +105,18 @@ class ServiceProviderModel extends ServiceProviderEntity {
     required super.successfulOrdersCount,
   });
 
-  factory ServiceProviderModel.fromJson(Map<String, dynamic> json) {
-    return ServiceProviderModel(
-      id: json['id'] as int,
-      user: ServiceProviderUserModel.fromJson(
-          json['user'] as Map<String, dynamic>),
-      title: json['title'] as String,
-      serviceDescription: json['service_description'] as String,
-      cover: json['cover'] as String,
-      averageRating: (json['average_rating'] as num).toDouble(),
-      reviewsCount: json['reviews_count'] as int,
-      successfulOrdersCount: json['successful_orders_count'] as int,
-    );
-  }
+  factory ServiceProviderModel.fromJson(Map<String, dynamic> json) =>
+      ServiceProviderModel(
+        id: json['id'] as int,
+        user: ServiceProviderUserModel.fromJson(
+            json['user'] as Map<String, dynamic>,),
+        title: json['title'] as String,
+        serviceDescription: json['service_description'] as String,
+        cover: json['cover'] as String,
+        averageRating: (json['average_rating'] as num).toDouble(),
+        reviewsCount: json['reviews_count'] as int,
+        successfulOrdersCount: json['successful_orders_count'] as int,
+      );
 }
 
 class ServiceDetailModel extends ServiceDetailEntity {
@@ -140,29 +134,29 @@ class ServiceDetailModel extends ServiceDetailEntity {
     required super.isFavorite,
   });
 
-  factory ServiceDetailModel.fromJson(Map<String, dynamic> json) {
-    return ServiceDetailModel(
-      id: json['id'] as int,
-      service: json['service'] as String,
-      description: json['description'] as String,
-      category:
-          json['category'] is Map ? json['category']['name'] as String? : null,
-      image: json['image'] as String,
-      images: (json['images'] as List<dynamic>)
-          .map((e) => (e as Map<String, dynamic>)['image'] as String)
-          .toList(),
-      price: json['price'] as num,
-      provider: ServiceProviderModel.fromJson(
-          json['provider'] as Map<String, dynamic>),
-      availableDays: (json['available_days'] as List<dynamic>)
-          .map((e) =>
-              ServiceAvailableDayModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      reviews: (json['reviews'] as List<dynamic>)
-          .map((e) =>
-              ServiceDetailReviewModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      isFavorite: json['is_favorite'] as bool,
-    );
-  }
+  factory ServiceDetailModel.fromJson(Map<String, dynamic> json) =>
+      ServiceDetailModel(
+        id: json['id'] as int,
+        service: json['service'] as String,
+        description: json['description'] as String,
+        category: json['category'] is Map<String, dynamic>
+            ? (json['category'] as Map<String, dynamic>)['name'] as String?
+            : null,
+        image: json['image'] as String,
+        images: (json['images'] as List<dynamic>)
+            .map((e) => (e as Map<String, dynamic>)['image'] as String)
+            .toList(),
+        price: json['price'] as num,
+        provider: ServiceProviderModel.fromJson(
+            json['provider'] as Map<String, dynamic>,),
+        availableDays: (json['available_days'] as List<dynamic>)
+            .map((e) =>
+                ServiceAvailableDayModel.fromJson(e as Map<String, dynamic>),)
+            .toList(),
+        reviews: (json['reviews'] as List<dynamic>)
+            .map((e) =>
+                ServiceDetailReviewModel.fromJson(e as Map<String, dynamic>),)
+            .toList(),
+        isFavorite: json['is_favorite'] as bool,
+      );
 }

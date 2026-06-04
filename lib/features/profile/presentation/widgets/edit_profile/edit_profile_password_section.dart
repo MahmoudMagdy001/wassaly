@@ -51,8 +51,7 @@ class _EditProfilePasswordSectionState
         16.verticalSpace,
         ValueListenableBuilder<bool>(
           valueListenable: _obscureCurrentPassword,
-          builder: (context, obscure, child) {
-            return AppTextField(
+          builder: (context, obscure, child) => AppTextField(
               label: context.l10n.profile_current_password,
               controller: widget.currentPasswordController,
               focusNode: widget.currentPasswordFocusNode,
@@ -66,14 +65,12 @@ class _EditProfilePasswordSectionState
                       : Icons.visibility_outlined,
                 ),
               ),
-            );
-          },
+            ),
         ),
         16.verticalSpace,
         ValueListenableBuilder<bool>(
           valueListenable: _obscurePassword,
-          builder: (context, obscure, child) {
-            return AppTextField(
+          builder: (context, obscure, child) => AppTextField(
               label: context.l10n.auth_password,
               controller: widget.passwordController,
               focusNode: widget.passwordFocusNode,
@@ -87,14 +84,12 @@ class _EditProfilePasswordSectionState
                       : Icons.visibility_outlined,
                 ),
               ),
-            );
-          },
+            ),
         ),
         16.verticalSpace,
         ValueListenableBuilder<bool>(
           valueListenable: _obscureConfirmPassword,
-          builder: (context, obscure, child) {
-            return AppTextField(
+          builder: (context, obscure, child) => AppTextField(
               label: context.l10n.auth_confirm_password,
               controller: widget.passwordConfirmationController,
               focusNode: widget.passwordConfirmationFocusNode,
@@ -115,8 +110,7 @@ class _EditProfilePasswordSectionState
                 }
                 return null;
               },
-            );
-          },
+            ),
         ),
       ],
     );

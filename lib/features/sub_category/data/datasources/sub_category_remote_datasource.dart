@@ -1,10 +1,10 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-import '../models/sub_category_detail_model.dart';
+import 'package:wassaly/features/sub_category/data/models/sub_category_detail_model.dart';
 
 abstract class SubCategoryRemoteDataSource {
   Future<SubCategoryDetailModel> getSubCategoryDetail(int subCategoryId,
-      {int page = 1});
+      {int page = 1,});
 }
 
 class SubCategoryRemoteDataSourceImpl implements SubCategoryRemoteDataSource {
@@ -14,7 +14,7 @@ class SubCategoryRemoteDataSourceImpl implements SubCategoryRemoteDataSource {
 
   @override
   Future<SubCategoryDetailModel> getSubCategoryDetail(int subCategoryId,
-      {int page = 1}) async {
+      {int page = 1,}) async {
     final result = await _dioService.get(
       '/api/sub-category',
       queryParameters: {

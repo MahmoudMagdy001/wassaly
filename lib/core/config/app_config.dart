@@ -1,6 +1,6 @@
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
-import '../imports/imports.dart';
+import 'package:wassaly/core/imports/imports.dart';
 
 class AppConfig {
   AppConfig._();
@@ -61,9 +61,6 @@ class AppConfig {
         requestHeader: true,
         requestBody: true,
         responseHeader: true,
-        responseBody: true,
-        error: true,
-        compact: true,
         maxWidth: 120,
       ),
     );
@@ -81,7 +78,7 @@ class AppConfig {
           _reportLatency(response.requestOptions);
           return handler.next(response);
         },
-        onError: (DioException e, handler) {
+        onError: (e, handler) {
           _reportLatency(e.requestOptions);
           return handler.next(e);
         },
@@ -154,7 +151,5 @@ class AppConfig {
     );
   }
 
-  static String _getBaseUrl() {
-    return dotenv.get('BASE_API_URL');
-  }
+  static String _getBaseUrl() => dotenv.get('BASE_API_URL');
 }

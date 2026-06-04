@@ -169,8 +169,7 @@ class ServiceDetailEntity extends Equatable {
     List<ServiceAvailableDayEntity>? availableDays,
     List<ServiceDetailReviewEntity>? reviews,
     bool? isFavorite,
-  }) {
-    return ServiceDetailEntity(
+  }) => ServiceDetailEntity(
       id: id ?? this.id,
       service: service ?? this.service,
       description: description ?? this.description,
@@ -183,7 +182,6 @@ class ServiceDetailEntity extends Equatable {
       reviews: reviews ?? this.reviews,
       isFavorite: isFavorite ?? this.isFavorite,
     );
-  }
 
   @override
   List<Object?> get props => [

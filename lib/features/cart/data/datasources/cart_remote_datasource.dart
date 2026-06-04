@@ -1,8 +1,8 @@
-import '../../../../core/imports/core_imports.dart';
-import '../../../cart/domain/entities/place_order_params.dart';
-import '../models/cart_item_model.dart';
-import '../models/coupon_model.dart';
-import '../models/order_model.dart';
+import 'package:wassaly/core/imports/core_imports.dart';
+import 'package:wassaly/features/cart/data/models/cart_item_model.dart';
+import 'package:wassaly/features/cart/data/models/coupon_model.dart';
+import 'package:wassaly/features/cart/data/models/order_model.dart';
+import 'package:wassaly/features/cart/domain/entities/place_order_params.dart';
 
 abstract class CartRemoteDataSource {
   Future<List<CartItemModel>> getCartItems();
@@ -30,7 +30,7 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
 
         if (!status) {
           throw ServerFailure(responseData?['message']?.toString() ??
-              'Failed to get cart items');
+              'Failed to get cart items',);
         }
 
         final cartData = responseData?['data'] as Map<String, dynamic>?;
@@ -60,7 +60,7 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
 
         if (!status) {
           throw ServerFailure(
-              responseData?['message']?.toString() ?? 'Failed to add to cart');
+              responseData?['message']?.toString() ?? 'Failed to add to cart',);
         }
       },
     );
@@ -80,7 +80,7 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
 
         if (!status) {
           throw ServerFailure(responseData?['message']?.toString() ??
-              'Failed to remove from cart');
+              'Failed to remove from cart',);
         }
       },
     );
@@ -104,7 +104,7 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
 
         if (!status) {
           throw ServerFailure(responseData?['message']?.toString() ??
-              'Failed to update quantity');
+              'Failed to update quantity',);
         }
       },
     );
@@ -125,7 +125,7 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
 
         if (!status) {
           throw ServerFailure(
-              responseData?['message']?.toString() ?? 'Failed to apply coupon');
+              responseData?['message']?.toString() ?? 'Failed to apply coupon',);
         }
 
         final data = responseData!['data'] as Map<String, dynamic>;
@@ -133,7 +133,7 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
 
         if (!isValid) {
           throw ServerFailure(
-              responseData['message']?.toString() ?? 'Coupon is not valid');
+              responseData['message']?.toString() ?? 'Coupon is not valid',);
         }
 
         return CouponModel.fromJson(data);
@@ -147,7 +147,7 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
         .map((item) => {
               'product_id': item.productId,
               'quantity': item.quantity,
-            })
+            },)
         .toList();
 
     final data = <String, dynamic>{
@@ -172,7 +172,7 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
 
         if (!status) {
           throw ServerFailure(
-              responseData?['message']?.toString() ?? 'Failed to place order');
+              responseData?['message']?.toString() ?? 'Failed to place order',);
         }
 
         return OrderModel.fromJson(responseData!);

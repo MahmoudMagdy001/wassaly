@@ -1,10 +1,10 @@
 import 'package:wassaly/core/imports/imports.dart';
-import '../../../domain/usecases/get_order_details_usecase.dart';
-import '../../../domain/usecases/cancel_order_usecase.dart';
-import '../../../domain/usecases/update_order_usecase.dart';
-import '../../../domain/usecases/delete_order_usecase.dart';
-import 'order_detail_event.dart';
-import 'order_detail_state.dart';
+import 'package:wassaly/features/orders/domain/usecases/cancel_order_usecase.dart';
+import 'package:wassaly/features/orders/domain/usecases/delete_order_usecase.dart';
+import 'package:wassaly/features/orders/domain/usecases/get_order_details_usecase.dart';
+import 'package:wassaly/features/orders/domain/usecases/update_order_usecase.dart';
+import 'package:wassaly/features/orders/presentation/bloc/order_detail/order_detail_event.dart';
+import 'package:wassaly/features/orders/presentation/bloc/order_detail/order_detail_state.dart';
 
 class OrderDetailBloc extends Bloc<OrderDetailEvent, OrderDetailState> {
   final GetOrderDetailsUseCase _getOrderDetailsUseCase;
@@ -32,26 +32,32 @@ class OrderDetailBloc extends Bloc<OrderDetailEvent, OrderDetailState> {
     FetchOrderDetailEvent event,
     Emitter<OrderDetailState> emit,
   ) async {
-    emit(state.copyWith(
-      status: OrderDetailStatus.loading,
-      errorMessage: '',
-      isNotFound: false,
-    ));
+    emit(
+      state.copyWith(
+        status: OrderDetailStatus.loading,
+        errorMessage: '',
+        isNotFound: false,
+      ),
+    );
 
     final result = await _getOrderDetailsUseCase(event.orderId);
 
     result.fold(
-      (failure) => emit(state.copyWith(
-        status: OrderDetailStatus.failure,
-        errorMessage: failure.message,
-        isNotFound: failure is NotFoundFailure,
-        clearOrder: failure is NotFoundFailure,
-      )),
-      (order) => emit(state.copyWith(
-        status: OrderDetailStatus.success,
-        order: order,
-        isNotFound: false,
-      )),
+      (failure) => emit(
+        state.copyWith(
+          status: OrderDetailStatus.failure,
+          errorMessage: failure.message,
+          isNotFound: failure is NotFoundFailure,
+          clearOrder: failure is NotFoundFailure,
+        ),
+      ),
+      (order) => emit(
+        state.copyWith(
+          status: OrderDetailStatus.success,
+          order: order,
+          isNotFound: false,
+        ),
+      ),
     );
   }
 
@@ -59,16 +65,22 @@ class OrderDetailBloc extends Bloc<OrderDetailEvent, OrderDetailState> {
     CancelOrderEvent event,
     Emitter<OrderDetailState> emit,
   ) async {
-    emit(state.copyWith(
-        actionStatus: OrderActionStatus.loading, actionErrorMessage: ''));
+    emit(
+      state.copyWith(
+        actionStatus: OrderActionStatus.loading,
+        actionErrorMessage: '',
+      ),
+    );
 
     final result = await _cancelOrderUseCase(event.orderId);
 
     result.fold(
-      (failure) => emit(state.copyWith(
-        actionStatus: OrderActionStatus.failure,
-        actionErrorMessage: failure.message,
-      )),
+      (failure) => emit(
+        state.copyWith(
+          actionStatus: OrderActionStatus.failure,
+          actionErrorMessage: failure.message,
+        ),
+      ),
       (_) {
         emit(state.copyWith(actionStatus: OrderActionStatus.success));
         // Refresh details
@@ -81,26 +93,35 @@ class OrderDetailBloc extends Bloc<OrderDetailEvent, OrderDetailState> {
     UpdateOrderEvent event,
     Emitter<OrderDetailState> emit,
   ) async {
-    emit(state.copyWith(
-        actionStatus: OrderActionStatus.loading, actionErrorMessage: ''));
+    emit(
+      state.copyWith(
+        actionStatus: OrderActionStatus.loading,
+        actionErrorMessage: '',
+      ),
+    );
 
     final result = await _updateOrderUseCase(
-        UpdateOrderParams(orderId: event.orderId, data: event.data));
+      UpdateOrderParams(orderId: event.orderId, data: event.data),
+    );
 
     await result.fold(
-      (failure) async => emit(state.copyWith(
-        actionStatus: OrderActionStatus.failure,
-        actionErrorMessage: failure.message,
-      )),
+      (failure) async => emit(
+        state.copyWith(
+          actionStatus: OrderActionStatus.failure,
+          actionErrorMessage: failure.message,
+        ),
+      ),
       (_) async {
         // Refresh order details FIRST before emitting success
         final refreshResult = await _getOrderDetailsUseCase(event.orderId);
         refreshResult.fold(
           (_) => null, // ignore refresh error silently
-          (updatedOrder) => emit(state.copyWith(
-            status: OrderDetailStatus.success,
-            order: updatedOrder,
-          )),
+          (updatedOrder) => emit(
+            state.copyWith(
+              status: OrderDetailStatus.success,
+              order: updatedOrder,
+            ),
+          ),
         );
         // Now emit success to close the sheet with updated data already in state
         emit(state.copyWith(actionStatus: OrderActionStatus.success));
@@ -112,16 +133,22 @@ class OrderDetailBloc extends Bloc<OrderDetailEvent, OrderDetailState> {
     DeleteOrderEvent event,
     Emitter<OrderDetailState> emit,
   ) async {
-    emit(state.copyWith(
-        actionStatus: OrderActionStatus.loading, actionErrorMessage: ''));
+    emit(
+      state.copyWith(
+        actionStatus: OrderActionStatus.loading,
+        actionErrorMessage: '',
+      ),
+    );
 
     final result = await _deleteOrderUseCase(event.orderId);
 
     result.fold(
-      (failure) => emit(state.copyWith(
-        actionStatus: OrderActionStatus.failure,
-        actionErrorMessage: failure.message,
-      )),
+      (failure) => emit(
+        state.copyWith(
+          actionStatus: OrderActionStatus.failure,
+          actionErrorMessage: failure.message,
+        ),
+      ),
       (_) => emit(state.copyWith(actionStatus: OrderActionStatus.success)),
     );
   }

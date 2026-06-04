@@ -10,12 +10,10 @@ class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => sl<HomeBloc>()..add(HomeInitializeEvent()),
-      child: const _HomeView(),
-    );
-  }
+  Widget build(BuildContext context) => BlocProvider(
+        create: (context) => sl<HomeBloc>()..add(HomeInitializeEvent()),
+        child: const _HomeView(),
+      );
 }
 
 class _HomeView extends StatefulWidget {
@@ -41,7 +39,9 @@ class _HomeViewState extends State<_HomeView> {
 
     _connectivitySub =
         sl<InternetConnectionService>().connectivityRestoredStream.listen((_) {
-      if (mounted) _refreshAllSections(context);
+      if (mounted) {
+        unawaited(_refreshAllSections(context));
+      }
     });
   }
 
@@ -50,7 +50,9 @@ class _HomeViewState extends State<_HomeView> {
     sl<HomeNavigationService>().scrollController = null;
     sl<HomeNavigationService>().refreshKey = null;
     _scrollController.dispose();
-    _connectivitySub?.cancel();
+    if (_connectivitySub != null) {
+      unawaited(_connectivitySub?.cancel());
+    }
     super.dispose();
   }
 
@@ -64,11 +66,13 @@ class _HomeViewState extends State<_HomeView> {
     bloc.add(HomeInitializeEvent());
 
     // Wait for all sections to finish loading
-    await bloc.stream.firstWhere((state) =>
-        state.bannersStatus != HomeStatus.loading &&
-        state.categoriesStatus != HomeStatus.loading &&
-        state.popularServicesStatus != HomeStatus.loading &&
-        state.productsStatus != HomeStatus.loading);
+    await bloc.stream.firstWhere(
+      (state) =>
+          state.bannersStatus != HomeStatus.loading &&
+          state.categoriesStatus != HomeStatus.loading &&
+          state.popularServicesStatus != HomeStatus.loading &&
+          state.productsStatus != HomeStatus.loading,
+    );
 
     // Ensure visibility
     final elapsed = DateTime.now().difference(startTime);
@@ -104,7 +108,8 @@ class _HomeViewState extends State<_HomeView> {
                   color: cs.primary,
                   size: 28.r,
                 ),
-                onPressed: () => context.push(AppRoutes.productsFilter),
+                onPressed: () =>
+                    unawaited(context.push(AppRoutes.productsFilter)),
               ),
               actions: [
                 const AppNotificationBadgeIcon(),
@@ -192,7 +197,8 @@ class _HomeViewState extends State<_HomeView> {
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16.w),
                         child: GestureDetector(
-                          onTap: () => context.push(AppRoutes.offers),
+                          onTap: () =>
+                              unawaited(context.push(AppRoutes.offers)),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(12.r),
                             child: const CommonImage(
@@ -200,7 +206,6 @@ class _HomeViewState extends State<_HomeView> {
                               width: double.infinity,
                               height: 150,
                               memCacheHeight: 150 * 3,
-                              fit: BoxFit.cover,
                             ),
                           ),
                         ),

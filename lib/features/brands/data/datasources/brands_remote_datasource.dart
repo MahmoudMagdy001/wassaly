@@ -1,7 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
-
-import '../../../home/data/models/product_model.dart';
-import '../models/brand_model.dart';
+import 'package:wassaly/features/brands/data/models/brand_model.dart';
+import 'package:wassaly/features/home/data/models/product_model.dart';
 
 abstract class BrandsRemoteDataSource {
   Future<List<BrandModel>> getBrands();
@@ -36,7 +35,7 @@ class BrandsRemoteDataSourceImpl implements BrandsRemoteDataSource {
           return <BrandModel>[];
         }
 
-        final List<dynamic> list = data as List<dynamic>;
+        final list = data as List<dynamic>;
         return list
             .map((e) => BrandModel.fromJson(e as Map<String, dynamic>))
             .toList();
@@ -84,7 +83,7 @@ class BrandsRemoteDataSourceImpl implements BrandsRemoteDataSource {
           );
         }
 
-        final List<dynamic> list = data as List<dynamic>;
+        final list = data as List<dynamic>;
         final products = list
             .map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
             .toList();

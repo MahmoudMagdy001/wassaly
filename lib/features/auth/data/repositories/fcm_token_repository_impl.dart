@@ -27,7 +27,7 @@ class FcmTokenRepositoryImpl implements FcmTokenRepository {
       return const Right(null);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure('FCM token registration failed: $e'));
     }
   }

@@ -22,10 +22,10 @@ class HomeNavigationService {
           curve: Curves.easeOutCubic,
         );
       } else {
-        _refreshKey?.currentState?.show();
+        unawaited(_refreshKey?.currentState?.show());
       }
     } else {
-      _refreshKey?.currentState?.show();
+      unawaited(_refreshKey?.currentState?.show());
     }
   }
 }

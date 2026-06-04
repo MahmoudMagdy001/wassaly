@@ -1,6 +1,6 @@
-import '../../domain/entities/product_entity.dart';
-import 'offer_model.dart';
-import 'review_model.dart';
+import 'package:wassaly/features/home/data/models/offer_model.dart';
+import 'package:wassaly/features/home/data/models/review_model.dart';
+import 'package:wassaly/features/home/domain/entities/product_entity.dart';
 
 class ProductModel extends ProductEntity {
   const ProductModel({
@@ -14,8 +14,7 @@ class ProductModel extends ProductEntity {
     required super.isFavorite,
   });
 
-  factory ProductModel.fromJson(Map<String, dynamic> json) {
-    return ProductModel(
+  factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
       id: json['id'] as int? ?? 0,
       name: json['name'] as String? ?? '',
       image: json['image'] as String? ?? '',
@@ -31,5 +30,4 @@ class ProductModel extends ProductEntity {
           [],
       isFavorite: json['is_favorite'] as bool? ?? false,
     );
-  }
 }

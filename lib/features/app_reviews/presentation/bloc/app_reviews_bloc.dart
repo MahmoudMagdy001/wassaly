@@ -1,12 +1,11 @@
 import 'package:wassaly/core/imports/imports.dart';
-
-import '../../../auth/data/datasources/auth_local_datasource.dart';
-import '../../domain/entities/app_review_entity.dart';
-import '../../domain/usecases/add_app_review_usecase.dart';
-import '../../domain/usecases/get_app_reviews_usecase.dart';
-import '../../domain/usecases/update_app_review_usecase.dart';
-import 'app_reviews_event.dart';
-import 'app_reviews_state.dart';
+import 'package:wassaly/features/app_reviews/domain/entities/app_review_entity.dart';
+import 'package:wassaly/features/app_reviews/domain/usecases/add_app_review_usecase.dart';
+import 'package:wassaly/features/app_reviews/domain/usecases/get_app_reviews_usecase.dart';
+import 'package:wassaly/features/app_reviews/domain/usecases/update_app_review_usecase.dart';
+import 'package:wassaly/features/app_reviews/presentation/bloc/app_reviews_event.dart';
+import 'package:wassaly/features/app_reviews/presentation/bloc/app_reviews_state.dart';
+import 'package:wassaly/features/auth/data/datasources/auth_local_datasource.dart';
 
 class AppReviewsBloc extends Bloc<AppReviewsEvent, AppReviewsState> {
   final GetAppReviewsUseCase _getAppReviewsUseCase;
@@ -37,10 +36,12 @@ class AppReviewsBloc extends Bloc<AppReviewsEvent, AppReviewsState> {
     final result = await _getAppReviewsUseCase();
 
     result.fold(
-      (failure) => emit(state.copyWith(
-        status: AppStatus.failure,
-        errorMessage: failure.message,
-      )),
+      (failure) => emit(
+        state.copyWith(
+          status: AppStatus.failure,
+          errorMessage: failure.message,
+        ),
+      ),
       (reviews) {
         final sortedReviews = List<AppReviewEntity>.from(reviews)
           ..sort((a, b) {
@@ -51,13 +52,14 @@ class AppReviewsBloc extends Bloc<AppReviewsEvent, AppReviewsState> {
             }
             return b.id.compareTo(a.id);
           });
-        emit(state.copyWith(
-          status: AppStatus.success,
-          reviews: sortedReviews,
-          clearError: true,
-          currentUserId:
-              user?.id != null ? int.tryParse(user!.id.toString()) : null,
-        ));
+        emit(
+          state.copyWith(
+            status: AppStatus.success,
+            reviews: sortedReviews,
+            clearError: true,
+            currentUserId: user?.id != null ? int.tryParse(user!.id) : null,
+          ),
+        );
       },
     );
   }
@@ -74,14 +76,18 @@ class AppReviewsBloc extends Bloc<AppReviewsEvent, AppReviewsState> {
     );
 
     result.fold(
-      (failure) => emit(state.copyWith(
-        actionStatus: AppStatus.failure,
-        actionErrorMessage: failure.message,
-      )),
+      (failure) => emit(
+        state.copyWith(
+          actionStatus: AppStatus.failure,
+          actionErrorMessage: failure.message,
+        ),
+      ),
       (review) {
-        emit(state.copyWith(
-          actionStatus: AppStatus.success,
-        ));
+        emit(
+          state.copyWith(
+            actionStatus: AppStatus.success,
+          ),
+        );
         add(const GetAppReviewsEvent());
       },
     );
@@ -100,27 +106,31 @@ class AppReviewsBloc extends Bloc<AppReviewsEvent, AppReviewsState> {
     );
 
     result.fold(
-      (failure) => emit(state.copyWith(
-        actionStatus: AppStatus.failure,
-        actionErrorMessage: failure.message,
-      )),
+      (failure) => emit(
+        state.copyWith(
+          actionStatus: AppStatus.failure,
+          actionErrorMessage: failure.message,
+        ),
+      ),
       (updatedReview) {
-        final updatedReviews = state.reviews.map((r) {
-          return r.id == updatedReview.id ? updatedReview : r;
-        }).toList();
-        updatedReviews.sort((a, b) {
-          try {
-            final dateA = DateTime.parse(a.createdAt);
-            final dateB = DateTime.parse(b.createdAt);
-            return dateB.compareTo(dateA);
-          } catch (_) {
-            return b.id.compareTo(a.id);
-          }
-        });
-        emit(state.copyWith(
-          actionStatus: AppStatus.success,
-          reviews: updatedReviews,
-        ));
+        final updatedReviews = state.reviews
+            .map((r) => r.id == updatedReview.id ? updatedReview : r)
+            .toList()
+          ..sort((a, b) {
+            try {
+              final dateA = DateTime.parse(a.createdAt);
+              final dateB = DateTime.parse(b.createdAt);
+              return dateB.compareTo(dateA);
+            } on Exception catch (_) {
+              return b.id.compareTo(a.id);
+            }
+          });
+        emit(
+          state.copyWith(
+            actionStatus: AppStatus.success,
+            reviews: updatedReviews,
+          ),
+        );
       },
     );
   }

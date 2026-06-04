@@ -1,5 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
-import '../../../service_details/domain/entities/service_detail_entity.dart';
+import 'package:wassaly/features/service_details/domain/entities/service_detail_entity.dart';
 
 class ProductSpecificationEntity extends Equatable {
   final int id;
@@ -126,8 +126,7 @@ class ProductDetailEntity extends Equatable {
     List<int>? offerPercentages,
     bool? isFavorite,
     ServiceProviderEntity? provider,
-  }) {
-    return ProductDetailEntity(
+  }) => ProductDetailEntity(
       id: id ?? this.id,
       name: name ?? this.name,
       image: image ?? this.image,
@@ -142,7 +141,6 @@ class ProductDetailEntity extends Equatable {
       isFavorite: isFavorite ?? this.isFavorite,
       provider: provider ?? this.provider,
     );
-  }
 
   int get discountPercentage =>
       offerPercentages.isNotEmpty ? offerPercentages.first : 0;

@@ -36,7 +36,6 @@ class ServiceItem extends StatelessWidget {
                 height: 64,
                 memCacheHeight: 64 * 3,
                 imageUrl: imageUrl,
-                fit: BoxFit.cover,
               ),
             ),
             4.verticalSpace,

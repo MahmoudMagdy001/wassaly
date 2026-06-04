@@ -23,13 +23,11 @@ class UpdateAddressUseCase {
 
   const UpdateAddressUseCase(this._repository);
 
-  FutureEither<AddressEntity> call(UpdateAddressParams params) {
-    return _repository.updateAddress(
+  FutureEither<AddressEntity> call(UpdateAddressParams params) => _repository.updateAddress(
       addressId: params.addressId,
       title: params.title,
       address: params.address,
       governorateId: params.governorateId,
       centerId: params.centerId,
     );
-  }
 }

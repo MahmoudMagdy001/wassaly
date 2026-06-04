@@ -1,11 +1,11 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-import '../../../home/domain/entities/product_entity.dart';
-import '../../domain/entities/product_detail_entity.dart';
-import '../bloc/product_details_state.dart';
-import 'add_to_cart_bottom_bar.dart';
-import 'product_details_gallery.dart';
-import 'product_details_info.dart';
+import 'package:wassaly/features/home/domain/entities/product_entity.dart';
+import 'package:wassaly/features/product_details/domain/entities/product_detail_entity.dart';
+import 'package:wassaly/features/product_details/presentation/bloc/product_details_state.dart';
+import 'package:wassaly/features/product_details/presentation/widgets/add_to_cart_bottom_bar.dart';
+import 'package:wassaly/features/product_details/presentation/widgets/product_details_gallery.dart';
+import 'package:wassaly/features/product_details/presentation/widgets/product_details_info.dart';
 
 class ProductDetailsContent extends StatelessWidget {
   final ProductDetailEntity product;

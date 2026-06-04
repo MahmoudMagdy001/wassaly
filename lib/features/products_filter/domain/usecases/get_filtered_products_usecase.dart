@@ -11,7 +11,5 @@ class GetFilteredProductsUseCase {
   Future<Either<Failure, PaginatedResponse<ProductEntity>>> call({
     required ProductFilterParams params,
     int page = 1,
-  }) async {
-    return await repository.filterProducts(params: params, page: page);
-  }
+  }) async => repository.filterProducts(params: params, page: page);
 }

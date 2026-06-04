@@ -1,11 +1,10 @@
 import 'package:wassaly/core/imports/imports.dart';
-
-import '../../../../profile/domain/entities/address_entity.dart';
-import '../../../../profile/presentation/bloc/profile/profile_bloc.dart';
-import '../../../domain/entities/order_entity.dart';
-import '../../bloc/order_detail/order_detail_bloc.dart';
-import '../../bloc/order_detail/order_detail_event.dart';
-import '../../bloc/order_detail/order_detail_state.dart';
+import 'package:wassaly/features/orders/domain/entities/order_entity.dart';
+import 'package:wassaly/features/orders/presentation/bloc/order_detail/order_detail_bloc.dart';
+import 'package:wassaly/features/orders/presentation/bloc/order_detail/order_detail_event.dart';
+import 'package:wassaly/features/orders/presentation/bloc/order_detail/order_detail_state.dart';
+import 'package:wassaly/features/profile/domain/entities/address_entity.dart';
+import 'package:wassaly/features/profile/presentation/bloc/profile/profile_bloc.dart';
 
 class UpdateOrderSheet extends StatefulWidget {
   final OrderEntity order;
@@ -246,7 +245,7 @@ class _UpdateOrderSheetState extends State<UpdateOrderSheet> {
                                                         center:
                                                             address.centerName,
                                                         governorate: address
-                                                            .governorateName),
+                                                            .governorateName,),
                                                     style:
                                                         tt.bodySmall?.copyWith(
                                                       color:
@@ -276,7 +275,7 @@ class _UpdateOrderSheetState extends State<UpdateOrderSheet> {
                               child: Row(
                                 children: [
                                   Icon(Icons.info_outline,
-                                      size: 20.r, color: cs.onSurfaceVariant),
+                                      size: 20.r, color: cs.onSurfaceVariant,),
                                   12.horizontalSpace,
                                   Expanded(
                                     child: Text(
@@ -288,15 +287,15 @@ class _UpdateOrderSheetState extends State<UpdateOrderSheet> {
                                                       '',
                                                   governorate: widget.order
                                                           .governorateName ??
-                                                      '')),
+                                                      '',),),
                                       style: tt.bodySmall?.copyWith(
-                                          color: cs.onSurfaceVariant),
+                                          color: cs.onSurfaceVariant,),
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                          ]
+                          ],
                         ],
                       );
                     },
@@ -321,7 +320,7 @@ class _UpdateOrderSheetState extends State<UpdateOrderSheet> {
                               .cleanAddress(
                                   center: _selectedAddress!.centerName,
                                   governorate:
-                                      _selectedAddress!.governorateName);
+                                      _selectedAddress!.governorateName,);
                           updateData['delivery_address'] = cleaned;
                           updateData['customer_address'] = cleaned;
                           updateData['address'] = cleaned;
@@ -334,7 +333,7 @@ class _UpdateOrderSheetState extends State<UpdateOrderSheet> {
                               .cleanAddress(
                                   center: widget.order.centerName ?? '',
                                   governorate:
-                                      widget.order.governorateName ?? '');
+                                      widget.order.governorateName ?? '',);
                           updateData['delivery_address'] = cleaned;
                           updateData['customer_address'] = cleaned;
                           updateData['address'] = cleaned;

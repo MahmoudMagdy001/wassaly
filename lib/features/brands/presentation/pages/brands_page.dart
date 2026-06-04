@@ -9,12 +9,10 @@ class BrandsPage extends StatelessWidget {
   const BrandsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => sl<BrandsBloc>()..add(GetBrandsEvent()),
-      child: const BrandsView(),
-    );
-  }
+  Widget build(BuildContext context) => BlocProvider(
+        create: (context) => sl<BrandsBloc>()..add(GetBrandsEvent()),
+        child: const BrandsView(),
+      );
 }
 
 class BrandsView extends StatelessWidget {
@@ -75,23 +73,24 @@ class BrandsView extends StatelessWidget {
                 padding: EdgeInsets.all(16.r),
                 mainAxisSpacing: 16.h,
                 crossAxisSpacing: 16.w,
-                itemBuilder: (context, brand, index, wrapAnimation) {
-                  return wrapAnimation(
-                    BrandCard(
-                      brand: brand,
-                      onTap: () {
+                itemBuilder: (context, brand, index, wrapAnimation) =>
+                    wrapAnimation(
+                  BrandCard(
+                    brand: brand,
+                    onTap: () {
+                      unawaited(
                         context.push(
                           AppRoutes.brandDetails,
                           extra: {
                             'brandId': brand.id,
                             'brandName': brand.name,
-                            'brandImage': brand.image
+                            'brandImage': brand.image,
                           },
-                        );
-                      },
-                    ),
-                  );
-                },
+                        ),
+                      );
+                    },
+                  ),
+                ),
               );
             },
           ),

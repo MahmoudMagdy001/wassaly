@@ -9,12 +9,10 @@ class BrandsSection extends StatelessWidget {
   const BrandsSection({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => sl<BrandsBloc>()..add(GetBrandsEvent()),
-      child: const _BrandsSectionView(),
-    );
-  }
+  Widget build(BuildContext context) => BlocProvider(
+        create: (context) => sl<BrandsBloc>()..add(GetBrandsEvent()),
+        child: const _BrandsSectionView(),
+      );
 }
 
 class _BrandsSectionView extends StatelessWidget {
@@ -43,7 +41,6 @@ class _BrandsSectionView extends StatelessWidget {
         if (status == BrandsStatus.loading || status == BrandsStatus.initial) {
           return SliverToBoxAdapter(
             child: Skeletonizer(
-              enabled: true,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -68,11 +65,9 @@ class _BrandsSectionView extends StatelessWidget {
                           padding: EdgeInsets.symmetric(horizontal: 8.w),
                           sliver: SliverList.builder(
                             itemCount: _dummyBrands.length,
-                            itemBuilder: (context, index) {
-                              return BrandCard(
-                                brand: _dummyBrands[index],
-                              );
-                            },
+                            itemBuilder: (context, index) => BrandCard(
+                              brand: _dummyBrands[index],
+                            ),
                           ),
                         ),
                       ],
@@ -122,13 +117,15 @@ class _BrandsSectionView extends StatelessWidget {
                           return BrandCard(
                             brand: brand,
                             onTap: () {
-                              context.push(
-                                AppRoutes.brandDetails,
-                                extra: {
-                                  'brandId': brand.id,
-                                  'brandName': brand.name,
-                                  'brandImage': brand.image
-                                },
+                              unawaited(
+                                context.push(
+                                  AppRoutes.brandDetails,
+                                  extra: {
+                                    'brandId': brand.id,
+                                    'brandName': brand.name,
+                                    'brandImage': brand.image,
+                                  },
+                                ),
                               );
                             },
                           );

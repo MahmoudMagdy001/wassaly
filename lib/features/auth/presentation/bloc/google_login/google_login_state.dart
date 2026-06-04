@@ -17,13 +17,11 @@ class GoogleLoginState extends Equatable {
     UserEntity? user,
     bool clearError = false,
     bool clearUser = false,
-  }) {
-    return GoogleLoginState(
+  }) => GoogleLoginState(
       isLoading: isLoading ?? this.isLoading,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       user: clearUser ? null : (user ?? this.user),
     );
-  }
 
   @override
   List<Object?> get props => [isLoading, errorMessage, user];

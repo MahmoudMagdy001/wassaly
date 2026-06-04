@@ -1,8 +1,7 @@
 import 'package:wassaly/core/imports/imports.dart';
-
-import '../../domain/entities/product_detail_entity.dart';
-import '../../domain/repositories/product_details_repository.dart';
-import '../datasources/product_details_remote_datasource.dart';
+import 'package:wassaly/features/product_details/data/datasources/product_details_remote_datasource.dart';
+import 'package:wassaly/features/product_details/domain/entities/product_detail_entity.dart';
+import 'package:wassaly/features/product_details/domain/repositories/product_details_repository.dart';
 
 class ProductDetailsRepositoryImpl implements ProductDetailsRepository {
   final ProductDetailsRemoteDataSource _remoteDataSource;
@@ -11,13 +10,14 @@ class ProductDetailsRepositoryImpl implements ProductDetailsRepository {
 
   @override
   Future<Either<Failure, ProductDetailEntity>> getProductDetails(
-      int productId) async {
+    int productId,
+  ) async {
     try {
       final detail = await _remoteDataSource.getProductDetails(productId);
       return Right(detail);
     } on Failure catch (failure) {
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }
@@ -37,7 +37,7 @@ class ProductDetailsRepositoryImpl implements ProductDetailsRepository {
       return const Right(unit);
     } on Failure catch (failure) {
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }
@@ -57,7 +57,7 @@ class ProductDetailsRepositoryImpl implements ProductDetailsRepository {
       return const Right(unit);
     } on Failure catch (failure) {
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }

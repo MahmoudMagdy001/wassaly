@@ -27,8 +27,7 @@ class CartCheckoutEntity extends Equatable {
     double? shippingCost,
     double? subtotal,
     double? total,
-  }) {
-    return CartCheckoutEntity(
+  }) => CartCheckoutEntity(
       user: user ?? this.user,
       selectedAddress: selectedAddress ?? this.selectedAddress,
       governorate: governorate ?? this.governorate,
@@ -36,7 +35,6 @@ class CartCheckoutEntity extends Equatable {
       subtotal: subtotal ?? this.subtotal,
       total: total ?? this.total,
     );
-  }
 
   @override
   List<Object?> get props => [

@@ -19,10 +19,10 @@ double calculatePosition(List<ToastBar> toastBars, ToastBar self) {
 
 /// Rescale the old cards based on its position.
 double calculateScaleFactor(List<ToastBar> toastBars, ToastBar current) {
-  final int index = toastBars.indexOf(current);
-  final int indexValFromLast = toastBars.length - 1 - index;
-  final double factor = indexValFromLast / 25;
-  final double res = 0.97 - factor;
+  final index = toastBars.indexOf(current);
+  final indexValFromLast = toastBars.length - 1 - index;
+  final factor = indexValFromLast / 25;
+  final res = 0.97 - factor;
   return res < 0 ? 0 : res;
 }
 
@@ -71,7 +71,7 @@ class ToastBar {
 
   /// Push the toast in current context.
   void show(BuildContext context) {
-    final OverlayState overlayState = Navigator.of(context).overlay!;
+    final overlayState = Navigator.of(context).overlay!;
     info = SnackBarInfo(
       key: GlobalKey<RawToastState>(),
       createdAt: DateTime.now(),
@@ -97,7 +97,7 @@ class ToastBar {
 
   /// Remove all the toasts in the context.
   static void removeAll() {
-    for (int i = 0; i < _toastBars.length; i++) {
+    for (var i = 0; i < _toastBars.length; i++) {
       _toastBars[i].info.entry.remove();
     }
     _toastBars.removeWhere((element) => true);
@@ -132,9 +132,7 @@ class SnackBarInfo {
 /// Get all the toastBars which are currently on context.
 extension Cleaner on List<ToastBar> {
   /// Clean function to iterate over toastBars which are in context.
-  List<ToastBar> clean() {
-    return where(
+  List<ToastBar> clean() => where(
       (element) => element.info.key.currentState != null,
     ).toList();
-  }
 }

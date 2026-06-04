@@ -52,7 +52,7 @@ class FavoriteRemoteDataSourceImpl implements FavoriteRemoteDataSource {
 
         final favorites = itemsJson
             .map((item) =>
-                FavoriteModel.fromJson(item as Map<String, dynamic>).toEntity())
+                FavoriteModel.fromJson(item as Map<String, dynamic>).toEntity(),)
             .toList();
 
         return PaginatedResponse<ProductEntity>.fromJson(
@@ -149,7 +149,7 @@ class FavoriteRemoteDataSourceImpl implements FavoriteRemoteDataSource {
 
   @override
   Future<PaginatedResponse<ServiceEntity>> getServiceFavorites(
-      {int page = 1}) async {
+      {int page = 1,}) async {
     final response = await _dioService.get(
       '/api/favorites/service',
       queryParameters: {'page': page},

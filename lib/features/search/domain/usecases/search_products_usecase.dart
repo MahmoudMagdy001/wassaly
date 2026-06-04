@@ -10,7 +10,5 @@ class SearchProductsUseCase {
   Future<Either<Failure, PaginatedResponse<ProductEntity>>> call({
     required String query,
     int page = 1,
-  }) async {
-    return await _repository.searchProducts(query: query, page: page);
-  }
+  }) async => _repository.searchProducts(query: query, page: page);
 }

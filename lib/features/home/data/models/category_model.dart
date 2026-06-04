@@ -1,4 +1,4 @@
-import '../../domain/entities/category_entity.dart';
+import 'package:wassaly/features/home/domain/entities/category_entity.dart';
 
 class CategoryModel extends CategoryEntity {
   const CategoryModel({
@@ -7,11 +7,9 @@ class CategoryModel extends CategoryEntity {
     required super.image,
   });
 
-  factory CategoryModel.fromJson(Map<String, dynamic> json) {
-    return CategoryModel(
+  factory CategoryModel.fromJson(Map<String, dynamic> json) => CategoryModel(
       id: json['id'] as int? ?? 0,
       name: json['name'] as String? ?? '',
       image: json['image'] as String? ?? '',
     );
-  }
 }

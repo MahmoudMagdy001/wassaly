@@ -1,4 +1,4 @@
-import '../../../../core/imports/imports.dart';
+import 'package:wassaly/core/imports/imports.dart';
 
 class ForgetSendOtpResponseModel extends Equatable {
   final bool status;
@@ -9,19 +9,15 @@ class ForgetSendOtpResponseModel extends Equatable {
     required this.message,
   });
 
-  factory ForgetSendOtpResponseModel.fromJson(Map<String, dynamic> json) {
-    return ForgetSendOtpResponseModel(
+  factory ForgetSendOtpResponseModel.fromJson(Map<String, dynamic> json) => ForgetSendOtpResponseModel(
       status: json['status'] as bool? ?? false,
       message: json['message'] as String? ?? '',
     );
-  }
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'status': status,
       'message': message,
     };
-  }
 
   @override
   List<Object?> get props => [status, message];

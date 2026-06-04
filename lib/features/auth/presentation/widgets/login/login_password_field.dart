@@ -23,8 +23,7 @@ class LoginPasswordField extends StatelessWidget {
 
     return BlocSelector<LoginBloc, LoginState, bool>(
       selector: (state) => state.isPasswordVisible,
-      builder: (context, isPasswordVisible) {
-        return ClipRRect(
+      builder: (context, isPasswordVisible) => ClipRRect(
           borderRadius: BorderRadius.circular(12.r),
           child: AppTextField(
             controller: controller,
@@ -45,8 +44,7 @@ class LoginPasswordField extends StatelessWidget {
               ),
             ),
           ),
-        );
-      },
+        ),
     );
   }
 }

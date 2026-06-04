@@ -1,9 +1,9 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-import '../../domain/usecases/get_brand_products_usecase.dart';
-import '../../domain/usecases/get_brands_usecase.dart';
-import 'brands_event.dart';
-import 'brands_state.dart';
+import 'package:wassaly/features/brands/domain/usecases/get_brand_products_usecase.dart';
+import 'package:wassaly/features/brands/domain/usecases/get_brands_usecase.dart';
+import 'package:wassaly/features/brands/presentation/bloc/brands_event.dart';
+import 'package:wassaly/features/brands/presentation/bloc/brands_state.dart';
 
 class BrandsBloc extends Bloc<BrandsEvent, BrandsState> {
   final GetBrandsUseCase _getBrandsUseCase;
@@ -51,11 +51,10 @@ class BrandsBloc extends Bloc<BrandsEvent, BrandsState> {
       currentPage: 1,
       hasReachedMax: false,
       products: event.isRefresh ? const [] : state.products,
-    ));
+    ),);
 
     final result = await _getBrandProductsUseCase(
       brandId: event.brandId,
-      page: 1,
     );
 
     result.fold(

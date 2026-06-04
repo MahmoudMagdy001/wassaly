@@ -11,8 +11,7 @@ class ThemeBottomSheet extends StatelessWidget {
 
     return BlocSelector<SettingsBloc, SettingsState, ThemeMode>(
       selector: (state) => state.themeMode,
-      builder: (context, themeMode) {
-        return Column(
+      builder: (context, themeMode) => Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
@@ -82,8 +81,7 @@ class ThemeBottomSheet extends StatelessWidget {
             ),
             32.verticalSpace,
           ],
-        );
-      },
+        ),
     );
   }
 }

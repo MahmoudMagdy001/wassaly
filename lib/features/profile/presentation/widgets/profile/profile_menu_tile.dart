@@ -1,4 +1,4 @@
-import '../../../../../core/imports/imports.dart';
+import 'package:wassaly/core/imports/imports.dart';
 
 class ProfileMenuTile extends StatelessWidget {
   const ProfileMenuTile({

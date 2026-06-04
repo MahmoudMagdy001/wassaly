@@ -59,11 +59,11 @@ class AppDropdown<T> extends StatelessWidget {
   final int elevation;
   final FocusNode? focusNode;
 
-  void _showIOSPicker(BuildContext context, cs, tt) {
-    showCupertinoModalPopup<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
+  void _showIOSPicker(BuildContext context, ColorScheme cs, TextTheme tt) {
+    unawaited(
+      showCupertinoModalPopup<void>(
+        context: context,
+        builder: (context) => Container(
           height: 250.h,
           padding: EdgeInsets.only(top: 6.h),
           margin: EdgeInsets.only(
@@ -102,7 +102,7 @@ class AppDropdown<T> extends StatelessWidget {
                         return index >= 0 ? index : 0;
                       }(),
                     ),
-                    onSelectedItemChanged: (int index) {
+                    onSelectedItemChanged: (index) {
                       if (onChanged != null) {
                         onChanged!(items[index].value);
                       }
@@ -114,8 +114,8 @@ class AppDropdown<T> extends StatelessWidget {
               ],
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 

@@ -6,7 +6,5 @@ class GetSavedTokenUseCase {
 
   const GetSavedTokenUseCase(this._repository);
 
-  FutureEither<String?> call() {
-    return _repository.getSavedToken();
-  }
+  FutureEither<String?> call() => _repository.getSavedToken();
 }

@@ -1,5 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
-import '../../../../service_booking/domain/entities/booking_entity.dart';
+import 'package:wassaly/features/service_booking/domain/entities/booking_entity.dart';
 
 class BookingServiceInfoCard extends StatelessWidget {
   final BookingEntity booking;
@@ -48,7 +48,6 @@ class BookingServiceInfoCard extends StatelessWidget {
                     width: 64,
                     height: 64,
                     memCacheHeight: 64 * 2,
-                    fit: BoxFit.cover,
                   ),
                 ),
               ),
@@ -112,7 +111,6 @@ class BookingServiceInfoCard extends StatelessWidget {
                     width: 50,
                     height: 50,
                     memCacheHeight: 50 * 2,
-                    fit: BoxFit.cover,
                   ),
                 ),
               ),

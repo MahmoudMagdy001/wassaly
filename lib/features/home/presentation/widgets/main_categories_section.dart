@@ -15,7 +15,12 @@ class MainCategoriesSection extends StatelessWidget {
 
   // FIX 10: named method — no new lambdas on every BlocSelector rebuild
   void _onCategoryTap(BuildContext context, CategoryEntity category) =>
-      context.push(AppRoutes.category, extra: {'category': category});
+      unawaited(
+        context.push(
+          AppRoutes.category,
+          extra: {'category': category},
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +36,6 @@ class MainCategoriesSection extends StatelessWidget {
         if (categoriesStatus == HomeStatus.loading ||
             categoriesStatus == HomeStatus.initial) {
           return Skeletonizer(
-            enabled: true,
             child: _buildContent(context, cs, tt, _dummyCategories),
           );
         } else if (categoriesStatus == HomeStatus.failure) {
@@ -49,8 +53,12 @@ class MainCategoriesSection extends StatelessWidget {
     );
   }
 
-  Widget _buildContent(BuildContext context, ColorScheme cs, TextTheme tt,
-      List<CategoryEntity> categories) {
+  Widget _buildContent(
+    BuildContext context,
+    ColorScheme cs,
+    TextTheme tt,
+    List<CategoryEntity> categories,
+  ) {
     if (categories.isEmpty) return const SizedBox.shrink();
 
     // Show only the first 3 categories
@@ -74,7 +82,8 @@ class MainCategoriesSection extends StatelessWidget {
               ),
               if (categories.length > 3)
                 TextButton(
-                  onPressed: () => context.push(AppRoutes.allCategories),
+                  onPressed: () =>
+                      unawaited(context.push(AppRoutes.allCategories)),
                   child: Text(
                     context.l10n.shared_show_more,
                     style: tt.labelLarge?.copyWith(
@@ -95,9 +104,11 @@ class MainCategoriesSection extends StatelessWidget {
   }
 
   List<Widget> _buildAlternatingGrid(
-      BuildContext context, List<CategoryEntity> categories) {
-    final List<Widget> items = [];
-    int i = 0;
+    BuildContext context,
+    List<CategoryEntity> categories,
+  ) {
+    final items = <Widget>[];
+    var i = 0;
 
     while (i < categories.length) {
       final firstIndex = i;

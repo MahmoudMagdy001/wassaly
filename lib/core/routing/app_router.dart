@@ -18,7 +18,13 @@ import 'package:wassaly/features/cart/presentation/bloc/checkout/checkout_bloc.d
 import 'package:wassaly/features/cart/presentation/screens/cart_page.dart';
 import 'package:wassaly/features/cart/presentation/screens/checkout_page.dart';
 import 'package:wassaly/features/cart/presentation/screens/order_success_page.dart';
+import 'package:wassaly/features/category/presentation/screens/all_categories_page.dart';
+import 'package:wassaly/features/category/presentation/screens/category_page.dart';
 import 'package:wassaly/features/favorite/presentation/screens/favorite_page.dart';
+import 'package:wassaly/features/home/domain/entities/category_entity.dart';
+import 'package:wassaly/features/home/domain/entities/sub_category_entity.dart';
+import 'package:wassaly/features/home/presentation/bloc/home_bloc.dart';
+import 'package:wassaly/features/home/presentation/bloc/home_event.dart';
 import 'package:wassaly/features/home/presentation/screens/home_page.dart';
 import 'package:wassaly/features/main_layout/presentation/screens/main_layout_page.dart';
 import 'package:wassaly/features/notifications/presentation/pages/notifications_page.dart';
@@ -29,15 +35,20 @@ import 'package:wassaly/features/orders/presentation/screens/booking_details_pag
 import 'package:wassaly/features/orders/presentation/screens/order_details_page.dart';
 import 'package:wassaly/features/orders/presentation/screens/orders_page.dart';
 import 'package:wassaly/features/product_details/presentation/screens/product_details_page.dart';
+import 'package:wassaly/features/products_filter/domain/entities/product_filter_params.dart';
+import 'package:wassaly/features/products_filter/presentation/bloc/products_filter_bloc.dart';
+import 'package:wassaly/features/products_filter/presentation/screens/products_filter_page.dart';
 import 'package:wassaly/features/profile/domain/entities/address_entity.dart';
 import 'package:wassaly/features/profile/presentation/bloc/profile/profile_bloc.dart';
 import 'package:wassaly/features/profile/presentation/screens/add_address_page.dart';
 import 'package:wassaly/features/profile/presentation/screens/addresses_page.dart';
 import 'package:wassaly/features/profile/presentation/screens/edit_profile_page.dart';
 import 'package:wassaly/features/profile/presentation/screens/help_center_page.dart';
+import 'package:wassaly/features/profile/presentation/screens/privacy_policy_page.dart';
 import 'package:wassaly/features/profile/presentation/screens/profile_page.dart';
 import 'package:wassaly/features/profile/presentation/screens/terms_of_service_page.dart';
 import 'package:wassaly/features/provider_details/presentation/screens/provider_details_page.dart';
+import 'package:wassaly/features/search/presentation/screens/search_page.dart';
 import 'package:wassaly/features/service_booking/domain/entities/booking_entity.dart';
 import 'package:wassaly/features/service_booking/presentation/bloc/booking_detail/booking_detail_bloc.dart';
 import 'package:wassaly/features/service_booking/presentation/bloc/booking_detail/booking_detail_event.dart';
@@ -47,24 +58,13 @@ import 'package:wassaly/features/service_details/domain/entities/service_detail_
 import 'package:wassaly/features/service_details/presentation/screens/service_details_page.dart';
 import 'package:wassaly/features/sub_category/presentation/screens/sub_category_page.dart';
 
-import '../../features/category/presentation/screens/all_categories_page.dart';
-import '../../features/category/presentation/screens/category_page.dart';
-import '../../features/home/presentation/bloc/home_bloc.dart';
-import '../../features/home/presentation/bloc/home_event.dart';
-import '../../features/products_filter/domain/entities/product_filter_params.dart';
-import '../../features/products_filter/presentation/bloc/products_filter_bloc.dart';
-import '../../features/products_filter/presentation/screens/products_filter_page.dart';
-import '../../features/profile/presentation/screens/privacy_policy_page.dart';
-import '../../features/search/presentation/screens/search_page.dart';
-
 final GoRouter appRouter = GoRouter(
   navigatorKey: rootNavigatorKey,
   initialLocation: AppRoutes.splash,
   observers: [RequestRouteObserver()],
   // Handle deep links for Google OAuth callbacks
-  redirect: (context, state) {
-    return DeepLinkService.instance.getRouteForDeepLink(state.uri);
-  },
+  redirect: (context, state) =>
+      DeepLinkService.instance.getRouteForDeepLink(state.uri),
   routes: <RouteBase>[
     GoRoute(
       path: AppRoutes.splash,
@@ -157,7 +157,7 @@ final GoRouter appRouter = GoRouter(
                       return Scaffold(
                         body: Center(
                             child:
-                                Text(context.l10n.errors_something_went_wrong)),
+                                Text(context.l10n.errors_something_went_wrong),),
                       );
                     }
                     return BlocProvider(
@@ -230,7 +230,7 @@ final GoRouter appRouter = GoRouter(
       name: 'category',
       builder: (context, state) {
         final extra = state.extra as Map<String, dynamic>?;
-        final category = extra?['category'];
+        final category = extra?['category'] as CategoryEntity?;
         if (category == null) {
           return Scaffold(
             body: Center(child: Text(context.l10n.errors_invalid_category)),
@@ -309,7 +309,7 @@ final GoRouter appRouter = GoRouter(
       name: 'subCategory',
       builder: (context, state) {
         final extra = state.extra as Map<String, dynamic>?;
-        final subCategory = extra?['subCategory'];
+        final subCategory = extra?['subCategory'] as SubCategoryEntity?;
         if (subCategory == null) {
           return Scaffold(
             body: Center(child: Text(context.l10n.errors_invalid_sub_category)),

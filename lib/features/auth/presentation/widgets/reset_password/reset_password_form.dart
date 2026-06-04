@@ -98,8 +98,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
           8.verticalSpace,
           BlocSelector<ResetPasswordBloc, ResetPasswordState, bool>(
             selector: (state) => state.isNewPasswordVisible,
-            builder: (context, isNewPasswordVisible) {
-              return AppTextField(
+            builder: (context, isNewPasswordVisible) => AppTextField(
                 hint: context.l10n.reset_password_new_password_hint,
                 obscureText: !isNewPasswordVisible,
                 onChanged: _onNewPasswordChanged,
@@ -128,8 +127,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
                     ),
                   ),
                 ),
-              );
-            },
+              ),
           ),
 
           // Password Strength Indicator
@@ -166,8 +164,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
           8.verticalSpace,
           BlocSelector<ResetPasswordBloc, ResetPasswordState, bool>(
             selector: (state) => state.isConfirmPasswordVisible,
-            builder: (context, isConfirmPasswordVisible) {
-              return AppTextField(
+            builder: (context, isConfirmPasswordVisible) => AppTextField(
                 hint: context.l10n.reset_password_confirm_password_hint,
                 obscureText: !isConfirmPasswordVisible,
                 onChanged: _onConfirmPasswordChanged,
@@ -195,8 +192,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
                     ),
                   ),
                 ),
-              );
-            },
+              ),
           ),
 
           32.verticalSpace,
@@ -214,7 +210,6 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
                 onPressed: canSubmit ? _onSubmit : null,
                 isLoading: isLoading,
                 isFullWidth: true,
-                height: ButtonSize.medium,
                 variant: ButtonVariant.success,
                 suffixIcon: !isLoading
                     ? Icon(

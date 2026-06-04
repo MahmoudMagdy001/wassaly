@@ -1,6 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-import '../entities/product_detail_entity.dart';
+import 'package:wassaly/features/product_details/domain/entities/product_detail_entity.dart';
 
 abstract class ProductDetailsRepository {
   Future<Either<Failure, ProductDetailEntity>> getProductDetails(int productId);

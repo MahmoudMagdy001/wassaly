@@ -64,3 +64,7 @@ class ToggleNotificationEvent extends NotificationsEvent {
   @override
   List<Object?> get props => [isEnabled];
 }
+
+class ResetNotificationsEvent extends NotificationsEvent {
+  const ResetNotificationsEvent();
+}

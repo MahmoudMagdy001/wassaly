@@ -31,14 +31,9 @@ class AvatarPickerWidget extends StatelessWidget {
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
 
-    showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: cs.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-      ),
-      builder: (context) {
-        return SafeArea(
+    unawaited(
+      context.showAppBottomSheet<void>(
+        builder: (context) => SafeArea(
           child: Padding(
             padding: EdgeInsets.all(20.w),
             child: Column(
@@ -60,7 +55,7 @@ class AvatarPickerWidget extends StatelessWidget {
                         label: context.l10n.auth_camera,
                         onTap: () {
                           context.pop();
-                          _pickImage(context, ImageSource.camera);
+                          unawaited(_pickImage(context, ImageSource.camera));
                         },
                       ),
                     ),
@@ -71,7 +66,7 @@ class AvatarPickerWidget extends StatelessWidget {
                         label: context.l10n.auth_gallery,
                         onTap: () {
                           context.pop();
-                          _pickImage(context, ImageSource.gallery);
+                          unawaited(_pickImage(context, ImageSource.gallery));
                         },
                       ),
                     ),
@@ -80,8 +75,8 @@ class AvatarPickerWidget extends StatelessWidget {
               ],
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -160,9 +155,7 @@ class AvatarPickerWidget extends StatelessWidget {
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      onTap: () {
-                        onAvatarCleared();
-                      },
+                      onTap: onAvatarCleared,
                       customBorder: const CircleBorder(),
                       child: Container(
                         width: 32.w,

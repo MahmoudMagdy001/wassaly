@@ -1,15 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:wassaly/app.dart';
+import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/core/services/fcm_background_handler.dart';
 import 'package:wassaly/firebase_options.dart';
-
-import 'app.dart';
-import 'core/imports/imports.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Load environment variables
-  await dotenv.load(fileName: '.env');
+  await dotenv.load();
 
   // Initialize Core Services
   await Future.wait([

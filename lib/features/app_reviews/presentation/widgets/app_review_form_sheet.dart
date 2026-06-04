@@ -1,8 +1,7 @@
 import 'package:wassaly/core/imports/imports.dart';
-
-import '../../domain/entities/app_review_entity.dart';
-import '../bloc/app_reviews_bloc.dart';
-import '../bloc/app_reviews_event.dart';
+import 'package:wassaly/features/app_reviews/domain/entities/app_review_entity.dart';
+import 'package:wassaly/features/app_reviews/presentation/bloc/app_reviews_bloc.dart';
+import 'package:wassaly/features/app_reviews/presentation/bloc/app_reviews_event.dart';
 
 class AppReviewFormSheet extends StatefulWidget {
   final AppReviewEntity? review;
@@ -64,27 +63,24 @@ class _AppReviewFormSheetState extends State<AppReviewFormSheet> {
           12.verticalSpace,
           ValueListenableBuilder<int>(
             valueListenable: _ratingNotifier,
-            builder: (context, rating, child) {
-              return Row(
-                children: List.generate(
-                  5,
-                  (index) {
-                    final star = index + 1;
-                    return IconButton(
-                      onPressed: () => _ratingNotifier.value = star,
-                      icon: Icon(
-                        star <= rating
-                            ? Icons.star_rounded
-                            : Icons.star_outline_rounded,
-                        color: star <= rating
-                            ? const Color(0xFFEF9F27)
-                            : cs.outline,
-                      ),
-                    );
-                  },
-                ),
-              );
-            },
+            builder: (context, rating, child) => Row(
+              children: List.generate(
+                5,
+                (index) {
+                  final star = index + 1;
+                  return IconButton(
+                    onPressed: () => _ratingNotifier.value = star,
+                    icon: Icon(
+                      star <= rating
+                          ? Icons.star_rounded
+                          : Icons.star_outline_rounded,
+                      color:
+                          star <= rating ? const Color(0xFFEF9F27) : cs.outline,
+                    ),
+                  );
+                },
+              ),
+            ),
           ),
           8.verticalSpace,
           TextField(
@@ -117,8 +113,8 @@ class _AppReviewFormSheetState extends State<AppReviewFormSheet> {
     if (comment.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content:
-                Text(context.l10n.product_details_review_comment_required)),
+          content: Text(context.l10n.product_details_review_comment_required),
+        ),
       );
       return;
     }
@@ -141,6 +137,6 @@ class _AppReviewFormSheetState extends State<AppReviewFormSheet> {
       );
     }
 
-    Navigator.of(context).pop();
+    context.pop();
   }
 }

@@ -21,8 +21,12 @@ class AuthRepositoryImpl implements AuthRepository {
   final CartLocalDataSource _cartDataSource;
   final FavoriteLocalDataSource _favoriteDataSource;
 
-  AuthRepositoryImpl(this._remoteDataSource, this._localDataSource,
-      this._cartDataSource, this._favoriteDataSource);
+  AuthRepositoryImpl(
+    this._remoteDataSource,
+    this._localDataSource,
+    this._cartDataSource,
+    this._favoriteDataSource,
+  );
 
   @override
   FutureEither<UserEntity> login({
@@ -52,7 +56,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Right(userWithToken);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure('Unexpected error: $e'));
     }
   }
@@ -73,7 +77,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Right(user);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure('Unexpected error: $e'));
     }
   }
@@ -85,7 +89,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Right(user);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure('Unexpected error: $e'));
     }
   }
@@ -97,7 +101,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Right(token);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure('Unexpected error: $e'));
     }
   }
@@ -117,7 +121,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return const Right(null);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure('Unexpected error: $e'));
     }
   }
@@ -128,7 +132,7 @@ class AuthRepositoryImpl implements AuthRepository {
       // 1. Attempt remote logout — swallow errors (Req 4.1–4.4)
       try {
         await _remoteDataSource.logout();
-      } catch (e) {
+      } on Object catch (_) {
         // Remote logout failed; log and continue with local clearing
       }
 
@@ -140,15 +144,14 @@ class AuthRepositoryImpl implements AuthRepository {
       return const Right(null);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(CacheFailure('Failed to clear user session: $e'));
     }
   }
 
   @override
-  Future<bool> openGoogleLoginUrl() {
-    return DeepLinkService.instance.openGoogleLoginUrl();
-  }
+  Future<bool> openGoogleLoginUrl() =>
+      DeepLinkService.instance.openGoogleLoginUrl();
 
   @override
   FutureEither<UserEntity> googleLogin({
@@ -167,7 +170,6 @@ class AuthRepositoryImpl implements AuthRepository {
         id: id,
         email: email,
         name: fullName,
-        phone: null,
         avatarUrl: avatar,
         token: token,
       );
@@ -178,7 +180,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Right(user);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure('Unexpected error during Google login: $e'));
     }
   }
@@ -204,7 +206,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Right(result);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure('Unexpected error: $e'));
     }
   }
@@ -219,7 +221,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Right(result);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure('Unexpected error: $e'));
     }
   }
@@ -233,7 +235,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return const Right(null);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure('Unexpected error: $e'));
     }
   }
@@ -247,7 +249,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Right(result);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure('Unexpected error: $e'));
     }
   }
@@ -263,7 +265,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Right(result);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure('Unexpected error: $e'));
     }
   }
@@ -285,7 +287,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return const Right(null);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure('Unexpected error: $e'));
     }
   }

@@ -6,9 +6,7 @@ class AddressesPage extends StatelessWidget {
   const AddressesPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const _AddressesView();
-  }
+  Widget build(BuildContext context) => const _AddressesView();
 }
 
 class _AddressesView extends StatefulWidget {
@@ -41,7 +39,6 @@ class _AddressesViewState extends State<_AddressesView> {
             slivers: [
               AppSliverTopBar(
                 title: context.l10n.profile_saved_addresses,
-                centerTitle: true,
               ),
               if (addressStatus.isLoading)
                 SliverPadding(
@@ -50,8 +47,7 @@ class _AddressesViewState extends State<_AddressesView> {
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
                         if (index.isOdd) return 16.verticalSpace;
-                        return Skeletonizer(
-                          enabled: true,
+                        return const Skeletonizer(
                           child: _AddressCard(address: _MockAddress()),
                         );
                       },
@@ -82,7 +78,8 @@ class _AddressesViewState extends State<_AddressesView> {
                     title: context.l10n.profile_no_addresses,
                     subtitle: context.l10n.profile_add_address_hint,
                     actionLabel: context.l10n.profile_add_address,
-                    onAction: () => context.push(AppRoutes.addAddress),
+                    onAction: () =>
+                        unawaited(context.push(AppRoutes.addAddress)),
                   ),
                 )
               else ...[
@@ -112,7 +109,8 @@ class _AddressesViewState extends State<_AddressesView> {
                           color: cs.onPrimary,
                           size: 20.r,
                         ),
-                        onPressed: () => context.push(AppRoutes.addAddress),
+                        onPressed: () =>
+                            unawaited(context.push(AppRoutes.addAddress)),
                       ),
                     ),
                   ),
@@ -127,7 +125,7 @@ class _AddressesViewState extends State<_AddressesView> {
 }
 
 class _AddressCard extends StatelessWidget {
-  final dynamic address;
+  final AddressEntity address;
 
   const _AddressCard({required this.address});
 
@@ -137,9 +135,9 @@ class _AddressCard extends StatelessWidget {
     final tt = context.theme.textTheme;
 
     // Determine icon and colors based on address type
-    final bool isHome = address.title.toLowerCase().contains('home') ||
+    final isHome = address.title.toLowerCase().contains('home') ||
         address.title.toLowerCase().contains('منزل');
-    final bool isWork = address.title.toLowerCase().contains('work') ||
+    final isWork = address.title.toLowerCase().contains('work') ||
         address.title.toLowerCase().contains('عمل');
 
     final iconData = isHome
@@ -178,7 +176,7 @@ class _AddressCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '${(address.address as String).cleanAddress(center: address.centerName as String, governorate: address.governorateName as String)} , ${address.centerName} , ${address.governorateName}',
+            '${address.address.cleanAddress(center: address.centerName, governorate: address.governorateName)} , ${address.centerName} , ${address.governorateName}',
             style: tt.bodyMedium?.copyWith(
               color: cs.onSurfaceVariant,
             ),
@@ -222,9 +220,11 @@ class _AddressCard extends StatelessWidget {
                   prefixIcon:
                       Icon(Icons.edit_outlined, color: cs.primary, size: 18.r),
                   onPressed: () {
-                    context.push(
-                      AppRoutes.addAddress,
-                      extra: address,
+                    unawaited(
+                      context.push(
+                        AppRoutes.addAddress,
+                        extra: address,
+                      ),
                     );
                   },
                 ),
@@ -283,7 +283,6 @@ class _DeleteAddressDialog extends StatelessWidget {
                   child: AppButton(
                     label: context.l10n.shared_cancel,
                     variant: ButtonVariant.ghost,
-                    isFullWidth: false,
                     onPressed: () => Navigator.of(context).pop(false),
                   ),
                 ),
@@ -305,10 +304,15 @@ class _DeleteAddressDialog extends StatelessWidget {
   }
 }
 
-class _MockAddress {
-  final String title = 'Home Address';
-  final String address = '123 Main Street, Building 4';
-  final String governorateName = 'Cairo';
-  final String centerName = 'Nasr City';
-  final int id = 0;
+class _MockAddress extends AddressEntity {
+  const _MockAddress()
+      : super(
+          id: '0',
+          title: 'Home Address',
+          address: '123 Main Street, Building 4',
+          governorateId: '0',
+          governorateName: 'Cairo',
+          centerId: '0',
+          centerName: 'Nasr City',
+        );
 }

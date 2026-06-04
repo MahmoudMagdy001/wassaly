@@ -43,10 +43,11 @@ class AppSliverTopBar extends StatelessWidget {
   String? _currentPath(BuildContext context) {
     try {
       return GoRouterState.of(context).uri.path;
-    } catch (_) {
+    } on Object catch (_) {
       try {
         return GoRouter.of(context).routeInformationProvider.value.uri.path;
-      } catch (_) {
+      } on Object catch (e) {
+        debugPrint('Error clearing cache: $e');
         return null;
       }
     }
@@ -63,7 +64,7 @@ class AppSliverTopBar extends StatelessWidget {
       } else {
         context.go(AppRoutes.home);
       }
-    } catch (_) {
+    } on Exception catch (_) {
       if (context.mounted) {
         context.go(AppRoutes.home);
       }
@@ -74,7 +75,7 @@ class AppSliverTopBar extends StatelessWidget {
   Widget _buildTitle(BuildContext context, ColorScheme cs, TextTheme tt) {
     if (titleWidget != null) return titleWidget!;
 
-    final List<Widget> children = [];
+    final children = <Widget>[];
 
     if (showLogo) {
       children.add(
@@ -82,7 +83,6 @@ class AppSliverTopBar extends StatelessWidget {
           imageUrl: AppAssets.logo,
           height: 45,
           memCacheHeight: 45 * 2,
-          fit: BoxFit.cover,
         ),
       );
     }

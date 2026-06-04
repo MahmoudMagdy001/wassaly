@@ -45,6 +45,7 @@ import 'package:wassaly/features/notifications/domain/usecases/get_notifications
 import 'package:wassaly/features/notifications/domain/usecases/mark_as_read_usecase.dart';
 import 'package:wassaly/features/notifications/domain/usecases/read_all_notifications_usecase.dart';
 import 'package:wassaly/features/notifications/domain/usecases/toggle_notification_usecase.dart';
+import 'package:wassaly/features/offers/domain/usecases/get_offers_use_case.dart';
 import 'package:wassaly/features/orders/domain/usecases/cancel_order_usecase.dart';
 import 'package:wassaly/features/orders/domain/usecases/delete_order_usecase.dart';
 import 'package:wassaly/features/orders/domain/usecases/get_order_details_usecase.dart';
@@ -79,126 +80,126 @@ import 'package:wassaly/features/service_details/domain/usecases/toggle_service_
 import 'package:wassaly/features/service_details/domain/usecases/update_service_review_usecase.dart';
 import 'package:wassaly/features/sub_category/domain/usecases/get_sub_category_detail_usecase.dart';
 
-import '../../../features/offers/domain/usecases/get_offers_use_case.dart';
-
 void initUseCaseDependencies() {
   // UseCases - Auth
-  sl.registerLazySingleton(() => LoginUseCase(sl()));
-  sl.registerLazySingleton(() => RegisterFcmTokenUseCase(sl()));
-  sl.registerLazySingleton(() => GoogleLoginUseCase(sl()));
-  sl.registerLazySingleton(() => GetProfileUseCase(sl()));
-  sl.registerLazySingleton(() => GetCachedUserUseCase(sl()));
-  sl.registerLazySingleton(() => GetSavedTokenUseCase(sl()));
-  sl.registerLazySingleton(() => LogoutUseCase(sl()));
-  sl.registerLazySingleton(() => SignupUseCase(sl()));
-  sl.registerLazySingleton(() => VerifyOtpUseCase(sl()));
-  sl.registerLazySingleton(() => ResendOtpUseCase(sl()));
-  sl.registerLazySingleton(() => ForgetSendOtpUseCase(sl()));
-  sl.registerLazySingleton(() => ForgetVerifyOtpUseCase(sl()));
-  sl.registerLazySingleton(() => ResetPasswordUseCase(sl()));
+  sl
+    ..registerLazySingleton(() => LoginUseCase(sl()))
+    ..registerLazySingleton(() => RegisterFcmTokenUseCase(sl()))
+    ..registerLazySingleton(() => GoogleLoginUseCase(sl()))
+    ..registerLazySingleton(() => GetProfileUseCase(sl()))
+    ..registerLazySingleton(() => GetCachedUserUseCase(sl()))
+    ..registerLazySingleton(() => GetSavedTokenUseCase(sl()))
+    ..registerLazySingleton(() => LogoutUseCase(sl()))
+    ..registerLazySingleton(() => SignupUseCase(sl()))
+    ..registerLazySingleton(() => VerifyOtpUseCase(sl()))
+    ..registerLazySingleton(() => ResendOtpUseCase(sl()))
+    ..registerLazySingleton(() => ForgetSendOtpUseCase(sl()))
+    ..registerLazySingleton(() => ForgetVerifyOtpUseCase(sl()))
+    ..registerLazySingleton(() => ResetPasswordUseCase(sl()))
 
-  // UseCases - Profile
-  sl.registerLazySingleton(() => UpdateProfileUseCase(sl()));
-  sl.registerLazySingleton(() => LogoutAllDevicesUseCase(sl()));
-  sl.registerLazySingleton(() => DeleteAccountUseCase(sl()));
-  sl.registerLazySingleton(() => GetAddressesUseCase(sl()));
-  sl.registerLazySingleton(() => CreateAddressUseCase(sl()));
-  sl.registerLazySingleton(() => UpdateAddressUseCase(sl()));
-  sl.registerLazySingleton(() => DeleteAddressUseCase(sl()));
-  sl.registerLazySingleton(() => GetGovernoratesUseCase(sl()));
-  sl.registerLazySingleton(() => GetCentersUseCase(sl()));
+    // UseCases - Profile
+    ..registerLazySingleton(() => UpdateProfileUseCase(sl()))
+    ..registerLazySingleton(() => LogoutAllDevicesUseCase(sl()))
+    ..registerLazySingleton(() => DeleteAccountUseCase(sl()))
+    ..registerLazySingleton(() => GetAddressesUseCase(sl()))
+    ..registerLazySingleton(() => CreateAddressUseCase(sl()))
+    ..registerLazySingleton(() => UpdateAddressUseCase(sl()))
+    ..registerLazySingleton(() => DeleteAddressUseCase(sl()))
+    ..registerLazySingleton(() => GetGovernoratesUseCase(sl()))
+    ..registerLazySingleton(() => GetCentersUseCase(sl()))
 
-  // UseCases - Home
-  sl.registerLazySingleton(() => GetBannersUseCase(sl()));
-  sl.registerLazySingleton(() => GetCategoriesUseCase(sl()));
-  sl.registerLazySingleton(() => GetPopularServicesUseCase(sl()));
-  sl.registerLazySingleton(() => GetProductsUseCase(sl()));
+    // UseCases - Home
+    ..registerLazySingleton(() => GetBannersUseCase(sl()))
+    ..registerLazySingleton(() => GetCategoriesUseCase(sl()))
+    ..registerLazySingleton(() => GetPopularServicesUseCase(sl()))
+    ..registerLazySingleton(() => GetProductsUseCase(sl()))
 
-  // UseCases - SubCategory
-  sl.registerLazySingleton(() => GetSubCategoryDetailUseCase(sl()));
+    // UseCases - SubCategory
+    ..registerLazySingleton(() => GetSubCategoryDetailUseCase(sl()))
 
-  // UseCases - Category
-  sl.registerLazySingleton(() => GetCategoryDetailUseCase(sl()));
+    // UseCases - Category
+    ..registerLazySingleton(() => GetCategoryDetailUseCase(sl()))
 
-  // UseCases - Search
-  sl.registerLazySingleton(() => SearchProductsUseCase(sl()));
+    // UseCases - Search
+    ..registerLazySingleton(() => SearchProductsUseCase(sl()))
 
-  // UseCases - Favorite
-  sl.registerLazySingleton(() => GetFavoritesUseCase(sl()));
-  sl.registerLazySingleton(() => GetServiceFavoritesUseCase(sl()));
-  sl.registerLazySingleton(() => ToggleFavoriteUseCase(sl()));
-  sl.registerLazySingleton(() => ToggleServiceFavoriteUseCase(sl()));
-  sl.registerLazySingleton(() => SyncPendingFavoritesUseCase(sl()));
-  sl.registerLazySingleton(() => GetProductDetailsUseCase(sl()));
-  sl.registerLazySingleton(() => CreateProductReviewUseCase(sl()));
-  sl.registerLazySingleton(() => UpdateProductReviewUseCase(sl()));
+    // UseCases - Favorite
+    ..registerLazySingleton(() => GetFavoritesUseCase(sl()))
+    ..registerLazySingleton(() => GetServiceFavoritesUseCase(sl()))
+    ..registerLazySingleton(() => ToggleFavoriteUseCase(sl()))
+    ..registerLazySingleton(() => ToggleServiceFavoriteUseCase(sl()))
+    ..registerLazySingleton(() => SyncPendingFavoritesUseCase(sl()))
+    ..registerLazySingleton(() => GetProductDetailsUseCase(sl()))
+    ..registerLazySingleton(() => CreateProductReviewUseCase(sl()))
+    ..registerLazySingleton(() => UpdateProductReviewUseCase(sl()))
 
-  // UseCases - Cart
-  sl.registerLazySingleton(() => GetCartItemsUseCase(sl()));
-  sl.registerLazySingleton(() => AddToCartUseCase(sl()));
-  sl.registerLazySingleton(() => RemoveFromCartUseCase(sl()));
-  sl.registerLazySingleton(() => UpdateQuantityUseCase(sl()));
-  sl.registerLazySingleton(() => GetUserDataUseCase(sl()));
-  sl.registerLazySingleton(() => GetUserAddressesUseCase(sl()));
-  sl.registerLazySingleton(() => GetCartGovernoratesUseCase(sl()));
-  sl.registerLazySingleton(() => ApplyCouponUseCase(sl()));
-  sl.registerLazySingleton(() => PlaceOrderUseCase(sl()));
+    // UseCases - Cart
+    ..registerLazySingleton(() => GetCartItemsUseCase(sl()))
+    ..registerLazySingleton(() => AddToCartUseCase(sl()))
+    ..registerLazySingleton(() => RemoveFromCartUseCase(sl()))
+    ..registerLazySingleton(() => UpdateQuantityUseCase(sl()))
+    ..registerLazySingleton(() => GetUserDataUseCase(sl()))
+    ..registerLazySingleton(() => GetUserAddressesUseCase(sl()))
+    ..registerLazySingleton(() => GetCartGovernoratesUseCase(sl()))
+    ..registerLazySingleton(() => ApplyCouponUseCase(sl()))
+    ..registerLazySingleton(() => PlaceOrderUseCase(sl()))
 
-  // UseCases - Auth (new)
-  sl.registerLazySingleton(() => ClearUserSessionUseCase(sl()));
+    // UseCases - Auth (new)
+    ..registerLazySingleton(() => ClearUserSessionUseCase(sl()))
 
-  // UseCases - Orders
-  sl.registerLazySingleton(() => GetOrdersUseCase(sl()));
-  sl.registerLazySingleton(() => GetOrderDetailsUseCase(sl()));
-  sl.registerLazySingleton(() => CancelOrderUseCase(sl()));
-  sl.registerLazySingleton(() => UpdateOrderUseCase(sl()));
-  sl.registerLazySingleton(() => DeleteOrderUseCase(sl()));
+    // UseCases - Orders
+    ..registerLazySingleton(() => GetOrdersUseCase(sl()))
+    ..registerLazySingleton(() => GetOrderDetailsUseCase(sl()))
+    ..registerLazySingleton(() => CancelOrderUseCase(sl()))
+    ..registerLazySingleton(() => UpdateOrderUseCase(sl()))
+    ..registerLazySingleton(() => DeleteOrderUseCase(sl()))
 
-  // UseCases - Service Details
-  sl.registerLazySingleton(() => GetServiceDetailsUseCase(sl()));
-  sl.registerLazySingleton(
-      () => detail_favorite.ToggleServiceFavoriteUseCase(sl()));
-  sl.registerLazySingleton(() => CreateServiceReviewUseCase(sl()));
-  sl.registerLazySingleton(() => UpdateServiceReviewUseCase(sl()));
+    // UseCases - Service Details
+    ..registerLazySingleton(() => GetServiceDetailsUseCase(sl()))
+    ..registerLazySingleton(
+      () => detail_favorite.ToggleServiceFavoriteUseCase(sl()),
+    )
+    ..registerLazySingleton(() => CreateServiceReviewUseCase(sl()))
+    ..registerLazySingleton(() => UpdateServiceReviewUseCase(sl()))
 
-  // UseCases - Service Booking
-  sl.registerLazySingleton(() => CreateBookingUseCase(sl()));
-  sl.registerLazySingleton(() => GetMyBookingsUseCase(sl()));
-  sl.registerLazySingleton(() => UpdateBookingUseCase(sl()));
-  sl.registerLazySingleton(() => CancelBookingUseCase(sl()));
-  sl.registerLazySingleton(() => DeleteBookingUseCase(sl()));
-  sl.registerLazySingleton(() => AcceptRescheduleUseCase(sl()));
-  sl.registerLazySingleton(() => ProposeRescheduleUseCase(sl()));
+    // UseCases - Service Booking
+    ..registerLazySingleton(() => CreateBookingUseCase(sl()))
+    ..registerLazySingleton(() => GetMyBookingsUseCase(sl()))
+    ..registerLazySingleton(() => UpdateBookingUseCase(sl()))
+    ..registerLazySingleton(() => CancelBookingUseCase(sl()))
+    ..registerLazySingleton(() => DeleteBookingUseCase(sl()))
+    ..registerLazySingleton(() => AcceptRescheduleUseCase(sl()))
+    ..registerLazySingleton(() => ProposeRescheduleUseCase(sl()))
 
-  // UseCases - Provider Details
-  sl.registerLazySingleton(() => GetProviderDetailsUseCase(sl()));
+    // UseCases - Provider Details
+    ..registerLazySingleton(() => GetProviderDetailsUseCase(sl()))
 
-  // UseCases  // Brands
-  sl.registerLazySingleton(() => GetBrandsUseCase(sl()));
-  sl.registerLazySingleton(() => GetBrandProductsUseCase(sl()));
+    // UseCases  // Brands
+    ..registerLazySingleton(() => GetBrandsUseCase(sl()))
+    ..registerLazySingleton(() => GetBrandProductsUseCase(sl()))
 
-  // Offers
-  sl.registerLazySingleton(() => GetOffersUseCase(sl()));
+    // Offers
+    ..registerLazySingleton(() => GetOffersUseCase(sl()))
 
-  // App Reviews
-  sl.registerLazySingleton(() => GetAppReviewsUseCase(sl()));
-  sl.registerLazySingleton(() => AddAppReviewUseCase(sl()));
-  sl.registerLazySingleton(() => UpdateAppReviewUseCase(sl()));
+    // App Reviews
+    ..registerLazySingleton(() => GetAppReviewsUseCase(sl()))
+    ..registerLazySingleton(() => AddAppReviewUseCase(sl()))
+    ..registerLazySingleton(() => UpdateAppReviewUseCase(sl()))
 
-  // Products Filter
-  sl.registerLazySingleton(() => GetFilteredProductsUseCase(sl()));
+    // Products Filter
+    ..registerLazySingleton(() => GetFilteredProductsUseCase(sl()))
 
-  // Notifications
-  sl.registerLazySingleton(() => GetNotificationsUseCase(sl()));
-  sl.registerLazySingleton(() => MarkAsReadUseCase(sl()));
-  sl.registerLazySingleton(() => ReadAllNotificationsUseCase(sl()));
-  sl.registerLazySingleton(() => DeleteNotificationUseCase(sl()));
-  sl.registerLazySingleton(() => DeleteAllNotificationsUseCase(sl()));
-  sl.registerLazySingleton(() => GetNotificationStatusUseCase(sl()));
-  sl.registerLazySingleton(() => ToggleNotificationUseCase(sl()));
+    // Notifications
+    ..registerLazySingleton(() => GetNotificationsUseCase(sl()))
+    ..registerLazySingleton(() => MarkAsReadUseCase(sl()))
+    ..registerLazySingleton(() => ReadAllNotificationsUseCase(sl()))
+    ..registerLazySingleton(() => DeleteNotificationUseCase(sl()))
+    ..registerLazySingleton(() => DeleteAllNotificationsUseCase(sl()))
+    ..registerLazySingleton(() => GetNotificationStatusUseCase(sl()))
+    ..registerLazySingleton(() => ToggleNotificationUseCase(sl()))
 
-  // Services
-  sl.registerLazySingleton(() => NotificationService.instance);
+    // Services
+    ..registerLazySingleton(() => NotificationService.instance);
 
   // FCM Token Service (singleton, initialized with use case)
   FcmTokenService.instance.useCase = sl<RegisterFcmTokenUseCase>();

@@ -45,8 +45,7 @@ class SignupState extends Equatable {
     bool clearError = false,
     bool clearRegistered = false,
     bool clearAvatar = false,
-  }) {
-    return SignupState(
+  }) => SignupState(
       name: name ?? this.name,
       phone: phone ?? this.phone,
       email: email ?? this.email,
@@ -62,7 +61,6 @@ class SignupState extends Equatable {
           clearRegistered ? false : (isRegistered ?? this.isRegistered),
       avatarFile: clearAvatar ? null : (avatarFile ?? this.avatarFile),
     );
-  }
 
   @override
   List<Object?> get props => [

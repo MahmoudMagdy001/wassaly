@@ -1,8 +1,7 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/search/domain/usecases/search_products_usecase.dart';
-
-import 'search_event.dart';
-import 'search_state.dart';
+import 'package:wassaly/features/search/presentation/bloc/search_event.dart';
+import 'package:wassaly/features/search/presentation/bloc/search_state.dart';
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
   final SearchProductsUseCase _searchProductsUseCase;
@@ -22,13 +21,15 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     _debounceTimer?.cancel();
 
     if (event.query.trim().isEmpty) {
-      emit(state.copyWith(
-        query: event.query,
-        status: SearchStatus.initial,
-        products: const PaginatedResponse(data: []),
-        hasSearched: false,
-        errorMessage: '',
-      ));
+      emit(
+        state.copyWith(
+          query: event.query,
+          status: SearchStatus.initial,
+          products: const PaginatedResponse(data: []),
+          hasSearched: false,
+          errorMessage: '',
+        ),
+      );
       return;
     }
 
@@ -46,35 +47,42 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     _debounceTimer?.cancel();
 
     if (state.query.trim().isEmpty) {
-      emit(state.copyWith(
-        status: SearchStatus.initial,
-        products: const PaginatedResponse(data: []),
-        hasSearched: false,
-        errorMessage: '',
-      ));
+      emit(
+        state.copyWith(
+          status: SearchStatus.initial,
+          products: const PaginatedResponse(data: []),
+          hasSearched: false,
+          errorMessage: '',
+        ),
+      );
       return;
     }
 
-    emit(state.copyWith(
-      status: SearchStatus.loading,
-      errorMessage: '',
-      hasSearched: true,
-    ));
+    emit(
+      state.copyWith(
+        status: SearchStatus.loading,
+        errorMessage: '',
+        hasSearched: true,
+      ),
+    );
 
     final result = await _searchProductsUseCase(
       query: state.query.trim(),
-      page: 1,
     );
 
     result.fold(
-      (failure) => emit(state.copyWith(
-        status: SearchStatus.failure,
-        errorMessage: failure.message,
-      )),
-      (paginatedResponse) => emit(state.copyWith(
-        status: SearchStatus.success,
-        products: paginatedResponse,
-      )),
+      (failure) => emit(
+        state.copyWith(
+          status: SearchStatus.failure,
+          errorMessage: failure.message,
+        ),
+      ),
+      (paginatedResponse) => emit(
+        state.copyWith(
+          status: SearchStatus.success,
+          products: paginatedResponse,
+        ),
+      ),
     );
   }
 
@@ -100,12 +108,14 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         emit(state.copyWith(status: SearchStatus.success));
       },
       (paginatedResponse) {
-        emit(state.copyWith(
-          status: SearchStatus.success,
-          products: paginatedResponse.copyWith(
-            data: [...state.products.data, ...paginatedResponse.data],
+        emit(
+          state.copyWith(
+            status: SearchStatus.success,
+            products: paginatedResponse.copyWith(
+              data: [...state.products.data, ...paginatedResponse.data],
+            ),
           ),
-        ));
+        );
       },
     );
   }

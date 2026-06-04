@@ -7,7 +7,5 @@ class GetCachedUserUseCase {
 
   const GetCachedUserUseCase(this._repository);
 
-  FutureEither<UserEntity?> call() async {
-    return _repository.getCachedUser();
-  }
+  FutureEither<UserEntity?> call() async => _repository.getCachedUser();
 }

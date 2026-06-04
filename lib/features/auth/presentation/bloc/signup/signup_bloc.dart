@@ -51,7 +51,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
     Emitter<SignupState> emit,
   ) {
     emit(state.copyWith(
-        confirmPassword: event.confirmPassword, clearError: true));
+        confirmPassword: event.confirmPassword, clearError: true,),);
   }
 
   void _onConfirmPasswordVisibilityChanged(
@@ -76,7 +76,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
       avatarFile: event.avatarFile,
       clearError: true,
       clearAvatar: event.avatarFile == null,
-    ));
+    ),);
   }
 
   Future<void> _onSignupSubmitted(
@@ -86,7 +86,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
     if (!state.isTermsAccepted) {
       emit(state.copyWith(
         errorMessage: 'auth_terms_required',
-      ));
+      ),);
       return;
     }
 
@@ -107,11 +107,11 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
       (failure) => emit(state.copyWith(
         isLoading: false,
         errorMessage: failure.message,
-      )),
+      ),),
       (user) => emit(state.copyWith(
         isLoading: false,
         isRegistered: true,
-      )),
+      ),),
     );
   }
 }

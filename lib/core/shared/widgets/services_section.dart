@@ -88,13 +88,11 @@ class AppServicesSection extends StatelessWidget {
             hasMore: hasMore && !isLoadingMore && !isLoading,
             onLoadMore: onLoadMore,
             animateItems: !isLoading,
-            itemBuilder: (context, service, index, wrapAnimation) {
-              return wrapAnimation(
+            itemBuilder: (context, service, index, wrapAnimation) => wrapAnimation(
                 ServiceCard(
                   service: service,
                 ),
-              );
-            },
+              ),
           ),
           SliverToBoxAdapter(
             child: Builder(

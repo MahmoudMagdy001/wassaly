@@ -7,12 +7,10 @@ class LoginUseCase {
 
   const LoginUseCase(this._repository);
 
-  FutureEither<UserEntity> call(LoginParams params) {
-    return _repository.login(
+  FutureEither<UserEntity> call(LoginParams params) => _repository.login(
       email: params.email,
       password: params.password,
     );
-  }
 }
 
 class LoginParams {

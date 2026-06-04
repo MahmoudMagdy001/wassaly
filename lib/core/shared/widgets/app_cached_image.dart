@@ -71,8 +71,8 @@ class AppCachedImage extends StatelessWidget {
   Widget build(BuildContext context) {
     // FIX 12: removed LayoutBuilder — constraints were never used,
     // only width?.w / height?.h which come from widget props directly
-    final double? adjustedWidth = width?.w;
-    final double? adjustedHeight = height?.h;
+    final adjustedWidth = width?.w;
+    final adjustedHeight = height?.h;
 
     Widget imageContent = CachedNetworkImage(
       imageUrl: imageUrl,
@@ -106,7 +106,6 @@ class AppCachedImage extends StatelessWidget {
     if (useSkeleton) {
       return Skeletonizer(
         ignoreContainers: true,
-        enabled: true,
         child: Container(
           width: width,
           height: height,
@@ -135,8 +134,7 @@ class AppCachedImage extends StatelessWidget {
     );
   }
 
-  Widget _buildDefaultErrorWidget(BuildContext context) {
-    return SizedBox(
+  Widget _buildDefaultErrorWidget(BuildContext context) => SizedBox(
       width: width,
       height: height,
       child: Center(
@@ -149,5 +147,4 @@ class AppCachedImage extends StatelessWidget {
         ),
       ),
     );
-  }
 }

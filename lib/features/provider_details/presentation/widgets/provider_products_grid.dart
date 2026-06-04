@@ -1,6 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-import '../../../home/domain/entities/product_entity.dart';
+import 'package:wassaly/features/home/domain/entities/product_entity.dart';
 
 class ProviderProductsGrid extends StatelessWidget {
   final List<ProductEntity> products;
@@ -32,11 +32,9 @@ class ProviderProductsGrid extends StatelessWidget {
           items: products,
           padding: EdgeInsets.zero,
           childAspectRatio: 0.67,
-          itemBuilder: (context, product, index, wrapAnimation) {
-            return wrapAnimation(
+          itemBuilder: (context, product, index, wrapAnimation) => wrapAnimation(
               ProductCard(product: product),
-            );
-          },
+            ),
         ),
       ],
     );

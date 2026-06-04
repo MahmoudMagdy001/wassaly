@@ -12,18 +12,16 @@ class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider.value(
-          value: sl<OrdersBloc>()
-            ..add(const GetOrdersEvent())
-            ..add(const GetServiceBookingsEvent()),
-        ),
-      ],
-      child: const _ProfileView(),
-    );
-  }
+  Widget build(BuildContext context) => MultiBlocProvider(
+        providers: [
+          BlocProvider.value(
+            value: sl<OrdersBloc>()
+              ..add(const GetOrdersEvent())
+              ..add(const GetServiceBookingsEvent()),
+          ),
+        ],
+        child: const _ProfileView(),
+      );
 }
 
 class _ProfileView extends StatelessWidget {
@@ -43,13 +41,17 @@ class _ProfileView extends StatelessWidget {
             // Navigation for logout/delete is handled by SessionListenerWrapper.
             // Only show a snackbar for non-logout success actions (user still set).
             if (state.user != null) {
-              context.showTypedSnackBar(context.l10n.profile_action_success,
-                  type: SnackBarType.success);
+              context.showTypedSnackBar(
+                context.l10n.profile_action_success,
+                type: SnackBarType.success,
+              );
             }
           } else if (state.actionStatus.isFailure &&
               state.actionError != null) {
-            context.showTypedSnackBar(state.actionError!,
-                type: SnackBarType.error);
+            context.showTypedSnackBar(
+              state.actionError!,
+              type: SnackBarType.error,
+            );
           }
         },
         child: CustomScrollView(
@@ -57,15 +59,16 @@ class _ProfileView extends StatelessWidget {
             AppSliverTopBar(
               automaticallyImplyLeading: false,
               title: context.l10n.profile_my_account,
-              centerTitle: true,
               actions: [
                 IconButton(
-                  onPressed: () => context.push(AppRoutes.editProfile),
+                  onPressed: () =>
+                      unawaited(context.push(AppRoutes.editProfile)),
                   icon: Icon(Icons.edit_outlined, color: cs.primary),
                   style: IconButton.styleFrom(
                     backgroundColor: cs.primaryContainer.withValues(alpha: 0.3),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.r)),
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
                   ),
                 ),
                 16.horizontalSpace,

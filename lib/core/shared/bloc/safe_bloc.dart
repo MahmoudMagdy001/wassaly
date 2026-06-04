@@ -65,12 +65,10 @@ mixin SafeCubitMixin<BlocState> on fb.Cubit<BlocState> {
   ///   emit(Success(data));
   /// });
   /// ```
-  Future<T> runSafeAsync<T>(Future<T> Function() computation) {
-    return runZoned(
+  Future<T> runSafeAsync<T>(Future<T> Function() computation) => runZoned(
       computation,
       zoneValues: {#blocCancelKey: _cubitCancelKey},
     );
-  }
 
   @override
   Future<void> close() {
@@ -114,13 +112,11 @@ class _SafeEmitter<BlocState> implements Emitter<BlocState> {
     Stream<T> stream, {
     required BlocState Function(T data) onData,
     BlocState Function(Object error, StackTrace stackTrace)? onError,
-  }) {
-    return _delegate.forEach(
+  }) => _delegate.forEach(
       stream,
       onData: onData,
       onError: onError,
     );
-  }
 
   @override
   bool get isDone => _delegate.isDone || _bloc.isClosed;
@@ -130,11 +126,9 @@ class _SafeEmitter<BlocState> implements Emitter<BlocState> {
     Stream<T> stream, {
     required void Function(T data) onData,
     void Function(Object error, StackTrace stackTrace)? onError,
-  }) {
-    return _delegate.onEach(
+  }) => _delegate.onEach(
       stream,
       onData: onData,
       onError: onError,
     );
-  }
 }

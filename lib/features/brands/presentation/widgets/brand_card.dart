@@ -1,6 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-import '../../domain/entities/brand_entity.dart';
+import 'package:wassaly/features/brands/domain/entities/brand_entity.dart';
 
 class BrandCard extends StatelessWidget {
   final BrandEntity brand;
@@ -36,7 +36,6 @@ class BrandCard extends StatelessWidget {
                 height: 64,
                 memCacheHeight: 64 * 3,
                 imageUrl: brand.image,
-                fit: BoxFit.cover,
               ),
             ),
             4.verticalSpace,

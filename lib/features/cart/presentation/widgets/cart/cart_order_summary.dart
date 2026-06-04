@@ -50,7 +50,7 @@ class CartOrderSummary extends StatelessWidget {
             ),
           ],
           12.verticalSpace,
-          AppDivider(color: cs.outline.withValues(alpha: 0.3), height: 1),
+          AppDivider(color: cs.outline.withValues(alpha: 0.3)),
           12.verticalSpace,
           _SummaryRow(
             label: context.l10n.cart_total,

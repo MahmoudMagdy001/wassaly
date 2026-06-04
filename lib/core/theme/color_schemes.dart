@@ -45,8 +45,7 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
     Color? onWarningContainer,
     Color? infoContainer,
     Color? onInfoContainer,
-  }) {
-    return AppColorsExtension(
+  }) => AppColorsExtension(
       success: success ?? this.success,
       onSuccess: onSuccess ?? this.onSuccess,
       warning: warning ?? this.warning,
@@ -60,7 +59,6 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
       infoContainer: infoContainer ?? this.infoContainer,
       onInfoContainer: onInfoContainer ?? this.onInfoContainer,
     );
-  }
 
   @override
   ThemeExtension<AppColorsExtension> lerp(

@@ -26,10 +26,11 @@ class ServiceFavoritesTab extends StatelessWidget {
             (status == FavoriteStatus.refreshing &&
                 serviceFavorites.data.isEmpty);
         final isError = status == FavoriteStatus.error;
+        final bloc = context.read<FavoriteBloc>();
+        final l10n = context.l10n;
 
         return RefreshIndicator(
           onRefresh: () async {
-            final bloc = context.read<FavoriteBloc>();
             bloc.add(const GetServiceFavoritesEvent());
             await bloc.stream.firstWhere(
               (s) =>
@@ -48,9 +49,8 @@ class ServiceFavoritesTab extends StatelessWidget {
                   services: isLoading ? const [] : serviceFavorites.data,
                   hasMore: serviceFavorites.hasMore,
                   isLoadingMore: isLoadingMore,
-                  onLoadMore: () => context
-                      .read<FavoriteBloc>()
-                      .add(const LoadMoreServiceFavoritesEvent()),
+                  onLoadMore: () =>
+                      bloc.add(const LoadMoreServiceFavoritesEvent()),
                   padding:
                       EdgeInsets.symmetric(horizontal: 6.w, vertical: 10.h),
                   mainAxisExtent: 190.h,
@@ -62,9 +62,7 @@ class ServiceFavoritesTab extends StatelessWidget {
                     child: AppErrorWidget.failure(
                       failure:
                           failure ?? const UnknownFailure('An error occurred'),
-                      onRetry: () => context
-                          .read<FavoriteBloc>()
-                          .add(const GetServiceFavoritesEvent()),
+                      onRetry: () => bloc.add(const GetServiceFavoritesEvent()),
                     ),
                   ),
                 )
@@ -74,8 +72,8 @@ class ServiceFavoritesTab extends StatelessWidget {
                   child: Center(
                     child: AppEmptyState(
                       icon: Icons.favorite_outline,
-                      title: context.l10n.favorite_no_services,
-                      subtitle: context.l10n.favorite_no_services_subtitle,
+                      title: l10n.favorite_no_services,
+                      subtitle: l10n.favorite_no_services_subtitle,
                     ),
                   ),
                 ),

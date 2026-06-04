@@ -31,8 +31,7 @@ class _BookingCustomerFormState extends State<BookingCustomerForm> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return BlocListener<ServiceBookingBloc, ServiceBookingState>(
+  Widget build(BuildContext context) => BlocListener<ServiceBookingBloc, ServiceBookingState>(
       listenWhen: (prev, curr) =>
           prev.customerName != curr.customerName ||
           prev.customerPhone != curr.customerPhone ||
@@ -82,5 +81,4 @@ class _BookingCustomerFormState extends State<BookingCustomerForm> {
         },
       ),
     );
-  }
 }

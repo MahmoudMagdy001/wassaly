@@ -1,8 +1,8 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-import '../../../domain/entities/order_entity.dart';
-import '../../bloc/orders_bloc.dart';
-import '../../bloc/orders_event.dart';
+import 'package:wassaly/features/orders/domain/entities/order_entity.dart';
+import 'package:wassaly/features/orders/presentation/bloc/orders_bloc.dart';
+import 'package:wassaly/features/orders/presentation/bloc/orders_event.dart';
 
 class OrderCard extends StatelessWidget {
   final OrderEntity order;
@@ -79,7 +79,7 @@ class OrderCard extends StatelessWidget {
                             ),
                             8.horizontalSpace,
                             Icon(Icons.shopping_basket_outlined,
-                                size: 16.r, color: cs.onSurfaceVariant),
+                                size: 16.r, color: cs.onSurfaceVariant,),
                           ],
                         ),
                         8.verticalSpace,
@@ -93,7 +93,7 @@ class OrderCard extends StatelessWidget {
                             ),
                             8.horizontalSpace,
                             Icon(Icons.calendar_today_outlined,
-                                size: 16.r, color: cs.onSurfaceVariant),
+                                size: 16.r, color: cs.onSurfaceVariant,),
                           ],
                         ),
                       ],
@@ -150,11 +150,11 @@ class _StatusBadge extends StatelessWidget {
 
     final statusConfig = {
       'pending': _StatusConfig(
-          const Color(0xFFF59E0B), context.l10n.order_status_pending),
+          const Color(0xFFF59E0B), context.l10n.order_status_pending,),
       'waiting': _StatusConfig(
-          const Color(0xFFF59E0B), context.l10n.order_status_pending),
+          const Color(0xFFF59E0B), context.l10n.order_status_pending,),
       'قيد الانتظار': _StatusConfig(
-          const Color(0xFFF59E0B), context.l10n.order_status_pending),
+          const Color(0xFFF59E0B), context.l10n.order_status_pending,),
       'accepted':
           _StatusConfig(Colors.blue, context.l10n.order_status_accepted),
       'تم القبول':

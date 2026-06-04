@@ -12,8 +12,7 @@ class UserModel extends UserEntity {
     this.token,
   });
 
-  factory UserModel.fromJson(Map<String, dynamic> json) {
-    return UserModel(
+  factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
       id: json['id'].toString(),
       email: json['email'] as String,
       name: json['name'] as String?,
@@ -21,10 +20,8 @@ class UserModel extends UserEntity {
       avatarUrl: json['avatar'] as String?,
       token: json['token'] as String?,
     );
-  }
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'id': id,
       'email': email,
       'name': name,
@@ -32,5 +29,4 @@ class UserModel extends UserEntity {
       'avatar': avatarUrl,
       'token': token,
     };
-  }
 }

@@ -17,23 +17,25 @@ class FavoriteModel extends ProductEntity {
   factory FavoriteModel.fromJson(Map<String, dynamic> json) {
     // Parse offers if available
     final offersData = json['offers'] as List<dynamic>? ?? [];
-    final offers = offersData
-        .map((offer) => OfferEntity(
-              id: offer['id'] as int? ?? 0,
-              discountPercentage: offer['discount_percentage'] as int? ?? 0,
-            ))
-        .toList();
+    final offers = offersData.map((offer) {
+      final map = offer as Map<String, dynamic>;
+      return OfferEntity(
+        id: map['id'] as int? ?? 0,
+        discountPercentage: map['discount_percentage'] as int? ?? 0,
+      );
+    }).toList();
 
     // Parse reviews if available
     final reviewsData = json['reviews'] as List<dynamic>? ?? [];
-    final reviews = reviewsData
-        .map((review) => ReviewEntity(
-              id: review['id'] as int? ?? 0,
-              rating: review['rating'] as int? ?? 0,
-              comment: review['comment'] as String? ?? '',
-              createdAt: review['created_at'] as String? ?? '',
-            ))
-        .toList();
+    final reviews = reviewsData.map((review) {
+      final map = review as Map<String, dynamic>;
+      return ReviewEntity(
+        id: map['id'] as int? ?? 0,
+        rating: map['rating'] as int? ?? 0,
+        comment: map['comment'] as String? ?? '',
+        createdAt: map['created_at'] as String? ?? '',
+      );
+    }).toList();
 
     return FavoriteModel(
       id: json['id'] as int,
@@ -47,39 +49,35 @@ class FavoriteModel extends ProductEntity {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'image': image,
-      'price': price,
-      'description': description,
-      'offers': offers
-          .map((offer) => {
-                'discount_percentage': offer.discountPercentage,
-              })
-          .toList(),
-      'reviews': reviews
-          .map((review) => {
-                'id': review.id,
-                'rating': review.rating,
-                'comment': review.comment,
-              })
-          .toList(),
-      'is_favorite': isFavorite,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'image': image,
+        'price': price,
+        'description': description,
+        'offers': offers
+            .map((offer) => {
+                  'discount_percentage': offer.discountPercentage,
+                },)
+            .toList(),
+        'reviews': reviews
+            .map((review) => {
+                  'id': review.id,
+                  'rating': review.rating,
+                  'comment': review.comment,
+                },)
+            .toList(),
+        'is_favorite': isFavorite,
+      };
 
-  ProductEntity toEntity() {
-    return ProductEntity(
-      id: id,
-      name: name,
-      image: image,
-      price: price,
-      description: description,
-      offers: offers,
-      reviews: reviews,
-      isFavorite: isFavorite,
-    );
-  }
+  ProductEntity toEntity() => ProductEntity(
+        id: id,
+        name: name,
+        image: image,
+        price: price,
+        description: description,
+        offers: offers,
+        reviews: reviews,
+        isFavorite: isFavorite,
+      );
 }

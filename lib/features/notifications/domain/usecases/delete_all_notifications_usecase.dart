@@ -6,7 +6,5 @@ class DeleteAllNotificationsUseCase {
 
   DeleteAllNotificationsUseCase(this.repository);
 
-  Future<Either<Failure, Unit>> call() {
-    return repository.deleteAllNotifications();
-  }
+  Future<Either<Failure, Unit>> call() => repository.deleteAllNotifications();
 }

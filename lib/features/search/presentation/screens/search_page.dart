@@ -9,12 +9,10 @@ class SearchPage extends StatelessWidget {
   const SearchPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
+  Widget build(BuildContext context) => BlocProvider(
       create: (_) => sl<SearchBloc>(),
       child: const _SearchPageContent(),
     );
-  }
 }
 
 class _SearchPageContent extends StatelessWidget {
@@ -107,11 +105,9 @@ class _SearchPageContent extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyState(BuildContext context) {
-    return AppEmptyState(
+  Widget _buildEmptyState(BuildContext context) => AppEmptyState(
       title: context.l10n.search_no_results_found,
       subtitle: context.l10n.search_try_different_search,
       icon: Icons.search_off,
     );
-  }
 }

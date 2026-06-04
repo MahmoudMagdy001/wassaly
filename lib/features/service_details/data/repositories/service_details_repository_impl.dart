@@ -1,7 +1,7 @@
 import 'package:wassaly/core/imports/imports.dart';
-import '../../domain/entities/service_detail_entity.dart';
-import '../../domain/repositories/service_details_repository.dart';
-import '../datasources/service_details_remote_datasource.dart';
+import 'package:wassaly/features/service_details/data/datasources/service_details_remote_datasource.dart';
+import 'package:wassaly/features/service_details/domain/entities/service_detail_entity.dart';
+import 'package:wassaly/features/service_details/domain/repositories/service_details_repository.dart';
 
 class ServiceDetailsRepositoryImpl implements ServiceDetailsRepository {
   final ServiceDetailsRemoteDataSource _remoteDataSource;
@@ -10,20 +10,23 @@ class ServiceDetailsRepositoryImpl implements ServiceDetailsRepository {
 
   @override
   Future<Either<Failure, ServiceDetailEntity>> getServiceDetails(
-      int serviceId) async {
+    int serviceId,
+  ) async {
     try {
       final service = await _remoteDataSource.getServiceDetails(serviceId);
       return Right(service);
     } on Failure catch (failure) {
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }
 
   @override
   Future<Either<Failure, bool>> toggleServiceFavorite(
-      int serviceId, bool isCurrentlyFavorite) async {
+    int serviceId,
+    bool isCurrentlyFavorite,
+  ) async {
     try {
       if (isCurrentlyFavorite) {
         await _remoteDataSource.removeServiceFromFavorites(serviceId);
@@ -34,7 +37,7 @@ class ServiceDetailsRepositoryImpl implements ServiceDetailsRepository {
       }
     } on Failure catch (failure) {
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }
@@ -54,7 +57,7 @@ class ServiceDetailsRepositoryImpl implements ServiceDetailsRepository {
       return const Right(unit);
     } on Failure catch (failure) {
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }
@@ -74,7 +77,7 @@ class ServiceDetailsRepositoryImpl implements ServiceDetailsRepository {
       return const Right(unit);
     } on Failure catch (failure) {
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }

@@ -1,6 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
-import '../entities/provider_detail_entity.dart';
-import '../repositories/provider_details_repository.dart';
+import 'package:wassaly/features/provider_details/domain/entities/provider_detail_entity.dart';
+import 'package:wassaly/features/provider_details/domain/repositories/provider_details_repository.dart';
 
 class GetProviderDetailsUseCase {
   final ProviderDetailsRepository _repository;

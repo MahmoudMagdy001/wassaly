@@ -23,9 +23,11 @@ class ServiceCard extends StatelessWidget {
 
   void _openServiceDetails(BuildContext context) {
     if (service.id <= 0) return;
-    context.push(
-      AppRoutes.serviceDetails,
-      extra: {'serviceId': service.id},
+    unawaited(
+      context.push(
+        AppRoutes.serviceDetails,
+        extra: {'serviceId': service.id},
+      ),
     );
   }
 
@@ -116,21 +118,14 @@ class _ActiveServiceMarqueeText extends StatelessWidget {
   final TextStyle? style;
 
   @override
-  Widget build(BuildContext context) {
-    // FIX 2: ValueListenableBuilder wraps ONLY the reactive part
-    // MarqueeText itself changes (isActive), no stable child to hoist here,
-    // but we keep the VLB tight around only this text widget — not the whole card
-    return ValueListenableBuilder<int?>(
-      valueListenable: activeServiceMarqueeId,
-      builder: (context, activeId, _) {
-        return MarqueeText(
+  Widget build(BuildContext context) => ValueListenableBuilder<int?>(
+        valueListenable: activeServiceMarqueeId,
+        builder: (context, activeId, _) => MarqueeText(
           text: text,
           isActive: activeId == serviceId,
           style: style,
-        );
-      },
-    );
-  }
+        ),
+      );
 }
 
 class _ServiceImageSection extends StatelessWidget {
@@ -162,7 +157,6 @@ class _ServiceImageSection extends StatelessWidget {
                     height: 120,
                     imageUrl: service.image!,
                     memCacheHeight: 120 * 3,
-                    fit: BoxFit.cover,
                     borderRadius: BorderRadius.vertical(
                       top: Radius.circular(9.r),
                     ),
@@ -197,7 +191,9 @@ class _ServiceImageSection extends StatelessWidget {
                       : () => _onFavoriteTap(context, isFavorite),
                   child: Container(
                     margin: EdgeInsetsDirectional.symmetric(
-                        horizontal: 6.w, vertical: 6.h),
+                      horizontal: 6.w,
+                      vertical: 6.h,
+                    ),
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
                       color: cs.surface.withValues(alpha: 0.9),

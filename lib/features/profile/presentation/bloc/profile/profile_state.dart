@@ -53,8 +53,7 @@ class ProfileState extends Equatable {
     bool clearAddressError = false,
     bool clearGovernorateError = false,
     bool clearCenterError = false,
-  }) {
-    return ProfileState(
+  }) => ProfileState(
       status: status ?? this.status,
       actionStatus: actionStatus ?? this.actionStatus,
       addressStatus: addressStatus ?? this.addressStatus,
@@ -73,7 +72,6 @@ class ProfileState extends Equatable {
           : (governorateError ?? this.governorateError),
       centerError: clearCenterError ? null : (centerError ?? this.centerError),
     );
-  }
 
   @override
   List<Object?> get props => [

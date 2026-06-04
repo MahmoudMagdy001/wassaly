@@ -82,7 +82,7 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
         try {
           final userMap = jsonDecode(userJson) as Map<String, dynamic>;
           return UserModel.fromJson(userMap);
-        } catch (e) {
+        } on Object catch (e) {
           AppLogger.error('Error parsing cached user: $e');
           return null;
         }

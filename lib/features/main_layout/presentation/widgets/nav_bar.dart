@@ -23,11 +23,10 @@ class MainNavBar extends StatelessWidget {
   final Color unselectedItemColor;
 
   @override
-  Widget build(BuildContext context) {
-    return BlocSelector<SessionBloc, SessionState, SessionAuthenticated?>(
-      selector: (state) => state is SessionAuthenticated ? state : null,
-      builder: (context, session) {
-        return BottomNavigationBar(
+  Widget build(BuildContext context) =>
+      BlocSelector<SessionBloc, SessionState, SessionAuthenticated?>(
+        selector: (state) => state is SessionAuthenticated ? state : null,
+        builder: (context, session) => BottomNavigationBar(
           currentIndex: currentIndex.clamp(0, 3),
           onTap: onTap,
           backgroundColor: backgroundColor,
@@ -59,20 +58,20 @@ class MainNavBar extends StatelessWidget {
             ),
             BottomNavigationBarItem(
               icon: _ProfileNavIcon(
-                  avatarUrl: session?.user.avatarUrl,
-                  fullName: session?.user.name,
-                  isActive: false),
+                avatarUrl: session?.user.avatarUrl,
+                fullName: session?.user.name,
+                isActive: false,
+              ),
               activeIcon: _ProfileNavIcon(
-                  avatarUrl: session?.user.avatarUrl,
-                  fullName: session?.user.name,
-                  isActive: true),
+                avatarUrl: session?.user.avatarUrl,
+                fullName: session?.user.name,
+                isActive: true,
+              ),
               label: context.l10n.nav_nav_profile,
             ),
           ],
-        );
-      },
-    );
-  }
+        ),
+      );
 }
 
 /// Cart icon with a badge — has its own tight [BlocSelector] on [cartCount]
@@ -87,24 +86,22 @@ class _CartBadgeIcon extends StatelessWidget {
   final IconData baseIcon;
 
   @override
-  Widget build(BuildContext context) {
-    return BlocSelector<CartBloc, CartState, int>(
-      selector: (state) => state.cartCount,
-      builder: (context, cartCount) => Badge(
-        label: cartCount > 0
-            ? Text(
-                cartCount.toString(),
-                style: context.textTheme.labelSmall?.copyWith(
-                  color: context.colors.onError,
-                  fontWeight: FontWeight.bold,
-                ),
-              )
-            : null,
-        isLabelVisible: cartCount > 0,
-        child: Icon(baseIcon),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => BlocSelector<CartBloc, CartState, int>(
+        selector: (state) => state.cartCount,
+        builder: (context, cartCount) => Badge(
+          label: cartCount > 0
+              ? Text(
+                  cartCount.toString(),
+                  style: context.textTheme.labelSmall?.copyWith(
+                    color: context.colors.onError,
+                    fontWeight: FontWeight.bold,
+                  ),
+                )
+              : null,
+          isLabelVisible: cartCount > 0,
+          child: Icon(baseIcon),
+        ),
+      );
 }
 
 /// Profile icon — shows the user's avatar when available, falls back to the
@@ -126,7 +123,7 @@ class _ProfileNavIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     // Bounding size is completely fixed (32.r x 32.r) to keep the navigation bar
     // height stable, while the inside image/text/icon scales smoothly when active.
-    final double targetSize = isActive ? 30 : 27;
+    final targetSize = isActive ? 30.0 : 27.0;
 
     String? initials;
     final name = (fullName ?? '').trim();
@@ -170,7 +167,6 @@ class _ProfileNavIcon extends StatelessWidget {
                     // memCacheWidth: (targetSize * 3).toInt(),
                     // memCacheHeight: (targetSize * 3).toInt(),
                     imageUrl: avatarUrl!,
-                    fit: BoxFit.cover,
                   )
                 : (initials != null
                     ? Center(

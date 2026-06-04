@@ -23,12 +23,11 @@ FutureEither<T> runTask<T>(
     if (requiresNetwork && _isConnectionError(e)) {
       // Timeout added to prevent blocking when internet_connection_checker_plus
       // takes too long (5-30s) to confirm no internet via HTTP checks.
-      final hasNetwork = await sl<InternetConnectionService>()
-          .hasConnection()
-          .timeout(
-            const Duration(seconds: 5),
-            onTimeout: () => false,
-          );
+      final hasNetwork =
+          await sl<InternetConnectionService>().hasConnection().timeout(
+                const Duration(seconds: 5),
+                onTimeout: () => false,
+              );
       if (!hasNetwork) {
         AppLogger.warning('Network unavailable for task');
         // Don't show toast here - let the UI handle the error display
@@ -37,16 +36,15 @@ FutureEither<T> runTask<T>(
     }
     final errorMessage = AppErrorHandler.format(e);
     return left(ServerFailure(errorMessage, error: e));
-  } catch (error, stackTrace) {
+  } on Object catch (error, stackTrace) {
     AppLogger.error('Task execution failed $error', [error, stackTrace]);
     final errorMessage = AppErrorHandler.format(error);
     return left(ServerFailure(errorMessage, error: error));
   }
 }
 
-bool _isConnectionError(DioException e) {
-  return e.type == DioExceptionType.connectionError ||
-      e.type == DioExceptionType.connectionTimeout ||
-      e.type == DioExceptionType.sendTimeout ||
-      e.type == DioExceptionType.receiveTimeout;
-}
+bool _isConnectionError(DioException e) =>
+    e.type == DioExceptionType.connectionError ||
+    e.type == DioExceptionType.connectionTimeout ||
+    e.type == DioExceptionType.sendTimeout ||
+    e.type == DioExceptionType.receiveTimeout;

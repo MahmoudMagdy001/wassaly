@@ -36,8 +36,6 @@ class _HelpCenterPageState extends State<HelpCenterPage> {
         slivers: [
           AppSliverTopBar(
             title: context.l10n.profile_help_center,
-            snap: true,
-            floating: true,
           ),
           SliverPadding(
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
@@ -102,8 +100,7 @@ class _HeroBanner extends StatelessWidget {
   final TextTheme tt;
 
   @override
-  Widget build(BuildContext context) {
-    return AppCard(
+  Widget build(BuildContext context) => AppCard(
       showShadow: true,
       color: cs.primary,
       child: Row(
@@ -177,7 +174,6 @@ class _HeroBanner extends StatelessWidget {
         ],
       ),
     );
-  }
 }
 
 class _ContactCard extends StatelessWidget {
@@ -186,8 +182,7 @@ class _ContactCard extends StatelessWidget {
   final TextTheme tt;
 
   @override
-  Widget build(BuildContext context) {
-    return AppCard(
+  Widget build(BuildContext context) => AppCard(
       showShadow: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -198,7 +193,6 @@ class _ContactCard extends StatelessWidget {
             prefixIcon: const Icon(Icons.chat_bubble_outline, size: 18),
             onPressed: () => context.showTypedSnackBar(
               context.l10n.profile_help_contacting_support,
-              type: SnackBarType.info,
             ),
           ),
           10.verticalSpace,
@@ -209,7 +203,6 @@ class _ContactCard extends StatelessWidget {
             variant: ButtonVariant.outline,
             onPressed: () => context.showTypedSnackBar(
               context.l10n.profile_help_open_mail,
-              type: SnackBarType.info,
             ),
           ),
           14.verticalSpace,
@@ -249,7 +242,6 @@ class _ContactCard extends StatelessWidget {
         ],
       ),
     );
-  }
 }
 
 class _FaqCard extends StatelessWidget {
@@ -268,8 +260,7 @@ class _FaqCard extends StatelessWidget {
   final void Function(int) onExpand;
 
   @override
-  Widget build(BuildContext context) {
-    return AppCard(
+  Widget build(BuildContext context) => AppCard(
       showShadow: true,
       padding: EdgeInsets.zero,
       child: Column(
@@ -353,7 +344,6 @@ class _FaqCard extends StatelessWidget {
         }),
       ),
     );
-  }
 }
 
 class _LinksCard extends StatelessWidget {
@@ -362,8 +352,7 @@ class _LinksCard extends StatelessWidget {
   final TextTheme tt;
 
   @override
-  Widget build(BuildContext context) {
-    return AppCard(
+  Widget build(BuildContext context) => AppCard(
       showShadow: true,
       padding: EdgeInsets.zero,
       child: Column(
@@ -392,7 +381,6 @@ class _LinksCard extends StatelessWidget {
         ],
       ),
     );
-  }
 }
 
 class _LinkTile extends StatelessWidget {
@@ -415,8 +403,7 @@ class _LinkTile extends StatelessWidget {
   final bool isLast;
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
+  Widget build(BuildContext context) => Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
@@ -453,7 +440,6 @@ class _LinkTile extends StatelessWidget {
         ),
       ),
     );
-  }
 }
 
 class _SectionLabel extends StatelessWidget {
@@ -468,8 +454,7 @@ class _SectionLabel extends StatelessWidget {
   final ColorScheme cs;
 
   @override
-  Widget build(BuildContext context) {
-    return Text(
+  Widget build(BuildContext context) => Text(
       label.toUpperCase(),
       style: tt.labelSmall?.copyWith(
         color: cs.onSurfaceVariant,
@@ -477,5 +462,4 @@ class _SectionLabel extends StatelessWidget {
         letterSpacing: 0.8,
       ),
     );
-  }
 }

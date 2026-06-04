@@ -1,6 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-import '../../domain/entities/provider_detail_entity.dart';
+import 'package:wassaly/features/provider_details/domain/entities/provider_detail_entity.dart';
 
 class ProviderReviewCard extends StatelessWidget {
   final ProviderDetailReviewEntity review;

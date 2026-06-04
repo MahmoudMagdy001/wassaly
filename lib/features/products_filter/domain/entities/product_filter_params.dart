@@ -25,8 +25,7 @@ class ProductFilterParams extends Equatable {
     List<int>? ratings,
     String? sort,
     bool clearCategory = false,
-  }) {
-    return ProductFilterParams(
+  }) => ProductFilterParams(
       categoryId: clearCategory ? null : (categoryId ?? this.categoryId),
       minPrice: minPrice ?? this.minPrice,
       maxPrice: maxPrice ?? this.maxPrice,
@@ -34,7 +33,6 @@ class ProductFilterParams extends Equatable {
       ratings: ratings ?? this.ratings,
       sort: sort ?? this.sort,
     );
-  }
 
   bool get isEmpty =>
       categoryId == null &&

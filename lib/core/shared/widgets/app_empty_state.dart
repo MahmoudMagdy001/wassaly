@@ -61,7 +61,7 @@ class AppEmptyState extends StatelessWidget {
                 .animate()
                 .scale(
                     duration: const Duration(milliseconds: 600),
-                    curve: Curves.easeOutBack)
+                    curve: Curves.easeOutBack,)
                 .fadeIn(),
 
             32.verticalSpace,
@@ -95,7 +95,7 @@ class AppEmptyState extends StatelessWidget {
                   .slideY(
                       begin: 0.3,
                       delay: const Duration(milliseconds: 100),
-                      duration: const Duration(milliseconds: 400))
+                      duration: const Duration(milliseconds: 400),)
                   .fadeIn(),
             ],
 
@@ -110,7 +110,7 @@ class AppEmptyState extends StatelessWidget {
                   .slideY(
                       begin: 0.4,
                       delay: const Duration(milliseconds: 150),
-                      duration: const Duration(milliseconds: 400))
+                      duration: const Duration(milliseconds: 400),)
                   .fadeIn(),
             ],
           ],

@@ -18,9 +18,11 @@ class BookingCard extends StatelessWidget {
         padding: EdgeInsets.zero,
         child: InkWell(
           onTap: () {
-            context.push(
-              AppRoutes.bookingDetails,
-              extra: {'booking': booking},
+            unawaited(
+              context.push(
+                AppRoutes.bookingDetails,
+                extra: {'booking': booking},
+              ),
             );
           },
           borderRadius: BorderRadius.circular(16.r),
@@ -78,7 +80,6 @@ class BookingCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8.r),
                         memCacheWidth: 56 * 3,
                         memCacheHeight: 56 * 3,
-                        fit: BoxFit.cover,
                       ),
                     ),
                   ],
@@ -204,11 +205,17 @@ class _StatusBadge extends StatelessWidget {
 
     final statusConfig = {
       'pending': _StatusConfig(
-          const Color(0xFFF59E0B), context.l10n.order_status_pending),
+        const Color(0xFFF59E0B),
+        context.l10n.order_status_pending,
+      ),
       'waiting': _StatusConfig(
-          const Color(0xFFF59E0B), context.l10n.order_status_pending),
+        const Color(0xFFF59E0B),
+        context.l10n.order_status_pending,
+      ),
       'قيد الانتظار': _StatusConfig(
-          const Color(0xFFF59E0B), context.l10n.order_status_pending),
+        const Color(0xFFF59E0B),
+        context.l10n.order_status_pending,
+      ),
       'accepted':
           _StatusConfig(Colors.blue, context.l10n.order_status_accepted),
       'تم القبول':

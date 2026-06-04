@@ -1,5 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
-import '../../../../service_booking/domain/entities/booking_entity.dart';
+import 'package:wassaly/features/service_booking/domain/entities/booking_entity.dart';
 
 class BookingHeaderCard extends StatelessWidget {
   final BookingEntity booking;

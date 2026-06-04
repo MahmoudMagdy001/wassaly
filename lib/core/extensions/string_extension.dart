@@ -1,10 +1,8 @@
 extension StringExtension on String {
   // Validators
-  bool get isValidEmail {
-    return RegExp(
+  bool get isValidEmail => RegExp(
       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
     ).hasMatch(this);
-  }
 
   bool get isValidPhoneNumber {
     if (length > 16 || length < 9) return false;
@@ -12,11 +10,9 @@ extension StringExtension on String {
         .hasMatch(this);
   }
 
-  bool get isValidUrl {
-    return RegExp(
+  bool get isValidUrl => RegExp(
       r"^((((H|h)(T|t)|(F|f))(T|t)(P|p)((S|s)?))\://)?(www.|[a-zA-Z0-9].)[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,6}(\:[0-9]{1,5})*(/($|[a-zA-Z0-9\.\,\;\?\'\\\+&amp;%\$#\=~_\-]+))*$",
     ).hasMatch(this);
-  }
 
   // Formatters
   String get capitalizeFirst {
@@ -86,7 +82,7 @@ extension StringExtension on String {
   }
 
   String cleanAddress({required String center, required String governorate}) {
-    String clean = this;
+    var clean = this;
     if (governorate.isNotEmpty) {
       clean = clean.replaceAll(governorate, '').trim();
     }
@@ -102,7 +98,7 @@ extension StringExtension on String {
       'بيت',
       'شغل',
       'مكتب',
-      'المكتب'
+      'المكتب',
     ];
     for (final title in titleWords) {
       if (clean.startsWith(title)) {
@@ -111,7 +107,7 @@ extension StringExtension on String {
     }
 
     final separators = ['،', ',', '-', '•', '/', r'\'];
-    bool changed = true;
+    var changed = true;
     while (changed) {
       changed = false;
       for (final sep in separators) {

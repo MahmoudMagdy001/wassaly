@@ -98,19 +98,19 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       (failure) => emit(state.copyWith(
         status: AppStatus.failure,
         errorMessage: failure.message,
-      )),
+      ),),
       (user) {
         if (user != null) {
           emit(state.copyWith(
             status: AppStatus.success,
             user: user,
             clearError: true,
-          ));
+          ),);
         } else {
           emit(state.copyWith(
             status: AppStatus.failure,
             errorMessage: 'profile_no_cached_user',
-          ));
+          ),);
         }
       },
     );
@@ -129,7 +129,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         // Silently fail - don't update error state for background refresh
         // If token is invalid, SessionBloc will handle logout
         AppLogger.warning(
-            'Background profile refresh failed: ${failure.message}');
+            'Background profile refresh failed: ${failure.message}',);
       },
       (user) {
         // Update user silently - UI will reflect changes
@@ -138,7 +138,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         emit(state.copyWith(
           user: user,
           clearError: true,
-        ));
+        ),);
       },
     );
   }
@@ -164,7 +164,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       (failure) => emit(state.copyWith(
         actionStatus: AppStatus.failure,
         actionError: failure.message,
-      )),
+      ),),
       (user) {
         // Update session with new user data (for bottom nav avatar update)
         _sessionBloc.add(SessionUserUpdated(user));
@@ -172,7 +172,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           actionStatus: AppStatus.success,
           user: user,
           clearActionError: true,
-        ));
+        ),);
       },
     );
   }
@@ -189,12 +189,11 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       (failure) => emit(state.copyWith(
         actionStatus: AppStatus.failure,
         actionError: failure.message,
-      )),
+      ),),
       (_) => emit(state.copyWith(
         actionStatus: AppStatus.success,
-        user: null,
         clearActionError: true,
-      )),
+      ),),
     );
   }
 
@@ -210,13 +209,12 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       (failure) => emit(state.copyWith(
         actionStatus: AppStatus.failure,
         actionError: failure.message,
-      )),
+      ),),
       (_) {
         emit(state.copyWith(
           actionStatus: AppStatus.success,
-          user: null,
           clearActionError: true,
-        ));
+        ),);
         // Trigger session logout for navigation
         _sessionBloc.add(const SessionLogoutRequested());
       },
@@ -235,13 +233,12 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       (failure) => emit(state.copyWith(
         actionStatus: AppStatus.failure,
         actionError: failure.message,
-      )),
+      ),),
       (_) {
         emit(state.copyWith(
           actionStatus: AppStatus.success,
-          user: null,
           clearActionError: true,
-        ));
+        ),);
         // Delegate navigation to SessionListenerWrapper — same as logout all devices.
         _sessionBloc.add(const SessionLogoutRequested());
       },
@@ -260,12 +257,12 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       (failure) => emit(state.copyWith(
         addressStatus: AppStatus.failure,
         addressError: failure.message,
-      )),
+      ),),
       (addresses) => emit(state.copyWith(
         addressStatus: AppStatus.success,
         addresses: addresses,
         clearAddressError: true,
-      )),
+      ),),
     );
   }
 
@@ -288,7 +285,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       (failure) => emit(state.copyWith(
         addressStatus: AppStatus.failure,
         addressError: failure.message,
-      )),
+      ),),
       (address) {
         final updatedAddresses = List<AddressEntity>.from(state.addresses)
           ..add(address);
@@ -296,7 +293,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           addressStatus: AppStatus.success,
           addresses: updatedAddresses,
           clearAddressError: true,
-        ));
+        ),);
       },
     );
   }
@@ -321,7 +318,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       (failure) => emit(state.copyWith(
         addressStatus: AppStatus.failure,
         addressError: failure.message,
-      )),
+      ),),
       (updatedAddress) {
         final updatedAddresses = state.addresses
             .map((a) => a.id == updatedAddress.id ? updatedAddress : a)
@@ -330,7 +327,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           addressStatus: AppStatus.success,
           addresses: updatedAddresses,
           clearAddressError: true,
-        ));
+        ),);
       },
     );
   }
@@ -349,7 +346,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       (failure) => emit(state.copyWith(
         addressStatus: AppStatus.failure,
         addressError: failure.message,
-      )),
+      ),),
       (_) {
         final updatedAddresses =
             state.addresses.where((a) => a.id != event.addressId).toList();
@@ -357,7 +354,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           addressStatus: AppStatus.success,
           addresses: updatedAddresses,
           clearAddressError: true,
-        ));
+        ),);
       },
     );
   }
@@ -374,12 +371,12 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       (failure) => emit(state.copyWith(
         governorateStatus: AppStatus.failure,
         governorateError: failure.message,
-      )),
+      ),),
       (governorates) => emit(state.copyWith(
         governorateStatus: AppStatus.success,
         governorates: governorates,
         clearGovernorateError: true,
-      )),
+      ),),
     );
   }
 
@@ -397,12 +394,12 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       (failure) => emit(state.copyWith(
         centerStatus: AppStatus.failure,
         centerError: failure.message,
-      )),
+      ),),
       (centers) => emit(state.copyWith(
         centerStatus: AppStatus.success,
         centers: centers,
         clearCenterError: true,
-      )),
+      ),),
     );
   }
 }

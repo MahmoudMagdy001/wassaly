@@ -39,12 +39,12 @@ class _ExitConfirmOverlayState extends State<ExitConfirmOverlay>
       reverseCurve: Curves.easeOut,
     );
 
-    _controller.forward();
+    unawaited(_controller.forward());
 
     // Begin fade-out slightly before the overlay is removed so the animation
     // completes before the entry is pulled from the overlay stack.
     Future.delayed(widget.duration - _animDuration, () {
-      if (mounted) _controller.reverse();
+      if (mounted) unawaited(_controller.reverse());
     });
   }
 

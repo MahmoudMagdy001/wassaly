@@ -26,8 +26,7 @@ class AddressModel extends AddressEntity {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'id': id,
       'title': title,
       'address': address,
@@ -41,5 +40,4 @@ class AddressModel extends AddressEntity {
         'governorate_id': governorateId,
       },
     };
-  }
 }

@@ -8,7 +8,5 @@ class GetOffersUseCase {
   const GetOffersUseCase(this._repository);
 
   Future<Either<Failure, PaginatedResponse<ProductEntity>>> call(
-      int params) async {
-    return await _repository.getOffers(page: params);
-  }
+      int params,) async => _repository.getOffers(page: params);
 }

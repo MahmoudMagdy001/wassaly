@@ -1,6 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-import '../../../service_details/domain/entities/service_detail_entity.dart';
+import 'package:wassaly/features/service_details/domain/entities/service_detail_entity.dart';
 
 class ServiceSummaryCard extends StatelessWidget {
   final ServiceDetailEntity service;

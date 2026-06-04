@@ -24,11 +24,9 @@ class NotificationCard extends StatelessWidget {
         key: ValueKey(notification.id),
         direction: DismissDirection.endToStart,
         onDismissed: (_) => onDelete?.call(),
-        confirmDismiss: (_) async {
-          return await context.showAppDialog<bool>(
+        confirmDismiss: (_) async => context.showAppDialog<bool>(
             builder: (ctx) => _DeleteConfirmDialog(context: ctx),
-          );
-        },
+          ),
         background: _buildDismissBackground(context, cs),
         child: AppCard(
           showShadow: true,
@@ -92,8 +90,7 @@ class NotificationCard extends StatelessWidget {
     );
   }
 
-  Widget _buildDismissBackground(BuildContext context, ColorScheme cs) {
-    return Container(
+  Widget _buildDismissBackground(BuildContext context, ColorScheme cs) => Container(
       margin: EdgeInsets.symmetric(horizontal: 16.w),
       decoration: BoxDecoration(
         color: cs.error,
@@ -118,7 +115,6 @@ class NotificationCard extends StatelessWidget {
         ],
       ),
     );
-  }
 
   // FIX: made static + accepts only ColorScheme — no closure over BuildContext
   Widget _buildIcon(ColorScheme cs) {
@@ -200,7 +196,6 @@ class _DeleteConfirmDialog extends StatelessWidget {
                   child: AppButton(
                     label: context.l10n.shared_cancel,
                     variant: ButtonVariant.ghost,
-                    isFullWidth: false,
                     onPressed: () => Navigator.of(context).pop(false),
                   ),
                 ),

@@ -9,9 +9,7 @@ class FavoritePage extends StatelessWidget {
   const FavoritePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const _FavoriteView();
-  }
+  Widget build(BuildContext context) => const _FavoriteView();
 }
 
 class _FavoriteView extends StatefulWidget {
@@ -53,15 +51,11 @@ class _FavoriteViewState extends State<_FavoriteView>
 
     return Scaffold(
       body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return [
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
             AppSliverTopBar(
               automaticallyImplyLeading: false,
               title: context.l10n.favorite_favorite_title,
-              centerTitle: true,
               pinned: true,
-              floating: true,
-              snap: true,
               bottom: TabBar(
                 controller: _tabController,
                 labelColor: cs.primary,
@@ -74,8 +68,7 @@ class _FavoriteViewState extends State<_FavoriteView>
                 ],
               ),
             ),
-          ];
-        },
+          ],
         body: TabBarView(
           controller: _tabController,
           children: const [

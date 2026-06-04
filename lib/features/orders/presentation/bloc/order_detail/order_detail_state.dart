@@ -1,5 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
-import '../../../domain/entities/order_entity.dart';
+import 'package:wassaly/features/orders/domain/entities/order_entity.dart';
 
 enum OrderDetailStatus { initial, loading, success, failure }
 
@@ -30,8 +30,7 @@ class OrderDetailState extends Equatable {
     String? actionErrorMessage,
     bool? isNotFound,
     bool clearOrder = false,
-  }) {
-    return OrderDetailState(
+  }) => OrderDetailState(
       status: status ?? this.status,
       actionStatus: actionStatus ?? this.actionStatus,
       order: clearOrder ? null : order ?? this.order,
@@ -39,7 +38,6 @@ class OrderDetailState extends Equatable {
       actionErrorMessage: actionErrorMessage ?? this.actionErrorMessage,
       isNotFound: isNotFound ?? this.isNotFound,
     );
-  }
 
   @override
   List<Object?> get props => [

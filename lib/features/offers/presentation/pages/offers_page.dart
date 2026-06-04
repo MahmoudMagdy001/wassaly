@@ -8,12 +8,10 @@ class OffersPage extends StatelessWidget {
   const OffersPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
+  Widget build(BuildContext context) => BlocProvider(
       create: (context) => sl<OffersBloc>()..add(GetOffersEvent()),
       child: const OffersView(),
     );
-  }
 }
 
 class OffersView extends StatelessWidget {

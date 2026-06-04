@@ -17,15 +17,14 @@ class App extends StatelessWidget {
     return StateWrapper(
       child: ScreenUtilWrapper(
         builder: (context) => SettingsListenerWrapper(
-          builder: (context, themeMode, language) =>
-              _buildMaterialApp(context, themeMode, language),
+          builder: _buildMaterialApp,
         ),
       ),
     );
   }
 
   Widget _buildMaterialApp(
-      BuildContext context, ThemeMode themeMode, String language) {
+      BuildContext context, ThemeMode themeMode, String language,) {
     Intl.defaultLocale = language;
     return MaterialApp.router(
       key: ValueKey(language),
@@ -38,11 +37,9 @@ class App extends StatelessWidget {
       localizationsDelegates: S.localizationsDelegates,
       supportedLocales: S.supportedLocales,
       locale: Locale(language),
-      builder: (context, child) {
-        return SessionListenerWrapper(
+      builder: (context, child) => SessionListenerWrapper(
           child: InternetConnectionWrapper(child: child!),
-        );
-      },
+        ),
     );
   }
 }

@@ -1,5 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
-import 'order_item_entity.dart';
+import 'package:wassaly/features/orders/domain/entities/order_item_entity.dart';
 
 class OrderEntity extends Equatable {
   final int id;

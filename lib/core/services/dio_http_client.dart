@@ -8,9 +8,8 @@ import 'package:dio/io.dart';
 void configureDioForDevelopment(Dio dio) {
   dio.httpClientAdapter = IOHttpClientAdapter(
     createHttpClient: () {
-      final client = HttpClient();
-      client.badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
+      final client = HttpClient()
+        ..badCertificateCallback = (cert, host, port) => true;
       return client;
     },
   );

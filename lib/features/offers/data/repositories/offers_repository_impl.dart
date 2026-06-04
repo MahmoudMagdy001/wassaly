@@ -17,7 +17,7 @@ class OffersRepositoryImpl implements OffersRepository {
       return Right(result);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }

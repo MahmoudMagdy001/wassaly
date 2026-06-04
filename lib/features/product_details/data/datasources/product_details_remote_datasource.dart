@@ -1,6 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-import '../models/product_detail_model.dart';
+import 'package:wassaly/features/product_details/data/models/product_detail_model.dart';
 
 abstract class ProductDetailsRemoteDataSource {
   Future<ProductDetailModel> getProductDetails(int productId);

@@ -1,8 +1,7 @@
 import 'package:fpdart/fpdart.dart';
-
-import '../../../../core/utils/failure.dart';
-import '../../../profile/domain/entities/governorate_entity.dart';
-import '../../../profile/domain/usecases/get_governorates_usecase.dart'
+import 'package:wassaly/core/utils/failure.dart';
+import 'package:wassaly/features/profile/domain/entities/governorate_entity.dart';
+import 'package:wassaly/features/profile/domain/usecases/get_governorates_usecase.dart'
     as profile;
 
 class GetCartGovernoratesUseCase {
@@ -10,7 +9,6 @@ class GetCartGovernoratesUseCase {
 
   GetCartGovernoratesUseCase(this._getGovernoratesUseCase);
 
-  Future<Either<Failure, List<GovernorateEntity>>> call() async {
-    return await _getGovernoratesUseCase();
-  }
+  Future<Either<Failure, List<GovernorateEntity>>> call() async =>
+      _getGovernoratesUseCase();
 }

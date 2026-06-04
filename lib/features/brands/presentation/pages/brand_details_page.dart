@@ -17,8 +17,7 @@ class BrandDetailsPage extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
+  Widget build(BuildContext context) => BlocProvider(
       create: (context) =>
           sl<BrandsBloc>()..add(GetBrandProductsEvent(brandId: brandId)),
       child: BrandDetailsView(
@@ -27,7 +26,6 @@ class BrandDetailsPage extends StatelessWidget {
         brandImage: brandImage,
       ),
     );
-  }
 }
 
 class BrandDetailsView extends StatelessWidget {

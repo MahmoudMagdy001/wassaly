@@ -1,16 +1,12 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/core/services/notification_service.dart';
 import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
-import 'package:wassaly/features/notifications/presentation/bloc/notifications_bloc.dart';
-import 'package:wassaly/features/notifications/presentation/bloc/notifications_event.dart';
 
 class SplashPage extends StatelessWidget {
   const SplashPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const _SplashView();
-  }
+  Widget build(BuildContext context) => const _SplashView();
 }
 
 class _SplashView extends StatefulWidget {
@@ -39,7 +35,7 @@ class _SplashViewState extends State<_SplashView>
       duration: const Duration(milliseconds: 2000),
     );
 
-    _initializeServices();
+    unawaited(_initializeServices());
 
     _logoSlide = Tween<double>(begin: 0, end: -140.h).animate(
       CurvedAnimation(
@@ -62,7 +58,7 @@ class _SplashViewState extends State<_SplashView>
       ),
     );
 
-    _startAnimation();
+    unawaited(_startAnimation());
   }
 
   Future<void> _initializeServices() async {
@@ -71,8 +67,8 @@ class _SplashViewState extends State<_SplashView>
       // We only handle app-specific initialization here
       await AppConfig.init();
       _startDeferredServices();
-    } catch (e) {
-      AppLogger.error('Splash init error: $e');
+    } on Exception catch (e) {
+      debugPrint('Error checking user: $e');
     } finally {
       if (mounted && !_initCompleter.isCompleted) {
         _initCompleter.complete();
@@ -88,12 +84,9 @@ class _SplashViewState extends State<_SplashView>
   Future<void> _initializeNotifications() async {
     try {
       await NotificationService.instance.initialize();
-      if (sl.isRegistered<NotificationsBloc>()) {
-        sl<NotificationsBloc>()
-          ..add(const GetNotificationsEvent())
-          ..add(const GetNotificationStatusEvent());
-      }
-    } catch (e) {
+      // Notifications loading is now handled by SessionListenerWrapper
+      // to ensure authentication token is ready.
+    } on Exception catch (e) {
       AppLogger.error('Notification init error: $e');
     }
   }
@@ -122,7 +115,7 @@ class _SplashViewState extends State<_SplashView>
         final userId = int.tryParse(user.id) ?? 0;
         if (userId > 0) {
           // Register current token AND setup refresh listener
-          FcmTokenService.instance.registerToken(userId);
+          unawaited(FcmTokenService.instance.registerToken(userId));
           FcmTokenService.instance.setupTokenRefresh(userId);
         }
         context.go(AppRoutes.home);
@@ -259,14 +252,16 @@ class _PulsingDotsState extends State<_PulsingDots>
     );
 
     _animations = _controllers
-        .map((c) => Tween<double>(begin: 0.3, end: 1).animate(
-              CurvedAnimation(parent: c, curve: Curves.easeInOut),
-            ))
+        .map(
+          (c) => Tween<double>(begin: 0.3, end: 1).animate(
+            CurvedAnimation(parent: c, curve: Curves.easeInOut),
+          ),
+        )
         .toList();
 
     for (var i = 0; i < _controllers.length; i++) {
       Future.delayed(Duration(milliseconds: i * 200), () {
-        if (mounted) _controllers[i].repeat(reverse: true);
+        if (mounted) unawaited(_controllers[i].repeat(reverse: true));
       });
     }
   }
@@ -285,22 +280,21 @@ class _PulsingDotsState extends State<_PulsingDots>
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(3, (i) {
-        return AnimatedBuilder(
+      children: List.generate(
+        3,
+        (i) => AnimatedBuilder(
           animation: _animations[i],
-          builder: (context, _) {
-            return Container(
-              margin: EdgeInsets.symmetric(horizontal: 5.w),
-              width: 8.r,
-              height: 8.r,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: dotColor.withValues(alpha: _animations[i].value),
-              ),
-            );
-          },
-        );
-      }),
+          builder: (context, _) => Container(
+            margin: EdgeInsets.symmetric(horizontal: 5.w),
+            width: 8.r,
+            height: 8.r,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: dotColor.withValues(alpha: _animations[i].value),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

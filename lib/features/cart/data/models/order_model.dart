@@ -1,4 +1,4 @@
-import '../../domain/entities/order_entity.dart';
+import 'package:wassaly/features/cart/domain/entities/order_entity.dart';
 
 class OrderModel {
   final String id;
@@ -25,12 +25,10 @@ class OrderModel {
     );
   }
 
-  OrderEntity toEntity() {
-    return OrderEntity(
+  OrderEntity toEntity() => OrderEntity(
       id: id,
       status: status,
       total: total,
       createdAt: DateTime.tryParse(createdAt) ?? DateTime.now(),
     );
-  }
 }

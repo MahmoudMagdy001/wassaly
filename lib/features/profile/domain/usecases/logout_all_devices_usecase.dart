@@ -6,7 +6,5 @@ class LogoutAllDevicesUseCase {
 
   const LogoutAllDevicesUseCase(this._repository);
 
-  FutureEither<void> call() {
-    return _repository.logoutAllDevices();
-  }
+  FutureEither<void> call() => _repository.logoutAllDevices();
 }

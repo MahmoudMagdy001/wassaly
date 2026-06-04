@@ -21,7 +21,7 @@ class PaginatedResponse<T> extends Equatable {
   }) {
     // Some APIs wrap pagination in a 'pagination' or 'meta' object,
     // others put it inside 'data' (Laravel style), or at the root.
-    Map<String, dynamic> metadata = json;
+    var metadata = json;
 
     if (json['pagination'] is Map<String, dynamic>) {
       metadata = json['pagination'] as Map<String, dynamic>;
@@ -41,44 +41,49 @@ class PaginatedResponse<T> extends Equatable {
           (json['unreadCount'] as num?)?.toInt() ??
           (json['total_unread'] as num?)?.toInt() ??
           (json['totalUnread'] as num?)?.toInt() ??
-          (json['data'] is Map
-              ? (json['data']['unread_count'] as num?)?.toInt() ??
-                  (json['data']['unreadCount'] as num?)?.toInt() ??
-                  (json['data']['total_unread'] as num?)?.toInt() ??
-                  (json['data']['totalUnread'] as num?)?.toInt()
+          (json['data'] is Map<String, dynamic>
+              ? ((json['data'] as Map<String, dynamic>)['unread_count'] as num?)?.toInt() ??
+                  ((json['data'] as Map<String, dynamic>)['unreadCount'] as num?)
+                      ?.toInt() ??
+                  ((json['data'] as Map<String, dynamic>)['total_unread'] as num?)
+                      ?.toInt() ??
+                  ((json['data'] as Map<String, dynamic>)['totalUnread'] as num?)
+                      ?.toInt()
               : null) ??
-          (json['meta'] is Map
-              ? (json['meta']['unread_count'] as num?)?.toInt() ??
-                  (json['meta']['unreadCount'] as num?)?.toInt() ??
-                  (json['meta']['total_unread'] as num?)?.toInt() ??
-                  (json['meta']['totalUnread'] as num?)?.toInt()
+          (json['meta'] is Map<String, dynamic>
+              ? ((json['meta'] as Map<String, dynamic>)['unread_count']
+                          as num?)
+                      ?.toInt() ??
+                  ((json['meta'] as Map<String, dynamic>)['unreadCount']
+                          as num?)
+                      ?.toInt() ??
+                  ((json['meta'] as Map<String, dynamic>)['total_unread']
+                          as num?)
+                      ?.toInt() ??
+                  ((json['meta'] as Map<String, dynamic>)['totalUnread']
+                          as num?)
+                      ?.toInt()
               : null) ??
           0,
     );
   }
 
-  factory PaginatedResponse.fromList(List<T> data) {
-    return PaginatedResponse<T>(
-      data: data,
-      currentPage: 1,
-      lastPage: 1,
-      total: data.length,
-    );
-  }
+  factory PaginatedResponse.fromList(List<T> data) => PaginatedResponse<T>(
+        data: data,
+        total: data.length,
+      );
 
   bool get hasMore => currentPage < lastPage;
 
   factory PaginatedResponse.empty() => PaginatedResponse<T>(data: const []);
 
-  PaginatedResponse<R> map<R>(R Function(T) mapper) {
-    return PaginatedResponse<R>(
-      data: data.map(mapper).toList(),
-      currentPage: currentPage,
-      lastPage: lastPage,
-      total: total,
-      totalUnread: totalUnread,
-    );
-  }
+  PaginatedResponse<R> map<R>(R Function(T) mapper) => PaginatedResponse<R>(
+        data: data.map(mapper).toList(),
+        currentPage: currentPage,
+        lastPage: lastPage,
+        total: total,
+        totalUnread: totalUnread,
+      );
 
   PaginatedResponse<T> copyWith({
     List<T>? data,
@@ -86,15 +91,14 @@ class PaginatedResponse<T> extends Equatable {
     int? lastPage,
     int? total,
     int? totalUnread,
-  }) {
-    return PaginatedResponse<T>(
-      data: data ?? this.data,
-      currentPage: currentPage ?? this.currentPage,
-      lastPage: lastPage ?? this.lastPage,
-      total: total ?? this.total,
-      totalUnread: totalUnread ?? this.totalUnread,
-    );
-  }
+  }) =>
+      PaginatedResponse<T>(
+        data: data ?? this.data,
+        currentPage: currentPage ?? this.currentPage,
+        lastPage: lastPage ?? this.lastPage,
+        total: total ?? this.total,
+        totalUnread: totalUnread ?? this.totalUnread,
+      );
 
   @override
   List<Object?> get props => [data, currentPage, lastPage, total, totalUnread];

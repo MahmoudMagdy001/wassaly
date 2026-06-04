@@ -9,7 +9,6 @@ class SignupHeader extends StatelessWidget {
     final tt = context.theme.textTheme;
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Image.asset(
           AppAssets.logo,

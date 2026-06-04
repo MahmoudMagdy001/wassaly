@@ -7,11 +7,9 @@ class ForgetSendOtpUseCase {
 
   const ForgetSendOtpUseCase(this._repository);
 
-  FutureEither<ForgetSendOtpResponseModel> call(ForgetSendOtpParams params) {
-    return _repository.forgetSendOtp(
+  FutureEither<ForgetSendOtpResponseModel> call(ForgetSendOtpParams params) => _repository.forgetSendOtp(
       email: params.email,
     );
-  }
 }
 
 class ForgetSendOtpParams {

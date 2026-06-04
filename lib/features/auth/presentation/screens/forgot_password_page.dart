@@ -8,12 +8,10 @@ class ForgotPasswordPage extends StatelessWidget {
   const ForgotPasswordPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<ForgotPasswordBloc>(),
-      child: const _ForgotPasswordView(),
-    );
-  }
+  Widget build(BuildContext context) => BlocProvider(
+        create: (_) => sl<ForgotPasswordBloc>(),
+        child: const _ForgotPasswordView(),
+      );
 }
 
 class _ForgotPasswordView extends StatefulWidget {
@@ -58,49 +56,53 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return BlocListener<ForgotPasswordBloc, ForgotPasswordState>(
-      listenWhen: (previous, current) =>
-          previous.isSuccess != current.isSuccess ||
-          previous.errorMessage != current.errorMessage,
-      listener: (context, state) {
-        if (state.isSuccess) {
-          context.showTypedSnackBar(context.l10n.auth_reset_link_sent,
-              type: SnackBarType.success);
-          context.push(
-            AppRoutes.otpVerification,
-            extra: {
-              'email': state.email,
-              'verificationType': VerificationType.forgotPassword,
-            },
-          );
-        }
-        if (state.errorMessage != null) {
-          context.showTypedSnackBar(state.errorMessage!,
-              type: SnackBarType.error);
-        }
-      },
-      child: Scaffold(
-        body: SafeArea(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 18.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const ForgotPasswordHeader(),
-                ForgotPasswordForm(
-                  formKey: _formKey,
-                  emailController: _emailController,
-                  onEmailChanged: _onEmailChanged,
-                  onSubmit: _onSubmit,
-                ),
-                40.verticalSpace,
-                BackToLoginLink(onPressed: _onBackToLogin),
-              ],
+  Widget build(BuildContext context) =>
+      BlocListener<ForgotPasswordBloc, ForgotPasswordState>(
+        listenWhen: (previous, current) =>
+            previous.isSuccess != current.isSuccess ||
+            previous.errorMessage != current.errorMessage,
+        listener: (context, state) {
+          if (state.isSuccess) {
+            context.showTypedSnackBar(
+              context.l10n.auth_reset_link_sent,
+              type: SnackBarType.success,
+            );
+            unawaited(
+              context.push(
+                AppRoutes.otpVerification,
+                extra: {
+                  'email': state.email,
+                  'verificationType': VerificationType.forgotPassword,
+                },
+              ),
+            );
+          }
+          if (state.errorMessage != null) {
+            context.showTypedSnackBar(
+              state.errorMessage!,
+              type: SnackBarType.error,
+            );
+          }
+        },
+        child: Scaffold(
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: 18.w),
+              child: Column(
+                children: [
+                  const ForgotPasswordHeader(),
+                  ForgotPasswordForm(
+                    formKey: _formKey,
+                    emailController: _emailController,
+                    onEmailChanged: _onEmailChanged,
+                    onSubmit: _onSubmit,
+                  ),
+                  40.verticalSpace,
+                  BackToLoginLink(onPressed: _onBackToLogin),
+                ],
+              ),
             ),
           ),
         ),
-      ),
-    );
-  }
+      );
 }

@@ -58,7 +58,6 @@ class _ServiceDetailsGalleryState extends State<ServiceDetailsGallery> {
                 tag: 'service_image_${index}_${widget.gallery[index]}',
                 child: CommonImage(
                   imageUrl: widget.gallery[index],
-                  fit: BoxFit.cover,
                   width: double.infinity,
                   height: 280,
                   memCacheHeight: 280 * 2,

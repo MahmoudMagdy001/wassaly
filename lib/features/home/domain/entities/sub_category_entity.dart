@@ -1,5 +1,5 @@
-import '../../../../core/imports/imports.dart';
-import '../../../sub_category/domain/entities/service_entity.dart';
+import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/features/sub_category/domain/entities/service_entity.dart';
 
 class SubCategoryEntity extends Equatable {
   final int id;

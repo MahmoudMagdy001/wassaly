@@ -1,10 +1,9 @@
+import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/notifications/data/datasources/notification_local_datasource.dart';
 import 'package:wassaly/features/notifications/data/datasources/notification_remote_datasource.dart';
 import 'package:wassaly/features/notifications/data/models/notification_model.dart';
 import 'package:wassaly/features/notifications/domain/entities/notification_entity.dart';
 import 'package:wassaly/features/notifications/domain/repositories/notification_repository.dart';
-
-import '../../../../core/imports/imports.dart';
 
 class NotificationRepositoryImpl implements NotificationRepository {
   final NotificationRemoteDataSource remoteDataSource;
@@ -27,15 +26,17 @@ class NotificationRepositoryImpl implements NotificationRepository {
       // Try to return cached data on failure (like offline)
       final cached = localDataSource.getCachedNotifications(page: page);
       if (cached.isNotEmpty) {
-        return Right(PaginatedResponse(
-          data: cached.map((e) => e as NotificationEntity).toList(),
-          currentPage: page,
-          lastPage:
-              page, // Fallback: we don't know the last page for sure from cache
-        ));
+        return Right(
+          PaginatedResponse(
+            data: cached.map((e) => e as NotificationEntity).toList(),
+            currentPage: page,
+            lastPage:
+                page, // Fallback: we don't know the last page for sure from cache
+          ),
+        );
       }
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure(e.toString()));
     }
   }
@@ -60,11 +61,11 @@ class NotificationRepositoryImpl implements NotificationRepository {
         }
         return n;
       }).toList();
-      await localDataSource.cacheNotifications(updated, page: 1);
+      await localDataSource.cacheNotifications(updated);
       return const Right(unit);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure(e.toString()));
     }
   }
@@ -76,11 +77,11 @@ class NotificationRepositoryImpl implements NotificationRepository {
       // Update local cache
       final cached = localDataSource.getCachedNotifications();
       final updated = cached.where((n) => n.id != id).toList();
-      await localDataSource.cacheNotifications(updated, page: 1);
+      await localDataSource.cacheNotifications(updated);
       return const Right(unit);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure(e.toString()));
     }
   }
@@ -91,22 +92,24 @@ class NotificationRepositoryImpl implements NotificationRepository {
       await remoteDataSource.readAllNotifications();
       // Update local cache
       final cached = localDataSource.getCachedNotifications();
-      final updated = cached.map((n) {
-        return NotificationModel(
-          id: n.id,
-          title: n.title,
-          body: n.body,
-          type: n.type,
-          data: n.data,
-          isRead: true,
-          createdAt: n.createdAt,
-        );
-      }).toList();
-      await localDataSource.cacheNotifications(updated, page: 1);
+      final updated = cached
+          .map(
+            (n) => NotificationModel(
+              id: n.id,
+              title: n.title,
+              body: n.body,
+              type: n.type,
+              data: n.data,
+              isRead: true,
+              createdAt: n.createdAt,
+            ),
+          )
+          .toList();
+      await localDataSource.cacheNotifications(updated);
       return const Right(unit);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure(e.toString()));
     }
   }
@@ -119,7 +122,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
       return const Right(unit);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure(e.toString()));
     }
   }
@@ -131,7 +134,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
       return Right(result);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure(e.toString()));
     }
   }
@@ -143,7 +146,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
       return Right(result);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure(e.toString()));
     }
   }

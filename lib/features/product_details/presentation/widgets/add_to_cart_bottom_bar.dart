@@ -1,8 +1,7 @@
 import 'package:wassaly/core/imports/imports.dart';
-
-import '../../../cart/presentation/bloc/cart_bloc.dart';
-import '../../../cart/presentation/bloc/cart_event.dart';
-import '../../../cart/presentation/bloc/cart_state.dart';
+import 'package:wassaly/features/cart/presentation/bloc/cart_bloc.dart';
+import 'package:wassaly/features/cart/presentation/bloc/cart_event.dart';
+import 'package:wassaly/features/cart/presentation/bloc/cart_state.dart';
 
 class AddToCartBottomBar extends StatefulWidget {
   final int productId;
@@ -70,32 +69,30 @@ class _AddToCartBottomBarState extends State<AddToCartBottomBar> {
               ),
               child: ValueListenableBuilder<int>(
                 valueListenable: _quantityNotifier,
-                builder: (context, quantity, child) {
-                  return Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _QuantityButton(
-                        icon: Icons.remove,
-                        onTap: _decrement,
-                        color: cs,
+                builder: (context, quantity, child) => Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _QuantityButton(
+                      icon: Icons.remove,
+                      onTap: _decrement,
+                      color: cs,
+                    ),
+                    12.horizontalSpace,
+                    Text(
+                      '$quantity',
+                      style: tt.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: cs.primary,
                       ),
-                      12.horizontalSpace,
-                      Text(
-                        '$quantity',
-                        style: tt.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: cs.primary,
-                        ),
-                      ),
-                      12.horizontalSpace,
-                      _QuantityButton(
-                        icon: Icons.add,
-                        onTap: _increment,
-                        color: cs,
-                      ),
-                    ],
-                  );
-                },
+                    ),
+                    12.horizontalSpace,
+                    _QuantityButton(
+                      icon: Icons.add,
+                      onTap: _increment,
+                      color: cs,
+                    ),
+                  ],
+                ),
               ),
             ),
             12.horizontalSpace,
@@ -114,8 +111,9 @@ class _AddToCartBottomBarState extends State<AddToCartBottomBar> {
                     listener: (context, state) {
                       if (state.isInCart(widget.productId)) {
                         context.showTypedSnackBar(
-                            context.l10n.cart_added_to_cart,
-                            type: SnackBarType.success);
+                          context.l10n.cart_added_to_cart,
+                          type: SnackBarType.success,
+                        );
                       }
                     },
                     buildWhen: (prev, curr) =>
@@ -140,7 +138,6 @@ class _AddToCartBottomBarState extends State<AddToCartBottomBar> {
                                       ),
                                     );
                               },
-                        variant: ButtonVariant.primary,
                         isLoading: isAdding,
                         isFullWidth: true,
                         prefixIcon: Icon(
@@ -182,22 +179,20 @@ class _QuantityButton extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 28.w,
-        height: 28.h,
-        decoration: BoxDecoration(
-          color: color.surface,
-          borderRadius: BorderRadius.circular(6.r),
+  Widget build(BuildContext context) => GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: 28.w,
+          height: 28.h,
+          decoration: BoxDecoration(
+            color: color.surface,
+            borderRadius: BorderRadius.circular(6.r),
+          ),
+          child: Icon(
+            icon,
+            size: 16.r,
+            color: color.primary,
+          ),
         ),
-        child: Icon(
-          icon,
-          size: 16.r,
-          color: color.primary,
-        ),
-      ),
-    );
-  }
+      );
 }

@@ -18,7 +18,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
 
   @override
   Future<PaginatedResponse<NotificationModel>> getNotifications(
-      {int page = 1}) async {
+      {int page = 1,}) async {
     final response = await _dioService.get(
       '/api/notifications',
       queryParameters: {'page': page},
@@ -51,7 +51,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
 
         final items = itemsJson
             .map((json) =>
-                NotificationModel.fromJson(json as Map<String, dynamic>))
+                NotificationModel.fromJson(json as Map<String, dynamic>),)
             .toList();
 
         return PaginatedResponse.fromJson(

@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:app_links/app_links.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../utils/utils.dart';
+import 'package:wassaly/core/utils/utils.dart';
 
 /// Data class representing Google login callback from deep link
 class GoogleLoginCallbackData {
@@ -45,18 +44,18 @@ class DeepLinkService {
   Future<void> initialize() async {
     // Handle app launched from terminated state with deep link
     try {
-      final Uri? initialUri = await _appLinks.getInitialLink();
+      final initialUri = await _appLinks.getInitialLink();
       if (initialUri != null) {
         _handleDeepLink(initialUri);
       }
-    } catch (e) {
+    } on Object catch (e) {
       AppLogger.error('Error getting initial deep link: $e');
     }
 
     // Listen for deep links while app is running
     _linkSubscription = _appLinks.uriLinkStream.listen(
       _handleDeepLink,
-      onError: (err) {
+      onError: (Object err) {
         AppLogger.error('Deep link stream error: $err');
       },
     );
@@ -66,8 +65,8 @@ class DeepLinkService {
 
   /// Dispose the service
   void dispose() {
-    _linkSubscription?.cancel();
-    _callbackController.close();
+    unawaited(_linkSubscription?.cancel());
+    unawaited(_callbackController.close());
     AppLogger.info('DeepLinkService disposed');
   }
 
@@ -75,10 +74,11 @@ class DeepLinkService {
   void _handleDeepLink(Uri uri) {
     AppLogger.info('🔔 Received deep link: $uri');
 
-    final String? internalRoute = getRouteForDeepLink(uri);
+    final internalRoute = getRouteForDeepLink(uri);
     if (internalRoute != null) {
       AppLogger.info(
-          '✅ Valid deep link detected, internal route: $internalRoute');
+        '✅ Valid deep link detected, internal route: $internalRoute',
+      );
 
       // Parse data for any listeners (like GoogleLoginBloc)
       final callbackData = _parseAuthCallback(uri);
@@ -116,7 +116,7 @@ class DeepLinkService {
   /// Extracts and fixes query parameters from a URI
   Map<String, String> _getFixedQueryParams(Uri uri) {
     // Fix HTML encoding in query parameters (&amp; -> &) if present in raw query
-    final String fixedQuery = uri.query.replaceAll('&amp;', '&');
+    final fixedQuery = uri.query.replaceAll('&amp;', '&');
     final tempUri = Uri.parse('http://temp.com/?$fixedQuery');
     final rawParams = tempUri.queryParameters;
 
@@ -160,7 +160,7 @@ class DeepLinkService {
         avatar: avatar,
         status: status,
       );
-    } catch (e) {
+    } on Object catch (e) {
       AppLogger.error('❌ Error parsing auth callback: $e');
       return null;
     }
@@ -168,9 +168,9 @@ class DeepLinkService {
 
   /// Open Google login URL in external browser
   Future<bool> openGoogleLoginUrl() async {
-    const String googleLoginUrl =
+    const googleLoginUrl =
         'https://wasly.bynona.store/api/auth/google/redirect?platform=mobile';
-    final Uri uri = Uri.parse(googleLoginUrl);
+    final uri = Uri.parse(googleLoginUrl);
 
     try {
       // Try to launch directly without canLaunchUrl check
@@ -182,7 +182,7 @@ class DeepLinkService {
 
       AppLogger.info('Launched Google login URL: $result');
       return result;
-    } catch (e) {
+    } on Object catch (e) {
       AppLogger.error('Error launching Google login URL: $e');
       return false;
     }

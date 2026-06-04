@@ -27,8 +27,7 @@ class UpdateProfileUseCase {
 
   const UpdateProfileUseCase(this._repository);
 
-  FutureEither<UserEntity> call(UpdateProfileParams params) {
-    return _repository.updateProfile(
+  FutureEither<UserEntity> call(UpdateProfileParams params) => _repository.updateProfile(
       fullName: params.fullName,
       phone: params.phone,
       avatar: params.avatar,
@@ -36,5 +35,4 @@ class UpdateProfileUseCase {
       currentPassword: params.currentPassword,
       passwordConfirmation: params.passwordConfirmation,
     );
-  }
 }

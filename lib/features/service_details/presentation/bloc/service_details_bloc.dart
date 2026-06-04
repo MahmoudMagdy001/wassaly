@@ -1,9 +1,9 @@
 import 'package:wassaly/core/imports/imports.dart';
-import '../../domain/entities/service_detail_entity.dart';
-import '../../domain/usecases/get_service_details_usecase.dart';
-import '../../domain/usecases/toggle_service_favorite_usecase.dart';
-import '../../domain/usecases/create_service_review_usecase.dart';
-import '../../domain/usecases/update_service_review_usecase.dart';
+import 'package:wassaly/features/service_details/domain/entities/service_detail_entity.dart';
+import 'package:wassaly/features/service_details/domain/usecases/create_service_review_usecase.dart';
+import 'package:wassaly/features/service_details/domain/usecases/get_service_details_usecase.dart';
+import 'package:wassaly/features/service_details/domain/usecases/toggle_service_favorite_usecase.dart';
+import 'package:wassaly/features/service_details/domain/usecases/update_service_review_usecase.dart';
 
 part 'service_details_event.dart';
 part 'service_details_state.dart';
@@ -43,7 +43,7 @@ class ServiceDetailsBloc
       (failure) => emit(state.copyWith(
         status: ServiceDetailsStatus.failure,
         errorMessage: failure.message,
-      )),
+      ),),
       (service) {
         final sortedReviews = List<ServiceDetailReviewEntity>.from(service.reviews)
           ..sort((a, b) {
@@ -58,7 +58,7 @@ class ServiceDetailsBloc
         emit(state.copyWith(
           status: ServiceDetailsStatus.success,
           service: service.copyWith(reviews: sortedReviews),
-        ));
+        ),);
       },
     );
   }
@@ -80,11 +80,11 @@ class ServiceDetailsBloc
       (failure) => emit(state.copyWith(
         isFavoriteLoading: false,
         errorMessage: failure.message,
-      )),
+      ),),
       (isFavorite) => emit(state.copyWith(
         isFavoriteLoading: false,
         service: state.service!.copyWith(isFavorite: isFavorite),
-      )),
+      ),),
     );
   }
 

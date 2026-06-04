@@ -1,18 +1,16 @@
 import 'package:wassaly/core/imports/imports.dart';
-import '../repositories/service_details_repository.dart';
+import 'package:wassaly/features/service_details/domain/repositories/service_details_repository.dart';
 
 class CreateServiceReviewUseCase {
   final ServiceDetailsRepository _repository;
 
   const CreateServiceReviewUseCase(this._repository);
 
-  Future<Either<Failure, Unit>> call(CreateServiceReviewParams params) {
-    return _repository.createServiceReview(
+  Future<Either<Failure, Unit>> call(CreateServiceReviewParams params) => _repository.createServiceReview(
       serviceId: params.serviceId,
       rating: params.rating,
       comment: params.comment,
     );
-  }
 }
 
 class CreateServiceReviewParams extends Equatable {

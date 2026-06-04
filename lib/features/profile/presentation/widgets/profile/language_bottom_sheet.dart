@@ -11,8 +11,7 @@ class LanguageBottomSheet extends StatelessWidget {
 
     return BlocSelector<SettingsBloc, SettingsState, String>(
       selector: (state) => state.language,
-      builder: (context, language) {
-        return Column(
+      builder: (context, language) => Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             // Header
@@ -82,8 +81,7 @@ class LanguageBottomSheet extends StatelessWidget {
 
             32.verticalSpace,
           ],
-        );
-      },
+        ),
     );
   }
 
@@ -91,7 +89,7 @@ class LanguageBottomSheet extends StatelessWidget {
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
 
-    return await showAppDialog<bool>(
+    return showAppDialog<bool>(
       child: AlertDialog(
         title: Text(
           context.l10n.profile_language_change_title,

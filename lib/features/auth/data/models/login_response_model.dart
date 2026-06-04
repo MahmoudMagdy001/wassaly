@@ -1,4 +1,4 @@
-import 'user_model.dart';
+import 'package:wassaly/features/auth/data/models/user_model.dart';
 
 class LoginResponseModel {
   final bool status;
@@ -22,13 +22,11 @@ class LoginResponseModel {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'status': status,
       'message': message,
       'data': data?.toJson(),
     };
-  }
 }
 
 class LoginData {
@@ -40,17 +38,13 @@ class LoginData {
     required this.token,
   });
 
-  factory LoginData.fromJson(Map<String, dynamic> json) {
-    return LoginData(
+  factory LoginData.fromJson(Map<String, dynamic> json) => LoginData(
       user: UserModel.fromJson(json['user'] as Map<String, dynamic>),
       token: json['token'] as String,
     );
-  }
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'user': user.toJson(),
       'token': token,
     };
-  }
 }

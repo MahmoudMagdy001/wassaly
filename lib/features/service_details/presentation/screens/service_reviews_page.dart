@@ -1,10 +1,9 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
 import 'package:wassaly/features/orders/presentation/bloc/orders_bloc.dart';
-
-import '../../domain/entities/service_detail_entity.dart';
-import '../bloc/service_details_bloc.dart';
-import '../widgets/service_review_form_sheet.dart';
+import 'package:wassaly/features/service_details/domain/entities/service_detail_entity.dart';
+import 'package:wassaly/features/service_details/presentation/bloc/service_details_bloc.dart';
+import 'package:wassaly/features/service_details/presentation/widgets/service_review_form_sheet.dart';
 
 class ServiceReviewsPage extends StatelessWidget {
   final int serviceId;
@@ -45,10 +44,12 @@ class ServiceReviewsPage extends StatelessWidget {
           final bookingsState = context.watch<OrdersBloc>().state;
           final bookings = bookingsState.serviceBookings.data;
 
-          final hasCompletedBooking = bookings.any((b) =>
-              b.service.id == serviceId &&
-              (b.status.trim().toLowerCase() == 'completed' ||
-                  b.status.trim() == 'مكتمل'));
+          final hasCompletedBooking = bookings.any(
+            (b) =>
+                b.service.id == serviceId &&
+                (b.status.trim().toLowerCase() == 'completed' ||
+                    b.status.trim() == 'مكتمل'),
+          );
 
           return CustomScrollView(
             slivers: [
@@ -95,14 +96,14 @@ class ServiceReviewsPage extends StatelessWidget {
     BuildContext context,
     ServiceDetailReviewEntity review,
   ) {
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      builder: (_) => BlocProvider.value(
-        value: context.read<ServiceDetailsBloc>(),
-        child: ServiceReviewFormSheet(
-          serviceId: serviceId,
-          review: review,
+    unawaited(
+      context.showAppBottomSheet<void>(
+        builder: (_) => BlocProvider.value(
+          value: context.read<ServiceDetailsBloc>(),
+          child: ServiceReviewFormSheet(
+            serviceId: serviceId,
+            review: review,
+          ),
         ),
       ),
     );

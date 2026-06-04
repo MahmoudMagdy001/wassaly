@@ -1,6 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
-
-import '../../domain/entities/booking_entity.dart';
+import 'package:wassaly/features/service_booking/domain/entities/booking_entity.dart';
 
 class BookingSuccessPage extends StatelessWidget {
   final BookingEntity booking;
@@ -52,19 +51,19 @@ class BookingSuccessPage extends StatelessWidget {
                 child: Column(
                   children: [
                     _buildRow(context, context.l10n.service_booking_id,
-                        '#${booking.id}'),
+                        '#${booking.id}',),
                     12.verticalSpace,
                     _buildRow(context, context.l10n.service_booking_service,
-                        booking.service.name),
+                        booking.service.name,),
                     12.verticalSpace,
                     _buildRow(context, context.l10n.service_booking_provider,
-                        booking.provider.name),
+                        booking.provider.name,),
                     12.verticalSpace,
-                    _buildRow(
-                        context, context.l10n.service_booking_day, booking.day),
+                    _buildRow(context, context.l10n.service_booking_day,
+                        context.isArabic ? booking.dayAr : booking.dayEn,),
                     12.verticalSpace,
                     _buildRow(context, context.l10n.service_booking_time,
-                        booking.time.to12HourFormat()),
+                        booking.time.to12HourFormat(),),
                   ],
                 ),
               ),
@@ -89,17 +88,15 @@ class BookingSuccessPage extends StatelessWidget {
     );
   }
 
-  Widget _buildRow(BuildContext context, String label, String value) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(label,
-            style: context.theme.textTheme.bodyMedium
-                ?.copyWith(color: context.theme.colorScheme.outline)),
-        Text(value,
-            style: context.theme.textTheme.bodyLarge
-                ?.copyWith(fontWeight: FontWeight.bold)),
-      ],
-    );
-  }
+  Widget _buildRow(BuildContext context, String label, String value) => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label,
+              style: context.theme.textTheme.bodyMedium
+                  ?.copyWith(color: context.theme.colorScheme.outline),),
+          Text(value,
+              style: context.theme.textTheme.bodyLarge
+                  ?.copyWith(fontWeight: FontWeight.bold),),
+        ],
+      );
 }

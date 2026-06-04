@@ -11,8 +11,7 @@ class EditProfilePhoneField extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return AppTextField(
+  Widget build(BuildContext context) => AppTextField(
       label: context.l10n.auth_phone,
       hint: context.l10n.auth_phone,
       controller: controller,
@@ -20,5 +19,4 @@ class EditProfilePhoneField extends StatelessWidget {
       prefixIcon: const Icon(Icons.phone_outlined),
       keyboardType: TextInputType.phone,
     );
-  }
 }

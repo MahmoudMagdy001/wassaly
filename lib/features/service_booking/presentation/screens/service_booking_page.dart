@@ -24,11 +24,13 @@ class ServiceBookingPage extends StatelessWidget {
 
     return BlocProvider(
       create: (context) => sl<ServiceBookingBloc>()
-        ..add(ServiceBookingInitialized(
-          service: service,
-          preselectedDay: selectedDay,
-          preselectedTime: selectedTime,
-        )),
+        ..add(
+          ServiceBookingInitialized(
+            service: service,
+            preselectedDay: selectedDay,
+            preselectedTime: selectedTime,
+          ),
+        ),
       child: BlocConsumer<ServiceBookingBloc, ServiceBookingState>(
         listenWhen: (prev, curr) =>
             prev.status != curr.status ||
@@ -215,17 +217,20 @@ class ServiceBookingPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSummaryRow(BuildContext context, String label, String value) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(label,
+  Widget _buildSummaryRow(BuildContext context, String label, String value) =>
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
             style: context.theme.textTheme.bodyMedium
-                ?.copyWith(color: context.theme.colorScheme.outline)),
-        Text(value,
+                ?.copyWith(color: context.theme.colorScheme.outline),
+          ),
+          Text(
+            value,
             style: context.theme.textTheme.bodyLarge
-                ?.copyWith(fontWeight: FontWeight.bold)),
-      ],
-    );
-  }
+                ?.copyWith(fontWeight: FontWeight.bold),
+          ),
+        ],
+      );
 }

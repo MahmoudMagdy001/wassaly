@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 
-import '../config/app_config.dart';
-import '../utils/utils.dart';
+import 'package:wassaly/core/config/app_config.dart';
+import 'package:wassaly/core/utils/utils.dart';
 
 /// A robust networking service powered by Dio.
 class DioService {
@@ -11,41 +11,31 @@ class DioService {
   // --- HTTP Methods ---
 
   FutureEither<Response<dynamic>> get(String path,
-      {Map<String, dynamic>? queryParameters}) {
-    return runTask(
+      {Map<String, dynamic>? queryParameters,}) => runTask(
         () => AppConfig.dio.get(path, queryParameters: queryParameters),
-        requiresNetwork: true);
-  }
+        requiresNetwork: true,);
 
   FutureEither<Response<dynamic>> post(String path,
-      {dynamic data, Map<String, dynamic>? queryParameters}) {
-    return runTask(
+      {dynamic data, Map<String, dynamic>? queryParameters,}) => runTask(
         () => AppConfig.dio
             .post(path, data: data, queryParameters: queryParameters),
-        requiresNetwork: true);
-  }
+        requiresNetwork: true,);
 
   FutureEither<Response<dynamic>> put(String path,
-      {dynamic data, Map<String, dynamic>? queryParameters}) {
-    return runTask(
+      {dynamic data, Map<String, dynamic>? queryParameters,}) => runTask(
         () => AppConfig.dio
             .put(path, data: data, queryParameters: queryParameters),
-        requiresNetwork: true);
-  }
+        requiresNetwork: true,);
 
   FutureEither<Response<dynamic>> patch(String path,
-      {dynamic data, Map<String, dynamic>? queryParameters}) {
-    return runTask(
+      {dynamic data, Map<String, dynamic>? queryParameters,}) => runTask(
         () => AppConfig.dio
             .patch(path, data: data, queryParameters: queryParameters),
-        requiresNetwork: true);
-  }
+        requiresNetwork: true,);
 
   FutureEither<Response<dynamic>> delete(String path,
-      {dynamic data, Map<String, dynamic>? queryParameters}) {
-    return runTask(
+      {dynamic data, Map<String, dynamic>? queryParameters,}) => runTask(
         () => AppConfig.dio
             .delete(path, data: data, queryParameters: queryParameters),
-        requiresNetwork: true);
-  }
+        requiresNetwork: true,);
 }

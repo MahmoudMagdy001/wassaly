@@ -6,7 +6,5 @@ class ReadAllNotificationsUseCase {
 
   ReadAllNotificationsUseCase(this.repository);
 
-  Future<Either<Failure, Unit>> call() {
-    return repository.readAllNotifications();
-  }
+  Future<Either<Failure, Unit>> call() => repository.readAllNotifications();
 }

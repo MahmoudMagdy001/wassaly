@@ -1,9 +1,8 @@
 import 'package:wassaly/core/imports/imports.dart';
-
-import '../../../features/favorite/presentation/bloc/favorite_bloc.dart';
-import '../../../features/favorite/presentation/bloc/favorite_event.dart';
-import '../../../features/favorite/presentation/bloc/favorite_state.dart';
-import '../../../features/home/domain/entities/product_entity.dart';
+import 'package:wassaly/features/favorite/presentation/bloc/favorite_bloc.dart';
+import 'package:wassaly/features/favorite/presentation/bloc/favorite_event.dart';
+import 'package:wassaly/features/favorite/presentation/bloc/favorite_state.dart';
+import 'package:wassaly/features/home/domain/entities/product_entity.dart';
 
 final activeMarqueeId = ValueNotifier<int?>(null);
 
@@ -28,7 +27,9 @@ class ProductCard extends StatelessWidget {
 
   void _openProductDetails(BuildContext context) {
     if (product.id <= 0) return;
-    context.push(AppRoutes.productDetails, extra: {'productId': product.id});
+    unawaited(
+      context.push(AppRoutes.productDetails, extra: {'productId': product.id}),
+    );
   }
 
   @override
@@ -97,8 +98,11 @@ class ProductCard extends StatelessWidget {
                       if (product.reviewCount > 0)
                         Row(
                           children: [
-                            Icon(Icons.star_rounded,
-                                size: 14.r, color: cs.secondary),
+                            Icon(
+                              Icons.star_rounded,
+                              size: 14.r,
+                              color: cs.secondary,
+                            ),
                             2.horizontalSpace,
                             Text(
                               '${product.averageRating.toStringAsFixed(1)} (${product.reviewCount})',
@@ -141,18 +145,14 @@ class _ActiveMarqueeText extends StatelessWidget {
   final TextStyle? style;
 
   @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<int?>(
-      valueListenable: activeMarqueeId,
-      builder: (context, activeId, _) {
-        return MarqueeText(
+  Widget build(BuildContext context) => ValueListenableBuilder<int?>(
+        valueListenable: activeMarqueeId,
+        builder: (context, activeId, _) => MarqueeText(
           text: text,
           isActive: activeId == productId,
           style: style,
-        );
-      },
-    );
-  }
+        ),
+      );
 }
 
 class _ProductImageSection extends StatelessWidget {
@@ -177,7 +177,6 @@ class _ProductImageSection extends StatelessWidget {
               height: 140,
               memCacheHeight: 140 * 3,
               imageUrl: product.image,
-              fit: BoxFit.cover,
               borderRadius: BorderRadius.vertical(top: Radius.circular(9.r)),
             ),
           ),
@@ -204,7 +203,9 @@ class _ProductImageSection extends StatelessWidget {
                               ),
                   child: Container(
                     margin: EdgeInsetsDirectional.symmetric(
-                        horizontal: 6.w, vertical: 6.h),
+                      horizontal: 6.w,
+                      vertical: 6.h,
+                    ),
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
                       color: cs.surface.withValues(alpha: 0.9),
@@ -234,7 +235,9 @@ class _ProductImageSection extends StatelessWidget {
               alignment: Alignment.topRight,
               child: Container(
                 margin: EdgeInsetsDirectional.symmetric(
-                    horizontal: 6.w, vertical: 6.h),
+                  horizontal: 6.w,
+                  vertical: 6.h,
+                ),
                 padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
                 decoration: BoxDecoration(
                   color: cs.error,
@@ -276,7 +279,6 @@ class _PriceRow extends StatelessWidget {
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,

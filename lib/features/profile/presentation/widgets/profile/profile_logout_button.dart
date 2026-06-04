@@ -7,19 +7,20 @@ class ProfileLogoutButton extends StatelessWidget {
   const ProfileLogoutButton({required this.onLogoutAllDevices, super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
-      child: AppButton(
-        label: context.l10n.profile_logout,
-        variant: ButtonVariant.danger,
-        isFullWidth: true,
-        prefixIcon: Icon(Icons.logout,
-            size: 20.r, color: context.theme.colorScheme.onError),
-        onPressed: () => _showLogoutDialog(context),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.w),
+        child: AppButton(
+          label: context.l10n.profile_logout,
+          variant: ButtonVariant.danger,
+          isFullWidth: true,
+          prefixIcon: Icon(
+            Icons.logout,
+            size: 20.r,
+            color: context.theme.colorScheme.onError,
+          ),
+          onPressed: () => _showLogoutDialog(context),
+        ),
+      );
 
   void _showLogoutDialog(BuildContext context) async {
     final result = await showAppDialog<String>(
@@ -82,7 +83,7 @@ class _LogoutChoiceDialog extends StatelessWidget {
               child: AppButton(
                 label: context.l10n.profile_logout_this_device,
                 variant: ButtonVariant.danger,
-                onPressed: () => Navigator.of(context).pop('this_device'),
+                onPressed: () => context.pop('this_device'),
               ),
             ),
             12.verticalSpace,
@@ -91,7 +92,7 @@ class _LogoutChoiceDialog extends StatelessWidget {
               child: AppButton(
                 label: context.l10n.profile_logout_all_devices,
                 variant: ButtonVariant.danger,
-                onPressed: () => Navigator.of(context).pop('all_devices'),
+                onPressed: () => context.pop('all_devices'),
               ),
             ),
             12.verticalSpace,
@@ -100,7 +101,7 @@ class _LogoutChoiceDialog extends StatelessWidget {
               child: AppButton(
                 label: context.l10n.shared_cancel,
                 variant: ButtonVariant.secondary,
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () => context.pop(),
               ),
             ),
           ],

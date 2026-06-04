@@ -64,7 +64,7 @@ class _MainLayoutPageState extends State<MainLayoutPage> {
   void _onTap(int index) {
     // Re-tapping the Home tab scrolls to top / refreshes.
     if (index == 0 && widget.navigationShell.currentIndex == 0) {
-      sl<HomeNavigationService>().scrollToTopOrRefresh();
+      unawaited(sl<HomeNavigationService>().scrollToTopOrRefresh());
       return;
     }
     widget.navigationShell.goBranch(
@@ -100,7 +100,7 @@ class _MainLayoutPageState extends State<MainLayoutPage> {
     } else {
       _exitOverlayEntry?.remove();
       _exitOverlayEntry = null;
-      SystemNavigator.pop();
+      unawaited(SystemNavigator.pop());
     }
   }
 
@@ -128,10 +128,12 @@ class _MainLayoutPageState extends State<MainLayoutPage> {
     Overlay.of(context).insert(_exitOverlayEntry!);
 
     // Auto-remove after the overlay has finished its fade-out animation.
-    Future.delayed(overlayDuration + fadeDuration, () {
-      _exitOverlayEntry?.remove();
-      _exitOverlayEntry = null;
-    });
+    unawaited(
+      Future.delayed(overlayDuration + fadeDuration, () {
+        _exitOverlayEntry?.remove();
+        _exitOverlayEntry = null;
+      }),
+    );
   }
 
   @override
@@ -145,9 +147,13 @@ class _MainLayoutPageState extends State<MainLayoutPage> {
           listenWhen: (prev, curr) =>
               prev is! SessionAuthenticated && curr is SessionAuthenticated,
           listener: (context, _) {
-            context.read<CartBloc>().add(const LoadCartItemsEvent());
-            context.read<FavoriteBloc>().add(const GetFavoritesEvent());
-            context.read<FavoriteBloc>().add(const GetServiceFavoritesEvent());
+            final cartBloc = context.read<CartBloc>();
+            final favoriteBloc = context.read<FavoriteBloc>();
+
+            cartBloc.add(const LoadCartItemsEvent());
+            favoriteBloc
+              ..add(const GetFavoritesEvent())
+              ..add(const GetServiceFavoritesEvent());
           },
         ),
       ],

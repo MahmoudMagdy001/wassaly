@@ -7,8 +7,8 @@ import 'package:wassaly/features/service_booking/domain/usecases/cancel_booking_
 import 'package:wassaly/features/service_booking/domain/usecases/delete_booking_usecase.dart';
 import 'package:wassaly/features/service_booking/domain/usecases/propose_reschedule_usecase.dart';
 import 'package:wassaly/features/service_booking/domain/usecases/update_booking_usecase.dart';
-import 'booking_detail_event.dart';
-import 'booking_detail_state.dart';
+import 'package:wassaly/features/service_booking/presentation/bloc/booking_detail/booking_detail_event.dart';
+import 'package:wassaly/features/service_booking/presentation/bloc/booking_detail/booking_detail_state.dart';
 
 class BookingDetailBloc extends Bloc<BookingDetailEvent, BookingDetailState> {
   final CancelBookingUseCase _cancelBookingUseCase;
@@ -47,7 +47,7 @@ class BookingDetailBloc extends Bloc<BookingDetailEvent, BookingDetailState> {
     emit(state.copyWith(
       status: BookingDetailStatus.success,
       booking: event.booking,
-    ));
+    ),);
   }
 
   Future<void> _onCancelBooking(
@@ -57,7 +57,7 @@ class BookingDetailBloc extends Bloc<BookingDetailEvent, BookingDetailState> {
     emit(state.copyWith(
       actionStatus: BookingActionStatus.loading,
       actionErrorMessage: '',
-    ));
+    ),);
 
     final result = await _cancelBookingUseCase(event.bookingId);
 
@@ -65,7 +65,7 @@ class BookingDetailBloc extends Bloc<BookingDetailEvent, BookingDetailState> {
       (failure) => emit(state.copyWith(
         actionStatus: BookingActionStatus.failure,
         actionErrorMessage: failure.message,
-      )),
+      ),),
       (_) {
         // Refresh bookings in OrdersBloc
         _ordersBloc.add(const GetServiceBookingsEvent());
@@ -91,7 +91,7 @@ class BookingDetailBloc extends Bloc<BookingDetailEvent, BookingDetailState> {
           emit(state.copyWith(
             booking: updatedBooking,
             actionStatus: BookingActionStatus.success,
-          ));
+          ),);
         } else {
           emit(state.copyWith(actionStatus: BookingActionStatus.success));
         }
@@ -106,7 +106,7 @@ class BookingDetailBloc extends Bloc<BookingDetailEvent, BookingDetailState> {
     emit(state.copyWith(
       actionStatus: BookingActionStatus.loading,
       actionErrorMessage: '',
-    ));
+    ),);
 
     final result = await _updateBookingUseCase(event.params);
 
@@ -114,7 +114,7 @@ class BookingDetailBloc extends Bloc<BookingDetailEvent, BookingDetailState> {
       (failure) => emit(state.copyWith(
         actionStatus: BookingActionStatus.failure,
         actionErrorMessage: failure.message,
-      )),
+      ),),
       (updatedBooking) {
         // Refresh bookings in OrdersBloc
         _ordersBloc.add(const GetServiceBookingsEvent());
@@ -122,7 +122,7 @@ class BookingDetailBloc extends Bloc<BookingDetailEvent, BookingDetailState> {
         emit(state.copyWith(
           booking: updatedBooking,
           actionStatus: BookingActionStatus.success,
-        ));
+        ),);
       },
     );
   }
@@ -134,7 +134,7 @@ class BookingDetailBloc extends Bloc<BookingDetailEvent, BookingDetailState> {
     emit(state.copyWith(
       actionStatus: BookingActionStatus.loading,
       actionErrorMessage: '',
-    ));
+    ),);
 
     final result = await _deleteBookingUseCase(event.bookingId);
 
@@ -142,7 +142,7 @@ class BookingDetailBloc extends Bloc<BookingDetailEvent, BookingDetailState> {
       (failure) => emit(state.copyWith(
         actionStatus: BookingActionStatus.failure,
         actionErrorMessage: failure.message,
-      )),
+      ),),
       (_) {
         // Refresh bookings in OrdersBloc
         _ordersBloc.add(const GetServiceBookingsEvent());
@@ -159,7 +159,7 @@ class BookingDetailBloc extends Bloc<BookingDetailEvent, BookingDetailState> {
     emit(state.copyWith(
       actionStatus: BookingActionStatus.loading,
       actionErrorMessage: '',
-    ));
+    ),);
 
     final result = await _acceptRescheduleUseCase(event.params);
 
@@ -167,7 +167,7 @@ class BookingDetailBloc extends Bloc<BookingDetailEvent, BookingDetailState> {
       (failure) => emit(state.copyWith(
         actionStatus: BookingActionStatus.failure,
         actionErrorMessage: failure.message,
-      )),
+      ),),
       (_) {
         _ordersBloc.add(const GetServiceBookingsEvent());
 
@@ -192,7 +192,7 @@ class BookingDetailBloc extends Bloc<BookingDetailEvent, BookingDetailState> {
           emit(state.copyWith(
             booking: updatedBooking,
             actionStatus: BookingActionStatus.success,
-          ));
+          ),);
         } else {
           emit(state.copyWith(actionStatus: BookingActionStatus.success));
         }
@@ -207,7 +207,7 @@ class BookingDetailBloc extends Bloc<BookingDetailEvent, BookingDetailState> {
     emit(state.copyWith(
       actionStatus: BookingActionStatus.loading,
       actionErrorMessage: '',
-    ));
+    ),);
 
     final result = await _proposeRescheduleUseCase(event.params);
 
@@ -215,7 +215,7 @@ class BookingDetailBloc extends Bloc<BookingDetailEvent, BookingDetailState> {
       (failure) => emit(state.copyWith(
         actionStatus: BookingActionStatus.failure,
         actionErrorMessage: failure.message,
-      )),
+      ),),
       (_) {
         _ordersBloc.add(const GetServiceBookingsEvent());
 
@@ -239,7 +239,7 @@ class BookingDetailBloc extends Bloc<BookingDetailEvent, BookingDetailState> {
           emit(state.copyWith(
             booking: updatedBooking,
             actionStatus: BookingActionStatus.success,
-          ));
+          ),);
         } else {
           emit(state.copyWith(actionStatus: BookingActionStatus.success));
         }

@@ -117,8 +117,7 @@ class OtpInputFieldState extends State<OtpInputField> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       textDirection: TextDirection.ltr,
-      children: List.generate(widget.length, (index) {
-        return Padding(
+      children: List.generate(widget.length, (index) => Padding(
           padding: EdgeInsets.symmetric(horizontal: 4.w),
           child: SizedBox(
             width: 45.w,
@@ -166,8 +165,7 @@ class OtpInputFieldState extends State<OtpInputField> {
               ),
             ),
           ),
-        );
-      }),
+        ),),
     );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-import '../../../home/domain/entities/product_entity.dart';
-import '../bloc/product_details_state.dart';
+import 'package:wassaly/features/home/domain/entities/product_entity.dart';
+import 'package:wassaly/features/product_details/presentation/bloc/product_details_state.dart';
 
 class RelatedProductsSection extends StatelessWidget {
   final RelatedProductsStatus status;

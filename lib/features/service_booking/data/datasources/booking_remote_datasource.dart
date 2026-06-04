@@ -1,7 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
-
-import '../../domain/entities/booking_entity.dart';
-import '../models/booking_model.dart';
+import 'package:wassaly/features/service_booking/data/models/booking_model.dart';
+import 'package:wassaly/features/service_booking/domain/entities/booking_entity.dart';
 
 abstract class BookingRemoteDataSource {
   Future<BookingModel> createBooking(BookingParams params);

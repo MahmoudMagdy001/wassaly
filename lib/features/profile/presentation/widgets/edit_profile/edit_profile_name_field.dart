@@ -11,8 +11,7 @@ class EditProfileNameField extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return AppTextField(
+  Widget build(BuildContext context) => AppTextField(
       label: context.l10n.auth_name,
       hint: context.l10n.auth_name_placeholder,
       controller: controller,
@@ -20,5 +19,4 @@ class EditProfileNameField extends StatelessWidget {
       prefixIcon: const Icon(Icons.person_outline),
       validator: (v) => v!.isEmpty ? context.l10n.auth_name_required : null,
     );
-  }
 }

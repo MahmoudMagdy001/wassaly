@@ -1,9 +1,8 @@
 import 'package:wassaly/core/imports/imports.dart';
-
-import '../../../../features/profile/domain/entities/address_entity.dart';
-import '../../domain/entities/cart_checkout_entity.dart';
-import '../../domain/entities/cart_item_entity.dart';
-import '../../domain/entities/coupon_entity.dart';
+import 'package:wassaly/features/cart/domain/entities/cart_checkout_entity.dart';
+import 'package:wassaly/features/cart/domain/entities/cart_item_entity.dart';
+import 'package:wassaly/features/cart/domain/entities/coupon_entity.dart';
+import 'package:wassaly/features/profile/domain/entities/address_entity.dart';
 
 enum CartStatus { initial, loading, success, error }
 
@@ -72,28 +71,28 @@ class CartState extends Equatable {
     bool clearAddressesError = false,
     bool clearCouponError = false,
     bool clearSelectedAddress = false,
-  }) {
-    return CartState(
-      status: status ?? this.status,
-      items: items ?? this.items,
-      cartCount: cartCount ?? this.cartCount,
-      inCartProductIds: inCartProductIds ?? this.inCartProductIds,
-      addingProductIds: addingProductIds ?? this.addingProductIds,
-      failure: clearError ? null : failure ?? this.failure,
-      addresses: addresses ?? this.addresses,
-      selectedAddress:
-          clearSelectedAddress ? null : selectedAddress ?? this.selectedAddress,
-      isLoadingAddresses: isLoadingAddresses ?? this.isLoadingAddresses,
-      addressesFailure: clearAddressesError
-          ? null
-          : addressesFailure ?? this.addressesFailure,
-      checkoutData: checkoutData ?? this.checkoutData,
-      appliedCoupon: appliedCoupon ?? this.appliedCoupon,
-      isApplyingCoupon: isApplyingCoupon ?? this.isApplyingCoupon,
-      couponFailure:
-          clearCouponError ? null : couponFailure ?? this.couponFailure,
-    );
-  }
+  }) =>
+      CartState(
+        status: status ?? this.status,
+        items: items ?? this.items,
+        cartCount: cartCount ?? this.cartCount,
+        inCartProductIds: inCartProductIds ?? this.inCartProductIds,
+        addingProductIds: addingProductIds ?? this.addingProductIds,
+        failure: clearError ? null : failure ?? this.failure,
+        addresses: addresses ?? this.addresses,
+        selectedAddress: clearSelectedAddress
+            ? null
+            : selectedAddress ?? this.selectedAddress,
+        isLoadingAddresses: isLoadingAddresses ?? this.isLoadingAddresses,
+        addressesFailure: clearAddressesError
+            ? null
+            : addressesFailure ?? this.addressesFailure,
+        checkoutData: checkoutData ?? this.checkoutData,
+        appliedCoupon: appliedCoupon ?? this.appliedCoupon,
+        isApplyingCoupon: isApplyingCoupon ?? this.isApplyingCoupon,
+        couponFailure:
+            clearCouponError ? null : couponFailure ?? this.couponFailure,
+      );
 
   // Calculated getters
   double get totalOriginalPrice => items.fold<double>(

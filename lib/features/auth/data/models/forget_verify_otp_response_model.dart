@@ -1,4 +1,4 @@
-import '../../../../core/imports/imports.dart';
+import 'package:wassaly/core/imports/imports.dart';
 
 class ForgetVerifyOtpResponseModel extends Equatable {
   final bool status;
@@ -20,13 +20,11 @@ class ForgetVerifyOtpResponseModel extends Equatable {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'status': status,
       'message': message,
       'token': token,
     };
-  }
 
   @override
   List<Object?> get props => [status, message, token];

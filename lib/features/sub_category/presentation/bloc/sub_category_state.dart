@@ -1,7 +1,7 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/home/domain/entities/product_entity.dart';
 
-import '../../domain/entities/sub_category_detail_entity.dart';
+import 'package:wassaly/features/sub_category/domain/entities/sub_category_detail_entity.dart';
 
 enum SubCategoryStatus { initial, loading, success, failure }
 
@@ -29,15 +29,13 @@ class SubCategoryState extends Equatable {
     PaginatedResponse<ProductEntity>? products,
     String? errorMessage,
     bool? isLoadingMore,
-  }) {
-    return SubCategoryState(
+  }) => SubCategoryState(
       status: status ?? this.status,
       subCategory: subCategory ?? this.subCategory,
       products: products ?? this.products,
       errorMessage: errorMessage ?? this.errorMessage,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
     );
-  }
 
   @override
   List<Object?> get props =>

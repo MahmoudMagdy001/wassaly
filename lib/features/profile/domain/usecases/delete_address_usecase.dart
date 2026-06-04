@@ -12,7 +12,5 @@ class DeleteAddressUseCase {
 
   const DeleteAddressUseCase(this._repository);
 
-  FutureEither<void> call(DeleteAddressParams params) {
-    return _repository.deleteAddress(addressId: params.addressId);
-  }
+  FutureEither<void> call(DeleteAddressParams params) => _repository.deleteAddress(addressId: params.addressId);
 }

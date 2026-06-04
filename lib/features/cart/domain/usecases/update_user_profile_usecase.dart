@@ -1,7 +1,6 @@
 import 'package:fpdart/fpdart.dart';
-
-import '../../../../core/utils/failure.dart';
-import '../../../profile/domain/usecases/update_profile_usecase.dart';
+import 'package:wassaly/core/utils/failure.dart';
+import 'package:wassaly/features/profile/domain/usecases/update_profile_usecase.dart';
 
 class UpdateUserProfileUseCase {
   final UpdateProfileUseCase _updateProfileUseCase;
@@ -11,12 +10,11 @@ class UpdateUserProfileUseCase {
   Future<Either<Failure, dynamic>> call({
     required String fullName,
     required String phone,
-  }) async {
-    return await _updateProfileUseCase(
-      UpdateProfileParams(
-        fullName: fullName,
-        phone: phone,
-      ),
-    );
-  }
+  }) async =>
+      _updateProfileUseCase(
+        UpdateProfileParams(
+          fullName: fullName,
+          phone: phone,
+        ),
+      );
 }

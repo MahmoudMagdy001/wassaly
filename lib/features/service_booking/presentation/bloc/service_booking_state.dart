@@ -115,8 +115,7 @@ class ServiceBookingState extends Equatable {
     bool clearGovernorateError = false,
     String? centerError,
     bool clearCenterError = false,
-  }) {
-    return ServiceBookingState(
+  }) => ServiceBookingState(
       status: status ?? this.status,
       service: service ?? this.service,
       selectedDay: clearSelectedDay ? null : selectedDay ?? this.selectedDay,
@@ -153,7 +152,6 @@ class ServiceBookingState extends Equatable {
           : governorateError ?? this.governorateError,
       centerError: clearCenterError ? null : centerError ?? this.centerError,
     );
-  }
 
   @override
   List<Object?> get props => [

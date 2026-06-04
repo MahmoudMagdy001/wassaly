@@ -1,4 +1,4 @@
-import '../../../../core/imports/imports.dart';
+import 'package:wassaly/core/imports/imports.dart';
 
 /// Model for parsing the registration API response
 class RegisterResponseModel extends Equatable {
@@ -12,23 +12,19 @@ class RegisterResponseModel extends Equatable {
     this.data,
   });
 
-  factory RegisterResponseModel.fromJson(Map<String, dynamic> json) {
-    return RegisterResponseModel(
+  factory RegisterResponseModel.fromJson(Map<String, dynamic> json) => RegisterResponseModel(
       status: json['status'] as bool? ?? false,
       message: json['message'] as String? ?? '',
       data: json['data'] != null
           ? RegisterDataModel.fromJson(json['data'] as Map<String, dynamic>)
           : null,
     );
-  }
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'status': status,
       'message': message,
       'data': data?.toJson(),
     };
-  }
 
   @override
   List<Object?> get props => [status, message, data];
@@ -56,8 +52,7 @@ class RegisterDataModel extends Equatable {
     this.updatedAt,
   });
 
-  factory RegisterDataModel.fromJson(Map<String, dynamic> json) {
-    return RegisterDataModel(
+  factory RegisterDataModel.fromJson(Map<String, dynamic> json) => RegisterDataModel(
       id: json['id'] as int? ?? 0,
       email: json['email'] as String? ?? '',
       fullName: json['full_name'] as String? ?? '',
@@ -67,10 +62,8 @@ class RegisterDataModel extends Equatable {
       createdAt: json['created_at'] as String?,
       updatedAt: json['updated_at'] as String?,
     );
-  }
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'id': id,
       'email': email,
       'full_name': fullName,
@@ -80,7 +73,6 @@ class RegisterDataModel extends Equatable {
       'created_at': createdAt,
       'updated_at': updatedAt,
     };
-  }
 
   @override
   List<Object?> get props => [

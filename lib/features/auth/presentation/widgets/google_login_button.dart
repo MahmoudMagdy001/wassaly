@@ -60,11 +60,10 @@ class _GoogleLoginButtonState extends State<GoogleLoginButton>
           }
           if (state.errorMessage != null) {
             context.showTypedSnackBar(state.errorMessage!,
-                type: SnackBarType.error);
+                type: SnackBarType.error,);
           }
         },
-        builder: (context, state) {
-          return AppButton(
+        builder: (context, state) => AppButton(
             label: context.l10n.auth_login_with_google,
             onPressed: state.isLoading
                 ? null
@@ -77,7 +76,6 @@ class _GoogleLoginButtonState extends State<GoogleLoginButton>
             variant: ButtonVariant.outline,
             isLoading: state.isLoading,
             isFullWidth: true,
-            height: ButtonSize.medium,
             prefixIcon: state.isLoading
                 ? null
                 : CommonImage(
@@ -88,8 +86,7 @@ class _GoogleLoginButtonState extends State<GoogleLoginButton>
                   memCacheHeight: 24 * 2,
                   ),
             textColor: cs.onSurface,
-          );
-        },
+          ),
       ),
     );
   }

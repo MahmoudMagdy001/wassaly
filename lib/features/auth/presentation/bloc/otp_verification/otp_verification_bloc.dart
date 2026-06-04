@@ -28,7 +28,7 @@ class OtpVerificationBloc
         super(OtpVerificationState(
           email: email,
           verificationType: verificationType,
-        )) {
+        ),) {
     on<OtpDigitChanged>(_onOtpDigitChanged);
     on<VerifyOtpSubmitted>(_onVerifyOtpSubmitted);
     on<ResendOtpRequested>(_onResendOtpRequested);
@@ -48,7 +48,7 @@ class OtpVerificationBloc
       otp: event.otp,
       clearError: true,
       verificationStatus: OtpVerificationStatus.initial,
-    ));
+    ),);
   }
 
   Future<void> _onVerifyOtpSubmitted(
@@ -59,14 +59,14 @@ class OtpVerificationBloc
       emit(state.copyWith(
         verificationStatus: OtpVerificationStatus.error,
         errorMessage: 'otp.invalid_otp',
-      ));
+      ),);
       return;
     }
 
     emit(state.copyWith(
       verificationStatus: OtpVerificationStatus.loading,
       clearError: true,
-    ));
+    ),);
 
     if (state.verificationType.isForgotPassword) {
       final result = await _forgetVerifyOtpUseCase(
@@ -80,11 +80,11 @@ class OtpVerificationBloc
         (failure) => emit(state.copyWith(
           verificationStatus: OtpVerificationStatus.error,
           errorMessage: failure.message,
-        )),
+        ),),
         (response) => emit(state.copyWith(
           verificationStatus: OtpVerificationStatus.verifiedForForgotPassword,
           resetToken: response.token,
-        )),
+        ),),
       );
     } else if (state.verificationType.isLogin) {
       final result = await _verifyOtpUseCase(
@@ -98,11 +98,11 @@ class OtpVerificationBloc
         (failure) => emit(state.copyWith(
           verificationStatus: OtpVerificationStatus.error,
           errorMessage: failure.message,
-        )),
+        ),),
         (response) => emit(state.copyWith(
           verificationStatus: OtpVerificationStatus.verifiedForLogin,
           verifyOtpResponse: response,
-        )),
+        ),),
       );
     } else {
       final result = await _verifyOtpUseCase(
@@ -116,11 +116,11 @@ class OtpVerificationBloc
         (failure) => emit(state.copyWith(
           verificationStatus: OtpVerificationStatus.error,
           errorMessage: failure.message,
-        )),
+        ),),
         (response) => emit(state.copyWith(
           verificationStatus: OtpVerificationStatus.verifiedForRegister,
           verifyOtpResponse: response,
-        )),
+        ),),
       );
     }
   }
@@ -134,7 +134,7 @@ class OtpVerificationBloc
     emit(state.copyWith(
       resendStatus: ResendOtpStatus.loading,
       clearError: true,
-    ));
+    ),);
 
     final result = await _resendOtpUseCase(
       ResendOtpParams(email: state.email),
@@ -144,13 +144,13 @@ class OtpVerificationBloc
       (failure) => emit(state.copyWith(
         resendStatus: ResendOtpStatus.error,
         errorMessage: failure.message,
-      )),
+      ),),
       (_) {
         emit(state.copyWith(
           resendStatus: ResendOtpStatus.success,
           timerSeconds: _timerDuration,
           isTimerRunning: true,
-        ));
+        ),);
         _startTimer();
       },
     );
@@ -172,7 +172,7 @@ class OtpVerificationBloc
       isTimerRunning: false,
       timerSeconds: 0,
       resendStatus: ResendOtpStatus.initial,
-    ));
+    ),);
   }
 
   void _onTimerStarted(
@@ -182,7 +182,7 @@ class OtpVerificationBloc
     emit(state.copyWith(
       timerSeconds: _timerDuration,
       isTimerRunning: true,
-    ));
+    ),);
     _startTimer();
   }
 

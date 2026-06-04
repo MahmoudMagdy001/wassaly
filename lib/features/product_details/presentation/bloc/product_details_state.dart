@@ -1,7 +1,7 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-import '../../../home/domain/entities/product_entity.dart';
-import '../../domain/entities/product_detail_entity.dart';
+import 'package:wassaly/features/home/domain/entities/product_entity.dart';
+import 'package:wassaly/features/product_details/domain/entities/product_detail_entity.dart';
 
 enum ProductDetailsStatus { initial, loading, success, failure }
 
@@ -36,8 +36,7 @@ class ProductDetailsState extends Equatable {
     List<ProductEntity>? relatedProducts,
     String? errorMessage,
     String? reviewActionMessage,
-  }) {
-    return ProductDetailsState(
+  }) => ProductDetailsState(
       status: status ?? this.status,
       relatedProductsStatus:
           relatedProductsStatus ?? this.relatedProductsStatus,
@@ -47,7 +46,6 @@ class ProductDetailsState extends Equatable {
       errorMessage: errorMessage ?? this.errorMessage,
       reviewActionMessage: reviewActionMessage ?? this.reviewActionMessage,
     );
-  }
 
   @override
   List<Object?> get props => [

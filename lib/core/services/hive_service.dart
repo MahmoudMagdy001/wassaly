@@ -1,13 +1,12 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:wassaly/core/imports/imports.dart';
-
-import '../../features/cart/domain/entities/cart_item_entity.dart';
-import '../../features/home/domain/entities/product_entity.dart';
-import '../../features/notifications/data/models/notification_model.dart';
-import '../../features/orders/data/models/order_model.dart';
-import '../../features/service_booking/data/models/booking_model.dart';
-import '../../features/sub_category/domain/entities/service_entity.dart';
-import 'hive_adapters.dart';
+import 'package:wassaly/core/services/hive_adapters.dart';
+import 'package:wassaly/features/cart/domain/entities/cart_item_entity.dart';
+import 'package:wassaly/features/home/domain/entities/product_entity.dart';
+import 'package:wassaly/features/notifications/data/models/notification_model.dart';
+import 'package:wassaly/features/orders/data/models/order_model.dart';
+import 'package:wassaly/features/service_booking/data/models/booking_model.dart';
+import 'package:wassaly/features/sub_category/domain/entities/service_entity.dart';
 
 class HiveService {
   static const String cartBox = 'cart_box';
@@ -22,18 +21,19 @@ class HiveService {
     await Hive.initFlutter();
 
     // Register Adapters
-    Hive.registerAdapter(ProductEntityAdapter());
-    Hive.registerAdapter(ReviewEntityAdapter());
-    Hive.registerAdapter(OfferEntityAdapter());
-    Hive.registerAdapter(CartOfferEntityAdapter());
-    Hive.registerAdapter(ServiceEntityAdapter());
-    Hive.registerAdapter(CartItemEntityAdapter());
-    Hive.registerAdapter(OrderModelAdapter());
-    Hive.registerAdapter(OrderItemModelAdapter());
-    Hive.registerAdapter(BookingModelAdapter());
-    Hive.registerAdapter(BookingServiceModelAdapter());
-    Hive.registerAdapter(BookingProviderModelAdapter());
-    Hive.registerAdapter(NotificationModelAdapter());
+    Hive
+      ..registerAdapter(ProductEntityAdapter())
+      ..registerAdapter(ReviewEntityAdapter())
+      ..registerAdapter(OfferEntityAdapter())
+      ..registerAdapter(CartOfferEntityAdapter())
+      ..registerAdapter(ServiceEntityAdapter())
+      ..registerAdapter(CartItemEntityAdapter())
+      ..registerAdapter(OrderModelAdapter())
+      ..registerAdapter(OrderItemModelAdapter())
+      ..registerAdapter(BookingModelAdapter())
+      ..registerAdapter(BookingServiceModelAdapter())
+      ..registerAdapter(BookingProviderModelAdapter())
+      ..registerAdapter(NotificationModelAdapter());
 
     // Open Boxes
     await Future.wait([

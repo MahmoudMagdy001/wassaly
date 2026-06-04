@@ -24,15 +24,13 @@ class SearchState extends Equatable {
     PaginatedResponse<ProductEntity>? products,
     String? errorMessage,
     bool? hasSearched,
-  }) {
-    return SearchState(
+  }) => SearchState(
       query: query ?? this.query,
       status: status ?? this.status,
       products: products ?? this.products,
       errorMessage: errorMessage ?? this.errorMessage,
       hasSearched: hasSearched ?? this.hasSearched,
     );
-  }
 
   @override
   List<Object?> get props => [

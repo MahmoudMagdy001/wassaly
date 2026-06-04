@@ -62,8 +62,7 @@ class PasswordStrengthIndicator extends StatelessWidget {
       children: [
         // Strength bars
         Row(
-          children: List.generate(4, (index) {
-            return Expanded(
+          children: List.generate(4, (index) => Expanded(
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeInOut,
@@ -76,8 +75,7 @@ class PasswordStrengthIndicator extends StatelessWidget {
                   borderRadius: BorderRadius.circular(2.r),
                 ),
               ),
-            );
-          }),
+            ),),
         ),
         if (showLabel && strength > 0) ...[
           8.verticalSpace,

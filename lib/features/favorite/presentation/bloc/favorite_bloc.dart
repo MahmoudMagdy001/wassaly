@@ -66,26 +66,31 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
     // Show loading skeleton on the very first load; subsequent refreshes
     // use the 'refreshing' status so the UI keeps the current list visible
     // while the RefreshIndicator can detect fetch completion.
-    emit(state.copyWith(
-      status: state.status == FavoriteStatus.initial
-          ? FavoriteStatus.loading
-          : FavoriteStatus.refreshing,
-      failure: null,
-    ));
+    emit(
+      state.copyWith(
+        status: state.status == FavoriteStatus.initial
+            ? FavoriteStatus.loading
+            : FavoriteStatus.refreshing,
+      ),
+    );
 
     final result = await getFavoritesUseCase();
 
     result.fold(
-      (failure) => emit(state.copyWith(
-        status: FavoriteStatus.error,
-        failure: failure,
-      )),
+      (failure) => emit(
+        state.copyWith(
+          status: FavoriteStatus.error,
+          failure: failure,
+        ),
+      ),
       (favorites) {
-        emit(state.copyWith(
-          status: FavoriteStatus.success,
-          favorites: favorites,
-          favoriteIds: favorites.data.map((f) => f.id).toSet(),
-        ));
+        emit(
+          state.copyWith(
+            status: FavoriteStatus.success,
+            favorites: favorites,
+            favoriteIds: favorites.data.map((f) => f.id).toSet(),
+          ),
+        );
       },
     );
   }
@@ -94,26 +99,31 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
     GetServiceFavoritesEvent event,
     Emitter<FavoriteState> emit,
   ) async {
-    emit(state.copyWith(
-      serviceStatus: state.serviceStatus == FavoriteStatus.initial
-          ? FavoriteStatus.loading
-          : FavoriteStatus.refreshing,
-      serviceFailure: null,
-    ));
+    emit(
+      state.copyWith(
+        serviceStatus: state.serviceStatus == FavoriteStatus.initial
+            ? FavoriteStatus.loading
+            : FavoriteStatus.refreshing,
+      ),
+    );
 
     final result = await getServiceFavoritesUseCase();
 
     result.fold(
-      (failure) => emit(state.copyWith(
-        serviceStatus: FavoriteStatus.error,
-        serviceFailure: failure,
-      )),
+      (failure) => emit(
+        state.copyWith(
+          serviceStatus: FavoriteStatus.error,
+          serviceFailure: failure,
+        ),
+      ),
       (favorites) {
-        emit(state.copyWith(
-          serviceStatus: FavoriteStatus.success,
-          serviceFavorites: favorites,
-          serviceFavoriteIds: favorites.data.map((f) => f.id).toSet(),
-        ));
+        emit(
+          state.copyWith(
+            serviceStatus: FavoriteStatus.success,
+            serviceFavorites: favorites,
+            serviceFavoriteIds: favorites.data.map((f) => f.id).toSet(),
+          ),
+        );
       },
     );
   }
@@ -131,7 +141,8 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
 
     assert(() {
       debugPrint(
-          '[FavoriteBloc] Toggle ${event.productId} — currentlyFavorite: $isCurrentlyFavorite');
+        '[FavoriteBloc] Toggle ${event.productId} — currentlyFavorite: $isCurrentlyFavorite',
+      );
       return true;
     }());
 
@@ -164,12 +175,13 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
           )
         : state.favorites;
 
-    emit(state.copyWith(
-      favoriteIds: optimisticIds,
-      favorites: optimisticFavorites,
-      togglingIds: {...state.togglingIds, event.productId},
-      failure: null,
-    ));
+    emit(
+      state.copyWith(
+        favoriteIds: optimisticIds,
+        favorites: optimisticFavorites,
+        togglingIds: {...state.togglingIds, event.productId},
+      ),
+    );
 
     // Persist the change via the domain layer.
     final result = await toggleFavoriteUseCase(
@@ -196,22 +208,25 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
         final rollbackToggling = Set<int>.from(state.togglingIds)
           ..remove(event.productId);
 
-        emit(state.copyWith(
-          favoriteIds: rollbackIds,
-          favorites: rollbackFavorites,
-          togglingIds: rollbackToggling,
-          failure: failure,
-        ));
+        emit(
+          state.copyWith(
+            favoriteIds: rollbackIds,
+            favorites: rollbackFavorites,
+            togglingIds: rollbackToggling,
+            failure: failure,
+          ),
+        );
       },
       (_) {
         // Success: clear the toggling flag.
         final updatedToggling = Set<int>.from(state.togglingIds)
           ..remove(event.productId);
 
-        emit(state.copyWith(
-          togglingIds: updatedToggling,
-          failure: null,
-        ));
+        emit(
+          state.copyWith(
+            togglingIds: updatedToggling,
+          ),
+        );
 
         // Re-fetch only when ADDING a favorite so the new product
         // appears in the Favorites page list. Skip on removal —
@@ -260,12 +275,13 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
           )
         : state.serviceFavorites;
 
-    emit(state.copyWith(
-      serviceFavoriteIds: optimisticIds,
-      serviceFavorites: optimisticFavorites,
-      serviceTogglingIds: {...state.serviceTogglingIds, event.serviceId},
-      failure: null,
-    ));
+    emit(
+      state.copyWith(
+        serviceFavoriteIds: optimisticIds,
+        serviceFavorites: optimisticFavorites,
+        serviceTogglingIds: {...state.serviceTogglingIds, event.serviceId},
+      ),
+    );
 
     // Persist the change via the domain layer.
     final result = await toggleServiceFavoriteUseCase(
@@ -293,22 +309,25 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
         final rollbackToggling = Set<int>.from(state.serviceTogglingIds)
           ..remove(event.serviceId);
 
-        emit(state.copyWith(
-          serviceFavoriteIds: rollbackIds,
-          serviceFavorites: rollbackFavorites,
-          serviceTogglingIds: rollbackToggling,
-          failure: failure,
-        ));
+        emit(
+          state.copyWith(
+            serviceFavoriteIds: rollbackIds,
+            serviceFavorites: rollbackFavorites,
+            serviceTogglingIds: rollbackToggling,
+            failure: failure,
+          ),
+        );
       },
       (_) {
         // Success: clear the toggling flag.
         final updatedToggling = Set<int>.from(state.serviceTogglingIds)
           ..remove(event.serviceId);
 
-        emit(state.copyWith(
-          serviceTogglingIds: updatedToggling,
-          failure: null,
-        ));
+        emit(
+          state.copyWith(
+            serviceTogglingIds: updatedToggling,
+          ),
+        );
 
         if (!isCurrentlyFavorite) {
           add(const GetServiceFavoritesEvent());
@@ -329,26 +348,30 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
         await getFavoritesUseCase(page: state.favorites.currentPage + 1);
 
     result.fold(
-      (failure) => emit(state.copyWith(
-        isLoadingMore: false,
-        status: FavoriteStatus.error,
-        failure: failure,
-      )),
-      (favorites) {
-        emit(state.copyWith(
+      (failure) => emit(
+        state.copyWith(
           isLoadingMore: false,
-          status: FavoriteStatus.success,
-          favorites: state.favorites.copyWith(
-            data: [...state.favorites.data, ...favorites.data],
-            currentPage: favorites.currentPage,
-            lastPage: favorites.lastPage,
-            total: favorites.total,
+          status: FavoriteStatus.error,
+          failure: failure,
+        ),
+      ),
+      (favorites) {
+        emit(
+          state.copyWith(
+            isLoadingMore: false,
+            status: FavoriteStatus.success,
+            favorites: state.favorites.copyWith(
+              data: [...state.favorites.data, ...favorites.data],
+              currentPage: favorites.currentPage,
+              lastPage: favorites.lastPage,
+              total: favorites.total,
+            ),
+            favoriteIds: {
+              ...state.favoriteIds,
+              ...favorites.data.map((f) => f.id),
+            },
           ),
-          favoriteIds: {
-            ...state.favoriteIds,
-            ...favorites.data.map((f) => f.id)
-          },
-        ));
+        );
       },
     );
   }
@@ -362,36 +385,41 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
     emit(state.copyWith(isServiceLoadingMore: true));
 
     final result = await getServiceFavoritesUseCase(
-        page: state.serviceFavorites.currentPage + 1);
+      page: state.serviceFavorites.currentPage + 1,
+    );
 
     result.fold(
-      (failure) => emit(state.copyWith(
-        isServiceLoadingMore: false,
-        serviceStatus: FavoriteStatus.error,
-        serviceFailure: failure,
-      )),
-      (favorites) {
-        emit(state.copyWith(
+      (failure) => emit(
+        state.copyWith(
           isServiceLoadingMore: false,
-          serviceStatus: FavoriteStatus.success,
-          serviceFavorites: state.serviceFavorites.copyWith(
-            data: [...state.serviceFavorites.data, ...favorites.data],
-            currentPage: favorites.currentPage,
-            lastPage: favorites.lastPage,
-            total: favorites.total,
+          serviceStatus: FavoriteStatus.error,
+          serviceFailure: failure,
+        ),
+      ),
+      (favorites) {
+        emit(
+          state.copyWith(
+            isServiceLoadingMore: false,
+            serviceStatus: FavoriteStatus.success,
+            serviceFavorites: state.serviceFavorites.copyWith(
+              data: [...state.serviceFavorites.data, ...favorites.data],
+              currentPage: favorites.currentPage,
+              lastPage: favorites.lastPage,
+              total: favorites.total,
+            ),
+            serviceFavoriteIds: {
+              ...state.serviceFavoriteIds,
+              ...favorites.data.map((f) => f.id),
+            },
           ),
-          serviceFavoriteIds: {
-            ...state.serviceFavoriteIds,
-            ...favorites.data.map((f) => f.id)
-          },
-        ));
+        );
       },
     );
   }
 
   @override
-  Future<void> close() {
-    _connectivitySub?.cancel();
+  Future<void> close() async {
+    await _connectivitySub?.cancel();
     return super.close();
   }
 }

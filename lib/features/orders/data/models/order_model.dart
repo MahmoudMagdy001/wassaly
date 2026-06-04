@@ -1,5 +1,5 @@
-import '../../domain/entities/order_entity.dart';
-import 'order_item_model.dart';
+import 'package:wassaly/features/orders/data/models/order_item_model.dart';
+import 'package:wassaly/features/orders/domain/entities/order_entity.dart';
 
 class OrderModel extends OrderEntity {
   const OrderModel({
@@ -22,8 +22,7 @@ class OrderModel extends OrderEntity {
     super.centerName,
   });
 
-  factory OrderModel.fromJson(Map<String, dynamic> json) {
-    return OrderModel(
+  factory OrderModel.fromJson(Map<String, dynamic> json) => OrderModel(
       id: json['id'] as int? ?? 0,
       orderNumber: json['order_number'] as String? ?? '',
       status: json['status'] as String? ?? '',
@@ -47,5 +46,4 @@ class OrderModel extends OrderEntity {
       centerId: (json['center'] as Map<String, dynamic>?)?['id']?.toString(),
       centerName: (json['center'] as Map<String, dynamic>?)?['name'] as String?,
     );
-  }
 }

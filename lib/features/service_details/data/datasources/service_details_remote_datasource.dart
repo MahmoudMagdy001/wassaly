@@ -1,6 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-import '../models/service_detail_model.dart';
+import 'package:wassaly/features/service_details/data/models/service_detail_model.dart';
 
 abstract class ServiceDetailsRemoteDataSource {
   Future<ServiceDetailModel> getServiceDetails(int serviceId);

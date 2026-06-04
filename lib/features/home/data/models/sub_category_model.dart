@@ -1,5 +1,5 @@
-import '../../../sub_category/data/models/service_model.dart';
-import '../../domain/entities/sub_category_entity.dart';
+import 'package:wassaly/features/home/domain/entities/sub_category_entity.dart';
+import 'package:wassaly/features/sub_category/data/models/service_model.dart';
 
 class SubCategoryModel extends SubCategoryEntity {
   const SubCategoryModel({
@@ -9,8 +9,7 @@ class SubCategoryModel extends SubCategoryEntity {
     super.services,
   });
 
-  factory SubCategoryModel.fromJson(Map<String, dynamic> json) {
-    return SubCategoryModel(
+  factory SubCategoryModel.fromJson(Map<String, dynamic> json) => SubCategoryModel(
       id: json['id'] as int? ?? 0,
       name: json['name'] as String? ?? '',
       image: json['image'] as String? ?? '',
@@ -19,5 +18,4 @@ class SubCategoryModel extends SubCategoryEntity {
               .toList() ??
           [],
     );
-  }
 }

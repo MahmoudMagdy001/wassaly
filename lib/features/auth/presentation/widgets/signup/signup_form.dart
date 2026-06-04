@@ -204,7 +204,6 @@ class SignupForm extends StatelessWidget {
                       isLoading: isLoading,
                       variant: ButtonVariant.success,
                       isFullWidth: true,
-                      height: ButtonSize.medium,
                     );
                   },
                 ),

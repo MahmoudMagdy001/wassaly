@@ -7,19 +7,15 @@ class CenterModel extends CenterEntity {
     required super.governorateId,
   });
 
-  factory CenterModel.fromJson(Map<String, dynamic> json) {
-    return CenterModel(
+  factory CenterModel.fromJson(Map<String, dynamic> json) => CenterModel(
       id: json['id'].toString(),
       name: json['name'] as String? ?? '',
       governorateId: json['governorate_id'].toString(),
     );
-  }
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'id': id,
       'name': name,
       'governorate_id': governorateId,
     };
-  }
 }

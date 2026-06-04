@@ -31,18 +31,19 @@ class ProfileSupportSection extends StatelessWidget {
                 ProfileMenuTile(
                   icon: Icons.help_outline,
                   title: context.l10n.profile_help_center,
-                  onTap: () => context.push(AppRoutes.helpCenter),
+                  onTap: () => unawaited(context.push(AppRoutes.helpCenter)),
                 ),
                 ProfileMenuTile(
                   icon: Icons.reviews_outlined,
                   title: context.l10n.profile_app_reviews,
-                  onTap: () => context.push(AppRoutes.appReviews),
+                  onTap: () => unawaited(context.push(AppRoutes.appReviews)),
                 ),
                 ProfileMenuTile(
                   icon: Icons.privacy_tip_outlined,
                   title: context.l10n.profile_privacy_policy,
-                  onTap: () =>
-                      GoRouter.of(context).push(AppRoutes.privacyPolicy),
+                  onTap: () => unawaited(
+                    GoRouter.of(context).push(AppRoutes.privacyPolicy),
+                  ),
                 ),
               ],
             ),

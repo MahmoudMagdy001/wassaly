@@ -138,8 +138,7 @@ class CheckoutState extends Equatable {
     bool clearGovernorateError = false,
     String? centerError,
     bool clearCenterError = false,
-  }) {
-    return CheckoutState(
+  }) => CheckoutState(
       status: status ?? this.status,
       customerName: customerName ?? this.customerName,
       customerPhone: customerPhone ?? this.customerPhone,
@@ -183,7 +182,6 @@ class CheckoutState extends Equatable {
           : governorateError ?? this.governorateError,
       centerError: clearCenterError ? null : centerError ?? this.centerError,
     );
-  }
 
   @override
   List<Object?> get props => [

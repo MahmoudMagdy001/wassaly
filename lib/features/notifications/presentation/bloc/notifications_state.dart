@@ -36,8 +36,7 @@ class NotificationsState extends Equatable {
     bool? isLoadingMore,
     int? unreadCount,
     bool? isNotificationEnabled,
-  }) {
-    return NotificationsState(
+  }) => NotificationsState(
       status: status ?? this.status,
       notifications: notifications ?? this.notifications,
       errorMessage: errorMessage ?? this.errorMessage,
@@ -49,7 +48,6 @@ class NotificationsState extends Equatable {
       isNotificationEnabled:
           isNotificationEnabled ?? this.isNotificationEnabled,
     );
-  }
 
   @override
   List<Object?> get props => [

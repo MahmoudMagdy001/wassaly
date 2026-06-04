@@ -65,8 +65,7 @@ class OtpVerificationState extends Equatable {
     bool? isTimerRunning,
     VerifyOtpResponseModel? verifyOtpResponse,
     String? resetToken,
-  }) {
-    return OtpVerificationState(
+  }) => OtpVerificationState(
       otp: otp ?? this.otp,
       email: email ?? this.email,
       verificationType: verificationType ?? this.verificationType,
@@ -78,7 +77,6 @@ class OtpVerificationState extends Equatable {
       verifyOtpResponse: verifyOtpResponse ?? this.verifyOtpResponse,
       resetToken: resetToken ?? this.resetToken,
     );
-  }
 
   @override
   List<Object?> get props => [

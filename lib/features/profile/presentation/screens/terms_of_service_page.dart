@@ -113,7 +113,7 @@ class TermsOfServicePage extends StatelessWidget {
                 ? cs.surfaceContainerHighest
                 : cs.surfaceContainerLow,
         borderRadius: BorderRadius.circular(12.r),
-        border: isHighlighted ? Border.all(color: cs.primary, width: 1) : null,
+        border: isHighlighted ? Border.all(color: cs.primary) : null,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

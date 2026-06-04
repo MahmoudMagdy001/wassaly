@@ -1,9 +1,8 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/home/data/models/product_model.dart';
 import 'package:wassaly/features/home/domain/entities/product_entity.dart';
-
-import '../../domain/entities/sub_category_detail_entity.dart';
-import 'service_model.dart';
+import 'package:wassaly/features/sub_category/data/models/service_model.dart';
+import 'package:wassaly/features/sub_category/domain/entities/sub_category_detail_entity.dart';
 
 class SubCategoryDetailModel extends SubCategoryDetailEntity {
   const SubCategoryDetailModel({

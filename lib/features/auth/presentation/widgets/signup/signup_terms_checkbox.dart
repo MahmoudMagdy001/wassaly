@@ -18,8 +18,7 @@ class SignupTermsCheckbox extends StatelessWidget {
 
     return BlocSelector<SignupBloc, SignupState, bool>(
       selector: (state) => state.isTermsAccepted,
-      builder: (context, isTermsAccepted) {
-        return Row(
+      builder: (context, isTermsAccepted) => Row(
           children: [
             Checkbox(
               value: isTermsAccepted,
@@ -72,8 +71,7 @@ class SignupTermsCheckbox extends StatelessWidget {
               ),
             ),
           ],
-        );
-      },
+        ),
     );
   }
 }

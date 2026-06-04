@@ -155,7 +155,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
           return <AddressModel>[];
         }
 
-        final List<dynamic> list = data as List<dynamic>;
+        final list = data as List<dynamic>;
         return list
             .map((e) => AddressModel.fromJson(e as Map<String, dynamic>))
             .toList();
@@ -221,7 +221,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
           return <GovernorateModel>[];
         }
 
-        final List<dynamic> list = data;
+        final list = data;
         return list
             .map((e) => GovernorateModel.fromJson(e as Map<String, dynamic>))
             .toList();
@@ -315,7 +315,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
           return <CenterModel>[];
         }
 
-        final List<dynamic> list = data as List<dynamic>;
+        final list = data as List<dynamic>;
         return list
             .map((e) => CenterModel.fromJson(e as Map<String, dynamic>))
             .toList();

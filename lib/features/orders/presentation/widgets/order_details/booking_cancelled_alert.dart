@@ -4,8 +4,7 @@ class BookingCancelledAlert extends StatelessWidget {
   const BookingCancelledAlert({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       padding: EdgeInsets.all(12.r),
       decoration: BoxDecoration(
         color: Colors.red.withValues(alpha: 0.08),
@@ -42,5 +41,4 @@ class BookingCancelledAlert extends StatelessWidget {
         ],
       ),
     );
-  }
 }

@@ -1,4 +1,4 @@
-import '../../domain/entities/coupon_entity.dart';
+import 'package:wassaly/features/cart/domain/entities/coupon_entity.dart';
 
 class CouponModel extends CouponEntity {
   const CouponModel({
@@ -27,8 +27,7 @@ class CouponModel extends CouponEntity {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'coupon': {
         'id': id,
         'code': code,
@@ -40,10 +39,8 @@ class CouponModel extends CouponEntity {
       },
       'is_valid': isValid,
     };
-  }
 
-  CouponEntity toEntity() {
-    return CouponEntity(
+  CouponEntity toEntity() => CouponEntity(
       id: id,
       code: code,
       title: title,
@@ -53,5 +50,4 @@ class CouponModel extends CouponEntity {
       userUsageLimit: userUsageLimit,
       isValid: isValid,
     );
-  }
 }

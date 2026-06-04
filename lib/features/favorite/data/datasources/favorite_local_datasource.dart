@@ -1,8 +1,7 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:wassaly/core/imports/imports.dart';
-
-import '../../../../features/home/domain/entities/product_entity.dart';
-import '../../../../features/sub_category/domain/entities/service_entity.dart';
+import 'package:wassaly/features/home/domain/entities/product_entity.dart';
+import 'package:wassaly/features/sub_category/domain/entities/service_entity.dart';
 
 // ─── Pending operation model ────────────────────────────────────────────────
 enum PendingFavoriteAction { add, remove }
@@ -39,17 +38,23 @@ class PendingFavoriteOperation {
 abstract class FavoriteLocalDataSource {
   // Products
   Future<Either<Failure, void>> cacheProductFavorites(
-      List<ProductEntity> products);
+    List<ProductEntity> products,
+  );
   List<ProductEntity> getCachedProductFavorites();
   Future<Either<Failure, void>> toggleProductFavoriteLocally(
-      ProductEntity product, bool isFav);
+    ProductEntity product,
+    bool isFav,
+  );
 
   // Services
   Future<Either<Failure, void>> cacheServiceFavorites(
-      List<ServiceEntity> services);
+    List<ServiceEntity> services,
+  );
   List<ServiceEntity> getCachedServiceFavorites();
   Future<Either<Failure, void>> toggleServiceFavoriteLocally(
-      ServiceEntity service, bool isFav);
+    ServiceEntity service,
+    bool isFav,
+  );
 
   // Quick checks
   Set<int> getFavoriteProductIds();
@@ -79,26 +84,29 @@ class FavoriteLocalDataSourceImpl implements FavoriteLocalDataSource {
 
   @override
   Future<Either<Failure, void>> cacheProductFavorites(
-      List<ProductEntity> products) async {
+    List<ProductEntity> products,
+  ) async {
     try {
       await _productsBox.clear();
-      final Map<int, ProductEntity> map = {for (final p in products) p.id: p};
+      final map = <int, ProductEntity>{for (final p in products) p.id: p};
       await _productsBox.putAll(map);
       return right(null);
-    } catch (e) {
+    } on Exception catch (e) {
       return left(
-          CacheFailure('Failed to cache favorite products: ${e.toString()}'));
+        CacheFailure('Failed to cache favorite products: $e'),
+      );
     }
   }
 
   @override
-  List<ProductEntity> getCachedProductFavorites() {
-    return _productsBox.values.toList();
-  }
+  List<ProductEntity> getCachedProductFavorites() =>
+      _productsBox.values.toList();
 
   @override
   Future<Either<Failure, void>> toggleProductFavoriteLocally(
-      ProductEntity product, bool isFav) async {
+    ProductEntity product,
+    bool isFav,
+  ) async {
     try {
       if (isFav) {
         await _productsBox.put(product.id, product);
@@ -106,9 +114,12 @@ class FavoriteLocalDataSourceImpl implements FavoriteLocalDataSource {
         await _productsBox.delete(product.id);
       }
       return right(null);
-    } catch (e) {
-      return left(CacheFailure(
-          'Failed to toggle favorite product locally: ${e.toString()}'));
+    } on Exception catch (e) {
+      return left(
+        CacheFailure(
+          'Failed to toggle favorite product locally: $e',
+        ),
+      );
     }
   }
 
@@ -116,26 +127,29 @@ class FavoriteLocalDataSourceImpl implements FavoriteLocalDataSource {
 
   @override
   Future<Either<Failure, void>> cacheServiceFavorites(
-      List<ServiceEntity> services) async {
+    List<ServiceEntity> services,
+  ) async {
     try {
       await _servicesBox.clear();
-      final Map<int, ServiceEntity> map = {for (final s in services) s.id: s};
+      final map = <int, ServiceEntity>{for (final s in services) s.id: s};
       await _servicesBox.putAll(map);
       return right(null);
-    } catch (e) {
+    } on Exception catch (e) {
       return left(
-          CacheFailure('Failed to cache favorite services: ${e.toString()}'));
+        CacheFailure('Failed to cache favorite services: $e'),
+      );
     }
   }
 
   @override
-  List<ServiceEntity> getCachedServiceFavorites() {
-    return _servicesBox.values.toList();
-  }
+  List<ServiceEntity> getCachedServiceFavorites() =>
+      _servicesBox.values.toList();
 
   @override
   Future<Either<Failure, void>> toggleServiceFavoriteLocally(
-      ServiceEntity service, bool isFav) async {
+    ServiceEntity service,
+    bool isFav,
+  ) async {
     try {
       if (isFav) {
         await _servicesBox.put(service.id, service);
@@ -143,23 +157,22 @@ class FavoriteLocalDataSourceImpl implements FavoriteLocalDataSource {
         await _servicesBox.delete(service.id);
       }
       return right(null);
-    } catch (e) {
-      return left(CacheFailure(
-          'Failed to toggle favorite service locally: ${e.toString()}'));
+    } on Exception catch (e) {
+      return left(
+        CacheFailure(
+          'Failed to toggle favorite service locally: $e',
+        ),
+      );
     }
   }
 
   // ── Quick checks ───────────────────────────────────────────────────────────
 
   @override
-  Set<int> getFavoriteProductIds() {
-    return _productsBox.keys.cast<int>().toSet();
-  }
+  Set<int> getFavoriteProductIds() => _productsBox.keys.cast<int>().toSet();
 
   @override
-  Set<int> getFavoriteServiceIds() {
-    return _servicesBox.keys.cast<int>().toSet();
-  }
+  Set<int> getFavoriteServiceIds() => _servicesBox.keys.cast<int>().toSet();
 
   @override
   Future<Either<Failure, void>> clearFavoritesLocally() async {
@@ -167,8 +180,8 @@ class FavoriteLocalDataSourceImpl implements FavoriteLocalDataSource {
       await _productsBox.clear();
       await _servicesBox.clear();
       return right(null);
-    } catch (e) {
-      return left(CacheFailure('Failed to clear favorites: ${e.toString()}'));
+    } on Exception catch (e) {
+      return left(CacheFailure('Failed to clear favorites: $e'));
     }
   }
 
@@ -198,11 +211,8 @@ class FavoriteLocalDataSourceImpl implements FavoriteLocalDataSource {
   }
 
   @override
-  List<PendingFavoriteOperation> getPendingOperations() {
-    return _pendingBox.values
-        .map((m) => PendingFavoriteOperation.fromJson(m))
-        .toList();
-  }
+  List<PendingFavoriteOperation> getPendingOperations() =>
+      _pendingBox.values.map(PendingFavoriteOperation.fromJson).toList();
 
   @override
   Future<void> clearPendingOperations() => _pendingBox.clear();

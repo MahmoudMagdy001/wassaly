@@ -9,8 +9,7 @@ class SignupUseCase {
 
   const SignupUseCase(this._repository);
 
-  FutureEither<UserEntity> call(SignupParams params) {
-    return _repository.signup(
+  FutureEither<UserEntity> call(SignupParams params) => _repository.signup(
       name: params.name,
       phone: params.phone,
       email: params.email,
@@ -18,7 +17,6 @@ class SignupUseCase {
       confirmPassword: params.confirmPassword,
       avatarFile: params.avatarFile,
     );
-  }
 }
 
 class SignupParams {

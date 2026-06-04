@@ -66,8 +66,7 @@ class ResetPasswordState extends Equatable {
     ResetPasswordStatus? status,
     String? errorMessage,
     bool clearError = false,
-  }) {
-    return ResetPasswordState(
+  }) => ResetPasswordState(
       email: email ?? this.email,
       token: token ?? this.token,
       password: password ?? this.password,
@@ -78,7 +77,6 @@ class ResetPasswordState extends Equatable {
       status: status ?? this.status,
       errorMessage: clearError ? null : errorMessage ?? this.errorMessage,
     );
-  }
 
   @override
   List<Object?> get props => [

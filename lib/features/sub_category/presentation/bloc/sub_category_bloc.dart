@@ -1,7 +1,7 @@
-import '../../../../core/imports/imports.dart';
-import '../../domain/usecases/get_sub_category_detail_usecase.dart';
-import 'sub_category_event.dart';
-import 'sub_category_state.dart';
+import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/features/sub_category/domain/usecases/get_sub_category_detail_usecase.dart';
+import 'package:wassaly/features/sub_category/presentation/bloc/sub_category_event.dart';
+import 'package:wassaly/features/sub_category/presentation/bloc/sub_category_state.dart';
 
 class SubCategoryBloc extends Bloc<SubCategoryEvent, SubCategoryState> {
   final GetSubCategoryDetailUseCase _getSubCategoryDetailUseCase;
@@ -21,18 +21,18 @@ class SubCategoryBloc extends Bloc<SubCategoryEvent, SubCategoryState> {
     emit(state.copyWith(status: SubCategoryStatus.loading));
 
     final result =
-        await _getSubCategoryDetailUseCase(event.subCategoryId, page: 1);
+        await _getSubCategoryDetailUseCase(event.subCategoryId);
 
     result.fold(
       (failure) => emit(state.copyWith(
         status: SubCategoryStatus.failure,
         errorMessage: failure.message,
-      )),
+      ),),
       (subCategory) => emit(state.copyWith(
         status: SubCategoryStatus.success,
         subCategory: subCategory,
         products: subCategory.products,
-      )),
+      ),),
     );
   }
 
@@ -61,7 +61,7 @@ class SubCategoryBloc extends Bloc<SubCategoryEvent, SubCategoryState> {
           products: subCategory.products.copyWith(
             data: [...state.products.data, ...subCategory.products.data],
           ),
-        ));
+        ),);
       },
     );
   }

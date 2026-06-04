@@ -138,7 +138,6 @@ class AppButton extends StatelessWidget {
             onPressed: isDisabled ? null : onPressed,
             padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
             color: bg,
-            disabledColor: CupertinoColors.quaternarySystemFill,
             borderRadius: BorderRadius.circular(12.r),
             child: buttonChild,
           ),
@@ -164,7 +163,7 @@ class AppButton extends StatelessWidget {
                     side: border,
                   )
                 : RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.r)),
+                    borderRadius: BorderRadius.circular(12.r),),
           ),
           child: buttonChild,
         ),

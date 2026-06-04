@@ -6,7 +6,5 @@ class DeleteAccountUseCase {
 
   const DeleteAccountUseCase(this._repository);
 
-  FutureEither<void> call() {
-    return _repository.deleteAccount();
-  }
+  FutureEither<void> call() => _repository.deleteAccount();
 }

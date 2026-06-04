@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/rendering.dart';
 import 'package:wassaly/core/services/notification_service.dart';
@@ -10,11 +12,13 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   debugPrint('Handling a background message: ${message.messageId}');
 
   if (message.notification != null) {
-    NotificationService.instance.showLocalNotification(
-      title: message.notification!.title ?? '',
-      body: message.notification!.body ?? '',
-      payload:
-          message.data.map((key, value) => MapEntry(key, value.toString())),
+    unawaited(
+      NotificationService.instance.showLocalNotification(
+        title: message.notification!.title ?? '',
+        body: message.notification!.body ?? '',
+        payload:
+            message.data.map((key, value) => MapEntry(key, value.toString())),
+      ),
     );
   }
 }

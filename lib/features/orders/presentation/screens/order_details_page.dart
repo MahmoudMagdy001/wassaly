@@ -103,7 +103,6 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       child: AppButton(
                         label: context.l10n.shared_cancel,
                         variant: ButtonVariant.ghost,
-                        isFullWidth: false,
                         onPressed: () => Navigator.of(ctx).pop(false),
                       ),
                     ),
@@ -173,7 +172,6 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       child: AppButton(
                         label: context.l10n.shared_cancel,
                         variant: ButtonVariant.ghost,
-                        isFullWidth: false,
                         onPressed: () => Navigator.of(ctx).pop(false),
                       ),
                     ),
@@ -335,12 +333,16 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       ),
                       SliverPadding(
                         padding: EdgeInsets.symmetric(
-                            horizontal: 16.w, vertical: 16.h),
+                          horizontal: 16.w,
+                          vertical: 16.h,
+                        ),
                         sliver: SliverList(
                           delegate: SliverChildListDelegate([
                             // 1. Order Status Summary Header
                             OrderHeaderCard(
-                                order: order, isCancelled: isCancelled),
+                              order: order,
+                              isCancelled: isCancelled,
+                            ),
                             16.verticalSpace,
 
                             // 2. Beautiful Cancellation Alert if cancelled
@@ -351,7 +353,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
 
                             // 3. Gorgeous Interactive Status Timeline Card
                             _buildSectionHeader(
-                                context, context.l10n.order_details_status),
+                              context,
+                              context.l10n.order_details_status,
+                            ),
                             8.verticalSpace,
                             AppCard(
                               showShadow: true,
@@ -361,22 +365,28 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                             16.verticalSpace,
 
                             // 4. Delivery & Customer Address Card
-                            _buildSectionHeader(context,
-                                context.l10n.order_details_delivery_info),
+                            _buildSectionHeader(
+                              context,
+                              context.l10n.order_details_delivery_info,
+                            ),
                             8.verticalSpace,
                             OrderDeliveryInfoCard(order: order),
                             16.verticalSpace,
 
                             // 5. Order Items / Products Card
-                            _buildSectionHeader(context,
-                                context.l10n.order_details_ordered_products),
+                            _buildSectionHeader(
+                              context,
+                              context.l10n.order_details_ordered_products,
+                            ),
                             8.verticalSpace,
                             OrderItemsCard(items: order.items),
                             16.verticalSpace,
 
                             // 6. Detailed Receipt/Payment Card
-                            _buildSectionHeader(context,
-                                context.l10n.order_details_payment_summary),
+                            _buildSectionHeader(
+                              context,
+                              context.l10n.order_details_payment_summary,
+                            ),
                             8.verticalSpace,
                             OrderReceiptSummaryCard(order: order),
                             24.verticalSpace,
@@ -385,7 +395,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                             if (!showSkeleton &&
                                 (canDelete || canCancelOrUpdate)) ...[
                               _buildSectionHeader(
-                                  context, context.l10n.order_details_actions),
+                                context,
+                                context.l10n.order_details_actions,
+                              ),
                               8.verticalSpace,
                               if (canCancelOrUpdate) ...[
                                 BlocSelector<OrderDetailBloc, OrderDetailState,
@@ -393,27 +405,27 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                                   selector: (s) =>
                                       s.actionStatus ==
                                       OrderActionStatus.loading,
-                                  builder: (context, isActionLoading) {
-                                    return Row(
-                                      children: [
-                                        Expanded(
-                                          child: AppButton(
-                                            label: context
-                                                .l10n.order_details_cancel_btn,
-                                            onPressed: isActionLoading
-                                                ? null
-                                                : () => _onCancelOrder(order),
-                                            variant: ButtonVariant.danger,
-                                          ),
+                                  builder: (context, isActionLoading) => Row(
+                                    children: [
+                                      Expanded(
+                                        child: AppButton(
+                                          label: context
+                                              .l10n.order_details_cancel_btn,
+                                          onPressed: isActionLoading
+                                              ? null
+                                              : () => _onCancelOrder(order),
+                                          variant: ButtonVariant.danger,
                                         ),
-                                        8.horizontalSpace,
-                                        Expanded(
-                                          child: AppButton(
-                                            label: context
-                                                .l10n.order_details_update_btn,
-                                            onPressed: isActionLoading
-                                                ? null
-                                                : () {
+                                      ),
+                                      8.horizontalSpace,
+                                      Expanded(
+                                        child: AppButton(
+                                          label: context
+                                              .l10n.order_details_update_btn,
+                                          onPressed: isActionLoading
+                                              ? null
+                                              : () {
+                                                  unawaited(
                                                     context.showAppBottomSheet<
                                                         void>(
                                                       builder: (_) =>
@@ -421,16 +433,17 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                                                         value: context.read<
                                                             OrderDetailBloc>(),
                                                         child: UpdateOrderSheet(
-                                                            order: order),
+                                                          order: order,
+                                                        ),
                                                       ),
-                                                    );
-                                                  },
-                                            variant: ButtonVariant.secondary,
-                                          ),
+                                                    ),
+                                                  );
+                                                },
+                                          variant: ButtonVariant.secondary,
                                         ),
-                                      ],
-                                    );
-                                  },
+                                      ),
+                                    ],
+                                  ),
                                 ),
                                 16.verticalSpace,
                               ],
@@ -440,18 +453,16 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                                   selector: (s) =>
                                       s.actionStatus ==
                                       OrderActionStatus.loading,
-                                  builder: (context, isActionLoading) {
-                                    return AppButton(
-                                      label: context.l10n.order_delete_title,
-                                      isFullWidth: true,
-                                      onPressed: isActionLoading
-                                          ? null
-                                          : () => _onDeleteOrder(order),
-                                      variant: ButtonVariant.outline,
-                                      textColor:
-                                          context.theme.colorScheme.error,
-                                    );
-                                  },
+                                  builder: (context, isActionLoading) =>
+                                      AppButton(
+                                    label: context.l10n.order_delete_title,
+                                    isFullWidth: true,
+                                    onPressed: isActionLoading
+                                        ? null
+                                        : () => _onDeleteOrder(order),
+                                    variant: ButtonVariant.outline,
+                                    textColor: context.theme.colorScheme.error,
+                                  ),
                                 ),
                               24.verticalSpace,
                             ],

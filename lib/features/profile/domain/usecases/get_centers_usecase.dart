@@ -13,7 +13,5 @@ class GetCentersUseCase {
 
   const GetCentersUseCase(this._repository);
 
-  FutureEither<List<CenterEntity>> call(GetCentersParams params) {
-    return _repository.getCenters(governorateId: params.governorateId);
-  }
+  FutureEither<List<CenterEntity>> call(GetCentersParams params) => _repository.getCenters(governorateId: params.governorateId);
 }

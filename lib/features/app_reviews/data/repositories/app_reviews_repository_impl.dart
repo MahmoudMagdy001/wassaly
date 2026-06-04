@@ -1,7 +1,7 @@
 import 'package:wassaly/core/imports/imports.dart';
-import '../../domain/entities/app_review_entity.dart';
-import '../../domain/repositories/app_reviews_repository.dart';
-import '../datasources/app_reviews_remote_datasource.dart';
+import 'package:wassaly/features/app_reviews/data/datasources/app_reviews_remote_datasource.dart';
+import 'package:wassaly/features/app_reviews/domain/entities/app_review_entity.dart';
+import 'package:wassaly/features/app_reviews/domain/repositories/app_reviews_repository.dart';
 
 class AppReviewsRepositoryImpl implements AppReviewsRepository {
   final AppReviewsRemoteDataSource _remoteDataSource;
@@ -15,7 +15,7 @@ class AppReviewsRepositoryImpl implements AppReviewsRepository {
       return Right(result);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }
@@ -30,7 +30,7 @@ class AppReviewsRepositoryImpl implements AppReviewsRepository {
       return Right(response);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }
@@ -47,7 +47,7 @@ class AppReviewsRepositoryImpl implements AppReviewsRepository {
       return Right(response);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }

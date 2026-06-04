@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
-
-import '../../../home/domain/entities/product_entity.dart';
-import '../../domain/entities/brand_entity.dart';
+import 'package:wassaly/features/brands/domain/entities/brand_entity.dart';
+import 'package:wassaly/features/home/domain/entities/product_entity.dart';
 
 enum BrandsStatus { initial, loading, success, failure }
 
@@ -38,8 +37,7 @@ class BrandsState extends Equatable {
     String? productsErrorMessage,
     int? currentPage,
     bool? hasReachedMax,
-  }) {
-    return BrandsState(
+  }) => BrandsState(
       status: status ?? this.status,
       brands: brands ?? this.brands,
       errorMessage: errorMessage ?? this.errorMessage,
@@ -49,7 +47,6 @@ class BrandsState extends Equatable {
       currentPage: currentPage ?? this.currentPage,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
     );
-  }
 
   @override
   List<Object?> get props => [

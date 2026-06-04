@@ -116,7 +116,7 @@ class PrivacyPolicyPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: isHighlighted ? cs.primaryContainer : cs.surface,
         borderRadius: BorderRadius.circular(12.r),
-        border: isHighlighted ? Border.all(color: cs.primary, width: 1) : null,
+        border: isHighlighted ? Border.all(color: cs.primary) : null,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -193,8 +193,11 @@ class PrivacyPolicyPage extends StatelessWidget {
   void _launchUrl(String url) async {
     try {
       await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-    } catch (e) {
-      assert(() { debugPrint('Error launching URL: $e'); return true; }());
+    } on Object catch (e) {
+      assert(() {
+        debugPrint('Error launching URL: $e');
+        return true;
+      }());
     }
   }
 }

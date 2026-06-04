@@ -31,8 +31,7 @@ class RawToast extends StatefulWidget {
 class RawToastState extends State<RawToast> {
   final GlobalKey positionedKey = GlobalKey();
 
-  Widget getChildBasedOnDismiss(Widget child) {
-    return Animate(
+  Widget getChildBasedOnDismiss(Widget child) => Animate(
       onComplete: (controller) {
         if (widget.autoDismiss) {
           widget.onRemove();
@@ -76,11 +75,9 @@ class RawToastState extends State<RawToast> {
         child: widget.child,
       ),
     );
-  }
 
   @override
-  Widget build(BuildContext context) {
-    return AnimatedPositioned(
+  Widget build(BuildContext context) => AnimatedPositioned(
       duration: Duration(
         milliseconds: widget.animationDuration.inMilliseconds,
       ),
@@ -104,5 +101,4 @@ class RawToastState extends State<RawToast> {
         ),
       ),
     );
-  }
 }

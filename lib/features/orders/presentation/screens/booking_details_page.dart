@@ -1,12 +1,11 @@
 import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/features/orders/presentation/widgets/order_details/booking_details_cards.dart';
+import 'package:wassaly/features/orders/presentation/widgets/order_details/propose_reschedule_sheet.dart';
+import 'package:wassaly/features/orders/presentation/widgets/order_details/update_booking_sheet.dart';
 import 'package:wassaly/features/service_booking/domain/entities/booking_entity.dart';
 import 'package:wassaly/features/service_booking/presentation/bloc/booking_detail/booking_detail_bloc.dart';
 import 'package:wassaly/features/service_booking/presentation/bloc/booking_detail/booking_detail_event.dart';
 import 'package:wassaly/features/service_booking/presentation/bloc/booking_detail/booking_detail_state.dart';
-
-import '../widgets/order_details/booking_details_cards.dart';
-import '../widgets/order_details/propose_reschedule_sheet.dart';
-import '../widgets/order_details/update_booking_sheet.dart';
 
 class BookingDetailsPage extends StatefulWidget {
   final BookingEntity booking;
@@ -69,7 +68,6 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                       child: AppButton(
                         label: context.l10n.shared_cancel,
                         variant: ButtonVariant.ghost,
-                        isFullWidth: false,
                         onPressed: () => Navigator.of(ctx).pop(false),
                       ),
                     ),
@@ -139,7 +137,6 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                       child: AppButton(
                         label: context.l10n.shared_cancel,
                         variant: ButtonVariant.ghost,
-                        isFullWidth: false,
                         onPressed: () => Navigator.of(ctx).pop(false),
                       ),
                     ),
@@ -212,7 +209,6 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                       child: AppButton(
                         label: context.l10n.shared_cancel,
                         variant: ButtonVariant.ghost,
-                        isFullWidth: false,
                         onPressed: () => Navigator.of(ctx).pop(false),
                       ),
                     ),
@@ -221,7 +217,6 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                       child: AppButton(
                         isFullWidth: true,
                         label: context.l10n.booking_reschedule_accept,
-                        variant: ButtonVariant.primary,
                         onPressed: () => Navigator.of(ctx).pop(true),
                       ),
                     ),
@@ -387,8 +382,7 @@ class _BookingDetailsBody extends StatelessWidget {
         normStatus.contains('success');
 
     final canDelete = isCompleted || isCancelled;
-    final isRescheduleByProvider =
-        normStatus == 'reschedule_by_provider';
+    final isRescheduleByProvider = normStatus == 'reschedule_by_provider';
     final canCancelOrUpdate = isPending;
 
     return SliverPadding(
@@ -433,23 +427,22 @@ class _BookingDetailsBody extends StatelessWidget {
               16.verticalSpace,
               BlocSelector<BookingDetailBloc, BookingDetailState, bool>(
                 selector: (s) => s.actionStatus == BookingActionStatus.loading,
-                builder: (context, isActionLoading) {
-                  return Row(
-                    children: [
-                      Expanded(
-                        child: AppButton(
-                          label: context.l10n.booking_reschedule_accept,
-                          onPressed: isActionLoading ? null : onAcceptReschedule,
-                          variant: ButtonVariant.primary,
-                        ),
+                builder: (context, isActionLoading) => Row(
+                  children: [
+                    Expanded(
+                      child: AppButton(
+                        label: context.l10n.booking_reschedule_accept,
+                        onPressed: isActionLoading ? null : onAcceptReschedule,
                       ),
-                      8.horizontalSpace,
-                      Expanded(
-                        child: AppButton(
-                          label: context.l10n.booking_reschedule_propose,
-                          onPressed: isActionLoading
-                              ? null
-                              : () {
+                    ),
+                    8.horizontalSpace,
+                    Expanded(
+                      child: AppButton(
+                        label: context.l10n.booking_reschedule_propose,
+                        onPressed: isActionLoading
+                            ? null
+                            : () {
+                                unawaited(
                                   context.showAppBottomSheet<void>(
                                     builder: (_) => BlocProvider.value(
                                       value: context.read<BookingDetailBloc>(),
@@ -457,14 +450,14 @@ class _BookingDetailsBody extends StatelessWidget {
                                         bookingId: booking.id,
                                       ),
                                     ),
-                                  );
-                                },
-                          variant: ButtonVariant.secondary,
-                        ),
+                                  ),
+                                );
+                              },
+                        variant: ButtonVariant.secondary,
                       ),
-                    ],
-                  );
-                },
+                    ),
+                  ],
+                ),
               ),
             ],
             24.verticalSpace,
@@ -477,51 +470,50 @@ class _BookingDetailsBody extends StatelessWidget {
             if (canCancelOrUpdate) ...[
               BlocSelector<BookingDetailBloc, BookingDetailState, bool>(
                 selector: (s) => s.actionStatus == BookingActionStatus.loading,
-                builder: (context, isActionLoading) {
-                  return Row(
-                    children: [
-                      Expanded(
-                        child: AppButton(
-                          label: context.l10n.booking_details_cancel_btn,
-                          onPressed: isActionLoading ? null : onCancel,
-                          variant: ButtonVariant.danger,
-                        ),
+                builder: (context, isActionLoading) => Row(
+                  children: [
+                    Expanded(
+                      child: AppButton(
+                        label: context.l10n.booking_details_cancel_btn,
+                        onPressed: isActionLoading ? null : onCancel,
+                        variant: ButtonVariant.danger,
                       ),
-                      8.horizontalSpace,
-                      Expanded(
-                        child: AppButton(
-                          label: context.l10n.booking_details_update_btn,
-                          onPressed: isActionLoading
-                              ? null
-                              : () {
+                    ),
+                    8.horizontalSpace,
+                    Expanded(
+                      child: AppButton(
+                        label: context.l10n.booking_details_update_btn,
+                        onPressed: isActionLoading
+                            ? null
+                            : () {
+                                unawaited(
                                   context.showAppBottomSheet<void>(
                                     builder: (_) => BlocProvider.value(
                                       value: context.read<BookingDetailBloc>(),
-                                      child: UpdateBookingSheet(booking: booking),
+                                      child:
+                                          UpdateBookingSheet(booking: booking),
                                     ),
-                                  );
-                                },
-                          variant: ButtonVariant.secondary,
-                        ),
+                                  ),
+                                );
+                              },
+                        variant: ButtonVariant.secondary,
                       ),
-                    ],
-                  );
-                },
+                    ),
+                  ],
+                ),
               ),
               16.verticalSpace,
             ],
             if (canDelete)
               BlocSelector<BookingDetailBloc, BookingDetailState, bool>(
                 selector: (s) => s.actionStatus == BookingActionStatus.loading,
-                builder: (context, isActionLoading) {
-                  return AppButton(
-                    label: context.l10n.booking_delete_title,
-                    isFullWidth: true,
-                    onPressed: isActionLoading ? null : onDelete,
-                    variant: ButtonVariant.outline,
-                    textColor: cs.error,
-                  );
-                },
+                builder: (context, isActionLoading) => AppButton(
+                  label: context.l10n.booking_delete_title,
+                  isFullWidth: true,
+                  onPressed: isActionLoading ? null : onDelete,
+                  variant: ButtonVariant.outline,
+                  textColor: cs.error,
+                ),
               ),
             24.verticalSpace,
           ],

@@ -1,5 +1,5 @@
-import '../../domain/entities/cart_item_entity.dart';
-import 'offer_model.dart';
+import 'package:wassaly/features/cart/data/models/offer_model.dart';
+import 'package:wassaly/features/cart/domain/entities/cart_item_entity.dart';
 
 class CartItemModel {
   final int id;
@@ -26,8 +26,7 @@ class CartItemModel {
     required this.totalPrice,
   });
 
-  factory CartItemModel.fromEntity(CartItemEntity entity) {
-    return CartItemModel(
+  factory CartItemModel.fromEntity(CartItemEntity entity) => CartItemModel(
       id: entity.id,
       productId: entity.productId,
       productName: entity.productName,
@@ -35,12 +34,11 @@ class CartItemModel {
       price: entity.price,
       productDescription: entity.productDescription,
       offers:
-          entity.offers?.map((offer) => OfferModel.fromEntity(offer)).toList(),
+          entity.offers?.map(OfferModel.fromEntity).toList(),
       quantity: entity.quantity,
       unitPrice: entity.unitPrice,
       totalPrice: entity.totalPrice,
     );
-  }
 
   factory CartItemModel.fromJson(Map<String, dynamic> json) {
     final product = json['product'] as Map<String, dynamic>?;
@@ -62,17 +60,14 @@ class CartItemModel {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'id': id,
       'quantity': quantity,
       'unit_price': unitPrice,
       'total_price': totalPrice,
     };
-  }
 
-  CartItemEntity toEntity() {
-    return CartItemEntity(
+  CartItemEntity toEntity() => CartItemEntity(
       id: id,
       productId: productId,
       productName: productName,
@@ -84,5 +79,4 @@ class CartItemModel {
       unitPrice: unitPrice,
       totalPrice: totalPrice,
     );
-  }
 }

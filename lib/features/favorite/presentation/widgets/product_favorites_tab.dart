@@ -21,10 +21,11 @@ class ProductFavoritesTab extends StatelessWidget {
         final isLoading = status == FavoriteStatus.loading ||
             (status == FavoriteStatus.refreshing && favorites.data.isEmpty);
         final isError = status == FavoriteStatus.error;
+        final bloc = context.read<FavoriteBloc>();
+        final l10n = context.l10n;
 
         return RefreshIndicator(
           onRefresh: () async {
-            final bloc = context.read<FavoriteBloc>();
             bloc.add(const GetFavoritesEvent());
             await bloc.stream.firstWhere(
               (s) =>
@@ -43,9 +44,7 @@ class ProductFavoritesTab extends StatelessWidget {
                   products: isLoading ? const [] : favorites.data,
                   hasMore: favorites.hasMore,
                   isLoadingMore: isLoadingMore,
-                  onLoadMore: () => context
-                      .read<FavoriteBloc>()
-                      .add(const LoadMoreFavoritesEvent()),
+                  onLoadMore: () => bloc.add(const LoadMoreFavoritesEvent()),
                   padding:
                       EdgeInsets.symmetric(horizontal: 6.w, vertical: 10.h),
                   mainAxisExtent: 230.h,
@@ -57,9 +56,7 @@ class ProductFavoritesTab extends StatelessWidget {
                     child: AppErrorWidget.failure(
                       failure:
                           failure ?? const UnknownFailure('An error occurred'),
-                      onRetry: () => context
-                          .read<FavoriteBloc>()
-                          .add(const GetFavoritesEvent()),
+                      onRetry: () => bloc.add(const GetFavoritesEvent()),
                     ),
                   ),
                 )
@@ -69,8 +66,8 @@ class ProductFavoritesTab extends StatelessWidget {
                   child: Center(
                     child: AppEmptyState(
                       icon: Icons.favorite_outline,
-                      title: context.l10n.favorite_no_products,
-                      subtitle: context.l10n.favorite_no_products_subtitle,
+                      title: l10n.favorite_no_products,
+                      subtitle: l10n.favorite_no_products_subtitle,
                     ),
                   ),
                 ),

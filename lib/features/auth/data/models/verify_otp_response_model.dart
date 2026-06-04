@@ -1,4 +1,4 @@
-import '../../../../core/imports/imports.dart';
+import 'package:wassaly/core/imports/imports.dart';
 
 /// Model for OTP verification API response
 class VerifyOtpResponseModel extends Equatable {
@@ -12,23 +12,19 @@ class VerifyOtpResponseModel extends Equatable {
     this.data,
   });
 
-  factory VerifyOtpResponseModel.fromJson(Map<String, dynamic> json) {
-    return VerifyOtpResponseModel(
+  factory VerifyOtpResponseModel.fromJson(Map<String, dynamic> json) => VerifyOtpResponseModel(
       status: json['status'] as bool? ?? false,
       message: json['message'] as String? ?? '',
       data: json['data'] != null
           ? VerifyOtpDataModel.fromJson(json['data'] as Map<String, dynamic>)
           : null,
     );
-  }
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'status': status,
       'message': message,
       'data': data?.toJson(),
     };
-  }
 
   @override
   List<Object?> get props => [status, message, data];
@@ -52,8 +48,7 @@ class VerifyOtpDataModel extends Equatable {
     this.type,
   });
 
-  factory VerifyOtpDataModel.fromJson(Map<String, dynamic> json) {
-    return VerifyOtpDataModel(
+  factory VerifyOtpDataModel.fromJson(Map<String, dynamic> json) => VerifyOtpDataModel(
       id: json['id'] as int? ?? 0,
       name: json['name'] as String? ?? '',
       email: json['email'] as String? ?? '',
@@ -61,10 +56,8 @@ class VerifyOtpDataModel extends Equatable {
       avatar: json['avatar'] as String?,
       type: json['type'] as String?,
     );
-  }
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'id': id,
       'name': name,
       'email': email,
@@ -72,7 +65,6 @@ class VerifyOtpDataModel extends Equatable {
       'avatar': avatar,
       'type': type,
     };
-  }
 
   @override
   List<Object?> get props => [id, name, email, phone, avatar, type];

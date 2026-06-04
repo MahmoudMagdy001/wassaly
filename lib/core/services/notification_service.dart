@@ -27,13 +27,13 @@ class NotificationService {
           onlyAlertOnce: true,
           playSound: true,
           criticalAlerts: true,
-        )
+        ),
       ],
       channelGroups: [
         NotificationChannelGroup(
           channelGroupKey: _channelGroupKey,
           channelGroupName: 'Basic group',
-        )
+        ),
       ],
       debug: true,
     );
@@ -42,27 +42,26 @@ class NotificationService {
     await requestPermissions();
 
     // 3. Set up Listeners
-    _setupFCMListeners();
+    unawaited(_setupFCMListeners());
     _setupAwesomeListeners();
 
     // 4. Handle Initial Message (App launched from terminated state)
-    final RemoteMessage? initialMessage =
-        await FirebaseMessaging.instance.getInitialMessage();
+    final initialMessage = await FirebaseMessaging.instance.getInitialMessage();
     if (initialMessage != null) {
-      _handleNotificationClick(initialMessage.data);
+      unawaited(_handleNotificationClick(initialMessage.data));
     }
   }
 
   Future<void> requestPermissions() async {
-    final bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
+    final isAllowed = await AwesomeNotifications().isNotificationAllowed();
     if (!isAllowed) {
       await AwesomeNotifications().requestPermissionToSendNotifications();
     }
   }
 
-  void _setupFCMListeners() {
+  Future<void> _setupFCMListeners() async {
     // Foreground messages
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    FirebaseMessaging.onMessage.listen((message) {
       debugPrint('Got a message whilst in the foreground!');
       debugPrint('Message data: ${message.data}');
 
@@ -73,11 +72,13 @@ class NotificationService {
                 true;
 
         if (isEnabled) {
-          showLocalNotification(
-            title: message.notification!.title ?? '',
-            body: message.notification!.body ?? '',
-            payload: message.data
-                .map((key, value) => MapEntry(key, value.toString())),
+          unawaited(
+            showLocalNotification(
+              title: message.notification!.title ?? '',
+              body: message.notification!.body ?? '',
+              payload: message.data
+                  .map((key, value) => MapEntry(key, value.toString())),
+            ),
           );
         }
       }
@@ -89,43 +90,45 @@ class NotificationService {
     });
 
     // App opened from background state (but not terminated)
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
       debugPrint('Message clicked!');
-      _handleNotificationClick(message.data);
+      unawaited(_handleNotificationClick(message.data));
     });
   }
 
   void _setupAwesomeListeners() {
-    AwesomeNotifications().setListeners(
-      onActionReceivedMethod: onActionReceivedMethod,
+    unawaited(
+      AwesomeNotifications().setListeners(
+        onActionReceivedMethod: onActionReceivedMethod,
+      ),
     );
   }
 
   @pragma('vm:entry-point')
   static Future<void> onActionReceivedMethod(
-      ReceivedAction receivedAction) async {
+    ReceivedAction receivedAction,
+  ) async {
     // This is called when user taps an Awesome Notification
-    instance._handleNotificationClick(receivedAction.payload ?? {});
+    unawaited(instance._handleNotificationClick(receivedAction.payload ?? {}));
   }
 
-  void showLocalNotification({
+  Future<void> showLocalNotification({
     required String title,
     required String body,
     Map<String, String>? payload,
-  }) {
-    AwesomeNotifications().createNotification(
+  }) async {
+    await AwesomeNotifications().createNotification(
       content: NotificationContent(
         id: DateTime.now().millisecondsSinceEpoch.remainder(100000),
         channelKey: _channelKey,
         title: title,
         body: body,
         payload: payload,
-        notificationLayout: NotificationLayout.Default,
       ),
     );
   }
 
-  void _handleNotificationClick(Map<String, dynamic> data) {
+  Future<void> _handleNotificationClick(Map<String, dynamic> data) async {
     debugPrint('Handling notification click with data: $data');
     final type = data['type']?.toString();
 
@@ -138,16 +141,24 @@ class NotificationService {
         case 'new_offer':
           final productId = int.tryParse(data['product_id']?.toString() ?? '');
           if (productId != null) {
-            context.push(AppRoutes.productDetails,
-                extra: {'productId': productId});
+            unawaited(
+              context.push(
+                AppRoutes.productDetails,
+                extra: {'productId': productId},
+              ),
+            );
           }
           break;
 
         case 'cart_offer_discount':
           final productId = int.tryParse(data['product_id']?.toString() ?? '');
           if (productId != null) {
-            context.push(AppRoutes.productDetails,
-                extra: {'productId': productId});
+            unawaited(
+              context.push(
+                AppRoutes.productDetails,
+                extra: {'productId': productId},
+              ),
+            );
           }
           break;
 
@@ -156,14 +167,20 @@ class NotificationService {
           // Note: The UI expects a BookingEntity. For notifications, we might only have an ID.
           // This requires fetching the booking or modifying the UI to fetch it.
           // For now, navigate to the orders/bookings list.
-          context.push(AppRoutes.orders,
-              extra: {'initialIndex': 1}); // Assuming 1 is for bookings
+          unawaited(
+            context.push(
+              AppRoutes.orders,
+              extra: {'initialIndex': 1},
+            ),
+          ); // Assuming 1 is for bookings
           break;
 
         case 'order_status_updated':
           final orderId = int.tryParse(data['order_id']?.toString() ?? '');
           if (orderId != null) {
-            context.push(AppRoutes.orderDetails, extra: {'orderId': orderId});
+            unawaited(
+              context.push(AppRoutes.orderDetails, extra: {'orderId': orderId}),
+            );
           }
           break;
 
@@ -172,7 +189,7 @@ class NotificationService {
           context.go(AppRoutes.home);
           break;
       }
-    } catch (e) {
+    } on Object catch (e) {
       debugPrint('Error handling notification navigation: $e');
     }
   }

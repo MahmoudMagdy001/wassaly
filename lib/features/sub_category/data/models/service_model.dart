@@ -1,4 +1,4 @@
-import '../../domain/entities/service_entity.dart';
+import 'package:wassaly/features/sub_category/domain/entities/service_entity.dart';
 
 class ServiceModel extends ServiceEntity {
   const ServiceModel({
@@ -10,8 +10,7 @@ class ServiceModel extends ServiceEntity {
     required super.isFavorite,
   });
 
-  factory ServiceModel.fromJson(Map<String, dynamic> json) {
-    return ServiceModel(
+  factory ServiceModel.fromJson(Map<String, dynamic> json) => ServiceModel(
       id: json['id'] as int? ?? 0,
       title: json['title'] as String? ?? json['service'] as String? ?? '',
       description: json['description'] as String? ?? '',
@@ -19,5 +18,4 @@ class ServiceModel extends ServiceEntity {
       price: num.tryParse(json['price']?.toString() ?? '0') ?? 0,
       isFavorite: json['is_favorite'] as bool? ?? false,
     );
-  }
 }

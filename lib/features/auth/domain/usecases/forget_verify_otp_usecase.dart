@@ -8,12 +8,10 @@ class ForgetVerifyOtpUseCase {
   const ForgetVerifyOtpUseCase(this._repository);
 
   FutureEither<ForgetVerifyOtpResponseModel> call(
-      ForgetVerifyOtpParams params) {
-    return _repository.forgetVerifyOtp(
+      ForgetVerifyOtpParams params,) => _repository.forgetVerifyOtp(
       email: params.email,
       otp: params.otp,
     );
-  }
 }
 
 class ForgetVerifyOtpParams {

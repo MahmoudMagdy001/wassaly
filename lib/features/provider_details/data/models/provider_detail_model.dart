@@ -1,6 +1,6 @@
-import '../../../home/data/models/product_model.dart';
-import '../../../sub_category/data/models/service_model.dart';
-import '../../domain/entities/provider_detail_entity.dart';
+import 'package:wassaly/features/home/data/models/product_model.dart';
+import 'package:wassaly/features/provider_details/domain/entities/provider_detail_entity.dart';
+import 'package:wassaly/features/sub_category/data/models/service_model.dart';
 
 class ProviderDetailReviewModel extends ProviderDetailReviewEntity {
   const ProviderDetailReviewModel({
@@ -10,14 +10,12 @@ class ProviderDetailReviewModel extends ProviderDetailReviewEntity {
     super.createdAt,
   });
 
-  factory ProviderDetailReviewModel.fromJson(Map<String, dynamic> json) {
-    return ProviderDetailReviewModel(
+  factory ProviderDetailReviewModel.fromJson(Map<String, dynamic> json) => ProviderDetailReviewModel(
       id: json['id'] as int?,
       rating: (json['rating'] as num).toInt(),
       comment: json['comment'] as String? ?? '',
       createdAt: json['created_at'] as String?,
     );
-  }
 }
 
 class ProviderDetailUserModel extends ProviderDetailUserEntity {
@@ -32,8 +30,7 @@ class ProviderDetailUserModel extends ProviderDetailUserEntity {
     required super.createdAt,
   });
 
-  factory ProviderDetailUserModel.fromJson(Map<String, dynamic> json) {
-    return ProviderDetailUserModel(
+  factory ProviderDetailUserModel.fromJson(Map<String, dynamic> json) => ProviderDetailUserModel(
       id: json['id'] as int,
       name: json['name'] as String,
       email: json['email'] as String,
@@ -43,7 +40,6 @@ class ProviderDetailUserModel extends ProviderDetailUserEntity {
       isActive: json['is_active'] as int,
       createdAt: json['created_at'] as String,
     );
-  }
 }
 
 class ProviderDetailModel extends ProviderDetailEntity {
@@ -67,11 +63,10 @@ class ProviderDetailModel extends ProviderDetailEntity {
     required super.products,
   });
 
-  factory ProviderDetailModel.fromJson(Map<String, dynamic> json) {
-    return ProviderDetailModel(
+  factory ProviderDetailModel.fromJson(Map<String, dynamic> json) => ProviderDetailModel(
       id: json['id'] as int,
       user: ProviderDetailUserModel.fromJson(
-          json['user'] as Map<String, dynamic>),
+          json['user'] as Map<String, dynamic>,),
       title: json['title'] as String,
       serviceDescription: json['service_description'] as String,
       priceFrom: json['price_from'] as String,
@@ -86,7 +81,7 @@ class ProviderDetailModel extends ProviderDetailEntity {
       successfulOrdersCount: json['successful_orders_count'] as int,
       reviews: (json['reviews'] as List<dynamic>?)
               ?.map((e) =>
-                  ProviderDetailReviewModel.fromJson(e as Map<String, dynamic>))
+                  ProviderDetailReviewModel.fromJson(e as Map<String, dynamic>),)
               .toList() ??
           [],
       services: (json['services'] as List<dynamic>?)
@@ -98,5 +93,4 @@ class ProviderDetailModel extends ProviderDetailEntity {
               .toList() ??
           [],
     );
-  }
 }

@@ -1,4 +1,4 @@
-import '../../domain/entities/brand_entity.dart';
+import 'package:wassaly/features/brands/domain/entities/brand_entity.dart';
 
 class BrandModel extends BrandEntity {
   const BrandModel({
@@ -7,11 +7,9 @@ class BrandModel extends BrandEntity {
     required super.image,
   });
 
-  factory BrandModel.fromJson(Map<String, dynamic> json) {
-    return BrandModel(
+  factory BrandModel.fromJson(Map<String, dynamic> json) => BrandModel(
       id: json['id'] as int? ?? 0,
       name: json['name'] as String? ?? '',
       image: json['image'] as String? ?? '',
     );
-  }
 }

@@ -98,25 +98,23 @@ class OrderSuccessPage extends StatelessWidget {
     );
   }
 
-  Widget _buildRow(BuildContext context, String label, String value) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: context.theme.textTheme.bodyMedium?.copyWith(
-            color: context.theme.colorScheme.outline,
+  Widget _buildRow(BuildContext context, String label, String value) => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: context.theme.textTheme.bodyMedium?.copyWith(
+              color: context.theme.colorScheme.outline,
+            ),
           ),
-        ),
-        Text(
-          value,
-          style: context.theme.textTheme.bodyLarge?.copyWith(
-            fontWeight: FontWeight.bold,
+          Text(
+            value,
+            style: context.theme.textTheme.bodyLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-      ],
-    );
-  }
+        ],
+      );
 
   String _formatDate(DateTime date) {
     final localDate = date.toLocal();

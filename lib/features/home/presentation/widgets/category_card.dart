@@ -33,7 +33,6 @@ class CategoryCard extends StatelessWidget {
               height: 140,
               memCacheHeight: 140 * 2,
               imageUrl: imageUrl,
-              fit: BoxFit.cover,
             ),
             DecoratedBox(
               decoration: BoxDecoration(

@@ -41,21 +41,18 @@ class ForgotPasswordForm extends StatelessWidget {
           24.verticalSpace,
           BlocSelector<ForgotPasswordBloc, ForgotPasswordState, bool>(
             selector: (state) => state.isLoading,
-            builder: (context, isLoading) {
-              return AppButton(
+            builder: (context, isLoading) => AppButton(
                 label: context.l10n.auth_send_code,
                 onPressed: isLoading ? null : onSubmit,
                 isLoading: isLoading,
                 variant: ButtonVariant.success,
                 isFullWidth: true,
-                height: ButtonSize.medium,
                 prefixIcon: Icon(
                   Icons.send_outlined,
                   color: cs.onPrimary,
                   size: 18.w,
                 ),
-              );
-            },
+              ),
           ),
         ],
       ),

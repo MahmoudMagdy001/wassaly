@@ -3,17 +3,16 @@ import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dar
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_bloc.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_event.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_state.dart';
-
-import '../../../home/domain/entities/product_entity.dart';
-import '../../../service_details/presentation/widgets/service_provider_card.dart';
-import '../../domain/entities/product_detail_entity.dart';
-import '../bloc/product_details_bloc.dart';
-import '../bloc/product_details_state.dart';
-import '../screens/product_reviews_page.dart';
-import 'product_details_meta_chip.dart';
-import 'product_review_form_sheet.dart';
-import 'product_specifications_grid.dart';
-import 'related_products_section.dart';
+import 'package:wassaly/features/home/domain/entities/product_entity.dart';
+import 'package:wassaly/features/product_details/domain/entities/product_detail_entity.dart';
+import 'package:wassaly/features/product_details/presentation/bloc/product_details_bloc.dart';
+import 'package:wassaly/features/product_details/presentation/bloc/product_details_state.dart';
+import 'package:wassaly/features/product_details/presentation/screens/product_reviews_page.dart';
+import 'package:wassaly/features/product_details/presentation/widgets/product_details_meta_chip.dart';
+import 'package:wassaly/features/product_details/presentation/widgets/product_review_form_sheet.dart';
+import 'package:wassaly/features/product_details/presentation/widgets/product_specifications_grid.dart';
+import 'package:wassaly/features/product_details/presentation/widgets/related_products_section.dart';
+import 'package:wassaly/features/service_details/presentation/widgets/service_provider_card.dart';
 
 class ProductDetailsInfo extends StatelessWidget {
   final ProductDetailEntity product;
@@ -226,7 +225,6 @@ class _ReviewsSection extends StatelessWidget {
           ),
           if (reviews.length > 3)
             Align(
-              alignment: Alignment.center,
               child: GestureDetector(
                 onTap: () => _openAllReviews(context),
                 child: Row(
@@ -258,25 +256,27 @@ class _ReviewsSection extends StatelessWidget {
     BuildContext context, {
     ProductDetailReviewEntity? review,
   }) {
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      builder: (_) => BlocProvider.value(
-        value: context.read<ProductDetailsBloc>(),
-        child: ProductReviewFormSheet(
-          productId: product.id,
-          review: review,
+    unawaited(
+      context.showAppBottomSheet<void>(
+        builder: (_) => BlocProvider.value(
+          value: context.read<ProductDetailsBloc>(),
+          child: ProductReviewFormSheet(
+            productId: product.id,
+            review: review,
+          ),
         ),
       ),
     );
   }
 
   void _openAllReviews(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => BlocProvider.value(
-          value: context.read<ProductDetailsBloc>(),
-          child: ProductReviewsPage(productId: product.id),
+    unawaited(
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => BlocProvider.value(
+            value: context.read<ProductDetailsBloc>(),
+            child: ProductReviewsPage(productId: product.id),
+          ),
         ),
       ),
     );
@@ -289,26 +289,24 @@ class _ProductMeta extends StatelessWidget {
   const _ProductMeta({required this.product});
 
   @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 8.w,
-      runSpacing: 8.h,
-      children: [
-        if (product.brand != null)
-          ProductDetailsMetaChip(
-            icon: Icons.verified_outlined,
-            label:
-                '${context.l10n.product_details_brand}: ${product.brand!.name}',
-          ),
-        if (product.subCategory != null)
-          ProductDetailsMetaChip(
-            icon: Icons.category_outlined,
-            label:
-                '${context.l10n.product_details_sub_category}: ${product.subCategory!.name}',
-          ),
-      ],
-    );
-  }
+  Widget build(BuildContext context) => Wrap(
+        spacing: 8.w,
+        runSpacing: 8.h,
+        children: [
+          if (product.brand != null)
+            ProductDetailsMetaChip(
+              icon: Icons.verified_outlined,
+              label:
+                  '${context.l10n.product_details_brand}: ${product.brand!.name}',
+            ),
+          if (product.subCategory != null)
+            ProductDetailsMetaChip(
+              icon: Icons.category_outlined,
+              label:
+                  '${context.l10n.product_details_sub_category}: ${product.subCategory!.name}',
+            ),
+        ],
+      );
 }
 
 class _OfferBadge extends StatelessWidget {

@@ -7,7 +7,5 @@ class GetAddressesUseCase {
 
   const GetAddressesUseCase(this._repository);
 
-  FutureEither<List<AddressEntity>> call() {
-    return _repository.getAddresses();
-  }
+  FutureEither<List<AddressEntity>> call() => _repository.getAddresses();
 }

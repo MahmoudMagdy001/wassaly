@@ -26,15 +26,13 @@ class BookingDetailState extends Equatable {
     BookingEntity? booking,
     String? errorMessage,
     String? actionErrorMessage,
-  }) {
-    return BookingDetailState(
+  }) => BookingDetailState(
       status: status ?? this.status,
       actionStatus: actionStatus ?? this.actionStatus,
       booking: booking ?? this.booking,
       errorMessage: errorMessage ?? this.errorMessage,
       actionErrorMessage: actionErrorMessage ?? this.actionErrorMessage,
     );
-  }
 
   @override
   List<Object?> get props =>

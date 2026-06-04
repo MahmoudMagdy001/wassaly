@@ -1,4 +1,4 @@
-import '../imports/imports.dart';
+import 'package:wassaly/core/imports/imports.dart';
 
 extension WidgetExtension on Widget {
   /// Wrap the widget with Padding

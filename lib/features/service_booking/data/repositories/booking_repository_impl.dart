@@ -1,8 +1,8 @@
 import 'package:wassaly/core/imports/imports.dart';
-import '../../domain/entities/booking_entity.dart';
-import '../../domain/repositories/booking_repository.dart';
-import '../datasources/booking_remote_datasource.dart';
-import '../datasources/booking_local_datasource.dart';
+import 'package:wassaly/features/service_booking/data/datasources/booking_local_datasource.dart';
+import 'package:wassaly/features/service_booking/data/datasources/booking_remote_datasource.dart';
+import 'package:wassaly/features/service_booking/domain/entities/booking_entity.dart';
+import 'package:wassaly/features/service_booking/domain/repositories/booking_repository.dart';
 
 class BookingRepositoryImpl implements BookingRepository {
   final BookingRemoteDataSource _remoteDataSource;
@@ -12,13 +12,14 @@ class BookingRepositoryImpl implements BookingRepository {
 
   @override
   Future<Either<Failure, BookingEntity>> createBooking(
-      BookingParams params) async {
+    BookingParams params,
+  ) async {
     try {
       final booking = await _remoteDataSource.createBooking(params);
       return Right(booking);
     } on Failure catch (failure) {
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }
@@ -33,7 +34,7 @@ class BookingRepositoryImpl implements BookingRepository {
       final cached = _localDataSource.getCachedBookings();
       if (cached.isNotEmpty) return Right(cached);
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       final cached = _localDataSource.getCachedBookings();
       if (cached.isNotEmpty) return Right(cached);
       return Left(ServerFailure(e.toString()));
@@ -42,13 +43,14 @@ class BookingRepositoryImpl implements BookingRepository {
 
   @override
   Future<Either<Failure, BookingEntity>> updateBooking(
-      UpdateBookingParams params) async {
+    UpdateBookingParams params,
+  ) async {
     try {
       final booking = await _remoteDataSource.updateBooking(params);
       return Right(booking);
     } on Failure catch (failure) {
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }
@@ -60,7 +62,7 @@ class BookingRepositoryImpl implements BookingRepository {
       return const Right(null);
     } on Failure catch (failure) {
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }
@@ -72,33 +74,35 @@ class BookingRepositoryImpl implements BookingRepository {
       return const Right(null);
     } on Failure catch (failure) {
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }
 
   @override
   Future<Either<Failure, void>> acceptReschedule(
-      AcceptRescheduleParams params) async {
+    AcceptRescheduleParams params,
+  ) async {
     try {
       await _remoteDataSource.acceptReschedule(params);
       return const Right(null);
     } on Failure catch (failure) {
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }
 
   @override
   Future<Either<Failure, void>> proposeReschedule(
-      ProposeRescheduleParams params) async {
+    ProposeRescheduleParams params,
+  ) async {
     try {
       await _remoteDataSource.proposeReschedule(params);
       return const Right(null);
     } on Failure catch (failure) {
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }

@@ -4,6 +4,8 @@ import 'package:wassaly/features/cart/presentation/bloc/cart_bloc.dart';
 import 'package:wassaly/features/cart/presentation/bloc/cart_event.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_bloc.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_event.dart';
+import 'package:wassaly/features/notifications/presentation/bloc/notifications_bloc.dart';
+import 'package:wassaly/features/notifications/presentation/bloc/notifications_event.dart';
 import 'package:wassaly/features/profile/presentation/bloc/profile/profile_bloc.dart';
 
 class SessionListenerWrapper extends StatelessWidget {
@@ -11,33 +13,46 @@ class SessionListenerWrapper extends StatelessWidget {
   const SessionListenerWrapper({super.key, required this.child});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocListener<SessionBloc, SessionState>(
+  Widget build(BuildContext context) => BlocListener<SessionBloc, SessionState>(
       listener: (context, state) {
-        // Skip navigation on splash page - let splash handle its own navigation
-        if (appRouter.routeInformationProvider.value.uri.path ==
-            AppRoutes.splash) {
-          return;
-        }
+        final currentPath = appRouter.routeInformationProvider.value.uri.path;
+        final isSplash = currentPath == AppRoutes.splash;
+
         if (state is SessionAuthenticated) {
-          // Load data for the new user
+          // 1. Load data for the new user (Always do this upon authentication)
           context.read<ProfileBloc>().add(const ProfileFetched());
           context.read<CartBloc>().add(const LoadCartItemsEvent());
           context.read<FavoriteBloc>().add(const GetFavoritesEvent());
           context.read<FavoriteBloc>().add(const GetServiceFavoritesEvent());
-          appRouter.go(AppRoutes.home);
+          context.read<NotificationsBloc>().add(const GetNotificationsEvent());
+          context
+              .read<NotificationsBloc>()
+              .add(const GetNotificationStatusEvent());
+
+          // 2. Navigation logic
+          // Skip navigation if already on Home or still on Splash
+          // (Splash has its own internal timer/animation then goes to Home)
+          if (!isSplash && currentPath != AppRoutes.home) {
+            appRouter.go(AppRoutes.home);
+          }
         } else if (state is SessionUnauthenticated) {
           // Clear data when user logs out
           context.read<ProfileBloc>().add(const ProfileReset());
           context.read<CartBloc>().add(const ClearCartEvent());
           context.read<FavoriteBloc>().add(const ClearFavoritesEvent());
-          // Dismiss any active snackbar before navigating so nothing leaks
-          // onto the login screen after account deletion or logout.
+          context
+              .read<NotificationsBloc>()
+              .add(const ResetNotificationsEvent());
+
+          // Dismiss any active snackbar before navigating
           ScaffoldMessenger.of(context).clearSnackBars();
-          appRouter.go(AppRoutes.login);
+
+          // Navigate to login if not already there and not on splash
+          if (!isSplash && currentPath != AppRoutes.login) {
+            appRouter.go(AppRoutes.login);
+          }
         }
       },
       child: child,
     );
-  }
 }

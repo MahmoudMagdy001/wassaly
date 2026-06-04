@@ -1,7 +1,6 @@
 import 'package:intl/intl.dart';
-
-import '../../../../core/imports/imports.dart';
-import '../../domain/entities/booking_entity.dart';
+import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/features/service_booking/domain/entities/booking_entity.dart';
 
 class BookingProviderModel extends BookingProviderEntity {
   const BookingProviderModel({
@@ -13,16 +12,15 @@ class BookingProviderModel extends BookingProviderEntity {
     super.reviewsCount,
   });
 
-  factory BookingProviderModel.fromJson(Map<String, dynamic> json) {
-    return BookingProviderModel(
-      id: json['id'] as int,
-      name: (json['title'] ?? json['name'] ?? '') as String,
-      avatar: (json['cover'] ?? json['avatar']) as String?,
-      description: json['service_description'] as String?,
-      rating: (json['average_rating'] as num?)?.toDouble(),
-      reviewsCount: json['reviews_count'] as int?,
-    );
-  }
+  factory BookingProviderModel.fromJson(Map<String, dynamic> json) =>
+      BookingProviderModel(
+        id: json['id'] as int,
+        name: (json['title'] ?? json['name'] ?? '') as String,
+        avatar: (json['cover'] ?? json['avatar']) as String?,
+        description: json['service_description'] as String?,
+        rating: (json['average_rating'] as num?)?.toDouble(),
+        reviewsCount: json['reviews_count'] as int?,
+      );
 }
 
 class BookingServiceModel extends BookingServiceEntity {
@@ -34,15 +32,14 @@ class BookingServiceModel extends BookingServiceEntity {
     required super.price,
   });
 
-  factory BookingServiceModel.fromJson(Map<String, dynamic> json) {
-    return BookingServiceModel(
-      id: json['id'] as int,
-      name: (json['service'] ?? json['name'] ?? '') as String,
-      image: (json['image'] ?? json['cover']) as String?,
-      description: json['description'] as String?,
-      price: json['price'] as num,
-    );
-  }
+  factory BookingServiceModel.fromJson(Map<String, dynamic> json) =>
+      BookingServiceModel(
+        id: json['id'] as int,
+        name: (json['service'] ?? json['name'] ?? '') as String,
+        image: (json['image'] ?? json['cover']) as String?,
+        description: json['description'] as String?,
+        price: json['price'] as num,
+      );
 }
 
 class RescheduleDetailsModel extends RescheduleDetailsEntity {
@@ -90,8 +87,8 @@ class BookingModel extends BookingEntity {
 
   factory BookingModel.fromJson(Map<String, dynamic> json) {
     // Handle available_day object
-    String dayAr = '';
-    String dayEn = '';
+    var dayAr = '';
+    var dayEn = '';
     if (json['available_day'] is Map) {
       final dayMap = json['available_day'] as Map<String, dynamic>;
       dayAr = (dayMap['name_ar'] ?? '') as String;
@@ -143,7 +140,7 @@ class BookingModel extends BookingEntity {
     }
 
     // Handle available_time object
-    String timeStr = '';
+    var timeStr = '';
     if (json['available_time'] is Map) {
       final timeMap = json['available_time'] as Map<String, dynamic>;
       timeStr = (timeMap['time'] ?? '') as String;
@@ -160,7 +157,7 @@ class BookingModel extends BookingEntity {
       service:
           BookingServiceModel.fromJson(json['service'] as Map<String, dynamic>),
       provider: BookingProviderModel.fromJson(
-          json['provider'] as Map<String, dynamic>),
+          json['provider'] as Map<String, dynamic>,),
       dayAr: dayAr,
       dayEn: dayEn,
       time: timeStr,
@@ -168,9 +165,12 @@ class BookingModel extends BookingEntity {
       customerName: (json['customer_name'] ?? '') as String,
       customerPhone: (json['customer_phone'] ?? '') as String,
       customerEmail: json['customer_email'] as String?,
-      governorate:
-          json['governorate'] != null ? json['governorate']['name'] : null,
-      center: json['center'] != null ? json['center']['name'] : null,
+      governorate: json['governorate'] != null
+          ? (json['governorate'] as Map<String, dynamic>)['name'] as String?
+          : null,
+      center: json['center'] != null
+          ? (json['center'] as Map<String, dynamic>)['name'] as String?
+          : null,
       rescheduleDetails: rescheduleJson != null
           ? RescheduleDetailsModel.fromJson(rescheduleJson)
           : null,

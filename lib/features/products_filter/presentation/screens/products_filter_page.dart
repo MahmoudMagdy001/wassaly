@@ -2,11 +2,10 @@ import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/home/domain/entities/category_entity.dart';
 import 'package:wassaly/features/home/domain/entities/product_entity.dart';
 import 'package:wassaly/features/products_filter/domain/entities/product_filter_params.dart';
-
-import '../bloc/products_filter_bloc.dart';
-import '../bloc/products_filter_event.dart';
-import '../bloc/products_filter_state.dart';
-import 'filter_options_sheet.dart';
+import 'package:wassaly/features/products_filter/presentation/bloc/products_filter_bloc.dart';
+import 'package:wassaly/features/products_filter/presentation/bloc/products_filter_event.dart';
+import 'package:wassaly/features/products_filter/presentation/bloc/products_filter_state.dart';
+import 'package:wassaly/features/products_filter/presentation/screens/filter_options_sheet.dart';
 
 class ProductsFilterPage extends StatelessWidget {
   final ProductFilterParams? initialParams;
@@ -16,22 +15,24 @@ class ProductsFilterPage extends StatelessWidget {
     this.initialParams,
   });
 
-  void _openFilterSheet(BuildContext context, ProductFilterParams params,
-      List<CategoryEntity> categories) {
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => BlocProvider.value(
-        value: context.read<ProductsFilterBloc>(),
-        child: FilterOptionsSheet(
-          initialParams: params,
-          categories: categories,
-          onApply: (newParams) {
-            context.read<ProductsFilterBloc>().add(
-                  FilterProductsEvent(params: newParams),
-                );
-          },
+  void _openFilterSheet(
+    BuildContext context,
+    ProductFilterParams params,
+    List<CategoryEntity> categories,
+  ) {
+    unawaited(
+      context.showAppBottomSheet<void>(
+        builder: (_) => BlocProvider.value(
+          value: context.read<ProductsFilterBloc>(),
+          child: FilterOptionsSheet(
+            initialParams: params,
+            categories: categories,
+            onApply: (newParams) {
+              context.read<ProductsFilterBloc>().add(
+                    FilterProductsEvent(params: newParams),
+                  );
+            },
+          ),
         ),
       ),
     );
@@ -85,18 +86,19 @@ class ProductsFilterPage extends StatelessWidget {
     bloc.add(FilterProductsEvent(params: updated));
   }
 
-  String _getSortLabel(BuildContext context, String sort) {
-    return switch (sort) {
-      'price_asc' => context.l10n.filter_sort_price_asc,
-      'price_desc' => context.l10n.filter_sort_price_desc,
-      'rating_desc' => context.l10n.filter_sort_rating_desc,
-      'newest' => context.l10n.filter_sort_newest,
-      _ => sort,
-    };
-  }
+  String _getSortLabel(BuildContext context, String sort) => switch (sort) {
+        'price_asc' => context.l10n.filter_sort_price_asc,
+        'price_desc' => context.l10n.filter_sort_price_desc,
+        'rating_desc' => context.l10n.filter_sort_rating_desc,
+        'newest' => context.l10n.filter_sort_newest,
+        _ => sort,
+      };
 
-  Widget _buildFilterChips(BuildContext context, ProductFilterParams params,
-      List<CategoryEntity> categories) {
+  Widget _buildFilterChips(
+    BuildContext context,
+    ProductFilterParams params,
+    List<CategoryEntity> categories,
+  ) {
     final cs = context.theme.colorScheme;
     final bloc = context.read<ProductsFilterBloc>();
     final chips = <Widget>[];
@@ -221,7 +223,6 @@ class ProductsFilterPage extends StatelessWidget {
               slivers: [
                 AppSliverTopBar(
                   title: context.l10n.filter_title,
-                  automaticallyImplyLeading: true,
                   actions: [
                     if (!params.isEmpty)
                       IconButton(
@@ -245,16 +246,13 @@ class ProductsFilterPage extends StatelessWidget {
                       child: BlocSelector<ProductsFilterBloc,
                           ProductsFilterState, String?>(
                         selector: (state) => state.errorMessage,
-                        builder: (context, errorMessage) {
-                          return AppErrorWidget(
-                            message: errorMessage ??
-                                context.l10n.errors_something_went_wrong,
-                            onRetry: () =>
-                                context.read<ProductsFilterBloc>().add(
-                                      FilterProductsEvent(params: params),
-                                    ),
-                          );
-                        },
+                        builder: (context, errorMessage) => AppErrorWidget(
+                          message: errorMessage ??
+                              context.l10n.errors_something_went_wrong,
+                          onRetry: () => context.read<ProductsFilterBloc>().add(
+                                FilterProductsEvent(params: params),
+                              ),
+                        ),
                       ),
                     ),
                   )
@@ -296,11 +294,10 @@ class ProductsFilterPage extends StatelessWidget {
                                   );
                             },
                             itemBuilder:
-                                (context, product, index, wrapAnimation) {
-                              return wrapAnimation(
-                                ProductCard(product: product),
-                              );
-                            },
+                                (context, product, index, wrapAnimation) =>
+                                    wrapAnimation(
+                              ProductCard(product: product),
+                            ),
                           ),
                           if (isLoadMoreLoading)
                             SliverToBoxAdapter(

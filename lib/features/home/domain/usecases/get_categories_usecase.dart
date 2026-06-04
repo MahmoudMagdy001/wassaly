@@ -1,13 +1,11 @@
 import 'package:wassaly/core/imports/imports.dart';
-import '../entities/category_entity.dart';
-import '../repositories/home_repository.dart';
+import 'package:wassaly/features/home/domain/entities/category_entity.dart';
+import 'package:wassaly/features/home/domain/repositories/home_repository.dart';
 
 class GetCategoriesUseCase {
   final HomeRepository repository;
 
   GetCategoriesUseCase(this.repository);
 
-  Future<Either<Failure, List<CategoryEntity>>> call() async {
-    return await repository.getCategories();
-  }
+  Future<Either<Failure, List<CategoryEntity>>> call() async => repository.getCategories();
 }

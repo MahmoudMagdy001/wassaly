@@ -6,7 +6,5 @@ class LogoutUseCase {
 
   const LogoutUseCase(this._repository);
 
-  FutureEither<void> call() {
-    return _repository.logout();
-  }
+  FutureEither<void> call() => _repository.logout();
 }

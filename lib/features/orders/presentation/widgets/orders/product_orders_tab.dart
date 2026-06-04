@@ -76,7 +76,7 @@ class ProductOrdersTab extends StatelessWidget {
                 slivers: [
                   SliverOverlapInjector(
                     handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
-                        context),
+                        context,),
                   ),
                   if (displayOrders.isEmpty)
                     SliverFillRemaining(

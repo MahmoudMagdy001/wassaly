@@ -14,8 +14,9 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
   // ── Fetch products ─────────────────────────────────────────────────────────
 
   @override
-  Future<Either<Failure, PaginatedResponse<ProductEntity>>> getFavorites(
-      {int page = 1}) async {
+  Future<Either<Failure, PaginatedResponse<ProductEntity>>> getFavorites({
+    int page = 1,
+  }) async {
     try {
       final response = await remoteDataSource.getFavorites(page: page);
       if (page == 1) {
@@ -24,12 +25,13 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
       return Right(response);
     } on NetworkFailure {
       final localData = localDataSource.getCachedProductFavorites();
-      return Right(PaginatedResponse(
+      return Right(
+        PaginatedResponse(
           data: localData,
-          currentPage: 1,
-          lastPage: 1,
-          total: localData.length));
-    } catch (e) {
+          total: localData.length,
+        ),
+      );
+    } on Object catch (e) {
       return Left(UnknownFailure(e.toString()));
     }
   }
@@ -37,8 +39,10 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
   // ── Fetch services ─────────────────────────────────────────────────────────
 
   @override
-  Future<Either<Failure, PaginatedResponse<ServiceEntity>>> getServiceFavorites(
-      {int page = 1}) async {
+  Future<Either<Failure, PaginatedResponse<ServiceEntity>>>
+      getServiceFavorites({
+    int page = 1,
+  }) async {
     try {
       final response = await remoteDataSource.getServiceFavorites(page: page);
       if (page == 1) {
@@ -47,12 +51,13 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
       return Right(response);
     } on NetworkFailure {
       final localData = localDataSource.getCachedServiceFavorites();
-      return Right(PaginatedResponse(
+      return Right(
+        PaginatedResponse(
           data: localData,
-          currentPage: 1,
-          lastPage: 1,
-          total: localData.length));
-    } catch (e) {
+          total: localData.length,
+        ),
+      );
+    } on Object catch (e) {
       return Left(UnknownFailure(e.toString()));
     }
   }
@@ -76,7 +81,7 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
       return const Right(null); // Optimistic success for UI
     } on Failure catch (failure) {
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure(e.toString()));
     }
   }
@@ -124,7 +129,7 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
       return const Right(null);
     } on Failure catch (failure) {
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure(e.toString()));
     }
   }
@@ -147,14 +152,15 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
       return const Right(null);
     } on Failure catch (failure) {
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure(e.toString()));
     }
   }
 
   @override
   Future<Either<Failure, void>> removeServiceFromFavorites(
-      int serviceId) async {
+    int serviceId,
+  ) async {
     try {
       await remoteDataSource.removeServiceFromFavorites(serviceId);
       await localDataSource.toggleServiceFavoriteLocally(
@@ -189,7 +195,7 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
       return const Right(null);
     } on Failure catch (failure) {
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(UnknownFailure(e.toString()));
     }
   }
@@ -201,7 +207,7 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
     final pending = localDataSource.getPendingOperations();
     if (pending.isEmpty) return const Right(null);
 
-    final List<PendingFavoriteOperation> failed = [];
+    final failed = <PendingFavoriteOperation>[];
 
     for (final op in pending) {
       try {
@@ -215,7 +221,7 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
           case (PendingFavoriteAction.remove, PendingFavoriteItemType.service):
             await remoteDataSource.removeServiceFromFavorites(op.id);
         }
-      } catch (_) {
+      } on Object catch (_) {
         // If still offline or server error, keep the failed ops
         failed.add(op);
       }
@@ -228,8 +234,11 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
     }
 
     if (failed.isNotEmpty) {
-      return Left(NetworkFailure(
-          'Synced ${pending.length - failed.length}/${pending.length} pending favorites'));
+      return Left(
+        NetworkFailure(
+          'Synced ${pending.length - failed.length}/${pending.length} pending favorites',
+        ),
+      );
     }
     return const Right(null);
   }

@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'color_schemes.dart';
-import 'text_theme.dart';
+import 'package:wassaly/core/theme/color_schemes.dart';
+import 'package:wassaly/core/theme/text_theme.dart';
 
 Color _colorFromHex(String hex) {
   final cleaned = hex.replaceFirst('#', '');
@@ -48,8 +48,7 @@ class AppDesignTokens extends ThemeExtension<AppDesignTokens> {
     double? borderRadiusMedium,
     double? borderRadiusLarge,
     double? cardElevation,
-  }) {
-    return AppDesignTokens(
+  }) => AppDesignTokens(
       paddingSmall: paddingSmall ?? this.paddingSmall,
       paddingMedium: paddingMedium ?? this.paddingMedium,
       paddingLarge: paddingLarge ?? this.paddingLarge,
@@ -58,7 +57,6 @@ class AppDesignTokens extends ThemeExtension<AppDesignTokens> {
       borderRadiusLarge: borderRadiusLarge ?? this.borderRadiusLarge,
       cardElevation: cardElevation ?? this.cardElevation,
     );
-  }
 
   @override
   ThemeExtension<AppDesignTokens> lerp(
@@ -89,7 +87,7 @@ class AppDesignTokens extends ThemeExtension<AppDesignTokens> {
 }
 
 ThemeData _buildTheme(
-    ColorScheme colorScheme, AppColorsExtension customColors) {
+    ColorScheme colorScheme, AppColorsExtension customColors,) {
   final textTheme = buildTextTheme();
 
   return ThemeData(
@@ -175,7 +173,7 @@ ThemeData _buildTheme(
       elevation: AppDesignTokens.fallback.cardElevation,
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
-        side: BorderSide(color: colorScheme.outlineVariant, width: 1),
+        side: BorderSide(color: colorScheme.outlineVariant),
         borderRadius: BorderRadius.circular(16),
       ),
       color: colorScheme.surfaceContainerLow,
@@ -203,9 +201,9 @@ ThemeData _buildTheme(
       ),
       floatingLabelStyle: TextStyle(color: colorScheme.primary),
       labelStyle: textTheme.labelMedium?.copyWith(
-          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5)),
+          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),),
       hintStyle: textTheme.labelMedium?.copyWith(
-          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5)),
+          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),),
     ),
 
     // Navigation Bar Theme
@@ -218,7 +216,7 @@ ThemeData _buildTheme(
       labelTextStyle: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {
           return textTheme.labelSmall?.copyWith(
-              color: colorScheme.primary, fontWeight: FontWeight.bold);
+              color: colorScheme.primary, fontWeight: FontWeight.bold,);
         }
         return textTheme.labelSmall
             ?.copyWith(color: colorScheme.onSurfaceVariant);
@@ -329,11 +327,11 @@ ThemeData _buildTheme(
       elevation: WidgetStateProperty.all(0),
       backgroundColor: WidgetStateProperty.all(colorScheme.surfaceContainerLow),
       shape: WidgetStateProperty.all(
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(28))),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),),
       padding:
           WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 16)),
       hintStyle: WidgetStateProperty.all(
-          textTheme.bodyLarge?.copyWith(color: colorScheme.onSurfaceVariant)),
+          textTheme.bodyLarge?.copyWith(color: colorScheme.onSurfaceVariant),),
     ),
 
     // Badge Theme
@@ -369,7 +367,6 @@ ThemeData buildLightTheme({required String primaryColorHex}) {
       _colorFromHex(primaryColorHex.isNotEmpty ? primaryColorHex : '#6750A4');
   final colorScheme = ColorScheme.fromSeed(
     seedColor: seed,
-    brightness: Brightness.light,
   );
   return _buildTheme(colorScheme, AppPalettes.light);
 }
@@ -392,7 +389,6 @@ CupertinoThemeData buildCupertinoTheme({required String primaryColorHex}) {
     applyThemeToAll: true,
     primaryColor: seed,
     primaryContrastingColor: CupertinoColors.white,
-    brightness: null, // Allow system-wide dark mode support
     scaffoldBackgroundColor: CupertinoColors.systemBackground,
     barBackgroundColor: CupertinoColors.systemGrey6,
     textTheme: CupertinoTextThemeData(

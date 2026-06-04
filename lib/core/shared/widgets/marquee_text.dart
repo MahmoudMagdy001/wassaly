@@ -47,7 +47,7 @@ class _MarqueeTextState extends State<MarqueeText> {
     if (_isRunning) return;
 
     _isRunning = true;
-    _runMarquee(maxScroll);
+    unawaited(_runMarquee(maxScroll));
   }
 
   void _stopAndReset() {
@@ -84,16 +84,14 @@ class _MarqueeTextState extends State<MarqueeText> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      controller: _scrollController,
-      scrollDirection: Axis.horizontal,
-      physics: const NeverScrollableScrollPhysics(),
-      child: Text(
-        widget.text,
-        style: widget.style,
-        maxLines: 1,
-      ),
-    );
-  }
+  Widget build(BuildContext context) => SingleChildScrollView(
+        controller: _scrollController,
+        scrollDirection: Axis.horizontal,
+        physics: const NeverScrollableScrollPhysics(),
+        child: Text(
+          widget.text,
+          style: widget.style,
+          maxLines: 1,
+        ),
+      );
 }

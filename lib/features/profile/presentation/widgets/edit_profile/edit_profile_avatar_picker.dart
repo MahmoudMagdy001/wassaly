@@ -40,54 +40,56 @@ class _EditProfileAvatarPickerState extends State<EditProfileAvatarPicker> {
   }
 
   void _showImageSourceBottomSheet() {
-    context.showAppBottomSheet<void>(
-      builder: (bottomSheetContext) {
-        final cs = bottomSheetContext.theme.colorScheme;
-        final tt = bottomSheetContext.theme.textTheme;
-        return SafeArea(
-          child: Padding(
-            padding: EdgeInsets.all(16.w),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  context.l10n.profile_choose_image_source,
-                  style: tt.titleMedium?.copyWith(
-                    color: cs.onSurface,
-                    fontWeight: FontWeight.bold,
+    unawaited(
+      context.showAppBottomSheet<void>(
+        builder: (bottomSheetContext) {
+          final cs = bottomSheetContext.theme.colorScheme;
+          final tt = bottomSheetContext.theme.textTheme;
+          return SafeArea(
+            child: Padding(
+              padding: EdgeInsets.all(16.w),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    context.l10n.profile_choose_image_source,
+                    style: tt.titleMedium?.copyWith(
+                      color: cs.onSurface,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                16.verticalSpace,
-                ListTile(
-                  leading: Icon(Icons.camera_alt, color: cs.primary),
-                  title: Text(
-                    context.l10n.profile_camera,
-                    style: tt.bodyLarge?.copyWith(color: cs.onSurface),
+                  16.verticalSpace,
+                  ListTile(
+                    leading: Icon(Icons.camera_alt, color: cs.primary),
+                    title: Text(
+                      context.l10n.profile_camera,
+                      style: tt.bodyLarge?.copyWith(color: cs.onSurface),
+                    ),
+                    onTap: () {
+                      bottomSheetContext.pop();
+                      unawaited(_takePhoto());
+                    },
                   ),
-                  onTap: () {
-                    bottomSheetContext.pop();
-                    _takePhoto();
-                  },
-                ),
-                const Divider(),
-                ListTile(
-                  leading: Icon(Icons.photo_library, color: cs.primary),
-                  title: Text(
-                    context.l10n.profile_gallery,
-                    style: tt.bodyLarge?.copyWith(color: cs.onSurface),
+                  const Divider(),
+                  ListTile(
+                    leading: Icon(Icons.photo_library, color: cs.primary),
+                    title: Text(
+                      context.l10n.profile_gallery,
+                      style: tt.bodyLarge?.copyWith(color: cs.onSurface),
+                    ),
+                    onTap: () {
+                      bottomSheetContext.pop();
+                      unawaited(_pickAvatar());
+                    },
                   ),
-                  onTap: () {
-                    bottomSheetContext.pop();
-                    _pickAvatar();
-                  },
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
@@ -118,13 +120,15 @@ class _EditProfileAvatarPickerState extends State<EditProfileAvatarPicker> {
                             width: 120,
                             height: 120,
                             memCacheHeight: 120 * 3,
-                            fit: BoxFit.cover,
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(999)),
                           );
                         }
-                        return Icon(Icons.person,
-                            size: 50.r, color: cs.primary);
+                        return Icon(
+                          Icons.person,
+                          size: 50.r,
+                          color: cs.primary,
+                        );
                       },
                     ),
             ),
@@ -137,8 +141,11 @@ class _EditProfileAvatarPickerState extends State<EditProfileAvatarPicker> {
               backgroundColor: cs.primary,
               child: IconButton(
                 onPressed: _showImageSourceBottomSheet,
-                icon: Icon(Icons.camera_alt_outlined,
-                    size: 16.r, color: cs.onPrimary),
+                icon: Icon(
+                  Icons.camera_alt_outlined,
+                  size: 16.r,
+                  color: cs.onPrimary,
+                ),
               ),
             ),
           ),

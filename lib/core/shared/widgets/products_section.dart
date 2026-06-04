@@ -95,13 +95,11 @@ class AppProductsSection extends StatelessWidget {
             hasMore: hasMore && !isLoadingMore && !isLoading,
             onLoadMore: onLoadMore,
             animateItems: !isLoading,
-            itemBuilder: (context, product, index, wrapAnimation) {
-              return wrapAnimation(
+            itemBuilder: (context, product, index, wrapAnimation) => wrapAnimation(
                 ProductCard(
                   product: product,
                 ),
-              );
-            },
+              ),
           ),
           SliverToBoxAdapter(
             child: Builder(

@@ -19,14 +19,12 @@ class ForgotPasswordState extends Equatable {
     bool? isSuccess,
     String? errorMessage,
     bool clearError = false,
-  }) {
-    return ForgotPasswordState(
+  }) => ForgotPasswordState(
       email: email ?? this.email,
       isLoading: isLoading ?? this.isLoading,
       isSuccess: isSuccess ?? this.isSuccess,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
     );
-  }
 
   @override
   List<Object?> get props => [email, isLoading, isSuccess, errorMessage];

@@ -7,12 +7,10 @@ class VerifyOtpUseCase {
 
   const VerifyOtpUseCase(this._repository);
 
-  FutureEither<VerifyOtpResponseModel> call(VerifyOtpParams params) {
-    return _repository.verifyOtp(
+  FutureEither<VerifyOtpResponseModel> call(VerifyOtpParams params) => _repository.verifyOtp(
       email: params.email,
       otp: params.otp,
     );
-  }
 }
 
 class VerifyOtpParams {

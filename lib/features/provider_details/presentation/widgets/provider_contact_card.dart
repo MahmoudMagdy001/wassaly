@@ -1,7 +1,6 @@
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wassaly/core/imports/imports.dart';
-
-import '../../domain/entities/provider_detail_entity.dart';
+import 'package:wassaly/features/provider_details/domain/entities/provider_detail_entity.dart';
 
 class ProviderContactCard extends StatelessWidget {
   final ProviderDetailEntity provider;
@@ -12,7 +11,7 @@ class ProviderContactCard extends StatelessWidget {
   });
 
   Future<void> _makeCall(String phoneNumber) async {
-    final Uri launchUri = Uri(
+    final launchUri = Uri(
       scheme: 'tel',
       path: phoneNumber,
     );
@@ -23,13 +22,13 @@ class ProviderContactCard extends StatelessWidget {
         // Fallback for Android 11+ package visibility constraints
         await launchUrl(launchUri);
       }
-    } catch (e) {
-      assert(() { debugPrint('Could not launch call: $e'); return true; }());
+    } on Object catch (e) {
+      debugPrint('Error launching phone: $e');
     }
   }
 
   Future<void> _sendEmail(String email) async {
-    final Uri launchUri = Uri(
+    final launchUri = Uri(
       scheme: 'mailto',
       path: email,
     );
@@ -40,8 +39,8 @@ class ProviderContactCard extends StatelessWidget {
         // Fallback for Android 11+ package visibility constraints
         await launchUrl(launchUri);
       }
-    } catch (e) {
-      assert(() { debugPrint('Could not launch email: $e'); return true; }());
+    } on Object catch (e) {
+      debugPrint('Error launching email: $e');
     }
   }
 
@@ -50,14 +49,15 @@ class ProviderContactCard extends StatelessWidget {
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
     final isAr = Localizations.localeOf(context).languageCode == 'ar';
-    final bool isActive = provider.user.isActive == 1;
+    final isActive = provider.user.isActive == 1;
 
     return Container(
       decoration: BoxDecoration(
         color: cs.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
-            color: cs.outlineVariant.withValues(alpha: 0.5), width: 1),
+          color: cs.outlineVariant.withValues(alpha: 0.5),
+        ),
         boxShadow: [
           BoxShadow(
             color: cs.shadow.withValues(alpha: 0.03),
@@ -79,8 +79,11 @@ class ProviderContactCard extends StatelessWidget {
                   color: cs.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8.r),
                 ),
-                child: Icon(Icons.contact_phone_rounded,
-                    color: cs.primary, size: 20.r),
+                child: Icon(
+                  Icons.contact_phone_rounded,
+                  color: cs.primary,
+                  size: 20.r,
+                ),
               ),
               10.horizontalSpace,
               Text(
@@ -221,7 +224,8 @@ class ProviderContactCard extends StatelessWidget {
                       Flexible(
                         child: Text(
                           context.l10n.profile_orders_count(
-                              provider.successfulOrdersCount),
+                            provider.successfulOrdersCount,
+                          ),
                           style: tt.bodySmall?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: cs.onSecondaryContainer,
@@ -249,7 +253,6 @@ class ProviderContactCard extends StatelessWidget {
                   color: cs.surfaceContainerHigh,
                   padding: EdgeInsets.all(12.r),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
                         padding: EdgeInsets.all(8.r),
@@ -265,7 +268,6 @@ class ProviderContactCard extends StatelessWidget {
                       ),
                       8.verticalSpace,
                       Align(
-                        alignment: Alignment.center,
                         child: Text(
                           context.l10n.provider_details_phone,
                           style: tt.bodySmall?.copyWith(
@@ -277,7 +279,6 @@ class ProviderContactCard extends StatelessWidget {
                       ),
                       6.verticalSpace,
                       Align(
-                        alignment: Alignment.center,
                         child: Text(
                           provider.user.phone,
                           style: tt.bodyMedium?.copyWith(
@@ -302,7 +303,6 @@ class ProviderContactCard extends StatelessWidget {
                   color: cs.surfaceContainerHigh,
                   padding: EdgeInsets.all(12.r),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
                         padding: EdgeInsets.all(8.r),
@@ -318,7 +318,6 @@ class ProviderContactCard extends StatelessWidget {
                       ),
                       8.verticalSpace,
                       Align(
-                        alignment: Alignment.center,
                         child: Text(
                           context.l10n.provider_details_email,
                           style: tt.bodySmall?.copyWith(
@@ -330,7 +329,6 @@ class ProviderContactCard extends StatelessWidget {
                       ),
                       6.verticalSpace,
                       Align(
-                        alignment: Alignment.center,
                         child: Text(
                           provider.user.email,
                           style: tt.bodyMedium?.copyWith(

@@ -6,7 +6,5 @@ class MarkAsReadUseCase {
 
   MarkAsReadUseCase(this.repository);
 
-  Future<Either<Failure, Unit>> call(int id) {
-    return repository.markAsRead(id);
-  }
+  Future<Either<Failure, Unit>> call(int id) => repository.markAsRead(id);
 }

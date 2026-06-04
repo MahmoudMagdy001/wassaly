@@ -20,10 +20,11 @@ class SearchRepositoryImpl implements SearchRepository {
       );
 
       return Right(
-          remoteProductsResponse.map((model) => model as ProductEntity));
+        remoteProductsResponse.map((model) => model as ProductEntity),
+      );
     } on Failure catch (failure) {
       return Left(failure);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }

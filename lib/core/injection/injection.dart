@@ -1,9 +1,9 @@
 import 'package:get_it/get_it.dart';
 
-import 'parts/bloc_injection.dart';
-import 'parts/datasource_injection.dart';
-import 'parts/repository_injection.dart';
-import 'parts/usecase_injection.dart';
+import 'package:wassaly/core/injection/parts/bloc_injection.dart';
+import 'package:wassaly/core/injection/parts/datasource_injection.dart';
+import 'package:wassaly/core/injection/parts/repository_injection.dart';
+import 'package:wassaly/core/injection/parts/usecase_injection.dart';
 
 final sl = GetIt.instance;
 

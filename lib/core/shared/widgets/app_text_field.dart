@@ -112,7 +112,7 @@ class _AppTextFieldState extends State<AppTextField> {
                   cs.surfaceContainerHighest.withValues(alpha: 0.5),
               borderRadius: BorderRadius.all(Radius.circular(12.r)),
               border: _errorText != null
-                  ? Border.all(color: cs.error, width: 1)
+                  ? Border.all(color: cs.error)
                   : null,
             ),
             padding: widget.contentPadding ??

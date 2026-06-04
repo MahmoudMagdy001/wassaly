@@ -1,8 +1,8 @@
 import 'package:wassaly/core/imports/imports.dart';
-import '../models/banner_model.dart';
-import '../models/category_model.dart';
-import '../models/product_model.dart';
-import '../models/sub_category_model.dart';
+import 'package:wassaly/features/home/data/models/banner_model.dart';
+import 'package:wassaly/features/home/data/models/category_model.dart';
+import 'package:wassaly/features/home/data/models/product_model.dart';
+import 'package:wassaly/features/home/data/models/sub_category_model.dart';
 
 abstract class HomeRemoteDataSource {
   Future<List<BannerModel>> getBanners();
@@ -36,7 +36,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
           return <BannerModel>[];
         }
 
-        final List<dynamic> list = data as List<dynamic>;
+        final list = data as List<dynamic>;
         return list
             .map((e) => BannerModel.fromJson(e as Map<String, dynamic>))
             .toList();
@@ -64,7 +64,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
           return <CategoryModel>[];
         }
 
-        final List<dynamic> list = data as List<dynamic>;
+        final list = data as List<dynamic>;
         return list
             .map((e) => CategoryModel.fromJson(e as Map<String, dynamic>))
             .toList();
@@ -108,7 +108,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
           );
         }
 
-        final List<dynamic> list = data as List<dynamic>;
+        final list = data as List<dynamic>;
         final services = list
             .map((e) => SubCategoryModel.fromJson(e as Map<String, dynamic>))
             .toList();
@@ -159,7 +159,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
           );
         }
 
-        final List<dynamic> list = data as List<dynamic>;
+        final list = data as List<dynamic>;
         final products = list
             .map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
             .toList();

@@ -9,9 +9,7 @@ class CancelRequestService {
   final Map<Object, CancelToken> _tokens = {};
 
   /// Retrieves or creates a [CancelToken] associated with the given [key].
-  CancelToken getCancelToken(Object key) {
-    return _tokens.putIfAbsent(key, () => CancelToken());
-  }
+  CancelToken getCancelToken(Object key) => _tokens.putIfAbsent(key, CancelToken.new);
 
   /// Cancels any active requests associated with the given [key].
   ///

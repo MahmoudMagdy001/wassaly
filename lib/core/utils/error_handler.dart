@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:wassaly/core/utils/failure.dart';
 
 class AppErrorHandler {
   static String format(dynamic error) {
@@ -34,9 +35,15 @@ class AppErrorHandler {
 
     // Handle Failure objects
     try {
-      if (error?.message != null) return error.message;
+      if (error is Map && error['message'] != null) {
+        return error['message'].toString();
+      }
+      // If it's an object with a message property (like our Failure class)
+      if (error is Failure) {
+        return error.message;
+      }
       if (error?.toString() != null) return error.toString();
-    } catch (_) {}
+    } on Object catch (_) {}
 
     return 'An unexpected error occurred';
   }

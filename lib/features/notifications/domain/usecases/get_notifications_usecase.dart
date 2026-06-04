@@ -8,7 +8,5 @@ class GetNotificationsUseCase {
   GetNotificationsUseCase(this.repository);
 
   Future<Either<Failure, PaginatedResponse<NotificationEntity>>> call(
-      {int page = 1}) {
-    return repository.getNotifications(page: page);
-  }
+      {int page = 1,}) => repository.getNotifications(page: page);
 }

@@ -1,7 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
-
-import '../../../home/domain/entities/product_entity.dart';
-import '../repositories/brands_repository.dart';
+import 'package:wassaly/features/brands/domain/repositories/brands_repository.dart';
+import 'package:wassaly/features/home/domain/entities/product_entity.dart';
 
 class GetBrandProductsUseCase {
   final BrandsRepository repository;
@@ -11,7 +10,5 @@ class GetBrandProductsUseCase {
   Future<Either<Failure, PaginatedResponse<ProductEntity>>> call({
     required int brandId,
     int page = 1,
-  }) {
-    return repository.getBrandProducts(brandId: brandId, page: page);
-  }
+  }) => repository.getBrandProducts(brandId: brandId, page: page);
 }

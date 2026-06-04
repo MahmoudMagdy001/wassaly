@@ -55,39 +55,45 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     );
 
     result.fold(
-      (failure) async {
+      (failure) {
         // Check if the error indicates account is not verified (robust language-independent check)
         final msg = failure.message.toLowerCase();
         if (msg.contains('not active') ||
             msg.contains('active') ||
             msg.contains('غير نشط') ||
             msg.contains('نشط')) {
-          emit(state.copyWith(
-            isLoading: false,
-            verificationEmail: state.email,
-            clearError: true,
-          ));
+          emit(
+            state.copyWith(
+              isLoading: false,
+              verificationEmail: state.email,
+              clearError: true,
+            ),
+          );
           // Dispatch event to send OTP
           add(LoginRequiresVerification(state.email));
         } else {
-          emit(state.copyWith(
-            isLoading: false,
-            errorMessage: failure.message,
-          ));
+          emit(
+            state.copyWith(
+              isLoading: false,
+              errorMessage: failure.message,
+            ),
+          );
         }
       },
       (user) {
         final userId = int.tryParse(user.id) ?? 0;
         if (userId > 0) {
           // Fire-and-forget: register FCM token and set up refresh listener
-          _fcmTokenService.registerToken(userId);
+          unawaited(_fcmTokenService.registerToken(userId));
           _fcmTokenService.setupTokenRefresh(userId);
         }
-        emit(state.copyWith(
-          isLoading: false,
-          user: user,
-          clearVerification: true,
-        ));
+        emit(
+          state.copyWith(
+            isLoading: false,
+            user: user,
+            clearVerification: true,
+          ),
+        );
       },
     );
   }
@@ -103,15 +109,19 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     );
 
     result.fold(
-      (failure) => emit(state.copyWith(
-        isLoading: false,
-        errorMessage: failure.message,
-      )),
-      (_) => emit(state.copyWith(
-        isLoading: false,
-        requiresVerification: true,
-        verificationEmail: event.email,
-      )),
+      (failure) => emit(
+        state.copyWith(
+          isLoading: false,
+          errorMessage: failure.message,
+        ),
+      ),
+      (_) => emit(
+        state.copyWith(
+          isLoading: false,
+          requiresVerification: true,
+          verificationEmail: event.email,
+        ),
+      ),
     );
   }
 }

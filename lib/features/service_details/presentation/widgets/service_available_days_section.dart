@@ -1,6 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-import '../../domain/entities/service_detail_entity.dart';
+import 'package:wassaly/features/service_details/domain/entities/service_detail_entity.dart';
 
 class ServiceAvailableDaysSection extends StatefulWidget {
   final List<ServiceAvailableDayEntity> availableDays;
@@ -56,8 +56,7 @@ class _ServiceAvailableDaysSectionState
           scrollDirection: Axis.horizontal,
           child: ValueListenableBuilder<ServiceAvailableDayEntity?>(
             valueListenable: _selectedDayNotifier,
-            builder: (context, selectedDay, child) {
-              return Row(
+            builder: (context, selectedDay, child) => Row(
                 children: widget.availableDays.map((day) {
                   final isSelected = selectedDay?.id == day.id;
                   return Padding(
@@ -69,7 +68,7 @@ class _ServiceAvailableDaysSectionState
                         _selectedDayNotifier.value = selected ? day : null;
                         _selectedTimeNotifier.value = null;
                         widget.onSelectionChanged(_selectedDayNotifier.value,
-                            _selectedTimeNotifier.value);
+                            _selectedTimeNotifier.value,);
                       },
                       selectedColor: cs.primary,
                       labelStyle: TextStyle(
@@ -80,8 +79,7 @@ class _ServiceAvailableDaysSectionState
                     ),
                   );
                 }).toList(),
-              );
-            },
+              ),
           ),
         ),
         ValueListenableBuilder<ServiceAvailableDayEntity?>(
@@ -99,8 +97,7 @@ class _ServiceAvailableDaysSectionState
                 12.verticalSpace,
                 ValueListenableBuilder<ServiceAvailableTimeEntity?>(
                   valueListenable: _selectedTimeNotifier,
-                  builder: (context, selectedTime, child) {
-                    return Wrap(
+                  builder: (context, selectedTime, child) => Wrap(
                       spacing: 8.w,
                       runSpacing: 8.h,
                       children: selectedDay.availableTimes.map((time) {
@@ -112,7 +109,7 @@ class _ServiceAvailableDaysSectionState
                             _selectedTimeNotifier.value =
                                 selected ? time : null;
                             widget.onSelectionChanged(
-                                selectedDay, _selectedTimeNotifier.value);
+                                selectedDay, _selectedTimeNotifier.value,);
                           },
                           selectedColor: cs.primaryContainer,
                           labelStyle: TextStyle(
@@ -125,8 +122,7 @@ class _ServiceAvailableDaysSectionState
                           ),
                         );
                       }).toList(),
-                    );
-                  },
+                    ),
                 ),
               ],
             );

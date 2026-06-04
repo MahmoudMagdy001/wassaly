@@ -1,8 +1,8 @@
 import 'package:wassaly/core/imports/imports.dart';
-import '../../domain/entities/provider_detail_entity.dart';
-import '../../domain/usecases/get_provider_details_usecase.dart';
-import 'provider_details_event.dart';
-import 'provider_details_state.dart';
+import 'package:wassaly/features/provider_details/domain/entities/provider_detail_entity.dart';
+import 'package:wassaly/features/provider_details/domain/usecases/get_provider_details_usecase.dart';
+import 'package:wassaly/features/provider_details/presentation/bloc/provider_details_event.dart';
+import 'package:wassaly/features/provider_details/presentation/bloc/provider_details_state.dart';
 
 class ProviderDetailsBloc
     extends Bloc<ProviderDetailsEvent, ProviderDetailsState> {
@@ -27,7 +27,7 @@ class ProviderDetailsBloc
       (failure) => emit(state.copyWith(
         status: AppStatus.failure,
         errorMessage: failure.message,
-      )),
+      ),),
       (provider) {
         final sortedReviews =
             List<ProviderDetailReviewEntity>.from(provider.reviews)
@@ -43,7 +43,7 @@ class ProviderDetailsBloc
         emit(state.copyWith(
           status: AppStatus.success,
           provider: provider.copyWith(reviews: sortedReviews),
-        ));
+        ),);
       },
     );
   }

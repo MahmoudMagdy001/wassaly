@@ -1,6 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-import 'google_login_button.dart';
+import 'package:wassaly/features/auth/presentation/widgets/google_login_button.dart';
 
 class SocialLoginSection extends StatelessWidget {
   const SocialLoginSection({super.key});

@@ -1,6 +1,6 @@
+import 'package:fpdart/fpdart.dart' hide State;
 import 'package:wassaly/core/utils/failure.dart';
 import 'package:wassaly/features/favorite/domain/repositories/favorite_repository.dart';
-import 'package:fpdart/fpdart.dart' hide State;
 
 /// Encapsulates the business logic of toggling a service's favorite status.
 class ToggleServiceFavoriteUseCase {

@@ -12,12 +12,10 @@ class SettingsState extends Equatable {
   SettingsState copyWith({
     String? language,
     ThemeMode? themeMode,
-  }) {
-    return SettingsState(
+  }) => SettingsState(
       language: language ?? this.language,
       themeMode: themeMode ?? this.themeMode,
     );
-  }
 
   @override
   List<Object?> get props => [language, themeMode];

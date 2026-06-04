@@ -19,8 +19,7 @@ class SocialButton extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return TextButton(
+  Widget build(BuildContext context) => TextButton(
       onPressed: isLoading ? null : onPressed,
       style: TextButton.styleFrom(
         backgroundColor: backgroundColor,
@@ -61,5 +60,4 @@ class SocialButton extends StatelessWidget {
         ],
       ),
     );
-  }
 }

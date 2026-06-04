@@ -6,7 +6,5 @@ class ClearUserSessionUseCase {
 
   const ClearUserSessionUseCase(this._repository);
 
-  FutureEither<void> call() {
-    return _repository.clearUserSession();
-  }
+  FutureEither<void> call() => _repository.clearUserSession();
 }

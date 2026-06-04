@@ -103,11 +103,12 @@ class CommonImage extends StatelessWidget {
       return GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
-          AppImageFullScreenView.show(
-            context,
-            imageUrls: [resolved],
-            initialIndex: 0,
-            heroTagBuilder: (index) => tag,
+          unawaited(
+            AppImageFullScreenView.show(
+              context,
+              imageUrls: [resolved],
+              heroTagBuilder: (index) => tag,
+            ),
           );
         },
         child: Hero(

@@ -26,8 +26,7 @@ class OffersState extends Equatable {
     String? errorMessage,
     int? currentPage,
     bool? hasReachedMax,
-  }) {
-    return OffersState(
+  }) => OffersState(
       status: status ?? this.status,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       products: products ?? this.products,
@@ -35,7 +34,6 @@ class OffersState extends Equatable {
       currentPage: currentPage ?? this.currentPage,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
     );
-  }
 
   @override
   List<Object?> get props => [

@@ -1,6 +1,5 @@
+import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/auth/domain/usecases/reset_password_usecase.dart';
-
-import '../../../../../core/imports/imports.dart';
 
 part 'reset_password_event.dart';
 part 'reset_password_state.dart';
@@ -28,7 +27,7 @@ class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
       password: event.password,
       clearError: true,
       status: ResetPasswordStatus.initial,
-    ));
+    ),);
   }
 
   void _onConfirmPasswordChanged(
@@ -39,7 +38,7 @@ class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
       passwordConfirmation: event.password,
       clearError: true,
       status: ResetPasswordStatus.initial,
-    ));
+    ),);
   }
 
   void _onPasswordVisibilityToggled(
@@ -49,11 +48,11 @@ class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
     if (event.isNewPassword) {
       emit(state.copyWith(
         isNewPasswordVisible: !state.isNewPasswordVisible,
-      ));
+      ),);
     } else {
       emit(state.copyWith(
         isConfirmPasswordVisible: !state.isConfirmPasswordVisible,
-      ));
+      ),);
     }
   }
 
@@ -66,12 +65,12 @@ class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
         emit(state.copyWith(
           status: ResetPasswordStatus.error,
           errorMessage: 'auth.password_too_short',
-        ));
+        ),);
       } else if (!state.isConfirmPasswordValid) {
         emit(state.copyWith(
           status: ResetPasswordStatus.error,
           errorMessage: 'auth.passwords_do_not_match',
-        ));
+        ),);
       }
       return;
     }
@@ -79,7 +78,7 @@ class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
     emit(state.copyWith(
       status: ResetPasswordStatus.loading,
       clearError: true,
-    ));
+    ),);
 
     final result = await _resetPasswordUseCase(
       ResetPasswordParams(
@@ -94,12 +93,12 @@ class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
       (failure) => emit(state.copyWith(
         status: ResetPasswordStatus.error,
         errorMessage: failure.message,
-      )),
+      ),),
       (_) => emit(state.copyWith(
         status: ResetPasswordStatus.success,
         password: '',
         passwordConfirmation: '',
-      )),
+      ),),
     );
   }
 }

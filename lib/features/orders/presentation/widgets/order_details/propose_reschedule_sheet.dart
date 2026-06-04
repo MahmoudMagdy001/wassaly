@@ -29,7 +29,7 @@ class _ProposeRescheduleSheetState extends State<ProposeRescheduleSheet> {
   @override
   void initState() {
     super.initState();
-    _loadAvailableDays();
+    unawaited(_loadAvailableDays());
   }
 
   @override
@@ -130,7 +130,8 @@ class _ProposeRescheduleSheetState extends State<ProposeRescheduleSheet> {
                             padding: EdgeInsetsDirectional.only(end: 8.w),
                             child: ChoiceChip(
                               label: Text(
-                                  context.isArabic ? day.nameAr : day.nameEn),
+                                context.isArabic ? day.nameAr : day.nameEn,
+                              ),
                               selected: isSelected,
                               onSelected: (selected) {
                                 setState(() {
@@ -140,8 +141,7 @@ class _ProposeRescheduleSheetState extends State<ProposeRescheduleSheet> {
                               },
                               selectedColor: cs.primary,
                               labelStyle: TextStyle(
-                                color:
-                                    isSelected ? cs.onPrimary : cs.onSurface,
+                                color: isSelected ? cs.onPrimary : cs.onSurface,
                                 fontWeight: isSelected
                                     ? FontWeight.bold
                                     : FontWeight.normal,
@@ -162,8 +162,7 @@ class _ProposeRescheduleSheetState extends State<ProposeRescheduleSheet> {
                       Wrap(
                         spacing: 8.w,
                         runSpacing: 8.h,
-                        children:
-                            _selectedDay!.availableTimes.map((time) {
+                        children: _selectedDay!.availableTimes.map((time) {
                           final isSelected = _selectedTime?.id == time.id;
                           return ChoiceChip(
                             label: Text(time.displayTime),
@@ -190,8 +189,7 @@ class _ProposeRescheduleSheetState extends State<ProposeRescheduleSheet> {
                     AppTextField(
                       controller: _noteController,
                       label: context.l10n.booking_reschedule_propose_note_label,
-                      hint:
-                          context.l10n.booking_reschedule_propose_note_hint,
+                      hint: context.l10n.booking_reschedule_propose_note_hint,
                       maxLines: 3,
                       validator: (value) =>
                           value == null || value.trim().isEmpty
@@ -227,8 +225,7 @@ class _ProposeRescheduleSheetState extends State<ProposeRescheduleSheet> {
                                   bookingId: widget.bookingId,
                                   suggestedDayId: _selectedDay!.id,
                                   suggestedTimeId: _selectedTime!.id,
-                                  rescheduleNote:
-                                      _noteController.text.trim(),
+                                  rescheduleNote: _noteController.text.trim(),
                                 ),
                               ),
                             );

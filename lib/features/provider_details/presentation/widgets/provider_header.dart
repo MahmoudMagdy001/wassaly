@@ -1,6 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-import '../../domain/entities/provider_detail_entity.dart';
+import 'package:wassaly/features/provider_details/domain/entities/provider_detail_entity.dart';
 
 class ProviderHeader extends StatelessWidget {
   final ProviderDetailEntity provider;
@@ -26,7 +26,6 @@ class ProviderHeader extends StatelessWidget {
               height: 200,
               width: double.infinity,
               memCacheHeight: 200 * 2,
-              fit: BoxFit.cover,
               enableFullScreenView: true,
               heroTag: 'provider_cover_${provider.id}',
             ),
@@ -53,7 +52,6 @@ class ProviderHeader extends StatelessWidget {
                     width: 100,
                     height: 90,
                     memCacheHeight: 90 * 2,
-                    fit: BoxFit.cover,
                     enableFullScreenView: true,
                     heroTag: 'provider_avatar_${provider.id}',
                   ),

@@ -21,18 +21,22 @@ class OffersBloc extends Bloc<OffersEvent, OffersState> {
 
     result.fold(
       (failure) {
-        emit(state.copyWith(
-          status: AppStatus.failure,
-          errorMessage: failure.message,
-        ));
+        emit(
+          state.copyWith(
+            status: AppStatus.failure,
+            errorMessage: failure.message,
+          ),
+        );
       },
       (response) {
-        emit(state.copyWith(
-          status: AppStatus.success,
-          products: response.data,
-          currentPage: response.currentPage,
-          hasReachedMax: response.currentPage >= response.lastPage,
-        ));
+        emit(
+          state.copyWith(
+            status: AppStatus.success,
+            products: response.data,
+            currentPage: response.currentPage,
+            hasReachedMax: response.currentPage >= response.lastPage,
+          ),
+        );
       },
     );
   }
@@ -54,18 +58,22 @@ class OffersBloc extends Bloc<OffersEvent, OffersState> {
 
     result.fold(
       (failure) {
-        emit(state.copyWith(
-          isLoadingMore: false,
-          errorMessage: failure.message,
-        ));
+        emit(
+          state.copyWith(
+            isLoadingMore: false,
+            errorMessage: failure.message,
+          ),
+        );
       },
       (response) {
-        emit(state.copyWith(
-          isLoadingMore: false,
-          products: List.of(state.products)..addAll(response.data),
-          currentPage: response.currentPage,
-          hasReachedMax: response.currentPage >= response.lastPage,
-        ));
+        emit(
+          state.copyWith(
+            isLoadingMore: false,
+            products: List.of(state.products)..addAll(response.data),
+            currentPage: response.currentPage,
+            hasReachedMax: response.currentPage >= response.lastPage,
+          ),
+        );
       },
     );
   }

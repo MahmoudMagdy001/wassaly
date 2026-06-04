@@ -7,7 +7,5 @@ class GetGovernoratesUseCase {
 
   const GetGovernoratesUseCase(this._repository);
 
-  FutureEither<List<GovernorateEntity>> call() {
-    return _repository.getGovernorates();
-  }
+  FutureEither<List<GovernorateEntity>> call() => _repository.getGovernorates();
 }

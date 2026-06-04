@@ -8,12 +8,10 @@ class SignupPage extends StatelessWidget {
   const SignupPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<SignupBloc>(),
-      child: const _SignupView(),
-    );
-  }
+  Widget build(BuildContext context) => BlocProvider(
+        create: (_) => sl<SignupBloc>(),
+        child: const _SignupView(),
+      );
 }
 
 class _SignupView extends StatefulWidget {
@@ -96,11 +94,11 @@ class _SignupViewState extends State<_SignupView> {
   }
 
   void _onTermsPressed() {
-    context.push(AppRoutes.termsOfService);
+    unawaited(context.push(AppRoutes.termsOfService));
   }
 
   void _onPrivacyPressed() {
-    context.push(AppRoutes.privacyPolicy);
+    unawaited(context.push(AppRoutes.privacyPolicy));
   }
 
   void _onAvatarSelected(File file) {
@@ -112,43 +110,44 @@ class _SignupViewState extends State<_SignupView> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return BlocListener<SignupBloc, SignupState>(
-      listenWhen: (previous, current) =>
-          previous.isRegistered != current.isRegistered ||
-          previous.errorMessage != current.errorMessage,
-      listener: (context, state) {
-        if (state.isRegistered) {
-          context.showTypedSnackBar(context.l10n.auth_otp_sent_success,
-              type: SnackBarType.success);
-          context.push(
-            AppRoutes.otpVerification,
-            extra: {
-              'email': state.email,
-              'verificationType': VerificationType.register,
-            },
-          );
-        }
-        if (state.errorMessage != null) {
-          final message = state.errorMessage == 'auth_terms_required'
-              ? context.l10n.auth_terms_required
-              : state.errorMessage!;
-          context.showTypedSnackBar(message, type: SnackBarType.error);
-        }
-      },
-      child: Scaffold(
-        body: SafeArea(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 12.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SignupHeader(),
-                15.verticalSpace,
-                BlocSelector<SignupBloc, SignupState, File?>(
-                  selector: (state) => state.avatarFile,
-                  builder: (context, avatarFile) {
-                    return SignupForm(
+  Widget build(BuildContext context) => BlocListener<SignupBloc, SignupState>(
+        listenWhen: (previous, current) =>
+            previous.isRegistered != current.isRegistered ||
+            previous.errorMessage != current.errorMessage,
+        listener: (context, state) {
+          if (state.isRegistered) {
+            context.showTypedSnackBar(
+              context.l10n.auth_otp_sent_success,
+              type: SnackBarType.success,
+            );
+            unawaited(
+              context.push(
+                AppRoutes.otpVerification,
+                extra: {
+                  'email': state.email,
+                  'verificationType': VerificationType.register,
+                },
+              ),
+            );
+          }
+          if (state.errorMessage != null) {
+            final message = state.errorMessage == 'auth_terms_required'
+                ? context.l10n.auth_terms_required
+                : state.errorMessage!;
+            context.showTypedSnackBar(message, type: SnackBarType.error);
+          }
+        },
+        child: Scaffold(
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: 12.w),
+              child: Column(
+                children: [
+                  const SignupHeader(),
+                  15.verticalSpace,
+                  BlocSelector<SignupBloc, SignupState, File?>(
+                    selector: (state) => state.avatarFile,
+                    builder: (context, avatarFile) => SignupForm(
                       formKey: _formKey,
                       nameController: _nameController,
                       phoneController: _phoneController,
@@ -169,16 +168,14 @@ class _SignupViewState extends State<_SignupView> {
                       avatarFile: avatarFile,
                       onAvatarSelected: _onAvatarSelected,
                       onAvatarCleared: _onAvatarCleared,
-                    );
-                  },
-                ),
-                15.verticalSpace,
-                LoginLink(onLogin: _onLogin),
-              ],
+                    ),
+                  ),
+                  15.verticalSpace,
+                  LoginLink(onLogin: _onLogin),
+                ],
+              ),
             ),
           ),
         ),
-      ),
-    );
-  }
+      );
 }

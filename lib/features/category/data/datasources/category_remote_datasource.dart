@@ -1,6 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
-
-import '../models/category_detail_model.dart';
+import 'package:wassaly/features/category/data/models/category_detail_model.dart';
 
 abstract class CategoryRemoteDataSource {
   Future<CategoryDetailModel> getCategoryDetail(int categoryId, {int page = 1});
@@ -13,7 +12,7 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
 
   @override
   Future<CategoryDetailModel> getCategoryDetail(int categoryId,
-      {int page = 1}) async {
+      {int page = 1,}) async {
     final result = await _dioService.get(
       '/api/category',
       queryParameters: {

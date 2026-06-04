@@ -33,8 +33,7 @@ class LoginState extends Equatable {
     bool clearError = false,
     bool clearUser = false,
     bool clearVerification = false,
-  }) {
-    return LoginState(
+  }) => LoginState(
       email: email ?? this.email,
       password: password ?? this.password,
       isPasswordVisible: isPasswordVisible ?? this.isPasswordVisible,
@@ -48,7 +47,6 @@ class LoginState extends Equatable {
           ? null
           : (verificationEmail ?? this.verificationEmail),
     );
-  }
 
   @override
   List<Object?> get props => [

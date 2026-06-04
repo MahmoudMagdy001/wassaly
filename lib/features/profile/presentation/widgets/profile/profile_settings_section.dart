@@ -3,10 +3,9 @@ import 'package:wassaly/features/notifications/presentation/bloc/notifications_b
 import 'package:wassaly/features/notifications/presentation/bloc/notifications_event.dart';
 import 'package:wassaly/features/notifications/presentation/bloc/notifications_state.dart';
 import 'package:wassaly/features/profile/presentation/bloc/settings/settings_bloc.dart';
+import 'package:wassaly/features/profile/presentation/widgets/profile/language_bottom_sheet.dart';
 import 'package:wassaly/features/profile/presentation/widgets/profile/profile_menu_tile.dart';
-
-import 'language_bottom_sheet.dart';
-import 'theme_bottom_sheet.dart';
+import 'package:wassaly/features/profile/presentation/widgets/profile/theme_bottom_sheet.dart';
 
 class ProfileSettingsSection extends StatelessWidget {
   const ProfileSettingsSection({super.key});
@@ -38,22 +37,22 @@ class ProfileSettingsSection extends StatelessWidget {
                 ProfileMenuTile(
                   icon: Icons.location_on_outlined,
                   title: context.l10n.profile_saved_addresses,
-                  onTap: () => context.push(AppRoutes.addresses),
+                  onTap: () => unawaited(context.push(AppRoutes.addresses)),
                 ),
                 BlocSelector<SettingsBloc, SettingsState, String>(
                   selector: (state) => state.language,
-                  builder: (context, language) {
-                    return ProfileMenuTile(
-                      icon: Icons.language_outlined,
-                      title: context.l10n.profile_language,
-                      subtitle: language == 'ar'
-                          ? context.l10n.profile_arabic
-                          : context.l10n.profile_english,
-                      onTap: () => context.showAppBottomSheet<void>(
+                  builder: (context, language) => ProfileMenuTile(
+                    icon: Icons.language_outlined,
+                    title: context.l10n.profile_language,
+                    subtitle: language == 'ar'
+                        ? context.l10n.profile_arabic
+                        : context.l10n.profile_english,
+                    onTap: () => unawaited(
+                      context.showAppBottomSheet<void>(
                         builder: (context) => const LanguageBottomSheet(),
                       ),
-                    );
-                  },
+                    ),
+                  ),
                 ),
                 BlocSelector<SettingsBloc, SettingsState, ThemeMode>(
                   selector: (state) => state.themeMode,
@@ -80,8 +79,10 @@ class ProfileSettingsSection extends StatelessWidget {
                       icon: themeIcon,
                       title: context.l10n.profile_theme,
                       subtitle: themeSubtitle,
-                      onTap: () => context.showAppBottomSheet<void>(
-                        builder: (context) => const ThemeBottomSheet(),
+                      onTap: () => unawaited(
+                        context.showAppBottomSheet<void>(
+                          builder: (context) => const ThemeBottomSheet(),
+                        ),
                       ),
                     );
                   },
@@ -92,20 +93,17 @@ class ProfileSettingsSection extends StatelessWidget {
                   trailing:
                       BlocSelector<NotificationsBloc, NotificationsState, bool>(
                     selector: (state) => state.isNotificationEnabled,
-                    builder: (context, isEnabled) {
-                      return Switch.adaptive(
-                        value: isEnabled,
-                        onChanged: (value) {
-                          context
-                              .read<NotificationsBloc>()
-                              .add(ToggleNotificationEvent(value));
-                        },
-                        activeThumbColor: cs.primary,
-                        activeTrackColor: cs.primaryContainer,
-                      );
-                    },
+                    builder: (context, isEnabled) => Switch.adaptive(
+                      value: isEnabled,
+                      onChanged: (value) {
+                        context
+                            .read<NotificationsBloc>()
+                            .add(ToggleNotificationEvent(value));
+                      },
+                      activeThumbColor: cs.primary,
+                      activeTrackColor: cs.primaryContainer,
+                    ),
                   ),
-                  onTap: null,
                 ),
               ],
             ),

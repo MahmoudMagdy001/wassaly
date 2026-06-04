@@ -1,8 +1,7 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-
-import '../../../../core/imports/core_imports.dart';
-import '../models/booking_model.dart';
+import 'package:wassaly/core/imports/core_imports.dart';
+import 'package:wassaly/features/service_booking/data/models/booking_model.dart';
 
 abstract class BookingLocalDataSource {
   Future<Either<Failure, void>> cacheBookings(List<BookingModel> bookings);
@@ -18,33 +17,32 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
 
   @override
   Future<Either<Failure, void>> cacheBookings(
-      List<BookingModel> bookings) async {
+    List<BookingModel> bookings,
+  ) async {
     try {
       await _bookingsBox.clear();
-      final Map<int, BookingModel> map = {for (final b in bookings) b.id: b};
+      final map = <int, BookingModel>{for (final b in bookings) b.id: b};
       await _bookingsBox.putAll(map);
 
       return right(null);
-    } catch (e) {
-      return left(CacheFailure('Failed to cache bookings: ${e.toString()}'));
+    } on Object catch (e) {
+      return left(CacheFailure('Failed to cache bookings: $e'));
     }
   }
 
   @override
-  List<BookingModel> getCachedBookings() {
-    final list = _bookingsBox.values.toList();
-    list.sort((a, b) => b.id.compareTo(a.id));
-    return list;
-  }
+  List<BookingModel> getCachedBookings() =>
+      _bookingsBox.values.toList()..sort((a, b) => b.id.compareTo(a.id));
 
   @override
   Future<Either<Failure, void>> clearCache() async {
     try {
       await _bookingsBox.clear();
       return right(null);
-    } catch (e) {
+    } on Object catch (e) {
       return left(
-          CacheFailure('Failed to clear bookings cache: ${e.toString()}'));
+        CacheFailure('Failed to clear bookings cache: $e'),
+      );
     }
   }
 }

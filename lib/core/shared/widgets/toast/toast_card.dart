@@ -22,8 +22,7 @@ class ToastCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
         color: color ?? context.theme.dialogTheme.backgroundColor,
@@ -34,8 +33,6 @@ class ToastCard extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             blurRadius: 10,
-            spreadRadius: 0,
-            offset: Offset.zero,
             color: shadowColor ?? Colors.black.withValues(alpha: 0.05),
           ),
         ],
@@ -52,5 +49,4 @@ class ToastCard extends StatelessWidget {
         onTap: onTap,
       ),
     );
-  }
 }

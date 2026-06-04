@@ -55,8 +55,10 @@ class NotificationsPage extends StatelessWidget {
                                 .add(const ReadAllNotificationsEvent()),
                           ),
                           IconButton(
-                            icon: Icon(Icons.delete_sweep_outlined,
-                                color: cs.error),
+                            icon: Icon(
+                              Icons.delete_sweep_outlined,
+                              color: cs.error,
+                            ),
                             onPressed: () => _confirmDeleteAll(context),
                           ),
                         ],
@@ -132,7 +134,9 @@ class NotificationsPage extends StatelessWidget {
                                     .add(MarkAsReadEvent(notification.id));
                               }
                               _handleNotificationNavigation(
-                                  context, notification);
+                                context,
+                                notification,
+                              );
                             },
                             onDelete: () => context
                                 .read<NotificationsBloc>()
@@ -202,13 +206,17 @@ class NotificationsPage extends StatelessWidget {
   }
 
   void _confirmDeleteAll(BuildContext context) {
-    context.showAppDialog<void>(
-      builder: (ctx) => _DeleteAllDialog(context: ctx),
+    unawaited(
+      context.showAppDialog<void>(
+        builder: (ctx) => _DeleteAllDialog(context: ctx),
+      ),
     );
   }
 
   void _handleNotificationNavigation(
-      BuildContext context, dynamic notification) {
+    BuildContext context,
+    NotificationEntity notification,
+  ) {
     final type = notification.type;
     final data = notification.data;
 
@@ -219,30 +227,38 @@ class NotificationsPage extends StatelessWidget {
         case 'favorite_offer_discount':
           final productId = int.tryParse(data['product_id']?.toString() ?? '');
           if (productId != null) {
-            context.push(AppRoutes.productDetails,
-                extra: {'productId': productId});
+            unawaited(
+              context.push(
+                AppRoutes.productDetails,
+                extra: {'productId': productId},
+              ),
+            );
           }
 
         case 'booking_accepted':
         case 'booking_reschedule_proposed':
-          context.push(AppRoutes.orders, extra: {'initialIndex': 1});
+          unawaited(context.push(AppRoutes.orders, extra: {'initialIndex': 1}));
 
         case 'order_status_updated':
           final orderId = int.tryParse(data['order_id']?.toString() ?? '');
           if (orderId != null) {
-            context.push(AppRoutes.orderDetails, extra: {'orderId': orderId});
+            unawaited(
+              context.push(
+                AppRoutes.orderDetails,
+                extra: {'orderId': orderId},
+              ),
+            );
           }
 
         case 'general':
           context.showTypedSnackBar(
             notification.body,
-            type: SnackBarType.info,
           );
 
         default:
           break;
       }
-    } catch (e) {
+    } on Object catch (e) {
       debugPrint('Error handling notification navigation: $e');
     }
   }
@@ -322,7 +338,6 @@ class _DeleteAllDialog extends StatelessWidget {
                   child: AppButton(
                     label: context.l10n.shared_cancel,
                     variant: ButtonVariant.ghost,
-                    isFullWidth: false,
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                 ),

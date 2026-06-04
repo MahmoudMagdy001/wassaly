@@ -1,7 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
-
-import '../../../home/domain/entities/product_entity.dart';
-import '../entities/brand_entity.dart';
+import 'package:wassaly/features/brands/domain/entities/brand_entity.dart';
+import 'package:wassaly/features/home/domain/entities/product_entity.dart';
 
 abstract class BrandsRepository {
   Future<Either<Failure, List<BrandEntity>>> getBrands();

@@ -1,6 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
-import '../../domain/entities/service_detail_entity.dart';
-import '../bloc/service_details_bloc.dart';
+import 'package:wassaly/features/service_details/domain/entities/service_detail_entity.dart';
+import 'package:wassaly/features/service_details/presentation/bloc/service_details_bloc.dart';
 
 class ServiceReviewFormSheet extends StatefulWidget {
   final int serviceId;
@@ -64,25 +64,23 @@ class _ServiceReviewFormSheetState extends State<ServiceReviewFormSheet> {
           12.verticalSpace,
           ValueListenableBuilder<int>(
             valueListenable: _ratingNotifier,
-            builder: (context, rating, child) {
-              return Row(
-                children: List.generate(
-                  5,
-                  (index) {
-                    final star = index + 1;
-                    return IconButton(
-                      onPressed: () => _ratingNotifier.value = star,
-                      icon: Icon(
-                        star <= rating
-                            ? Icons.star_rounded
-                            : Icons.star_outline_rounded,
-                        color: star <= rating ? cs.secondary : cs.outline,
-                      ),
-                    );
-                  },
-                ),
-              );
-            },
+            builder: (context, rating, child) => Row(
+              children: List.generate(
+                5,
+                (index) {
+                  final star = index + 1;
+                  return IconButton(
+                    onPressed: () => _ratingNotifier.value = star,
+                    icon: Icon(
+                      star <= rating
+                          ? Icons.star_rounded
+                          : Icons.star_outline_rounded,
+                      color: star <= rating ? cs.secondary : cs.outline,
+                    ),
+                  );
+                },
+              ),
+            ),
           ),
           8.verticalSpace,
           TextField(
@@ -114,8 +112,8 @@ class _ServiceReviewFormSheetState extends State<ServiceReviewFormSheet> {
     if (comment.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content:
-                Text(context.l10n.product_details_review_comment_required)),
+          content: Text(context.l10n.product_details_review_comment_required),
+        ),
       );
       return;
     }

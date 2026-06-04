@@ -8,7 +8,10 @@ class AppUtils {
     if (value is String) {
       return value.trim().isEmpty;
     }
-    if (value is Iterable || value is Map) {
+    if (value is Iterable) {
+      return value.isEmpty;
+    }
+    if (value is Map) {
       return value.isEmpty;
     }
     return false;
@@ -27,9 +30,8 @@ class AppUtils {
     return hasMatch(s, r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$');
   }
 
-  static bool hasMatch(String? value, String pattern) {
-    return (value == null) ? false : RegExp(pattern).hasMatch(value);
-  }
+  static bool hasMatch(String? value, String pattern) =>
+      (value == null) ? false : RegExp(pattern).hasMatch(value);
 
   static bool isValidEmail(String s) {
     final emailRegExp = RegExp(

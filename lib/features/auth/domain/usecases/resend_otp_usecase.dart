@@ -6,11 +6,9 @@ class ResendOtpUseCase {
 
   const ResendOtpUseCase(this._repository);
 
-  FutureEither<void> call(ResendOtpParams params) {
-    return _repository.resendOtp(
+  FutureEither<void> call(ResendOtpParams params) => _repository.resendOtp(
       email: params.email,
     );
-  }
 }
 
 class ResendOtpParams {
