@@ -30,7 +30,10 @@ extension WidgetExtension on Widget {
   Widget opacity(double value) => Opacity(opacity: value, child: this);
 
   /// Wrap the widget with Visibility
-  Widget visible(bool visible, {Widget fallback = const SizedBox.shrink()}) =>
+  Widget visible({
+    required bool visible,
+    Widget fallback = const SizedBox.shrink(),
+  }) =>
       visible ? this : fallback;
 
   /// Wrap the widget with Center

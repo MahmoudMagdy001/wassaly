@@ -11,8 +11,7 @@ class ToastCard extends StatelessWidget {
   final void Function()? onTap;
 
   const ToastCard({
-    super.key,
-    required this.title,
+    required this.title, super.key,
     this.subtitle,
     this.leading,
     this.color,

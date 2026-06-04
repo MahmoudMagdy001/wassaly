@@ -5,8 +5,7 @@ class BookingSuccessPage extends StatelessWidget {
   final BookingEntity booking;
 
   const BookingSuccessPage({
-    super.key,
-    required this.booking,
+    required this.booking, super.key,
   });
 
   @override

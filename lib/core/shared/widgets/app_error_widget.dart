@@ -34,8 +34,8 @@ class AppErrorWidget extends StatefulWidget {
 
   // New constructor with Failure
   const AppErrorWidget.failure({
-    super.key,
     required this.failure,
+    super.key,
     this.onRetry,
     this.customMessage,
     this.showRetryButton = true,

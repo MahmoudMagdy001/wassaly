@@ -2,9 +2,7 @@ import 'package:wassaly/core/imports/imports.dart';
 
 class OtpInputField extends StatefulWidget {
   const OtpInputField({
-    super.key,
-    required this.length,
-    required this.onCompleted,
+    required this.length, required this.onCompleted, super.key,
     this.onChanged,
     this.autoFocus = true,
   });

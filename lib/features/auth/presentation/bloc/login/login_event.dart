@@ -28,7 +28,7 @@ class PasswordChanged extends LoginEvent {
 class PasswordVisibilityChanged extends LoginEvent {
   final bool isVisible;
 
-  const PasswordVisibilityChanged(this.isVisible);
+  const PasswordVisibilityChanged({required this.isVisible});
 
   @override
   List<Object?> get props => [isVisible];

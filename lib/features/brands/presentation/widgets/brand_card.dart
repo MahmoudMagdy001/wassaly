@@ -7,8 +7,7 @@ class BrandCard extends StatelessWidget {
   final VoidCallback? onTap;
 
   const BrandCard({
-    super.key,
-    required this.brand,
+    required this.brand, super.key,
     this.onTap,
   });
 

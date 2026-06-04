@@ -9,10 +9,7 @@ class CategorySideMenu extends StatelessWidget {
   final int? selectedSubCategoryId;
 
   const CategorySideMenu({
-    super.key,
-    required this.isLoading,
-    required this.subCategories,
-    required this.selectedSubCategoryId,
+    required this.isLoading, required this.subCategories, required this.selectedSubCategoryId, super.key,
   });
 
   @override

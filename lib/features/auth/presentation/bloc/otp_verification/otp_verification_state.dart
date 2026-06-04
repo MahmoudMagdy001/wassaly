@@ -29,8 +29,7 @@ class OtpVerificationState extends Equatable {
   final String? resetToken;
 
   const OtpVerificationState({
-    this.otp = '',
-    required this.email,
+    required this.email, this.otp = '',
     this.verificationType = VerificationType.register,
     this.verificationStatus = OtpVerificationStatus.initial,
     this.resendStatus = ResendOtpStatus.initial,

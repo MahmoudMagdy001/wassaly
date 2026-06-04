@@ -17,15 +17,7 @@ class LoginForm extends StatelessWidget {
   final VoidCallback onForgotPassword;
 
   const LoginForm({
-    super.key,
-    required this.formKey,
-    required this.emailController,
-    required this.passwordController,
-    required this.onEmailChanged,
-    required this.onPasswordChanged,
-    required this.onTogglePasswordVisibility,
-    required this.onLogin,
-    required this.onForgotPassword,
+    required this.formKey, required this.emailController, required this.passwordController, required this.onEmailChanged, required this.onPasswordChanged, required this.onTogglePasswordVisibility, required this.onLogin, required this.onForgotPassword, super.key,
   });
 
   @override

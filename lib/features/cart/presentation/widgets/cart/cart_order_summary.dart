@@ -5,8 +5,7 @@ class CartOrderSummary extends StatelessWidget {
   final CartState state;
 
   const CartOrderSummary({
-    super.key,
-    required this.state,
+    required this.state, super.key,
   });
 
   @override

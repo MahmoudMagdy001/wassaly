@@ -8,7 +8,7 @@ abstract class NotificationRemoteDataSource {
   Future<void> readAllNotifications();
   Future<void> deleteAllNotifications();
   Future<bool> getNotificationStatus();
-  Future<bool> toggleNotification(bool isEnabled);
+  Future<bool> toggleNotification({required bool isEnabled});
 }
 
 class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
@@ -17,8 +17,9 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
   NotificationRemoteDataSourceImpl(this._dioService);
 
   @override
-  Future<PaginatedResponse<NotificationModel>> getNotifications(
-      {int page = 1,}) async {
+  Future<PaginatedResponse<NotificationModel>> getNotifications({
+    int page = 1,
+  }) async {
     final response = await _dioService.get(
       '/api/notifications',
       queryParameters: {'page': page},
@@ -50,8 +51,10 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
         }
 
         final items = itemsJson
-            .map((json) =>
-                NotificationModel.fromJson(json as Map<String, dynamic>),)
+            .map(
+              (json) =>
+                  NotificationModel.fromJson(json as Map<String, dynamic>),
+            )
             .toList();
 
         return PaginatedResponse.fromJson(
@@ -112,7 +115,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
   }
 
   @override
-  Future<bool> toggleNotification(bool isEnabled) async {
+  Future<bool> toggleNotification({required bool isEnabled}) async {
     final endpoint =
         isEnabled ? '/api/notification/turn-on' : '/api/notification/turn-off';
     final response = await _dioService.post(

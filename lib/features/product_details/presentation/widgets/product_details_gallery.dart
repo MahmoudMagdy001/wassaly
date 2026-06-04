@@ -4,8 +4,7 @@ class ProductDetailsGallery extends StatefulWidget {
   final List<String> gallery;
 
   const ProductDetailsGallery({
-    super.key,
-    required this.gallery,
+    required this.gallery, super.key,
   });
 
   @override

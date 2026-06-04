@@ -4,8 +4,7 @@ class CreateAccountLink extends StatelessWidget {
   final VoidCallback onCreateAccount;
 
   const CreateAccountLink({
-    super.key,
-    required this.onCreateAccount,
+    required this.onCreateAccount, super.key,
   });
 
   @override

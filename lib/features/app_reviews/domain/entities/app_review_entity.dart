@@ -9,8 +9,7 @@ class AppReviewUserEntity extends Equatable {
   const AppReviewUserEntity({
     required this.id,
     required this.name,
-    this.avatar,
-    required this.type,
+    required this.type, this.avatar,
   });
 
   @override

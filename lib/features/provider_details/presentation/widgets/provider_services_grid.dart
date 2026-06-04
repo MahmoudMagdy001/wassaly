@@ -7,8 +7,7 @@ class ProviderServicesGrid extends StatelessWidget {
   final List<ServiceEntity> services;
 
   const ProviderServicesGrid({
-    super.key,
-    required this.services,
+    required this.services, super.key,
   });
 
   @override

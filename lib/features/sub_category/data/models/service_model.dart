@@ -5,9 +5,7 @@ class ServiceModel extends ServiceEntity {
     required super.id,
     required super.title,
     required super.description,
-    super.image,
-    required super.price,
-    required super.isFavorite,
+    required super.price, required super.isFavorite, super.image,
   });
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) => ServiceModel(

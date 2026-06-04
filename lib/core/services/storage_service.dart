@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:fpdart/fpdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:wassaly/core/utils/utils.dart';
 
 /// A wrapper around [SharedPreferences] for simple key-value persistence.
@@ -46,7 +45,7 @@ class StorageService {
   FutureEither<bool> setString(String key, String value) async =>
       runTask(() => _prefs.setString(key, value));
 
-  FutureEither<bool> setBool(String key, bool value) async =>
+  FutureEither<bool> setBool(String key, {required bool value}) async =>
       runTask(() => _prefs.setBool(key, value));
 
   FutureEither<bool> setInt(String key, int value) async =>

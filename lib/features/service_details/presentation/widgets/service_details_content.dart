@@ -9,8 +9,7 @@ class ServiceDetailsContent extends StatefulWidget {
   final ServiceDetailEntity service;
 
   const ServiceDetailsContent({
-    super.key,
-    required this.service,
+    required this.service, super.key,
   });
 
   @override

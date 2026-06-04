@@ -8,9 +8,7 @@ class ServiceAvailableDaysSection extends StatefulWidget {
       onSelectionChanged;
 
   const ServiceAvailableDaysSection({
-    super.key,
-    required this.availableDays,
-    required this.onSelectionChanged,
+    required this.availableDays, required this.onSelectionChanged, super.key,
   });
 
   @override

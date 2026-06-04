@@ -4,8 +4,7 @@ class SignupFormContainer extends StatelessWidget {
   final Widget child;
 
   const SignupFormContainer({
-    super.key,
-    required this.child,
+    required this.child, super.key,
   });
 
   @override

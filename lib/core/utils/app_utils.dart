@@ -31,7 +31,7 @@ class AppUtils {
   }
 
   static bool hasMatch(String? value, String pattern) =>
-      (value == null) ? false : RegExp(pattern).hasMatch(value);
+      !(value == null) && RegExp(pattern).hasMatch(value);
 
   static bool isValidEmail(String s) {
     final emailRegExp = RegExp(

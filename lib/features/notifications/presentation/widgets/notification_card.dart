@@ -7,8 +7,7 @@ class NotificationCard extends StatelessWidget {
   final VoidCallback? onDelete;
 
   const NotificationCard({
-    super.key,
-    required this.notification,
+    required this.notification, super.key,
     this.onTap,
     this.onDelete,
   });

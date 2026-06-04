@@ -12,9 +12,7 @@ class ServiceEntity extends Equatable {
     required this.id,
     required this.title,
     required this.description,
-    this.image,
-    required this.price,
-    required this.isFavorite,
+    required this.price, required this.isFavorite, this.image,
   });
 
   @override

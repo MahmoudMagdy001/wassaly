@@ -8,8 +8,7 @@ class ProductReviewFormSheet extends StatefulWidget {
   final ProductDetailReviewEntity? review;
 
   const ProductReviewFormSheet({
-    super.key,
-    required this.productId,
+    required this.productId, super.key,
     this.review,
   });
 

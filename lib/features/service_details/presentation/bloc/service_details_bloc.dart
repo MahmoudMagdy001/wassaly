@@ -40,25 +40,30 @@ class ServiceDetailsBloc
     final result = await _getServiceDetailsUseCase(event.serviceId);
 
     result.fold(
-      (failure) => emit(state.copyWith(
-        status: ServiceDetailsStatus.failure,
-        errorMessage: failure.message,
-      ),),
+      (failure) => emit(
+        state.copyWith(
+          status: ServiceDetailsStatus.failure,
+          errorMessage: failure.message,
+        ),
+      ),
       (service) {
-        final sortedReviews = List<ServiceDetailReviewEntity>.from(service.reviews)
-          ..sort((a, b) {
-            final dateA = a.createdAt.toLocalDateTime();
-            final dateB = b.createdAt.toLocalDateTime();
-            if (dateA != null && dateB != null) {
-              return dateB.compareTo(dateA);
-            }
-            return b.id.compareTo(a.id);
-          });
+        final sortedReviews =
+            List<ServiceDetailReviewEntity>.from(service.reviews)
+              ..sort((a, b) {
+                final dateA = a.createdAt.toLocalDateTime();
+                final dateB = b.createdAt.toLocalDateTime();
+                if (dateA != null && dateB != null) {
+                  return dateB.compareTo(dateA);
+                }
+                return b.id.compareTo(a.id);
+              });
 
-        emit(state.copyWith(
-          status: ServiceDetailsStatus.success,
-          service: service.copyWith(reviews: sortedReviews),
-        ),);
+        emit(
+          state.copyWith(
+            status: ServiceDetailsStatus.success,
+            service: service.copyWith(reviews: sortedReviews),
+          ),
+        );
       },
     );
   }
@@ -73,18 +78,22 @@ class ServiceDetailsBloc
 
     final result = await _toggleServiceFavoriteUseCase(
       event.serviceId,
-      state.service!.isFavorite,
+      isCurrentlyFavorite: state.service!.isFavorite,
     );
 
     result.fold(
-      (failure) => emit(state.copyWith(
-        isFavoriteLoading: false,
-        errorMessage: failure.message,
-      ),),
-      (isFavorite) => emit(state.copyWith(
-        isFavoriteLoading: false,
-        service: state.service!.copyWith(isFavorite: isFavorite),
-      ),),
+      (failure) => emit(
+        state.copyWith(
+          isFavoriteLoading: false,
+          errorMessage: failure.message,
+        ),
+      ),
+      (isFavorite) => emit(
+        state.copyWith(
+          isFavoriteLoading: false,
+          service: state.service!.copyWith(isFavorite: isFavorite),
+        ),
+      ),
     );
   }
 

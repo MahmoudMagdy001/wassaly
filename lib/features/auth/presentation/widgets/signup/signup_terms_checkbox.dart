@@ -6,9 +6,9 @@ class SignupTermsCheckbox extends StatelessWidget {
   final VoidCallback onPrivacyPressed;
 
   const SignupTermsCheckbox({
-    super.key,
     required this.onTermsPressed,
     required this.onPrivacyPressed,
+    super.key,
   });
 
   @override
@@ -19,59 +19,59 @@ class SignupTermsCheckbox extends StatelessWidget {
     return BlocSelector<SignupBloc, SignupState, bool>(
       selector: (state) => state.isTermsAccepted,
       builder: (context, isTermsAccepted) => Row(
-          children: [
-            Checkbox(
-              value: isTermsAccepted,
-              onChanged: (value) {
-                context
-                    .read<SignupBloc>()
-                    .add(TermsAcceptedChanged(value ?? false));
-              },
-              activeColor: cs.primary,
-              side: BorderSide(color: cs.outline),
-              visualDensity: VisualDensity.compact,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
-            Expanded(
-              child: Wrap(
-                children: [
-                  Text(
-                    context.l10n.auth_agree_to,
+        children: [
+          Checkbox(
+            value: isTermsAccepted,
+            onChanged: (value) {
+              context
+                  .read<SignupBloc>()
+                  .add(TermsAcceptedChanged(isAccepted: value ?? false));
+            },
+            activeColor: cs.primary,
+            side: BorderSide(color: cs.outline),
+            visualDensity: VisualDensity.compact,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+          Expanded(
+            child: Wrap(
+              children: [
+                Text(
+                  context.l10n.auth_agree_to,
+                  style: tt.bodySmall?.copyWith(
+                    color: cs.onSurfaceVariant,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: onTermsPressed,
+                  child: Text(
+                    context.l10n.auth_terms_of_service,
                     style: tt.bodySmall?.copyWith(
-                      color: cs.onSurfaceVariant,
+                      color: cs.primary,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  GestureDetector(
-                    onTap: onTermsPressed,
-                    child: Text(
-                      context.l10n.auth_terms_of_service,
-                      style: tt.bodySmall?.copyWith(
-                        color: cs.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                ),
+                Text(
+                  ' ${context.l10n.auth_and} ',
+                  style: tt.bodySmall?.copyWith(
+                    color: cs.onSurfaceVariant,
                   ),
-                  Text(
-                    ' ${context.l10n.auth_and} ',
+                ),
+                GestureDetector(
+                  onTap: onPrivacyPressed,
+                  child: Text(
+                    context.l10n.auth_privacy_policy,
                     style: tt.bodySmall?.copyWith(
-                      color: cs.onSurfaceVariant,
+                      color: cs.primary,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  GestureDetector(
-                    onTap: onPrivacyPressed,
-                    child: Text(
-                      context.l10n.auth_privacy_policy,
-                      style: tt.bodySmall?.copyWith(
-                        color: cs.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
     );
   }
 }

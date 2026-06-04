@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:wassaly/core/theme/color_schemes.dart';
 import 'package:wassaly/core/theme/text_theme.dart';
 
@@ -48,15 +47,16 @@ class AppDesignTokens extends ThemeExtension<AppDesignTokens> {
     double? borderRadiusMedium,
     double? borderRadiusLarge,
     double? cardElevation,
-  }) => AppDesignTokens(
-      paddingSmall: paddingSmall ?? this.paddingSmall,
-      paddingMedium: paddingMedium ?? this.paddingMedium,
-      paddingLarge: paddingLarge ?? this.paddingLarge,
-      borderRadiusSmall: borderRadiusSmall ?? this.borderRadiusSmall,
-      borderRadiusMedium: borderRadiusMedium ?? this.borderRadiusMedium,
-      borderRadiusLarge: borderRadiusLarge ?? this.borderRadiusLarge,
-      cardElevation: cardElevation ?? this.cardElevation,
-    );
+  }) =>
+      AppDesignTokens(
+        paddingSmall: paddingSmall ?? this.paddingSmall,
+        paddingMedium: paddingMedium ?? this.paddingMedium,
+        paddingLarge: paddingLarge ?? this.paddingLarge,
+        borderRadiusSmall: borderRadiusSmall ?? this.borderRadiusSmall,
+        borderRadiusMedium: borderRadiusMedium ?? this.borderRadiusMedium,
+        borderRadiusLarge: borderRadiusLarge ?? this.borderRadiusLarge,
+        cardElevation: cardElevation ?? this.cardElevation,
+      );
 
   @override
   ThemeExtension<AppDesignTokens> lerp(
@@ -80,14 +80,16 @@ class AppDesignTokens extends ThemeExtension<AppDesignTokens> {
 
   static double? lerpDouble(double? a, double? b, double t) {
     if (a == null && b == null) return null;
-    a ??= 0.0;
-    b ??= 0.0;
-    return a + (b - a) * t;
+    final start = a ?? 0.0;
+    final end = b ?? 0.0;
+    return start + (end - start) * t;
   }
 }
 
 ThemeData _buildTheme(
-    ColorScheme colorScheme, AppColorsExtension customColors,) {
+  ColorScheme colorScheme,
+  AppColorsExtension customColors,
+) {
   final textTheme = buildTextTheme();
 
   return ThemeData(
@@ -201,9 +203,11 @@ ThemeData _buildTheme(
       ),
       floatingLabelStyle: TextStyle(color: colorScheme.primary),
       labelStyle: textTheme.labelMedium?.copyWith(
-          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),),
+        color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+      ),
       hintStyle: textTheme.labelMedium?.copyWith(
-          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),),
+        color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+      ),
     ),
 
     // Navigation Bar Theme
@@ -216,7 +220,9 @@ ThemeData _buildTheme(
       labelTextStyle: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {
           return textTheme.labelSmall?.copyWith(
-              color: colorScheme.primary, fontWeight: FontWeight.bold,);
+            color: colorScheme.primary,
+            fontWeight: FontWeight.bold,
+          );
         }
         return textTheme.labelSmall
             ?.copyWith(color: colorScheme.onSurfaceVariant);
@@ -327,11 +333,13 @@ ThemeData _buildTheme(
       elevation: WidgetStateProperty.all(0),
       backgroundColor: WidgetStateProperty.all(colorScheme.surfaceContainerLow),
       shape: WidgetStateProperty.all(
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),),
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+      ),
       padding:
           WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 16)),
       hintStyle: WidgetStateProperty.all(
-          textTheme.bodyLarge?.copyWith(color: colorScheme.onSurfaceVariant),),
+        textTheme.bodyLarge?.copyWith(color: colorScheme.onSurfaceVariant),
+      ),
     ),
 
     // Badge Theme

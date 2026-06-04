@@ -53,9 +53,8 @@ class ToastBar {
 
   /// Initialise ToastBar with required parameters.
   ToastBar({
-    this.toastDuration = const Duration(milliseconds: 5000),
+    required this.builder, this.toastDuration = const Duration(milliseconds: 5000),
     this.position = ToastPosition.bottom,
-    required this.builder,
     this.animationDuration = const Duration(milliseconds: 700),
     this.autoDismiss = false,
     this.animationCurve,

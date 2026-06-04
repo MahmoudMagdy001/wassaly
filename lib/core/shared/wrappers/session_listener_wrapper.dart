@@ -10,7 +10,7 @@ import 'package:wassaly/features/profile/presentation/bloc/profile/profile_bloc.
 
 class SessionListenerWrapper extends StatelessWidget {
   final Widget child;
-  const SessionListenerWrapper({super.key, required this.child});
+  const SessionListenerWrapper({required this.child, super.key});
 
   @override
   Widget build(BuildContext context) => BlocListener<SessionBloc, SessionState>(

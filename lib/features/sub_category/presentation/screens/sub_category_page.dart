@@ -8,8 +8,7 @@ import 'package:wassaly/features/sub_category/presentation/bloc/sub_category_sta
 
 class SubCategoryPage extends StatelessWidget {
   const SubCategoryPage({
-    super.key,
-    required this.subCategory,
+    required this.subCategory, super.key,
   });
 
   final SubCategoryEntity subCategory;
@@ -27,8 +26,7 @@ class SubCategoryPage extends StatelessWidget {
 
 class SubCategoryDetailView extends StatelessWidget {
   const SubCategoryDetailView({
-    super.key,
-    required this.subCategory,
+    required this.subCategory, super.key,
     this.showAppBar = true,
     this.crossAxisCount = 2,
     this.childAspectRatio,
@@ -148,8 +146,8 @@ class SubCategoryDetailView extends StatelessWidget {
                     AppProductsSection(
                       isLoading: isLoading,
                       products: isLoading ? const [] : products.data,
-                      hasMore: isLoading ? false : hasMoreProducts,
-                      isLoadingMore: isLoading ? false : isLoadingMore,
+                      hasMore: !isLoading && hasMoreProducts,
+                      isLoadingMore: !isLoading && isLoadingMore,
                       crossAxisCount: crossAxisCount,
                       childAspectRatio:
                           productChildAspectRatio ?? childAspectRatio ?? 0.65,

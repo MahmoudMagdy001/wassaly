@@ -23,8 +23,7 @@ class SettingsListenerWrapper extends StatelessWidget {
   ) builder;
 
   const SettingsListenerWrapper({
-    super.key,
-    required this.builder,
+    required this.builder, super.key,
   });
 
   @override

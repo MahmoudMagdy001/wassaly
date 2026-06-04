@@ -4,8 +4,7 @@ class AppReviewUserModel extends AppReviewUserEntity {
   const AppReviewUserModel({
     required super.id,
     required super.name,
-    super.avatar,
-    required super.type,
+    required super.type, super.avatar,
   });
 
   factory AppReviewUserModel.fromJson(Map<String, dynamic> json) => AppReviewUserModel(

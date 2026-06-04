@@ -9,7 +9,7 @@ import 'package:wassaly/features/service_details/domain/usecases/get_service_det
 class ProposeRescheduleSheet extends StatefulWidget {
   final int bookingId;
 
-  const ProposeRescheduleSheet({super.key, required this.bookingId});
+  const ProposeRescheduleSheet({required this.bookingId, super.key});
 
   @override
   State<ProposeRescheduleSheet> createState() => _ProposeRescheduleSheetState();

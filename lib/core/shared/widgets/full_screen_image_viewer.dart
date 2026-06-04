@@ -10,18 +10,14 @@ class AppImageFullScreenView extends StatefulWidget {
   final String Function(int index) heroTagBuilder;
 
   const AppImageFullScreenView({
-    super.key,
-    required this.imageUrls,
-    required this.initialIndex,
-    required this.heroTagBuilder,
+    required this.imageUrls, required this.initialIndex, required this.heroTagBuilder, super.key,
   });
 
   /// Displays the full-screen viewer overlaying the current screen.
   static Future<int?> show(
     BuildContext context, {
     required List<String> imageUrls,
-    int initialIndex = 0,
-    required String Function(int index) heroTagBuilder,
+    required String Function(int index) heroTagBuilder, int initialIndex = 0,
   }) => Navigator.of(context).push<int>(
       PageRouteBuilder<int>(
         opaque: false,

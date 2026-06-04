@@ -6,8 +6,7 @@ class ProviderWorkingHours extends StatelessWidget {
   final ProviderDetailEntity provider;
 
   const ProviderWorkingHours({
-    super.key,
-    required this.provider,
+    required this.provider, super.key,
   });
 
   @override

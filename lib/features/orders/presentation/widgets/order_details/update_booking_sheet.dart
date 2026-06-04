@@ -7,7 +7,7 @@ import 'package:wassaly/features/service_booking/presentation/bloc/booking_detai
 class UpdateBookingSheet extends StatefulWidget {
   final BookingEntity booking;
 
-  const UpdateBookingSheet({super.key, required this.booking});
+  const UpdateBookingSheet({required this.booking, super.key});
 
   @override
   State<UpdateBookingSheet> createState() => _UpdateBookingSheetState();

@@ -2,9 +2,7 @@ import 'package:wassaly/core/imports/imports.dart';
 
 class ProfileMenuTile extends StatelessWidget {
   const ProfileMenuTile({
-    super.key,
-    required this.icon,
-    required this.title,
+    required this.icon, required this.title, super.key,
     this.subtitle,
     this.trailing,
     this.onTap,

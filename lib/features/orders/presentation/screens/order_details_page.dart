@@ -12,7 +12,7 @@ import 'package:wassaly/features/orders/presentation/widgets/order_details/updat
 class OrderDetailsPage extends StatefulWidget {
   final int orderId;
 
-  const OrderDetailsPage({super.key, required this.orderId});
+  const OrderDetailsPage({required this.orderId, super.key});
 
   @override
   State<OrderDetailsPage> createState() => _OrderDetailsPageState();

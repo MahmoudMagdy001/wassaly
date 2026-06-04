@@ -8,9 +8,7 @@ class AddToCartBottomBar extends StatefulWidget {
   final double price;
 
   const AddToCartBottomBar({
-    super.key,
-    required this.productId,
-    required this.price,
+    required this.productId, required this.price, super.key,
   });
 
   @override

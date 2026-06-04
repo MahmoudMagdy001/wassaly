@@ -31,26 +31,8 @@ class SignupForm extends StatelessWidget {
   final void Function(File) onAvatarSelected;
 
   const SignupForm({
-    super.key,
-    required this.formKey,
-    required this.nameController,
-    required this.phoneController,
-    required this.emailController,
-    required this.passwordController,
-    required this.confirmPasswordController,
-    required this.onNameChanged,
-    required this.onPhoneChanged,
-    required this.onEmailChanged,
-    required this.onPasswordChanged,
-    required this.onTogglePasswordVisibility,
-    required this.onConfirmPasswordChanged,
-    required this.onToggleConfirmPasswordVisibility,
-    required this.onSignup,
-    required this.onTermsPressed,
-    required this.onPrivacyPressed,
+    required this.formKey, required this.nameController, required this.phoneController, required this.emailController, required this.passwordController, required this.confirmPasswordController, required this.onNameChanged, required this.onPhoneChanged, required this.onEmailChanged, required this.onPasswordChanged, required this.onTogglePasswordVisibility, required this.onConfirmPasswordChanged, required this.onToggleConfirmPasswordVisibility, required this.onSignup, required this.onTermsPressed, required this.onPrivacyPressed, required this.onAvatarCleared, required this.onAvatarSelected, super.key,
     this.avatarFile,
-    required this.onAvatarCleared,
-    required this.onAvatarSelected,
   });
 
   @override

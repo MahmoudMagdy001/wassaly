@@ -66,9 +66,8 @@ class BookingServiceEntity extends Equatable {
   const BookingServiceEntity({
     required this.id,
     required this.name,
-    this.image,
+    required this.price, this.image,
     this.description,
-    required this.price,
   });
 
   @override

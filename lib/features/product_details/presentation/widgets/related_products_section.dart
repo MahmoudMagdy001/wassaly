@@ -9,10 +9,7 @@ class RelatedProductsSection extends StatelessWidget {
   final bool canLoad;
 
   const RelatedProductsSection({
-    super.key,
-    required this.status,
-    required this.products,
-    required this.canLoad,
+    required this.status, required this.products, required this.canLoad, super.key,
   });
 
   @override

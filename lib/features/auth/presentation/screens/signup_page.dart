@@ -66,7 +66,9 @@ class _SignupViewState extends State<_SignupView> {
   }
 
   void _onTogglePasswordVisibility(bool isVisible) {
-    context.read<SignupBloc>().add(PasswordVisibilityChanged(!isVisible));
+    context
+        .read<SignupBloc>()
+        .add(PasswordVisibilityChanged(isVisible: !isVisible));
   }
 
   void _onConfirmPasswordChanged(String value) {
@@ -76,7 +78,7 @@ class _SignupViewState extends State<_SignupView> {
   void _onToggleConfirmPasswordVisibility(bool isVisible) {
     context
         .read<SignupBloc>()
-        .add(ConfirmPasswordVisibilityChanged(!isVisible));
+        .add(ConfirmPasswordVisibilityChanged(isVisible: !isVisible));
   }
 
   void _onSignup() {

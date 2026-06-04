@@ -101,7 +101,7 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
           reviews: const [],
           isFavorite: false,
         ),
-        false,
+        isFav: false,
       );
       return const Right(null);
     } on NetworkFailure {
@@ -117,7 +117,7 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
           reviews: const [],
           isFavorite: false,
         ),
-        false,
+        isFav: false,
       );
       await localDataSource.enqueuePendingOperation(
         PendingFavoriteOperation(
@@ -171,7 +171,7 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
           price: 0,
           isFavorite: false,
         ),
-        false,
+        isFav: false,
       );
       return const Right(null);
     } on NetworkFailure {
@@ -183,7 +183,7 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
           price: 0,
           isFavorite: false,
         ),
-        false,
+        isFav: false,
       );
       await localDataSource.enqueuePendingOperation(
         PendingFavoriteOperation(

@@ -6,8 +6,7 @@ class ProviderHeader extends StatelessWidget {
   final ProviderDetailEntity provider;
 
   const ProviderHeader({
-    super.key,
-    required this.provider,
+    required this.provider, super.key,
   });
 
   @override

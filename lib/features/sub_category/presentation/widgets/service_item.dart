@@ -5,9 +5,7 @@ class ServiceItem extends StatelessWidget {
   final String imageUrl;
 
   const ServiceItem({
-    super.key,
-    required this.name,
-    required this.imageUrl,
+    required this.name, required this.imageUrl, super.key,
   });
 
   @override

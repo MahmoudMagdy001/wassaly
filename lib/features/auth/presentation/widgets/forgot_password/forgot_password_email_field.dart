@@ -7,9 +7,7 @@ class ForgotPasswordEmailField extends StatelessWidget {
   final FocusNode? focusNode;
 
   const ForgotPasswordEmailField({
-    super.key,
-    required this.controller,
-    required this.onChanged,
+    required this.controller, required this.onChanged, super.key,
     this.validator,
     this.focusNode,
   });

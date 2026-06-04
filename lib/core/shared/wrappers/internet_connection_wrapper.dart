@@ -5,8 +5,8 @@ class InternetConnectionWrapper extends StatefulWidget {
   final Widget child;
 
   const InternetConnectionWrapper({
-    super.key,
     required this.child,
+    super.key,
   });
 
   @override
@@ -29,7 +29,7 @@ class _InternetConnectionWrapperState extends State<InternetConnectionWrapper> {
     final svc = sl<InternetConnectionService>();
 
     _statusSub = svc.internetConnection.onStatusChange.listen((status) {
-      svc.updateStatus(status == InternetStatus.connected);
+      svc.updateStatus(isConnected: status == InternetStatus.connected);
     });
 
     _stateSub = svc.stateStream.listen(_onStateChanged);
@@ -40,7 +40,7 @@ class _InternetConnectionWrapperState extends State<InternetConnectionWrapper> {
   Future<void> _bootstrap(InternetConnectionService svc) async {
     final connected = await svc.hasConnection();
     if (!mounted) return;
-    svc.updateStatus(connected);
+    svc.updateStatus(isConnected: connected);
   }
 
   void _onStateChanged(NetworkState state) {

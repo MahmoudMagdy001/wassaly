@@ -4,8 +4,7 @@ class LoginFormContainer extends StatelessWidget {
   final Widget child;
 
   const LoginFormContainer({
-    super.key,
-    required this.child,
+    required this.child, super.key,
   });
 
   @override

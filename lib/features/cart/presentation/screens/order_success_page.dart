@@ -6,8 +6,7 @@ class OrderSuccessPage extends StatelessWidget {
   final cart_order.OrderEntity order;
 
   const OrderSuccessPage({
-    super.key,
-    required this.order,
+    required this.order, super.key,
   });
 
   @override

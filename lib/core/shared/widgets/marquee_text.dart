@@ -5,10 +5,7 @@ import 'package:wassaly/core/imports/imports.dart';
 /// Resets to start instantly when [isActive] becomes false.
 class MarqueeText extends StatefulWidget {
   const MarqueeText({
-    super.key,
-    required this.text,
-    required this.style,
-    required this.isActive,
+    required this.text, required this.style, required this.isActive, super.key,
   });
 
   final String text;

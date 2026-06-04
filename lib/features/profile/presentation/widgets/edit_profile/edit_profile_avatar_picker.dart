@@ -6,9 +6,9 @@ class EditProfileAvatarPicker extends StatefulWidget {
   final ValueChanged<File?> onAvatarPicked;
 
   const EditProfileAvatarPicker({
-    super.key,
     required this.avatarFile,
     required this.onAvatarPicked,
+    super.key,
   });
 
   @override

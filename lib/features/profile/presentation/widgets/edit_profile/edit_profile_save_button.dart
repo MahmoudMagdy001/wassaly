@@ -5,8 +5,7 @@ class EditProfileSaveButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const EditProfileSaveButton({
-    super.key,
-    required this.onPressed,
+    required this.onPressed, super.key,
   });
 
   @override

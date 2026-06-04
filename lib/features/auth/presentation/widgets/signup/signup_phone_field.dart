@@ -7,9 +7,7 @@ class SignupPhoneField extends StatelessWidget {
   final FocusNode? focusNode;
 
   const SignupPhoneField({
-    super.key,
-    required this.controller,
-    required this.onChanged,
+    required this.controller, required this.onChanged, super.key,
     this.validator,
     this.focusNode,
   });

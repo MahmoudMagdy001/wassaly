@@ -3,8 +3,7 @@ import 'package:wassaly/features/auth/presentation/bloc/otp_verification/otp_ver
 
 class ResendOtpWidget extends StatelessWidget {
   const ResendOtpWidget({
-    super.key,
-    required this.onResend,
+    required this.onResend, super.key,
   });
 
   final VoidCallback onResend;

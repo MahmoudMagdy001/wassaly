@@ -10,10 +10,7 @@ class SignupPasswordField extends StatelessWidget {
   final FocusNode? focusNode;
 
   const SignupPasswordField({
-    super.key,
-    required this.controller,
-    required this.onChanged,
-    required this.onToggleVisibility,
+    required this.controller, required this.onChanged, required this.onToggleVisibility, super.key,
     this.validator,
     this.isConfirmPassword = false,
     this.focusNode,

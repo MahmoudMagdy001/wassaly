@@ -14,8 +14,7 @@ class ProviderDetailsPage extends StatelessWidget {
   final int providerId;
 
   const ProviderDetailsPage({
-    super.key,
-    required this.providerId,
+    required this.providerId, super.key,
   });
 
   @override

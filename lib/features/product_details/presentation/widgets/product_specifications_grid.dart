@@ -6,8 +6,7 @@ class ProductSpecificationsGrid extends StatelessWidget {
   final List<ProductSpecificationEntity> specifications;
 
   const ProductSpecificationsGrid({
-    super.key,
-    required this.specifications,
+    required this.specifications, super.key,
   });
 
   @override

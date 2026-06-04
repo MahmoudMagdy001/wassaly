@@ -98,7 +98,7 @@ class ProfileSettingsSection extends StatelessWidget {
                       onChanged: (value) {
                         context
                             .read<NotificationsBloc>()
-                            .add(ToggleNotificationEvent(value));
+                            .add(ToggleNotificationEvent(isEnabled: value));
                       },
                       activeThumbColor: cs.primary,
                       activeTrackColor: cs.primaryContainer,

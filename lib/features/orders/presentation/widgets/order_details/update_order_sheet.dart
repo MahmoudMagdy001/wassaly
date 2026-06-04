@@ -9,7 +9,7 @@ import 'package:wassaly/features/profile/presentation/bloc/profile/profile_bloc.
 class UpdateOrderSheet extends StatefulWidget {
   final OrderEntity order;
 
-  const UpdateOrderSheet({super.key, required this.order});
+  const UpdateOrderSheet({required this.order, super.key});
 
   @override
   State<UpdateOrderSheet> createState() => _UpdateOrderSheetState();

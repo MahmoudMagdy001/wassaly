@@ -8,8 +8,7 @@ final activeServiceMarqueeId = ValueNotifier<int?>(null);
 
 class ServiceCard extends StatelessWidget {
   const ServiceCard({
-    super.key,
-    required this.service,
+    required this.service, super.key,
     this.onTap,
   });
 

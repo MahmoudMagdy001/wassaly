@@ -38,7 +38,7 @@ class InternetConnectionService {
   bool get isStable => _currentState == NetworkState.connected;
   NetworkState get currentState => _currentState;
 
-  void updateStatus(bool isConnected) {
+  void updateStatus({required bool isConnected}) {
     if (_isConnected == isConnected) return;
 
     _isConnected = isConnected;

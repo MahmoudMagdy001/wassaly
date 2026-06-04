@@ -9,11 +9,7 @@ class CartItemWidget extends StatelessWidget {
   final VoidCallback? onTap;
 
   const CartItemWidget({
-    super.key,
-    required this.item,
-    required this.onRemove,
-    required this.onQuantityIncrease,
-    required this.onQuantityDecrease,
+    required this.item, required this.onRemove, required this.onQuantityIncrease, required this.onQuantityDecrease, super.key,
     this.onTap,
   });
 

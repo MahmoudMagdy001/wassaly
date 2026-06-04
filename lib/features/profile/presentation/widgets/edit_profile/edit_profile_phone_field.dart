@@ -5,18 +5,18 @@ class EditProfilePhoneField extends StatelessWidget {
   final FocusNode? focusNode;
 
   const EditProfilePhoneField({
-    super.key,
     required this.controller,
+    super.key,
     this.focusNode,
   });
 
   @override
   Widget build(BuildContext context) => AppTextField(
-      label: context.l10n.auth_phone,
-      hint: context.l10n.auth_phone,
-      controller: controller,
-      focusNode: focusNode,
-      prefixIcon: const Icon(Icons.phone_outlined),
-      keyboardType: TextInputType.phone,
-    );
+        label: context.l10n.auth_phone,
+        hint: context.l10n.auth_phone,
+        controller: controller,
+        focusNode: focusNode,
+        prefixIcon: const Icon(Icons.phone_outlined),
+        keyboardType: TextInputType.phone,
+      );
 }

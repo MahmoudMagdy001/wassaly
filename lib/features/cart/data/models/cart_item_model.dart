@@ -19,11 +19,8 @@ class CartItemModel {
     required this.productName,
     required this.productImage,
     required this.price,
-    this.productDescription,
+    required this.quantity, required this.unitPrice, required this.totalPrice, this.productDescription,
     this.offers,
-    required this.quantity,
-    required this.unitPrice,
-    required this.totalPrice,
   });
 
   factory CartItemModel.fromEntity(CartItemEntity entity) => CartItemModel(

@@ -10,9 +10,7 @@ class ProviderDetailReviewEntity extends Equatable {
   final String? createdAt;
 
   const ProviderDetailReviewEntity({
-    this.id,
-    required this.rating,
-    required this.comment,
+    required this.rating, required this.comment, this.id,
     this.createdAt,
   });
 
@@ -35,10 +33,7 @@ class ProviderDetailUserEntity extends Equatable {
     required this.name,
     required this.email,
     required this.phone,
-    this.avatar,
-    required this.type,
-    required this.isActive,
-    required this.createdAt,
+    required this.type, required this.isActive, required this.createdAt, this.avatar,
   });
 
   @override

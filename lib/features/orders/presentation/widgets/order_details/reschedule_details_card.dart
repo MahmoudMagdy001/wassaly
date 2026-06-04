@@ -6,8 +6,7 @@ class RescheduleDetailsCard extends StatelessWidget {
   final String? bookingStatus;
 
   const RescheduleDetailsCard({
-    super.key,
-    required this.rescheduleDetails,
+    required this.rescheduleDetails, super.key,
     this.bookingStatus,
   });
 

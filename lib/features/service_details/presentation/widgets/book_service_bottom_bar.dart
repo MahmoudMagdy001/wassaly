@@ -6,8 +6,7 @@ class BookServiceBottomBar extends StatelessWidget {
   final bool isEnabled;
 
   const BookServiceBottomBar({
-    super.key,
-    required this.price,
+    required this.price, super.key,
     this.onBookPressed,
     this.isEnabled = true,
   });

@@ -10,7 +10,7 @@ import 'package:wassaly/features/service_booking/presentation/bloc/booking_detai
 class BookingDetailsPage extends StatefulWidget {
   final BookingEntity booking;
 
-  const BookingDetailsPage({super.key, required this.booking});
+  const BookingDetailsPage({required this.booking, super.key});
 
   @override
   State<BookingDetailsPage> createState() => _BookingDetailsPageState();

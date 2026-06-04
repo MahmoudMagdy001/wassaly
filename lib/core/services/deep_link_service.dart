@@ -18,8 +18,8 @@ class GoogleLoginCallbackData {
     required this.id,
     required this.fullName,
     required this.email,
-    this.avatar,
     required this.status,
+    this.avatar,
   });
 
   bool get isSuccess => status == 'success';

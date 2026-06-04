@@ -14,9 +14,9 @@ import 'package:wassaly/core/imports/imports.dart';
 /// ```
 class AppEmptyState extends StatelessWidget {
   const AppEmptyState({
+    required this.title,
     super.key,
     this.icon = Icons.inbox_outlined,
-    required this.title,
     this.subtitle,
     this.actionLabel,
     this.onAction,
@@ -34,9 +34,8 @@ class AppEmptyState extends StatelessWidget {
     final tt = context.theme.textTheme;
     final isIOS = context.isIOS;
 
-    final displayIcon = (isIOS && icon == Icons.inbox_outlined)
-        ? CupertinoIcons.tray
-        : icon;
+    final displayIcon =
+        (isIOS && icon == Icons.inbox_outlined) ? CupertinoIcons.tray : icon;
 
     return Center(
       child: Padding(
@@ -60,8 +59,9 @@ class AppEmptyState extends StatelessWidget {
             )
                 .animate()
                 .scale(
-                    duration: const Duration(milliseconds: 600),
-                    curve: Curves.easeOutBack,)
+                  duration: const Duration(milliseconds: 600),
+                  curve: Curves.easeOutBack,
+                )
                 .fadeIn(),
 
             32.verticalSpace,
@@ -93,9 +93,10 @@ class AppEmptyState extends StatelessWidget {
               )
                   .animate()
                   .slideY(
-                      begin: 0.3,
-                      delay: const Duration(milliseconds: 100),
-                      duration: const Duration(milliseconds: 400),)
+                    begin: 0.3,
+                    delay: const Duration(milliseconds: 100),
+                    duration: const Duration(milliseconds: 400),
+                  )
                   .fadeIn(),
             ],
 
@@ -108,9 +109,10 @@ class AppEmptyState extends StatelessWidget {
               )
                   .animate()
                   .slideY(
-                      begin: 0.4,
-                      delay: const Duration(milliseconds: 150),
-                      duration: const Duration(milliseconds: 400),)
+                    begin: 0.4,
+                    delay: const Duration(milliseconds: 150),
+                    duration: const Duration(milliseconds: 400),
+                  )
                   .fadeIn(),
             ],
           ],

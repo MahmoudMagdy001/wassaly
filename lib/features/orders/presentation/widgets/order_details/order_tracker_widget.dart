@@ -17,7 +17,7 @@ class _TimelineStep {
 class OrderTrackerWidget extends StatelessWidget {
   final String status;
 
-  const OrderTrackerWidget({super.key, required this.status});
+  const OrderTrackerWidget({required this.status, super.key});
 
   @override
   Widget build(BuildContext context) {

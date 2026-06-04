@@ -19,8 +19,7 @@ class PlaceOrderParams extends Equatable {
     required this.governorateId,
     required this.region,
     required this.centerId,
-    this.couponCode,
-    required this.items,
+    required this.items, this.couponCode,
   });
 
   @override

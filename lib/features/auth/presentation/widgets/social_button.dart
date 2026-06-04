@@ -9,11 +9,7 @@ class SocialButton extends StatelessWidget {
   final bool isLoading;
 
   const SocialButton({
-    super.key,
-    required this.label,
-    required this.iconPath,
-    required this.backgroundColor,
-    required this.foregroundColor,
+    required this.label, required this.iconPath, required this.backgroundColor, required this.foregroundColor, super.key,
     this.onPressed,
     this.isLoading = false,
   });

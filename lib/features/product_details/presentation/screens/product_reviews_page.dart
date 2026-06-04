@@ -9,8 +9,7 @@ class ProductReviewsPage extends StatelessWidget {
   final int productId;
 
   const ProductReviewsPage({
-    super.key,
-    required this.productId,
+    required this.productId, super.key,
   });
 
   @override

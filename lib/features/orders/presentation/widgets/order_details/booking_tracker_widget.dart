@@ -17,7 +17,7 @@ class _TimelineStep {
 class BookingTrackerWidget extends StatelessWidget {
   final String status;
 
-  const BookingTrackerWidget({super.key, required this.status});
+  const BookingTrackerWidget({required this.status, super.key});
 
   @override
   Widget build(BuildContext context) {

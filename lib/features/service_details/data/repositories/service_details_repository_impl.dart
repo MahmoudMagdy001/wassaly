@@ -24,9 +24,9 @@ class ServiceDetailsRepositoryImpl implements ServiceDetailsRepository {
 
   @override
   Future<Either<Failure, bool>> toggleServiceFavorite(
-    int serviceId,
-    bool isCurrentlyFavorite,
-  ) async {
+    int serviceId, {
+    required bool isCurrentlyFavorite,
+  }) async {
     try {
       if (isCurrentlyFavorite) {
         await _remoteDataSource.removeServiceFromFavorites(serviceId);

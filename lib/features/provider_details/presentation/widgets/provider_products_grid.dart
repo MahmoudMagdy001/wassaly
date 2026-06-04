@@ -6,8 +6,7 @@ class ProviderProductsGrid extends StatelessWidget {
   final List<ProductEntity> products;
 
   const ProviderProductsGrid({
-    super.key,
-    required this.products,
+    required this.products, super.key,
   });
 
   @override

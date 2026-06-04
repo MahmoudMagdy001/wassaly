@@ -9,8 +9,7 @@ class ServiceDetailsPage extends StatelessWidget {
   final int serviceId;
 
   const ServiceDetailsPage({
-    super.key,
-    required this.serviceId,
+    required this.serviceId, super.key,
   });
 
   void _onRetry(BuildContext context) {

@@ -6,9 +6,7 @@ class BookingHeaderCard extends StatelessWidget {
   final bool isCancelled;
 
   const BookingHeaderCard({
-    super.key,
-    required this.booking,
-    required this.isCancelled,
+    required this.booking, required this.isCancelled, super.key,
   });
 
   @override

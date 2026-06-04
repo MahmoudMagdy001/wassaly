@@ -9,11 +9,7 @@ class ForgotPasswordForm extends StatelessWidget {
   final VoidCallback onSubmit;
 
   const ForgotPasswordForm({
-    super.key,
-    required this.formKey,
-    required this.emailController,
-    required this.onEmailChanged,
-    required this.onSubmit,
+    required this.formKey, required this.emailController, required this.onEmailChanged, required this.onSubmit, super.key,
   });
 
   @override

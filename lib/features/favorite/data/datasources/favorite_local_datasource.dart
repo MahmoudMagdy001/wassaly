@@ -42,9 +42,9 @@ abstract class FavoriteLocalDataSource {
   );
   List<ProductEntity> getCachedProductFavorites();
   Future<Either<Failure, void>> toggleProductFavoriteLocally(
-    ProductEntity product,
-    bool isFav,
-  );
+    ProductEntity product, {
+    required bool isFav,
+  });
 
   // Services
   Future<Either<Failure, void>> cacheServiceFavorites(
@@ -52,9 +52,9 @@ abstract class FavoriteLocalDataSource {
   );
   List<ServiceEntity> getCachedServiceFavorites();
   Future<Either<Failure, void>> toggleServiceFavoriteLocally(
-    ServiceEntity service,
-    bool isFav,
-  );
+    ServiceEntity service, {
+    required bool isFav,
+  });
 
   // Quick checks
   Set<int> getFavoriteProductIds();
@@ -104,9 +104,9 @@ class FavoriteLocalDataSourceImpl implements FavoriteLocalDataSource {
 
   @override
   Future<Either<Failure, void>> toggleProductFavoriteLocally(
-    ProductEntity product,
-    bool isFav,
-  ) async {
+    ProductEntity product, {
+    required bool isFav,
+  }) async {
     try {
       if (isFav) {
         await _productsBox.put(product.id, product);
@@ -147,9 +147,9 @@ class FavoriteLocalDataSourceImpl implements FavoriteLocalDataSource {
 
   @override
   Future<Either<Failure, void>> toggleServiceFavoriteLocally(
-    ServiceEntity service,
-    bool isFav,
-  ) async {
+    ServiceEntity service, {
+    required bool isFav,
+  }) async {
     try {
       if (isFav) {
         await _servicesBox.put(service.id, service);

@@ -22,10 +22,10 @@ String _formatDuration(Duration duration) {
 
 class AppReviewCard extends StatefulWidget {
   const AppReviewCard({
-    super.key,
     required this.rating,
     required this.comment,
     required this.userName,
+    super.key,
     this.userAvatar,
     this.isCurrentUserReview = false,
     this.canEdit = false,

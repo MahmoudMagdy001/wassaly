@@ -4,8 +4,7 @@ class BackToLoginLink extends StatelessWidget {
   final VoidCallback onPressed;
 
   const BackToLoginLink({
-    super.key,
-    required this.onPressed,
+    required this.onPressed, super.key,
   });
 
   @override

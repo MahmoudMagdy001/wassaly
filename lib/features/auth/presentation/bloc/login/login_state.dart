@@ -40,9 +40,7 @@ class LoginState extends Equatable {
       isLoading: isLoading ?? this.isLoading,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       user: clearUser ? null : (user ?? this.user),
-      requiresVerification: clearVerification
-          ? false
-          : (requiresVerification ?? this.requiresVerification),
+      requiresVerification: !clearVerification && (requiresVerification ?? this.requiresVerification),
       verificationEmail: clearVerification
           ? null
           : (verificationEmail ?? this.verificationEmail),

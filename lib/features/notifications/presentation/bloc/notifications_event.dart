@@ -59,7 +59,7 @@ class GetNotificationStatusEvent extends NotificationsEvent {
 
 class ToggleNotificationEvent extends NotificationsEvent {
   final bool isEnabled;
-  const ToggleNotificationEvent(this.isEnabled);
+  const ToggleNotificationEvent({required this.isEnabled});
 
   @override
   List<Object?> get props => [isEnabled];

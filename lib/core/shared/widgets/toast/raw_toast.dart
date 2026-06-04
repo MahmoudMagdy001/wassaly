@@ -12,16 +12,9 @@ class RawToast extends StatefulWidget {
   final void Function() onRemove;
 
   const RawToast({
-    super.key,
-    required this.child,
-    required this.animationDuration,
-    required this.toastPosition,
-    required this.snackbarDuration,
-    required this.onRemove,
+    required this.child, required this.animationDuration, required this.toastPosition, required this.snackbarDuration, required this.onRemove, required this.getPosition, required this.getscaleFactor, super.key,
     this.autoDismiss = true,
-    required this.getPosition,
     this.animationCurve,
-    required this.getscaleFactor,
   });
 
   @override

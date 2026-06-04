@@ -5,9 +5,7 @@ class ProductDetailsMetaChip extends StatelessWidget {
   final String label;
 
   const ProductDetailsMetaChip({
-    super.key,
-    required this.icon,
-    required this.label,
+    required this.icon, required this.label, super.key,
   });
 
   @override

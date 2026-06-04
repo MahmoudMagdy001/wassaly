@@ -2,8 +2,7 @@ import 'package:wassaly/core/imports/imports.dart';
 
 class OtpVerificationHeader extends StatelessWidget {
   const OtpVerificationHeader({
-    super.key,
-    required this.email,
+    required this.email, super.key,
   });
 
   final String email;

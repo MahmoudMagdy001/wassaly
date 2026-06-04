@@ -11,8 +11,7 @@ import 'package:wassaly/features/sub_category/presentation/screens/sub_category_
 
 class CategoryPage extends StatelessWidget {
   const CategoryPage({
-    super.key,
-    required this.category,
+    required this.category, super.key,
   });
 
   final CategoryEntity category;

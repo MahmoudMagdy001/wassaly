@@ -2,8 +2,8 @@ import 'package:wassaly/core/imports/imports.dart';
 
 class AppCard extends StatelessWidget {
   const AppCard({
-    super.key,
     required this.child,
+    super.key,
     this.title,
     this.subtitle,
     this.leading,
@@ -90,8 +90,7 @@ class AppCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: cardColor,
         borderRadius: BorderRadius.circular(12.r),
-        border:
-            showShadow ? null : Border.all(color: cs.outlineVariant),
+        border: showShadow ? null : Border.all(color: cs.outlineVariant),
         boxShadow: showShadow
             ? [
                 BoxShadow(
@@ -156,9 +155,8 @@ class AppCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(12.r),
             child: DecoratedBox(
               decoration: BoxDecoration(
-                border: showShadow
-                    ? null
-                    : Border.all(color: cs.outlineVariant),
+                border:
+                    showShadow ? null : Border.all(color: cs.outlineVariant),
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: content,

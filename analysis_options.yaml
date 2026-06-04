@@ -8,6 +8,7 @@ analyzer:
     - "**/*.g.dart"
     - "**/*.gr.dart"
     - "**/*.config.dart"
+    - "**/*.freezed.dart"
     - "**/*.mocks.dart"
     - "**/generated/**"
     - "**/build/**"
@@ -27,19 +28,31 @@ analyzer:
     strict-raw-types: true
 
   errors:
-    # Type Safety → error
+    # ── Type Safety ──────────────────────────────
     inference_failure_on_untyped_parameter: warning
+    inference_failure_on_function_return_type: warning
+    inference_failure_on_instance_creation: warning
     invalid_assignment: error
     missing_return: error
+    argument_type_not_assignable: error
+    return_of_invalid_type: error
+    cast_to_non_type: error
+
+    # ── Dead / Unused Code ────────────────────────
     dead_code: warning
     unused_element: warning
     unused_import: warning
     unused_local_variable: warning
+    unused_field: warning
 
-    # Performance & Safety → error
+    # ── Performance & Safety ──────────────────────
     cancel_subscriptions: error
     close_sinks: error
     avoid_slow_async_io: warning
+
+    # ── Deprecated ───────────────────────────────
+    deprecated_member_use: warning
+    deprecated_member_use_from_same_package: warning
 
 linter:
   rules:
@@ -56,6 +69,8 @@ linter:
     omit_local_variable_types: true
     prefer_void_to_null: true
     type_annotate_public_apis: true
+    cast_nullable_to_non_nullable: true
+    unnecessary_null_in_if_null_operators: true
 
     # ═══════════════════════════════════════════
     # ⚡ PERFORMANCE
@@ -108,6 +123,11 @@ linter:
     cancel_subscriptions: true
     close_sinks: true
 
+    # Parameter Safety
+    parameter_assignments: true
+    avoid_positional_boolean_parameters: true
+    avoid_bool_literals_in_conditional_expressions: true
+
     # Error Prevention
     avoid_print: true
     avoid_empty_else: true
@@ -153,6 +173,7 @@ linter:
     # Naming
     non_constant_identifier_names: true
     constant_identifier_names: true
+    always_put_required_named_parameters_first: true
 
     # Redundancy Removal
     avoid_redundant_argument_values: true

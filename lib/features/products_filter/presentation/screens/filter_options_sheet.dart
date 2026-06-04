@@ -8,10 +8,10 @@ class FilterOptionsSheet extends StatefulWidget {
   final void Function(ProductFilterParams) onApply;
 
   const FilterOptionsSheet({
-    super.key,
     required this.initialParams,
     required this.categories,
     required this.onApply,
+    super.key,
   });
 
   @override

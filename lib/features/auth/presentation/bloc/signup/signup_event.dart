@@ -46,7 +46,7 @@ class PasswordChanged extends SignupEvent {
 class PasswordVisibilityChanged extends SignupEvent {
   final bool isVisible;
 
-  const PasswordVisibilityChanged(this.isVisible);
+  const PasswordVisibilityChanged({required this.isVisible});
 
   @override
   List<Object?> get props => [isVisible];
@@ -64,7 +64,7 @@ class ConfirmPasswordChanged extends SignupEvent {
 class ConfirmPasswordVisibilityChanged extends SignupEvent {
   final bool isVisible;
 
-  const ConfirmPasswordVisibilityChanged(this.isVisible);
+  const ConfirmPasswordVisibilityChanged({required this.isVisible});
 
   @override
   List<Object?> get props => [isVisible];
@@ -73,7 +73,7 @@ class ConfirmPasswordVisibilityChanged extends SignupEvent {
 class TermsAcceptedChanged extends SignupEvent {
   final bool isAccepted;
 
-  const TermsAcceptedChanged(this.isAccepted);
+  const TermsAcceptedChanged({required this.isAccepted});
 
   @override
   List<Object?> get props => [isAccepted];

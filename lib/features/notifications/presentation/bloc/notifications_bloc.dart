@@ -71,7 +71,7 @@ class NotificationsBloc
         if (localStatus != isEnabled) {
           unawaited(
             StorageService.instance
-                .setBool(AppKeys.isNotificationsEnabled, isEnabled),
+                .setBool(AppKeys.isNotificationsEnabled, value: isEnabled),
           );
         }
         emit(state.copyWith(isNotificationEnabled: isEnabled));
@@ -92,7 +92,7 @@ class NotificationsBloc
       ),
     );
 
-    final result = await toggleNotificationUseCase(event.isEnabled);
+    final result = await toggleNotificationUseCase(isEnabled: event.isEnabled);
     result.fold(
       (failure) => emit(
         state.copyWith(
@@ -105,7 +105,7 @@ class NotificationsBloc
         // Save to local storage on success
         unawaited(
           StorageService.instance
-              .setBool(AppKeys.isNotificationsEnabled, isEnabled),
+              .setBool(AppKeys.isNotificationsEnabled, value: isEnabled),
         );
         emit(
           state.copyWith(

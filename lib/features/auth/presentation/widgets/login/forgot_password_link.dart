@@ -4,8 +4,7 @@ class ForgotPasswordLink extends StatelessWidget {
   final VoidCallback onPressed;
 
   const ForgotPasswordLink({
-    super.key,
-    required this.onPressed,
+    required this.onPressed, super.key,
   });
 
   @override

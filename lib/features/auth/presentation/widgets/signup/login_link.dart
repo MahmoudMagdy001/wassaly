@@ -4,8 +4,7 @@ class LoginLink extends StatelessWidget {
   final VoidCallback onLogin;
 
   const LoginLink({
-    super.key,
-    required this.onLogin,
+    required this.onLogin, super.key,
   });
 
   @override

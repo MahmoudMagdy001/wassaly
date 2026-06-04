@@ -1,11 +1,16 @@
 import 'package:wassaly/core/imports/imports.dart';
-
 import 'package:wassaly/features/service_details/domain/repositories/service_details_repository.dart';
 
 class ToggleServiceFavoriteUseCase {
   final ServiceDetailsRepository _repository;
   const ToggleServiceFavoriteUseCase(this._repository);
 
-  Future<Either<Failure, bool>> call(int serviceId, bool isCurrentlyFavorite) =>
-      _repository.toggleServiceFavorite(serviceId, isCurrentlyFavorite);
+  Future<Either<Failure, bool>> call(
+    int serviceId, {
+    required bool isCurrentlyFavorite,
+  }) =>
+      _repository.toggleServiceFavorite(
+        serviceId,
+        isCurrentlyFavorite: isCurrentlyFavorite,
+      );
 }

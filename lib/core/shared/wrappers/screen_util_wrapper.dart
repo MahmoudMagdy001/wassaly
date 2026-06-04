@@ -8,8 +8,7 @@ class ScreenUtilWrapper extends StatelessWidget {
   final bool splitScreenMode;
 
   const ScreenUtilWrapper({
-    super.key,
-    required this.builder,
+    required this.builder, super.key,
     this.designSize = const Size(360, 690),
     this.minTextAdapt = true,
     this.splitScreenMode = true,

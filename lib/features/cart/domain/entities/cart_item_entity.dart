@@ -20,9 +20,8 @@ class CartItemEntity extends Equatable {
     required this.productName,
     required this.productImage,
     required this.price,
-    this.productDescription,
+    required this.quantity, this.productDescription,
     this.offers,
-    required this.quantity,
     this.unitPrice = 0.0,
     this.totalPrice = 0.0,
   });

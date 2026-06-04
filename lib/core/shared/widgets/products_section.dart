@@ -60,8 +60,7 @@ class AppProductsSection extends StatelessWidget {
   ];
 
   const AppProductsSection({
-    super.key,
-    required this.products,
+    required this.products, super.key,
     this.hasMore = false,
     this.isLoadingMore = false,
     this.onLoadMore,

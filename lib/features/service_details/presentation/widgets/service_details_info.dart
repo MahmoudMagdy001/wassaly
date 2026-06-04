@@ -18,9 +18,7 @@ class ServiceDetailsInfo extends StatelessWidget {
       onSelectionChanged;
 
   const ServiceDetailsInfo({
-    super.key,
-    required this.service,
-    required this.onSelectionChanged,
+    required this.service, required this.onSelectionChanged, super.key,
   });
 
   @override

@@ -49,8 +49,8 @@ class AppCachedImage extends StatelessWidget {
   final int? memCacheWidth;
 
   const AppCachedImage({
-    super.key,
     required this.imageUrl,
+    super.key,
     this.width,
     this.height,
     this.fit = BoxFit.cover,
@@ -135,16 +135,16 @@ class AppCachedImage extends StatelessWidget {
   }
 
   Widget _buildDefaultErrorWidget(BuildContext context) => SizedBox(
-      width: width,
-      height: height,
-      child: Center(
-        child: Image.asset(
-          AppAssets.logo,
-          width: 120,
-          height: 120,
-          fit: BoxFit.cover,
-          cacheHeight: 120,
+        width: width,
+        height: height,
+        child: Center(
+          child: Image.asset(
+            AppAssets.logo,
+            width: 120,
+            height: 120,
+            fit: BoxFit.cover,
+            cacheHeight: 120,
+          ),
         ),
-      ),
-    );
+      );
 }

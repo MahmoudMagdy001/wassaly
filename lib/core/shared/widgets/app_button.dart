@@ -14,8 +14,8 @@ import 'package:wassaly/core/imports/imports.dart';
 /// ```
 class AppButton extends StatelessWidget {
   const AppButton({
-    super.key,
     required this.label,
+    super.key,
     this.onPressed,
     this.variant = ButtonVariant.primary,
     this.color,
@@ -163,7 +163,8 @@ class AppButton extends StatelessWidget {
                     side: border,
                   )
                 : RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.r),),
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
           ),
           child: buttonChild,
         ),

@@ -9,10 +9,7 @@ class LoginPasswordField extends StatelessWidget {
   final FocusNode? focusNode;
 
   const LoginPasswordField({
-    super.key,
-    required this.controller,
-    required this.onChanged,
-    required this.onToggleVisibility,
+    required this.controller, required this.onChanged, required this.onToggleVisibility, super.key,
     this.validator,
     this.focusNode,
   });

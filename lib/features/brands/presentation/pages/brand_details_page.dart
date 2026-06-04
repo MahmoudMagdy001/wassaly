@@ -10,10 +10,7 @@ class BrandDetailsPage extends StatelessWidget {
   final String brandImage;
 
   const BrandDetailsPage({
-    super.key,
-    required this.brandId,
-    required this.brandName,
-    required this.brandImage,
+    required this.brandId, required this.brandName, required this.brandImage, super.key,
   });
 
   @override
@@ -34,10 +31,7 @@ class BrandDetailsView extends StatelessWidget {
   final String brandImage;
 
   const BrandDetailsView({
-    super.key,
-    required this.brandId,
-    required this.brandName,
-    required this.brandImage,
+    required this.brandId, required this.brandName, required this.brandImage, super.key,
   });
 
   void _onLoadMore(BuildContext context, BrandProductsStatus status) {
@@ -114,10 +108,8 @@ class BrandDetailsView extends StatelessWidget {
                   isLoading: isLoading,
                   products: isLoading ? const [] : products,
                   padding: EdgeInsets.symmetric(vertical: 16.h),
-                  hasMore: isLoading ? false : !hasReachedMax,
-                  isLoadingMore: isLoading
-                      ? false
-                      : (productsStatus == BrandProductsStatus.loading),
+                  hasMore: !isLoading && !hasReachedMax,
+                  isLoadingMore: !isLoading && (productsStatus == BrandProductsStatus.loading),
                   mainAxisExtent: 240.h,
                   onLoadMore: isLoading
                       ? null

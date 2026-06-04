@@ -140,9 +140,12 @@ class NotificationRepositoryImpl implements NotificationRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> toggleNotification(bool isEnabled) async {
+  Future<Either<Failure, bool>> toggleNotification({
+    required bool isEnabled,
+  }) async {
     try {
-      final result = await remoteDataSource.toggleNotification(isEnabled);
+      final result =
+          await remoteDataSource.toggleNotification(isEnabled: isEnabled);
       return Right(result);
     } on Failure catch (e) {
       return Left(e);

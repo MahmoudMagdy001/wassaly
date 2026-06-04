@@ -12,8 +12,7 @@ class ServiceBookingPage extends StatelessWidget {
   final ServiceAvailableTimeEntity? selectedTime;
 
   const ServiceBookingPage({
-    super.key,
-    required this.service,
+    required this.service, super.key,
     this.selectedDay,
     this.selectedTime,
   });

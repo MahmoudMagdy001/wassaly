@@ -7,8 +7,8 @@ import 'package:wassaly/core/imports/imports.dart';
 /// Automatically uses [SvgPicture] for SVG files.
 class CommonImage extends StatelessWidget {
   const CommonImage({
-    super.key,
     required this.imageUrl,
+    super.key,
     this.width,
     this.height,
     this.fit = BoxFit.cover,

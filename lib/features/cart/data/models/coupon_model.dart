@@ -8,8 +8,7 @@ class CouponModel extends CouponEntity {
     required super.description,
     required super.value,
     required super.type,
-    super.userUsageLimit,
-    required super.isValid,
+    required super.isValid, super.userUsageLimit,
   });
 
   factory CouponModel.fromJson(Map<String, dynamic> json) {

@@ -9,9 +9,9 @@ import 'package:wassaly/core/imports/imports.dart';
 /// - Built-in padding and spacing
 class AppSliverGrid<T> extends StatelessWidget {
   const AppSliverGrid({
-    super.key,
     required this.items,
     required this.itemBuilder,
+    super.key,
     this.itemKey,
     this.hasMore = false,
     this.onLoadMore,
@@ -27,8 +27,12 @@ class AppSliverGrid<T> extends StatelessWidget {
   });
 
   final List<T> items;
-  final Widget Function(BuildContext context, T item, int index,
-      Widget Function(Widget child) wrapAnimation,) itemBuilder;
+  final Widget Function(
+    BuildContext context,
+    T item,
+    int index,
+    Widget Function(Widget child) wrapAnimation,
+  ) itemBuilder;
   final Key Function(T item)? itemKey;
   final bool hasMore;
   final VoidCallback? onLoadMore;

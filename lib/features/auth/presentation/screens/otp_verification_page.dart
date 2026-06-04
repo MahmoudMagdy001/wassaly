@@ -7,8 +7,7 @@ import 'package:wassaly/features/auth/presentation/widgets/otp_verification/rese
 
 class OtpVerificationPage extends StatelessWidget {
   const OtpVerificationPage({
-    super.key,
-    required this.email,
+    required this.email, super.key,
     this.verificationType = VerificationType.register,
   });
 

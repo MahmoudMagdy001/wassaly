@@ -60,9 +60,9 @@ class OffersView extends StatelessWidget {
                   products: isLoading ? const [] : products,
                   padding:
                       EdgeInsets.symmetric(vertical: 16.h, horizontal: 8.w),
-                  hasMore: isLoading ? false : !hasReachedMax,
+                  hasMore: !isLoading && !hasReachedMax,
                   isLoadingMore:
-                      isLoading ? false : (status == AppStatus.loading),
+                      !isLoading && (status == AppStatus.loading),
                   mainAxisExtent: 240.h,
                   onLoadMore:
                       isLoading ? null : () => _onLoadMore(context, status),

@@ -17,8 +17,7 @@ class CouponEntity extends Equatable {
     required this.description,
     required this.value,
     required this.type,
-    this.userUsageLimit,
-    required this.isValid,
+    required this.isValid, this.userUsageLimit,
   });
 
   @override

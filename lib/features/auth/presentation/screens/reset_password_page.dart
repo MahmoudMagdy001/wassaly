@@ -16,9 +16,7 @@ class ResetPasswordArgs {
 
 class ResetPasswordPage extends StatelessWidget {
   const ResetPasswordPage({
-    super.key,
-    required this.email,
-    required this.token,
+    required this.email, required this.token, super.key,
   });
 
   final String email;

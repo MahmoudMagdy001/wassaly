@@ -9,8 +9,7 @@ import 'package:wassaly/core/imports/imports.dart';
 /// 4: Strong (Green)
 class PasswordStrengthIndicator extends StatelessWidget {
   const PasswordStrengthIndicator({
-    super.key,
-    required this.strength,
+    required this.strength, super.key,
     this.showLabel = true,
   });
 

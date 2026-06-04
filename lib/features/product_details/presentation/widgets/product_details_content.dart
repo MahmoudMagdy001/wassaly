@@ -13,10 +13,7 @@ class ProductDetailsContent extends StatelessWidget {
   final List<ProductEntity> relatedProducts;
 
   const ProductDetailsContent({
-    super.key,
-    required this.product,
-    required this.relatedProductsStatus,
-    required this.relatedProducts,
+    required this.product, required this.relatedProductsStatus, required this.relatedProducts, super.key,
   });
 
   @override

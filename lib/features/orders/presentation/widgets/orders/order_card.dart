@@ -7,7 +7,7 @@ import 'package:wassaly/features/orders/presentation/bloc/orders_event.dart';
 class OrderCard extends StatelessWidget {
   final OrderEntity order;
 
-  const OrderCard({super.key, required this.order});
+  const OrderCard({required this.order, super.key});
 
   @override
   Widget build(BuildContext context) {

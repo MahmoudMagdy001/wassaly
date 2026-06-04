@@ -6,8 +6,7 @@ class ServiceSummaryCard extends StatelessWidget {
   final ServiceDetailEntity service;
 
   const ServiceSummaryCard({
-    super.key,
-    required this.service,
+    required this.service, super.key,
   });
 
   @override

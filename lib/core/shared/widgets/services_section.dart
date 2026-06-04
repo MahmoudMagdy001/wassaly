@@ -53,8 +53,7 @@ class AppServicesSection extends StatelessWidget {
   ];
 
   const AppServicesSection({
-    super.key,
-    required this.services,
+    required this.services, super.key,
     this.hasMore = false,
     this.isLoadingMore = false,
     this.onLoadMore,

@@ -5,8 +5,7 @@ class ProviderReviewsSection extends StatelessWidget {
   final ProviderDetailEntity provider;
 
   const ProviderReviewsSection({
-    super.key,
-    required this.provider,
+    required this.provider, super.key,
   });
 
   @override

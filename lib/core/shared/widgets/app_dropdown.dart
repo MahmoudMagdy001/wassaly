@@ -21,11 +21,11 @@ import 'package:wassaly/core/imports/imports.dart';
 /// ```
 class AppDropdown<T> extends StatelessWidget {
   const AppDropdown({
+    required this.items,
     super.key,
     this.label,
     this.hint,
     this.value,
-    required this.items,
     this.onChanged,
     this.validator,
     this.prefixIcon,

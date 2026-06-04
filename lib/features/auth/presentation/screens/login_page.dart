@@ -50,7 +50,9 @@ class _LoginViewState extends State<_LoginView> {
   }
 
   void _onTogglePasswordVisibility(bool isVisible) {
-    context.read<LoginBloc>().add(PasswordVisibilityChanged(!isVisible));
+    context
+        .read<LoginBloc>()
+        .add(PasswordVisibilityChanged(isVisible: !isVisible));
   }
 
   void _onLogin() {

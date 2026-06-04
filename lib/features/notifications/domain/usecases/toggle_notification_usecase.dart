@@ -1,5 +1,4 @@
 import 'package:wassaly/core/imports/imports.dart';
-
 import 'package:wassaly/features/notifications/domain/repositories/notification_repository.dart';
 
 class ToggleNotificationUseCase {
@@ -7,5 +6,6 @@ class ToggleNotificationUseCase {
 
   ToggleNotificationUseCase(this.repository);
 
-  Future<Either<Failure, bool>> call(bool isEnabled) async => repository.toggleNotification(isEnabled);
+  Future<Either<Failure, bool>> call({required bool isEnabled}) async =>
+      repository.toggleNotification(isEnabled: isEnabled);
 }

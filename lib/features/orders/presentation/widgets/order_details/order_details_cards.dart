@@ -7,9 +7,7 @@ class OrderHeaderCard extends StatelessWidget {
   final bool isCancelled;
 
   const OrderHeaderCard({
-    super.key,
-    required this.order,
-    required this.isCancelled,
+    required this.order, required this.isCancelled, super.key,
   });
 
   @override
@@ -120,7 +118,7 @@ class OrderCancelledAlert extends StatelessWidget {
 class OrderDeliveryInfoCard extends StatelessWidget {
   final OrderEntity order;
 
-  const OrderDeliveryInfoCard({super.key, required this.order});
+  const OrderDeliveryInfoCard({required this.order, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -209,7 +207,7 @@ class OrderDeliveryInfoCard extends StatelessWidget {
 class OrderItemsCard extends StatelessWidget {
   final List<OrderItemEntity> items;
 
-  const OrderItemsCard({super.key, required this.items});
+  const OrderItemsCard({required this.items, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -323,7 +321,7 @@ class OrderItemsCard extends StatelessWidget {
 class OrderReceiptSummaryCard extends StatelessWidget {
   final OrderEntity order;
 
-  const OrderReceiptSummaryCard({super.key, required this.order});
+  const OrderReceiptSummaryCard({required this.order, super.key});
 
   @override
   Widget build(BuildContext context) {

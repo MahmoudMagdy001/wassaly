@@ -9,5 +9,5 @@ abstract class NotificationRepository {
   Future<Either<Failure, Unit>> readAllNotifications();
   Future<Either<Failure, Unit>> deleteAllNotifications();
   Future<Either<Failure, bool>> getNotificationStatus();
-  Future<Either<Failure, bool>> toggleNotification(bool isEnabled);
+  Future<Either<Failure, bool>> toggleNotification({required bool isEnabled});
 }

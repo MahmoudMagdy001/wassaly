@@ -4,7 +4,7 @@ import 'package:wassaly/features/service_booking/domain/entities/booking_entity.
 class BookingCard extends StatelessWidget {
   final BookingEntity booking;
 
-  const BookingCard({super.key, required this.booking});
+  const BookingCard({required this.booking, super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -9,8 +9,7 @@ class ServiceReviewsPage extends StatelessWidget {
   final int serviceId;
 
   const ServiceReviewsPage({
-    super.key,
-    required this.serviceId,
+    required this.serviceId, super.key,
   });
 
   @override

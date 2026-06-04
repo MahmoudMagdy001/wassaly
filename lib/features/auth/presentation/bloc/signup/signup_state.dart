@@ -58,7 +58,7 @@ class SignupState extends Equatable {
       isLoading: isLoading ?? this.isLoading,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       isRegistered:
-          clearRegistered ? false : (isRegistered ?? this.isRegistered),
+          !clearRegistered && (isRegistered ?? this.isRegistered),
       avatarFile: clearAvatar ? null : (avatarFile ?? this.avatarFile),
     );
 

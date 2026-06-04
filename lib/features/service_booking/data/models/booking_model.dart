@@ -27,9 +27,8 @@ class BookingServiceModel extends BookingServiceEntity {
   const BookingServiceModel({
     required super.id,
     required super.name,
-    super.image,
+    required super.price, super.image,
     super.description,
-    required super.price,
   });
 
   factory BookingServiceModel.fromJson(Map<String, dynamic> json) =>

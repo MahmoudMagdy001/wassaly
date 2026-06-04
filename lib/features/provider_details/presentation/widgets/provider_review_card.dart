@@ -6,8 +6,7 @@ class ProviderReviewCard extends StatelessWidget {
   final ProviderDetailReviewEntity review;
 
   const ProviderReviewCard({
-    super.key,
-    required this.review,
+    required this.review, super.key,
   });
 
   @override
