@@ -9,7 +9,10 @@ class CategorySideMenu extends StatelessWidget {
   final int? selectedSubCategoryId;
 
   const CategorySideMenu({
-    required this.isLoading, required this.subCategories, required this.selectedSubCategoryId, super.key,
+    required this.isLoading,
+    required this.subCategories,
+    required this.selectedSubCategoryId,
+    super.key,
   });
 
   @override
@@ -53,7 +56,9 @@ class CategorySideMenu extends StatelessWidget {
                         width: double.infinity,
                         duration: const Duration(milliseconds: 300),
                         padding: EdgeInsets.symmetric(
-                            horizontal: 4.w, vertical: 12.h,),
+                          horizontal: 4.w,
+                          vertical: 12.h,
+                        ),
                         decoration: BoxDecoration(
                           color: isSelected
                               ? cs.primary.withValues(alpha: 0.08)

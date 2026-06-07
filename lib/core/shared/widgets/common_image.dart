@@ -48,9 +48,13 @@ class CommonImage extends StatelessWidget {
   Widget build(BuildContext context) {
     final resolved = _resolvedUrl;
 
-    // FIX 11: guard — short-circuit before any other check
+    // Centralized scaling in CommonImage
+    final scaledWidth = width?.w;
+    final scaledHeight = height?.h;
+
     if (resolved.isEmpty) {
-      return errorWidget ?? _buildDefaultErrorWidget(context);
+      return errorWidget ??
+          _buildDefaultErrorWidget(context, scaledWidth, scaledHeight);
     }
 
     Widget image;
@@ -58,8 +62,8 @@ class CommonImage extends StatelessWidget {
     if (resolved.startsWith('http')) {
       image = AppCachedImage(
         imageUrl: resolved,
-        width: width?.w,
-        height: height?.h,
+        width: scaledWidth,
+        height: scaledHeight,
         memCacheHeight: memCacheHeight,
         memCacheWidth: memCacheWidth,
         fit: fit,
@@ -71,8 +75,8 @@ class CommonImage extends StatelessWidget {
     } else if (resolved.endsWith('.svg')) {
       image = SvgPicture.asset(
         resolved,
-        width: width?.w,
-        height: height?.h,
+        width: scaledWidth,
+        height: scaledHeight,
         fit: fit,
         colorFilter:
             color != null ? ColorFilter.mode(color!, BlendMode.srcIn) : null,
@@ -81,20 +85,25 @@ class CommonImage extends StatelessWidget {
       // FIX: Automatic cache calculation for local assets.
       final dpr = MediaQuery.devicePixelRatioOf(context);
       final calculatedCacheWidth = memCacheWidth ??
-          (width != null && width!.isFinite ? (width! * dpr).round() : null);
+          (scaledWidth != null && scaledWidth.isFinite
+              ? (scaledWidth * dpr).round()
+              : null);
       final calculatedCacheHeight = memCacheHeight ??
-          (height != null && height!.isFinite ? (height! * dpr).round() : null);
+          (scaledHeight != null && scaledHeight.isFinite
+              ? (scaledHeight * dpr).round()
+              : null);
 
       image = Image.asset(
         resolved,
         cacheHeight: calculatedCacheHeight,
         cacheWidth: calculatedCacheWidth,
-        width: width?.w,
-        height: height?.h,
+        width: scaledWidth,
+        height: scaledHeight,
         fit: fit,
         color: color,
         errorBuilder: (context, error, stackTrace) =>
-            errorWidget ?? _buildDefaultErrorWidget(context),
+            errorWidget ??
+            _buildDefaultErrorWidget(context, scaledWidth, scaledHeight),
       );
     }
 
@@ -129,11 +138,15 @@ class CommonImage extends StatelessWidget {
   }
 
   // FIX 7: use colorScheme tokens — never hard-coded colors
-  Widget _buildDefaultErrorWidget(BuildContext context) {
+  Widget _buildDefaultErrorWidget(
+    BuildContext context,
+    double? width,
+    double? height,
+  ) {
     final cs = context.theme.colorScheme;
     return Container(
-      width: width?.w,
-      height: height?.h,
+      width: width,
+      height: height,
       color: cs.surfaceContainerLow,
       child: Icon(
         Icons.error_outline,

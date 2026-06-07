@@ -5,7 +5,9 @@ class ServiceItem extends StatelessWidget {
   final String imageUrl;
 
   const ServiceItem({
-    required this.name, required this.imageUrl, super.key,
+    required this.name,
+    required this.imageUrl,
+    super.key,
   });
 
   @override
@@ -25,7 +27,7 @@ class ServiceItem extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             clipBehavior: Clip.hardEdge,
-            child: AppCachedImage(
+            child: CommonImage(
               imageUrl: imageUrl,
               memCacheWidth: 64 * 3,
               memCacheHeight: 64 * 3,

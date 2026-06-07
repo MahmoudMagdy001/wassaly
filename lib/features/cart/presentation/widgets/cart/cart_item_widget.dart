@@ -9,7 +9,11 @@ class CartItemWidget extends StatelessWidget {
   final VoidCallback? onTap;
 
   const CartItemWidget({
-    required this.item, required this.onRemove, required this.onQuantityIncrease, required this.onQuantityDecrease, super.key,
+    required this.item,
+    required this.onRemove,
+    required this.onQuantityIncrease,
+    required this.onQuantityDecrease,
+    super.key,
     this.onTap,
   });
 
@@ -28,7 +32,8 @@ class CartItemWidget extends StatelessWidget {
           child: Builder(
             builder: (ctx) => Dialog(
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.r),),
+                borderRadius: BorderRadius.circular(16.r),
+              ),
               child: Padding(
                 padding: EdgeInsets.all(24.w),
                 child: Column(
@@ -131,7 +136,7 @@ class CartItemWidget extends StatelessWidget {
                   color: cs.outlineVariant.withValues(alpha: 0.5),
                 ),
               ),
-              child: AppCachedImage(
+              child: CommonImage(
                 imageUrl: item.productImage,
                 borderRadius: BorderRadius.circular(12.r),
                 memCacheWidth: 120 * 3,
@@ -209,7 +214,10 @@ class CartItemWidget extends StatelessWidget {
       );
 
   Widget _buildPriceSection(
-      BuildContext context, ColorScheme cs, TextTheme tt,) {
+    BuildContext context,
+    ColorScheme cs,
+    TextTheme tt,
+  ) {
     final hasOffer = item.offers != null && item.offers!.isNotEmpty;
     final originalPrice = double.tryParse(item.price) ?? 0.0;
     final discountedPrice = hasOffer

@@ -165,10 +165,6 @@ class _SplashViewState extends State<_SplashView>
           child: ClipRRect(
             borderRadius: BorderRadius.circular(16.r),
             child: const CommonImage(
-              width: 180,
-              height: 180,
-              memCacheHeight: 180 * 2,
-              fit: BoxFit.contain,
               imageUrl: 'assets/images/logo.png',
             ),
           ),

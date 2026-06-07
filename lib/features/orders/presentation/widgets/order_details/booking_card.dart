@@ -76,7 +76,7 @@ class BookingCard extends StatelessWidget {
                           color: cs.outlineVariant.withValues(alpha: 0.5),
                         ),
                       ),
-                      child: AppCachedImage(
+                      child: CommonImage(
                         imageUrl: booking.service.image ?? '',
                         borderRadius: BorderRadius.circular(8.r),
                         memCacheWidth: 56 * 3,

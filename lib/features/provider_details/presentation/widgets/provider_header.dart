@@ -1,12 +1,12 @@
 import 'package:wassaly/core/imports/imports.dart';
-
 import 'package:wassaly/features/provider_details/domain/entities/provider_detail_entity.dart';
 
 class ProviderHeader extends StatelessWidget {
   final ProviderDetailEntity provider;
 
   const ProviderHeader({
-    required this.provider, super.key,
+    required this.provider,
+    super.key,
   });
 
   @override
@@ -22,7 +22,7 @@ class ProviderHeader extends StatelessWidget {
           children: [
             CommonImage(
               imageUrl: provider.cover,
-              height: 200,
+              height: 200.h,
               width: double.infinity,
               memCacheHeight: 200 * 2,
               enableFullScreenView: true,
@@ -48,8 +48,8 @@ class ProviderHeader extends StatelessWidget {
                 child: ClipOval(
                   child: CommonImage(
                     imageUrl: provider.user.avatar ?? '',
-                    width: 100,
-                    height: 90,
+                    width: 100.w,
+                    height: 90.h,
                     memCacheHeight: 90 * 2,
                     enableFullScreenView: true,
                     heroTag: 'provider_avatar_${provider.id}',

@@ -2,7 +2,9 @@ import 'package:wassaly/core/imports/imports.dart';
 
 class CategoryCard extends StatelessWidget {
   const CategoryCard({
-    required this.title, required this.imageUrl, super.key,
+    required this.title,
+    required this.imageUrl,
+    super.key,
     this.onTap,
   });
 

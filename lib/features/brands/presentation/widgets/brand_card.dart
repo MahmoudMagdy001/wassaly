@@ -1,5 +1,4 @@
 import 'package:wassaly/core/imports/imports.dart';
-
 import 'package:wassaly/features/brands/domain/entities/brand_entity.dart';
 
 class BrandCard extends StatelessWidget {
@@ -7,7 +6,8 @@ class BrandCard extends StatelessWidget {
   final VoidCallback? onTap;
 
   const BrandCard({
-    required this.brand, super.key,
+    required this.brand,
+    super.key,
     this.onTap,
   });
 

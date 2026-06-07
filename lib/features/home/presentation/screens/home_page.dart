@@ -201,11 +201,11 @@ class _HomeViewState extends State<_HomeView> {
                               unawaited(context.push(AppRoutes.offers)),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(12.r),
-                            child: const RepaintBoundary(
+                            child: RepaintBoundary(
                               child: CommonImage(
                                 imageUrl: 'assets/images/offers.png',
                                 width: double.infinity,
-                                height: 150,
+                                height: 150.h,
                                 memCacheHeight: 150 * 3,
                               ),
                             ),

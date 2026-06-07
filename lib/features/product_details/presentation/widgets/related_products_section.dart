@@ -66,26 +66,30 @@ class RelatedProductsSection extends StatelessWidget {
                     padding: EdgeInsetsDirectional.only(
                       end: index == products.length - 1 ? 0 : 10.w,
                     ),
-                    child: AppUnifiedCard(
-                      id: products[index].id,
-                      title: products[index].name,
-                      description: products[index].description,
-                      image: products[index].image,
-                      price: products[index].discountedPrice.toStringAsFixed(0),
-                      originalPrice: products[index].hasOffer
-                          ? (double.tryParse(products[index].price) ?? 0)
-                              .toStringAsFixed(0)
-                          : null,
-                      discountPercentage: products[index].hasOffer
-                          ? products[index].discountPercentage
-                          : null,
-                      rating: products[index].averageRating,
-                      reviewCount: products[index].reviewCount,
-                      isFavorite: products[index].isFavorite,
-                      activeIdNotifier: _activeMarqueeId,
-                      onTap: () => context.push(
-                        AppRoutes.productDetails,
-                        extra: {'productId': products[index].id},
+                    child: SizedBox(
+                      width: 160.w,
+                      child: AppUnifiedCard(
+                        id: products[index].id,
+                        title: products[index].name,
+                        description: products[index].description,
+                        image: products[index].image,
+                        price:
+                            products[index].discountedPrice.toStringAsFixed(0),
+                        originalPrice: products[index].hasOffer
+                            ? (double.tryParse(products[index].price) ?? 0)
+                                .toStringAsFixed(0)
+                            : null,
+                        discountPercentage: products[index].hasOffer
+                            ? products[index].discountPercentage
+                            : null,
+                        rating: products[index].averageRating,
+                        reviewCount: products[index].reviewCount,
+                        isFavorite: products[index].isFavorite,
+                        activeIdNotifier: _activeMarqueeId,
+                        onTap: () => context.push(
+                          AppRoutes.productDetails,
+                          extra: {'productId': products[index].id},
+                        ),
                       ),
                     ),
                   ),

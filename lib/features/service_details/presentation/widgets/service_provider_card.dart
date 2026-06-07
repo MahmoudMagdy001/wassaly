@@ -6,7 +6,8 @@ class ServiceProviderCard extends StatelessWidget {
   final ServiceProviderEntity provider;
 
   const ServiceProviderCard({
-    required this.provider, super.key,
+    required this.provider,
+    super.key,
   });
 
   Future<void> _makeCall(String phoneNumber) async {

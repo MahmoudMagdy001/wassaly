@@ -4,7 +4,8 @@ class ServiceDetailsGallery extends StatefulWidget {
   final List<String> gallery;
 
   const ServiceDetailsGallery({
-    required this.gallery, super.key,
+    required this.gallery,
+    super.key,
   });
 
   @override

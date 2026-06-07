@@ -162,8 +162,8 @@ class _ProfileNavIcon extends StatelessWidget {
           child: ClipOval(
             child: avatarUrl != null && avatarUrl!.isNotEmpty
                 ? CommonImage(
-                    width: targetSize,
-                    height: targetSize,
+                    width: targetSize.r,
+                    height: targetSize.r,
                     // memCacheWidth: (targetSize * 3).toInt(),
                     // memCacheHeight: (targetSize * 3).toInt(),
                     imageUrl: avatarUrl!,

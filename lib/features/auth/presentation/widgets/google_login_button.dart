@@ -59,34 +59,36 @@ class _GoogleLoginButtonState extends State<GoogleLoginButton>
             context.go(AppRoutes.home);
           }
           if (state.errorMessage != null) {
-            context.showTypedSnackBar(state.errorMessage!,
-                type: SnackBarType.error,);
+            context.showTypedSnackBar(
+              state.errorMessage!,
+              type: SnackBarType.error,
+            );
           }
         },
         builder: (context, state) => AppButton(
-            label: context.l10n.auth_login_with_google,
-            onPressed: state.isLoading
-                ? null
-                : () {
-                    context.read<GoogleLoginBloc>().add(
-                          const GoogleLoginStarted(),
-                        );
-                  },
-            color: cs.surface,
-            variant: ButtonVariant.outline,
-            isLoading: state.isLoading,
-            isFullWidth: true,
-            prefixIcon: state.isLoading
-                ? null
-                : CommonImage(
-                    imageUrl: AppAssets.googleIcon,
-                    width: 24,
-                    height: 24,
-                    color: cs.onSurface,
+          label: context.l10n.auth_login_with_google,
+          onPressed: state.isLoading
+              ? null
+              : () {
+                  context.read<GoogleLoginBloc>().add(
+                        const GoogleLoginStarted(),
+                      );
+                },
+          color: cs.surface,
+          variant: ButtonVariant.outline,
+          isLoading: state.isLoading,
+          isFullWidth: true,
+          prefixIcon: state.isLoading
+              ? null
+              : CommonImage(
+                  imageUrl: AppAssets.googleIcon,
+                  width: 24.w,
+                  height: 24.w,
+                  color: cs.onSurface,
                   memCacheHeight: 24 * 2,
-                  ),
-            textColor: cs.onSurface,
-          ),
+                ),
+          textColor: cs.onSurface,
+        ),
       ),
     );
   }

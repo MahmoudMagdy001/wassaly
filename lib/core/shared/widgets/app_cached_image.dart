@@ -69,28 +69,19 @@ class AppCachedImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // FIX 12: removed LayoutBuilder — constraints were never used,
-    // only width?.w / height?.h which come from widget props directly
-    final adjustedWidth = width?.w;
-    final adjustedHeight = height?.h;
-
     // FIX: Automatic memCache calculation if not provided.
-    // This prevents decoding massive images at native size when shown in small widgets.
+    // Responsibility for scaling rests with CommonImage.
     final dpr = MediaQuery.devicePixelRatioOf(context);
     final calculatedMemCacheWidth = memCacheWidth ??
-        (adjustedWidth != null && adjustedWidth.isFinite
-            ? (adjustedWidth * dpr).round()
-            : null);
+        (width != null && width!.isFinite ? (width! * dpr).round() : null);
     final calculatedMemCacheHeight = memCacheHeight ??
-        (adjustedHeight != null && adjustedHeight.isFinite
-            ? (adjustedHeight * dpr).round()
-            : null);
+        (height != null && height!.isFinite ? (height! * dpr).round() : null);
 
     Widget imageContent = CachedNetworkImage(
       imageUrl: imageUrl,
       cacheKey: cacheKey,
-      width: adjustedWidth,
-      height: adjustedHeight,
+      width: width,
+      height: height,
       memCacheHeight: calculatedMemCacheHeight,
       memCacheWidth: calculatedMemCacheWidth,
       fit: fit,

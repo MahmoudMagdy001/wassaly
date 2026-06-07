@@ -2,7 +2,9 @@ import 'package:wassaly/core/imports/imports.dart';
 
 class ServiceItem extends StatelessWidget {
   const ServiceItem({
-    required this.name, required this.imageUrl, super.key,
+    required this.name,
+    required this.imageUrl,
+    super.key,
     this.onTap,
   });
 

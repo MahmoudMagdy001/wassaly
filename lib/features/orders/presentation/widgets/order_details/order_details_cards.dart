@@ -7,7 +7,9 @@ class OrderHeaderCard extends StatelessWidget {
   final bool isCancelled;
 
   const OrderHeaderCard({
-    required this.order, required this.isCancelled, super.key,
+    required this.order,
+    required this.isCancelled,
+    super.key,
   });
 
   @override
@@ -161,7 +163,11 @@ class OrderDeliveryInfoCard extends StatelessWidget {
   }
 
   Widget _buildInfoRow(
-      BuildContext context, IconData icon, String title, String content,) {
+    BuildContext context,
+    IconData icon,
+    String title,
+    String content,
+  ) {
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
 
@@ -240,9 +246,10 @@ class OrderItemsCard extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12.r),
                       border: Border.all(
-                          color: cs.outlineVariant.withValues(alpha: 0.5),),
+                        color: cs.outlineVariant.withValues(alpha: 0.5),
+                      ),
                     ),
-                    child: AppCachedImage(
+                    child: CommonImage(
                       imageUrl: productImage,
                       borderRadius: BorderRadius.circular(12.r),
                       memCacheWidth: 56 * 3,
@@ -308,7 +315,8 @@ class OrderItemsCard extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 12.h),
                   child: AppDivider(
-                      color: cs.outlineVariant.withValues(alpha: 0.3),),
+                    color: cs.outlineVariant.withValues(alpha: 0.3),
+                  ),
                 ),
             ],
           );
@@ -407,8 +415,12 @@ class OrderReceiptSummaryCard extends StatelessWidget {
     );
   }
 
-  Widget _buildReceiptRow(BuildContext context, String title, String value,
-      {bool isDiscount = false,}) {
+  Widget _buildReceiptRow(
+    BuildContext context,
+    String title,
+    String value, {
+    bool isDiscount = false,
+  }) {
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
 

@@ -1,12 +1,12 @@
 import 'package:wassaly/core/imports/imports.dart';
-
 import 'package:wassaly/features/product_details/domain/entities/product_detail_entity.dart';
 
 class ProductSpecificationsGrid extends StatelessWidget {
   final List<ProductSpecificationEntity> specifications;
 
   const ProductSpecificationsGrid({
-    required this.specifications, super.key,
+    required this.specifications,
+    super.key,
   });
 
   @override
@@ -41,7 +41,11 @@ class ProductSpecificationsGrid extends StatelessWidget {
                   Expanded(
                     child: secondIndex < specifications.length
                         ? _buildItem(
-                            context, cs, tt, specifications[secondIndex],)
+                            context,
+                            cs,
+                            tt,
+                            specifications[secondIndex],
+                          )
                         : const SizedBox.shrink(),
                   ),
                 ],
@@ -58,50 +62,51 @@ class ProductSpecificationsGrid extends StatelessWidget {
     ColorScheme cs,
     TextTheme tt,
     ProductSpecificationEntity item,
-  ) => Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerHighest.withValues(alpha: 0.35),
-        borderRadius: BorderRadius.circular(12.r),
-      ),
-      child: Row(
-        children: [
-          if (item.icon.isNotEmpty) ...[
-            CommonImage(
-              imageUrl: item.icon,
-              height: 25,
-              width: 25,
-              memCacheHeight: 25 * 3,
-              memCacheWidth: 25 * 3,
-              fit: BoxFit.contain,
-            ),
-            12.horizontalSpace,
-          ],
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.key,
-                  style: tt.labelMedium?.copyWith(color: cs.onSurfaceVariant),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                2.verticalSpace,
-                Text(
-                  item.value,
-                  style: tt.titleSmall?.copyWith(
-                    color: cs.primary,
-                    fontWeight: FontWeight.bold,
+  ) =>
+      Container(
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+        decoration: BoxDecoration(
+          color: cs.surfaceContainerHighest.withValues(alpha: 0.35),
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+        child: Row(
+          children: [
+            if (item.icon.isNotEmpty) ...[
+              CommonImage(
+                imageUrl: item.icon,
+                height: 25,
+                width: 25,
+                memCacheHeight: 25 * 3,
+                memCacheWidth: 25 * 3,
+                fit: BoxFit.contain,
+              ),
+              12.horizontalSpace,
+            ],
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item.key,
+                    style: tt.labelMedium?.copyWith(color: cs.onSurfaceVariant),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
+                  2.verticalSpace,
+                  Text(
+                    item.value,
+                    style: tt.titleSmall?.copyWith(
+                      color: cs.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
 }

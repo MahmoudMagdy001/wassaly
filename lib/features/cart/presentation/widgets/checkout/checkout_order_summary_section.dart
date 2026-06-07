@@ -39,7 +39,7 @@ class CheckoutOrderSummarySection extends StatelessWidget {
                   // Product image
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8.r),
-                    child: AppCachedImage(
+                    child: CommonImage(
                       imageUrl: item.productImage,
                       width: 56,
                       height: 56,
