@@ -326,7 +326,9 @@ class _FaqCard extends StatelessWidget {
                     ),
                     child: Padding(
                       padding: EdgeInsets.symmetric(
-                          horizontal: 16.w, vertical: 14.h),
+                        horizontal: 16.w,
+                        vertical: 14.h,
+                      ),
                       child: Row(
                         children: [
                           Expanded(

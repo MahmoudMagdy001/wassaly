@@ -1,243 +1,149 @@
-# FLUTTER GLOBAL RULES (Windsurf)
+# Flutter Architectural Standard
 
-**ALWAYS start with imports:**
+You are an expert Flutter developer. All code generated for this project must strictly comply with the architectural standards, patterns, and safety constraints defined herein.
 
-```dart
-import 'package:[PROJECT]/core/imports/core_imports.dart';
-import 'package:[PROJECT]/core/imports/packages_imports.dart';
-import 'package:[PROJECT]/core/injection/injection.dart';
+---
+
+## 🏗️ 1. Architecture: 3-Layer Clean Architecture
+
+Dependency flow is **strictly unidirectional**: `Presentation → Domain ← Data`.
+
+### 1.1 Presentation Layer
+- **Logic**: Use **BLoC / Cubit** only (via `flutter_bloc`).
+- **Pages**: Root screens that handle life-cycle and provide Blocs via `BlocProvider`.
+- **Widgets**: Atomic, feature-specific components.
+- **Rule**: Presentation must **only** import from the **Domain** layer. Importing from `data/` is a critical violation.
+
+### 1.2 Domain Layer (Pure Dart)
+- **Entities**: Immutable business objects extending `Equatable`.
+- **Repositories (Interfaces)**: Abstract contracts defining data operations.
+- **UseCases**: Single-responsibility classes for business logic (one class per operation).
+- **Rule**: **Zero Flutter dependencies.** Only `fpdart` and `equatable` are permitted.
+
+### 1.3 Data Layer
+- **Models**: DTOs extending Entities with `fromJson` and `toJson` logic.
+- **DataSources**: Remote (Dio) or Local (Hive/Storage) data providers.
+- **Repositories (Impl)**: Concrete implementations of domain interfaces.
+- **Rule**: All exceptions must be caught and mapped to `Failure` types; never expose raw exceptions.
+
+---
+
+## 📁 2. Directory Structure
+
+### 2.1 Core (`lib/core/`)
+- `config/`: Global configurations, `AppConfig`, and Dio interceptors.
+- `services/`: `DioService`, `InternetConnectionService`, `StorageService`, `NotificationService`.
+- `utils/`: `runTask` (TaskRunner), `PaginatedResponse`, `Failure` definitions.
+- `shared/`: Generic UI components (`widgets/`) and BLoC mixins (`bloc/`).
+- `extensions/`: `BuildContext` extensions for theme, sizing, and navigation.
+- `imports/`: Barrel files (`core_imports.dart`, `packages_imports.dart`) for standard exports.
+
+### 2.2 Feature (`lib/features/<name>/`)
+```
+lib/features/<feature>/
+├── data/           # models/, datasources/, repositories/
+├── domain/         # entities/, repositories/, usecases/
+└── presentation/   # bloc/, screens/, widgets/
 ```
 
 ---
 
-## 🏗️ ARCHITECTURE (3-Layer Strict)
+## 🔗 3. Dependency Injection (`get_it`)
 
-```
-Presentation → Domain (interfaces only)
-Domain → Core ONLY
-Data → Domain, Core
-❌ Presentation → Data (FORBIDDEN)
-❌ Domain → Flutter/packages
-```
+DI is segmented into 4 logical parts in `lib/core/injection/parts/`:
+1. `initDataSourceDependencies()`
+2. `initRepositoryDependencies()`
+3. `initUseCaseDependencies()`
+4. `initBlocDependencies()`
 
----
-
-## 🎨 UI Rules
-
-### Theme & Colors
-
-```dart
-final cs = context.theme.colorScheme;
-final tt = context.theme.textTheme;
-color: cs.primary  // Never hard-coded colors
-```
-
-### Responsive Sizing
-
-```dart
-100.w  // Width %
-20.h   // Height %
-14.sp  // Font size
-12.r   // Border radius
-```
-
-### Navigation
-
-```dart
-context.go(AppRoutes.home)      // Replace
-context.push(AppRoutes.profile) // Stack
-context.pop()                   // Back
-```
-
-### Overlays
-
-```dart
-context.showSnackBar('msg')
-context.showErrorSnackBar('msg')
-context.showAppDialog(builder: ...)
-context.showAppBottomSheet(builder: ...)
-```
+**Rule**: Register Services and Repositories as `LazySingleton`; register Blocs/Cubits as `Factory`.
 
 ---
 
-## 📦 BLoC State Management
+## ⚠️ 4. Robust Error Handling & Result Pattern
 
-### State Must Be
+### 4.1 Results via `fpdart`
+Use `Either<Failure, T>` (and `FutureEither<T>` typedef) for all async operations.
 
-- ✅ Immutable (use `final`)
-- ✅ Extends `Equatable`
-- ✅ Has `copyWith()`
-- ✅ Include `status` field
-- ✅ `@override List<Object?> get props`
-
-### In UI
-
-```dart
-// BlocBuilder with buildWhen optimization
-BlocBuilder<AuthBloc, AuthState>(
-  buildWhen: (prev, curr) => prev.isLoading != curr.isLoading,
-  builder: (context, state) => ...,
-)
-
-// BlocListener for navigation/snackbars
-BlocListener<AuthBloc, AuthState>(
-  listenWhen: (prev, curr) => curr.user != null,
-  listener: (context, state) => context.go(AppRoutes.home),
-  child: child,
-)
-
-// BlocSelector to prevent rebuilds
-BlocSelector<AuthBloc, AuthState, bool>(
-  selector: (state) => state.isLoading,
-  builder: (context, isLoading) => ...,
-)
-```
+### 4.2 Error Handling Orchestration
+The `runTask` orchestrator (`lib/core/utils/task_runner.dart`) is encapsulated within low-level services to ensure consistency while reducing boilerplate:
+- **`DioService`**: Always wraps standard HTTP methods (`get`, `post`, etc.) in `runTask`.
+- **Repositories**: Are responsible for handling logical results and caching. They should use a standard `try-catch` block to catch `Failure` types thrown by DataSources and return them as `Left`.
+- **Mapping**: `runTask` inside services automatically maps `DioException` to `ServerFailure` / `NetworkFailure`.
 
 ---
 
-## 🔧 Dependency Injection (get_it)
+## 📦 5. State Management: The "Safe" Pattern
 
-```dart
-// Registrations
-sl.registerLazySingleton<Repo>(...);  // Once per app
-sl.registerFactory<Bloc>(...);        // New per call
+### 5.1 `SafeBloc` & `SafeCubit`
+Always extend `SafeBloc` or `SafeCubit` instead of base classes.
+- **Emission Safety**: Prevents "Cannot emit after close" errors using a safe emitter wrapper.
+- **Auto-Cancellation**: Uses `Zone` values (`#blocCancelKey`) to associate HTTP requests with the Bloc. When the Bloc closes, all associated requests are cancelled via `CancelRequestService`.
 
-// In UI
-BlocProvider(
-  create: (_) => sl<LoginBloc>(),
-  child: ...,
-)
-```
+### 5.2 UI Rebuild Strategies
+- **`BlocSelector`**: Use for high-frequency, single-field rebuilds.
+- **`BlocListener`**: Use for side-effects (Navigation, Snackbars, Dialogs).
+- **`BlocBuilder`**: Use for rendering that depends on complex state logic.
 
 ---
 
-## ⚠️ Error Handling (Either)
+## 🌐 6. Network & Internet Handling
 
-```dart
-Future<Either<Failure, User>> login(...);
+### 6.1 `InternetConnectionService` (Real-time Monitoring)
+The app tracks 3 network states:
+- `connected`: High-speed, stable connection.
+- `unstable`: Slow connection (latency > 2.8s for HTTP or > 450ms for Pings).
+- `disconnected`: No internet access.
 
-// In BLoC
-result.fold(
-  (failure) => emit(state.copyWith(
-    errorMessage: failure.message,
-    isLoading: false,
-  )),
-  (data) => emit(state.copyWith(
-    data: data,
-    isLoading: false,
-  )),
-);
-```
+**Features**:
+- **Latency Tracking**: Every request timing is reported via `StabilityInterceptor`.
+- **Auto-Retry**: Blocs can listen to `connectivityRestoredStream` to automatically refresh failed data when internet returns.
 
----
-
-## 🎯 Shared Widgets (ALWAYS use these)
-
-```dart
-AppTextField()
-AppButton()
-AppLoading()
-AppError(message: '...')
-AppEmptyState()
-AppCard()
-AppImage()
-AppSvg()
-```
+### 6.2 `DioService` & Interceptors
+- `CancelTokenInterceptor`: Auto-cancels requests on Bloc close.
+- `AuthInterceptor`: Attaches Bearer token from in-memory cache.
+- `StabilityInterceptor`: Measures request duration to update `NetworkState`.
 
 ---
 
-## 🚫 DON'Ts (STRICT)
+## 🎨 7. Design System & UI Rules
 
-| ❌ Never | ✅ Use Instead |
-|---------|---------------|
-| Direct API calls in UI | Repository → BLoC |
-| setState for complex state | BLoC |
-| Hard-coded colors | `context.theme.colorScheme` |
-| Direct Dio calls | DataSource layer |
-| Import data in presentation | Import domain only |
-| Magic numbers | Design tokens |
-| Hard-coded strings | `'key'.tr()` localization |
+### 7.1 Responsiveness (`flutter_screenutil`)
+Hard-coded pixels are **STRICTLY FORBIDDEN**.
+- Extensions: `.w` (width), `.h` (height), `.sp` (fontSize), `.r` (radius), `.vS` (verticalSpace), `.hS` (horizontalSpace).
 
----
+### 7.2 Semantic Context Shortcuts
+Access everything via `context` extensions:
+- `context.colors`: `ColorScheme`.
+- `context.textTheme`: `TextTheme`.
+- `context.appColors`: Custom semantic colors (Success, Warning, Info) from `ThemeExtension`.
+- `context.isDarkMode`: `bool`.
+- `context.l10n`: User-facing strings.
 
-## 📝 File Header (EVERY file)
-
-```dart
-import 'package:[PROJECT]/core/imports/core_imports.dart';
-import 'package:[PROJECT]/core/imports/packages_imports.dart';
-import 'package:[PROJECT]/core/injection/injection.dart';
-```
+### 7.3 Shared Widget Protocol
+Always prefer shared widgets (found in `lib/core/shared/widgets/`):
+- `AppButton`, `AppTextField`, `AppLoading`.
+- `AppUnifiedCard` & `AppUnifiedSection`: Highly generic templates for products/services.
+- `CommonImage`: Handles all responsive scaling and caching logic internally.
 
 ---
 
-## 📁 Directory Structure
+## 🚫 8. Critical "Don'ts"
 
-```
-lib/core/
-├── imports/              ⭐ BARREL IMPORTS
-├── extensions/          ⭐ context.theme, context.go(), etc.
-├── injection/           ⭐ get_it setup
-├── services/            ⭐ API, Cache, Location
-├── theme/
-├── routing/
-└── shared/widgets/      ⭐ AppButton, AppTextField, etc.
-
-lib/features/feature_name/
-├── data/               📊 Models, DataSources, Repo Impl
-├── domain/             🧠 Entities, Interfaces, UseCases
-└── presentation/       🎨 BLoC, Pages, Widgets
-```
+- ❌ **No `setState`**: Use BLoC/Cubit for all state changes.
+- ❌ **No Data Imports in Presentation**: Strict layer isolation.
+- ❌ **No Magic Numbers**: Use `ScreenUtil` and theme tokens.
+- ❌ **No Raw Strings**: Use `context.l10n` for localization.
+- ❌ **No `print()`**: Use `AppLogger` (`logInfo`, `logError`, etc.).
+- ❌ **No Direct Dio**: Use `DioService` or `runTask`.
 
 ---
 
-## ✨ Naming Conventions
+## ✅ 9. Checklist for New Features
 
-| What | Convention | Example |
-|------|-----------|---------|
-| Files | snake_case | `user_repository.dart` |
-| Classes | PascalCase | `LoginBloc` |
-| Functions/Vars | camelCase | `getUserData()` |
-| Private | _leading | `_privateMethod()` |
-| Routes | camelCase | `AppRoutes.userProfile` |
-
----
-
-## 🔄 Data Flow
-
-```
-User Action
-    ↓
-BLoC.add(Event)
-    ↓
-BLoC.on<Event>()
-    ↓
-UseCase(params)
-    ↓
-Repository.method()
-    ↓
-DataSource.call()
-    ↓
-emit(State) → UI Updates
-```
-
----
-
-## ✅ Pre-Submission Checklist
-
-- [ ] Uses barrel imports (`core_imports.dart`)
-- [ ] Uses `context.theme.colorScheme` (no hard-coded colors)
-- [ ] Uses `'key'.tr()` for all strings
-- [ ] Uses responsive units (`.w`, `.h`, `.sp`, `.r`)
-- [ ] Uses `const` constructors
-- [ ] 3 layers: domain/data/presentation
-- [ ] Repository interface in domain, impl in data
-- [ ] BLoC with Event/State (immutable, Equatable)
-- [ ] Page uses BlocProvider
-- [ ] BlocBuilder with `buildWhen` optimization
-- [ ] BlocListener for navigation/dialogs
-- [ ] Handles loading, error, empty states
-- [ ] Uses shared widgets (not raw Flutter widgets)
-
----
-
-**Follow strictly for every file!** 🚀
+- [ ] Repository implementation uses standard `try-catch` blocks for `Failure` handling.
+- [ ] Bloc/Cubit extends `SafeBloc` / `SafeCubit`.
+- [ ] Network calls utilize `DioService` (which uses `runTask` internally).
+- [ ] All UI dimensions use responsive extensions (`.w`, `.h`, etc.).
+- [ ] Registered dependencies in the appropriate `injection/parts/` file.
+- [ ] State is immutable, Equatable, and contains a `status` field.
