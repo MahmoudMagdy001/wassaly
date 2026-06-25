@@ -19,7 +19,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace = "com.fourthpyramid.wassaly"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = "30.0.14904198"  
+    ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
