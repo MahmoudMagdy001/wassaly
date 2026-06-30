@@ -212,7 +212,7 @@ class _HomeBannerState extends State<HomeBanner> {
                     height: ButtonSize.small,
                     suffixIcon: Icon(
                       Icons.arrow_forward,
-                      size: 14,
+                      size: 14.r,
                       color: cs.onPrimary,
                     ),
                   ),

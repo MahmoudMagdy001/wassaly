@@ -164,7 +164,7 @@ class _PopularServicesSectionState extends State<PopularServicesSection> {
                             if (index >= popularServices.length) {
                               return SizedBox(
                                 width: 80.w,
-                                child: const AppLoading(size: 20),
+                                child: AppLoading(size: 20.r),
                               );
                             }
 
