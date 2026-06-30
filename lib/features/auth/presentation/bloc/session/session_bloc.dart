@@ -142,6 +142,7 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
     Emitter<SessionState> emit,
   ) async {
     emit(const SessionLoading());
+    FcmTokenService.instance.cancelTokenRefresh();
     await _clearUserSessionUseCase();
     emit(const SessionUnauthenticated());
   }

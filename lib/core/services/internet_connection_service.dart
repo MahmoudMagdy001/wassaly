@@ -11,8 +11,10 @@ class NetworkConfig {
   static const int maxSlowHits = 3;
 }
 
-class InternetConnectionService {
-  InternetConnectionService();
+class InternetConnectionService with WidgetsBindingObserver {
+  InternetConnectionService() {
+    WidgetsBinding.instance.addObserver(this);
+  }
 
   final InternetConnection internetConnection = InternetConnection();
 
@@ -29,6 +31,7 @@ class InternetConnectionService {
   NetworkState _currentState = NetworkState.connected;
   bool _isConnected = true;
   Timer? _pingTimer;
+  bool _isBackground = false;
 
   int _slowHits = 0;
 
@@ -37,6 +40,26 @@ class InternetConnectionService {
 
   bool get isStable => _currentState == NetworkState.connected;
   NetworkState get currentState => _currentState;
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    assert(() {
+      debugPrint('[Network] Lifecycle State → $state');
+      return true;
+    }());
+
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.hidden) {
+      _isBackground = true;
+      stopPingCheck();
+    } else if (state == AppLifecycleState.resumed) {
+      _isBackground = false;
+      if (_isConnected) {
+        startPingCheck();
+      }
+    }
+  }
 
   void updateStatus({required bool isConnected}) {
     if (_isConnected == isConnected) return;
@@ -61,6 +84,7 @@ class InternetConnectionService {
 
   void startPingCheck() {
     _pingTimer?.cancel();
+    if (_isBackground) return;
     _pingTimer = Timer.periodic(
       const Duration(seconds: NetworkConfig.pingIntervalSeconds),
       (_) => unawaited(_ping()),
@@ -76,6 +100,7 @@ class InternetConnectionService {
   Future<void> checkNow() => _ping();
 
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     unawaited(_stateController.close());
     unawaited(_connectivityRestoredController.close());
     stopPingCheck();

@@ -11,7 +11,15 @@ class NotificationService {
   static const String _channelName = 'Basic Notifications';
   static const String _channelGroupKey = 'basic_channel_group';
 
+  bool _isInitialized = false;
+
   Future<void> initialize() async {
+    if (_isInitialized) {
+      AppLogger.info('NotificationService already initialized, skipping.');
+      return;
+    }
+    _isInitialized = true;
+
     // 1. Initialize Awesome Notifications
     await AwesomeNotifications().initialize(
       null, // Use default icon

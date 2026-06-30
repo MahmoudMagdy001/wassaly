@@ -186,12 +186,15 @@ class OtpVerificationBloc
     _startTimer();
   }
 
+  DateTime? _timerEnd;
+
   void _startTimer() {
     _timer?.cancel();
+    _timerEnd = DateTime.now().add(const Duration(seconds: _timerDuration));
     _timer = Timer.periodic(
       const Duration(seconds: 1),
       (timer) {
-        final remaining = _timerDuration - timer.tick;
+        final remaining = _timerEnd!.difference(DateTime.now()).inSeconds;
         if (remaining > 0) {
           add(TimerTicked(remaining));
         } else {

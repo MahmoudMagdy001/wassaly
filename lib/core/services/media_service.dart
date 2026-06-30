@@ -11,6 +11,12 @@ class MediaService {
   FutureEither<File?> pickImage({
     required ImageSource source,
   }) async => runTask(() async {
+      if (source == ImageSource.camera) {
+        final status = await Permission.camera.request();
+        if (!status.isGranted) {
+          throw const PermissionFailure('Camera permission is required to take photos');
+        }
+      }
       final file = await SystemAssetPicker.pickImage(
         source: source,
       );
@@ -31,6 +37,12 @@ class MediaService {
   FutureEither<File?> pickVideo({
     required ImageSource source,
   }) async => runTask(() async {
+      if (source == ImageSource.camera) {
+        final status = await Permission.camera.request();
+        if (!status.isGranted) {
+          throw const PermissionFailure('Camera permission is required to record videos');
+        }
+      }
       final file = await SystemAssetPicker.pickVideo(
         source: source,
       );

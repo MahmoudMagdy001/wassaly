@@ -2941,6 +2941,12 @@ abstract class S {
   /// **'Google Terms of Service'**
   String get privacy_policy_google_terms;
 
+  /// No description provided for @privacy_policy_view_online.
+  ///
+  /// In en, this message translates to:
+  /// **'View Online'**
+  String get privacy_policy_view_online;
+
   /// No description provided for @terms_of_service_title.
   ///
   /// In en, this message translates to:

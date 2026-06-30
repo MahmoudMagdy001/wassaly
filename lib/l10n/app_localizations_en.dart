@@ -1548,6 +1548,9 @@ class SEn extends S {
   String get privacy_policy_google_terms => 'Google Terms of Service';
 
   @override
+  String get privacy_policy_view_online => 'View Online';
+
+  @override
   String get terms_of_service_title => 'Terms of Service';
 
   @override

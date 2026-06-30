@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
@@ -68,9 +69,12 @@ class FcmTokenService {
     }
   }
 
+  StreamSubscription<String>? _tokenRefreshSubscription;
+
   /// Listens to token refresh events and re-registers with the backend.
   void setupTokenRefresh(int userId) {
-    FirebaseMessaging.instance.onTokenRefresh.listen(
+    unawaited(_tokenRefreshSubscription?.cancel());
+    _tokenRefreshSubscription = FirebaseMessaging.instance.onTokenRefresh.listen(
       (newToken) async {
         _logger.i(
           '[FcmTokenService] Token refreshed — re-registering for user $userId',
@@ -91,6 +95,13 @@ class FcmTokenService {
       onError: (Object e) =>
           _logger.e('[FcmTokenService] onTokenRefresh error: $e'),
     );
+  }
+
+  /// Cancels the token refresh listener (e.g. on logout).
+  void cancelTokenRefresh() {
+    unawaited(_tokenRefreshSubscription?.cancel());
+    _tokenRefreshSubscription = null;
+    _logger.i('[FcmTokenService] Token refresh listener cancelled.');
   }
 
   Future<String> _getDeviceId() async {

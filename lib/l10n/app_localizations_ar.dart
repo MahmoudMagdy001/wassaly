@@ -1562,6 +1562,9 @@ class SAr extends S {
   String get privacy_policy_google_terms => 'شروط خدمة جوجل';
 
   @override
+  String get privacy_policy_view_online => 'عرض سياسة الخصوصية على الإنترنت';
+
+  @override
   String get terms_of_service_title => 'شروط الخدمة';
 
   @override

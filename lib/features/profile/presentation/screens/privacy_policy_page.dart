@@ -14,6 +14,15 @@ class PrivacyPolicyPage extends StatelessWidget {
         slivers: [
           AppSliverTopBar(
             title: context.l10n.privacy_policy_title,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.open_in_new),
+                tooltip: context.l10n.privacy_policy_view_online,
+                onPressed: () => _launchUrl(
+                  'https://wasly.bynona.store/Privacy/privacy_policy.html',
+                ),
+              ),
+            ],
           ),
           SliverPadding(
             padding: EdgeInsets.all(16.w),
@@ -158,6 +167,25 @@ class PrivacyPolicyPage extends StatelessWidget {
             fontStyle: FontStyle.italic,
           ),
           textAlign: TextAlign.center,
+        ),
+        16.verticalSpace,
+        TextButton.icon(
+          onPressed: () => _launchUrl(
+            'https://wasly.bynona.store/Privacy/privacy_policy.html',
+          ),
+          icon: Icon(
+            Icons.open_in_new,
+            size: 16.w,
+            color: cs.primary,
+          ),
+          label: Text(
+            context.l10n.privacy_policy_view_online,
+            style: tt.bodyMedium?.copyWith(
+              color: cs.primary,
+              fontWeight: FontWeight.bold,
+              decoration: TextDecoration.underline,
+            ),
+          ),
         ),
         8.verticalSpace,
         Row(

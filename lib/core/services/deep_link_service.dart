@@ -40,8 +40,16 @@ class DeepLinkService {
   Stream<GoogleLoginCallbackData?> get callbackStream =>
       _callbackController.stream;
 
+  bool _isInitialized = false;
+
   /// Initialize deep link listening
   Future<void> initialize() async {
+    if (_isInitialized) {
+      AppLogger.info('DeepLinkService already initialized, skipping.');
+      return;
+    }
+    _isInitialized = true;
+
     // Handle app launched from terminated state with deep link
     try {
       final initialUri = await _appLinks.getInitialLink();
@@ -66,7 +74,9 @@ class DeepLinkService {
   /// Dispose the service
   void dispose() {
     unawaited(_linkSubscription?.cancel());
+    _linkSubscription = null;
     unawaited(_callbackController.close());
+    _isInitialized = false;
     AppLogger.info('DeepLinkService disposed');
   }
 
