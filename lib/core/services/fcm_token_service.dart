@@ -74,27 +74,31 @@ class FcmTokenService {
   /// Listens to token refresh events and re-registers with the backend.
   void setupTokenRefresh(int userId) {
     unawaited(_tokenRefreshSubscription?.cancel());
-    _tokenRefreshSubscription = FirebaseMessaging.instance.onTokenRefresh.listen(
-      (newToken) async {
-        _logger.i(
-          '[FcmTokenService] Token refreshed — re-registering for user $userId',
-        );
-        final deviceId = await _getDeviceId();
+    try {
+      _tokenRefreshSubscription = FirebaseMessaging.instance.onTokenRefresh.listen(
+        (newToken) async {
+          _logger.i(
+            '[FcmTokenService] Token refreshed — re-registering for user $userId',
+          );
+          final deviceId = await _getDeviceId();
 
-        final result = await _registerFcmTokenUseCase(
-          FcmTokenParams(token: newToken, deviceId: deviceId, userId: userId),
-        );
-        result.fold(
-          (failure) => _logger.w(
-            '[FcmTokenService] Refresh registration failed: ${failure.message}',
-          ),
-          (_) => _logger
-              .i('[FcmTokenService] Refresh token registered for user $userId'),
-        );
-      },
-      onError: (Object e) =>
-          _logger.e('[FcmTokenService] onTokenRefresh error: $e'),
-    );
+          final result = await _registerFcmTokenUseCase(
+            FcmTokenParams(token: newToken, deviceId: deviceId, userId: userId),
+          );
+          result.fold(
+            (failure) => _logger.w(
+              '[FcmTokenService] Refresh registration failed: ${failure.message}',
+            ),
+            (_) => _logger
+                .i('[FcmTokenService] Refresh token registered for user $userId'),
+          );
+        },
+        onError: (Object e) =>
+            _logger.e('[FcmTokenService] onTokenRefresh error: $e'),
+      );
+    } on Object catch (e) {
+      _logger.w('[FcmTokenService] Firebase Messaging not initialized: $e');
+    }
   }
 
   /// Cancels the token refresh listener (e.g. on logout).

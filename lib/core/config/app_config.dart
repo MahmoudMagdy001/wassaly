@@ -43,6 +43,7 @@ class AppConfig {
     // Interceptors order is important
     _addCancelTokenInterceptor();
     _addAuthInterceptor();
+    _addUnauthorizedInterceptor();
     _addLanguageInterceptor();
     _addStabilityInterceptor();
 
@@ -137,6 +138,25 @@ class AppConfig {
     return publicPaths.any((public) => path.contains(public));
   }
 
+  /// Handles 401 Unauthorized globally by clearing tokens and redirecting to login.
+  static void _addUnauthorizedInterceptor() {
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onError: (error, handler) async {
+          if (error.response?.statusCode == 401 &&
+              !_isPublicEndpoint(error.requestOptions.path)) {
+            clearCachedToken();
+            await SecureStorageService.instance.delete('auth_token');
+            AppLogger.warning(
+              '[AppConfig] 401 Unauthorized received. Session invalidated.',
+            );
+          }
+          return handler.next(error);
+        },
+      ),
+    );
+  }
+
   /// Keeps Accept-Language header updated
   static void _addLanguageInterceptor() {
     dio.interceptors.add(
@@ -151,5 +171,9 @@ class AppConfig {
     );
   }
 
-  static String _getBaseUrl() => dotenv.get('BASE_API_URL');
+  static String _getBaseUrl() {
+    const envUrl = String.fromEnvironment('BASE_API_URL');
+    if (envUrl.isNotEmpty) return envUrl;
+    return dotenv.maybeGet('BASE_API_URL') ?? 'https://api.wassaly.com';
+  }
 }
