@@ -11,8 +11,12 @@ plugins {
 }
 
 val keystoreProperties = Properties()
-val keystorePropertiesFile = rootProject.file("keystore.properties")
-if (keystorePropertiesFile.exists()) {
+val keystorePropertiesFile = listOf(
+    rootProject.file("keystore.properties"),
+    rootProject.file("key.properties")
+).firstOrNull { it.exists() }
+
+if (keystorePropertiesFile != null) {
     keystorePropertiesFile.inputStream().use { keystoreProperties.load(it) }
 }
 
@@ -40,8 +44,8 @@ android {
     }
 
     signingConfigs {
-        create("release") {
-            if (keystorePropertiesFile.exists()) {
+        if (keystorePropertiesFile != null) {
+            create("release") {
                 keyAlias = keystoreProperties["keyAlias"] as String
                 keyPassword = keystoreProperties["keyPassword"] as String
                 storeFile = file(keystoreProperties["storeFile"] as String)
@@ -52,7 +56,11 @@ android {
 
     buildTypes {
         release {
-            signingConfig = signingConfigs["release"]
+            signingConfig = if (keystorePropertiesFile != null) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
