@@ -174,6 +174,9 @@ class AppConfig {
   static String _getBaseUrl() {
     const envUrl = String.fromEnvironment('BASE_API_URL');
     if (envUrl.isNotEmpty) return envUrl;
-    return dotenv.maybeGet('BASE_API_URL') ?? 'https://api.wassaly.com';
+    if (dotenv.isInitialized) {
+      return dotenv.maybeGet('BASE_API_URL') ?? 'https://api.wassaly.com';
+    }
+    return 'https://api.wassaly.com';
   }
 }

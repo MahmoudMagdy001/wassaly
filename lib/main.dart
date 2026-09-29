@@ -29,8 +29,8 @@ Future<void> main() async {
   // Safely load environment variables if available
   try {
     await dotenv.load();
-  } on Object {
-    AppLogger.info('[App] .env file not found or loaded via dart-define.');
+  } on Object catch (e) {
+    AppLogger.info('[App] .env file not loaded ($e), falling back to defaults/dart-define.');
   }
 
   // Initialize Core Services
