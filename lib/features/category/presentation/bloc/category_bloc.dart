@@ -3,6 +3,9 @@ import 'package:wassaly/features/category/domain/usecases/get_category_detail_us
 import 'package:wassaly/features/category/presentation/bloc/category_event.dart';
 import 'package:wassaly/features/category/presentation/bloc/category_state.dart';
 
+export 'category_event.dart';
+export 'category_state.dart';
+
 class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
   final GetCategoryDetailUseCase _getCategoryDetailUseCase;
 

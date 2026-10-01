@@ -1,20 +1,14 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class BannerEntity extends Equatable {
-  final int id;
-  final String title;
-  final String description;
-  final String image;
-  final String type;
+part 'banner_entity.freezed.dart';
 
-  const BannerEntity({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.image,
-    required this.type,
-  });
-
-  @override
-  List<Object?> get props => [id, title, description, image, type];
+@freezed
+abstract class BannerEntity with _$BannerEntity {
+  const factory BannerEntity({
+    required int id,
+    required String title,
+    required String description,
+    required String image,
+    required String type,
+  }) = _BannerEntity;
 }

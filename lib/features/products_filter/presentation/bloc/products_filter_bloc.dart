@@ -5,6 +5,9 @@ import 'package:wassaly/features/products_filter/domain/usecases/get_filtered_pr
 import 'package:wassaly/features/products_filter/presentation/bloc/products_filter_event.dart';
 import 'package:wassaly/features/products_filter/presentation/bloc/products_filter_state.dart';
 
+export 'products_filter_event.dart';
+export 'products_filter_state.dart';
+
 class ProductsFilterBloc
     extends Bloc<ProductsFilterEvent, ProductsFilterState> {
   final GetFilteredProductsUseCase _getFilteredProductsUseCase;
@@ -93,7 +96,7 @@ class ProductsFilterBloc
       status: AppStatus.initial,
       params: const ProductFilterParams(),
       products: const [],
-      clearError: true,
+      errorMessage: null,
     ),);
   }
 }

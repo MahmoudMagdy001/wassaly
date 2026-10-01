@@ -1,19 +1,14 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:wassaly/features/sub_category/domain/entities/service_entity.dart';
 
-class SubCategoryEntity extends Equatable {
-  final int id;
-  final String name;
-  final String image;
-  final List<ServiceEntity>? services;
+part 'sub_category_entity.freezed.dart';
 
-  const SubCategoryEntity({
-    required this.id,
-    required this.name,
-    required this.image,
-    this.services,
-  });
-
-  @override
-  List<Object?> get props => [id, name, image, services];
+@freezed
+abstract class SubCategoryEntity with _$SubCategoryEntity {
+  const factory SubCategoryEntity({
+    required int id,
+    required String name,
+    required String image,
+    List<ServiceEntity>? services,
+  }) = _SubCategoryEntity;
 }

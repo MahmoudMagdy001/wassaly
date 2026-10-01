@@ -1,7 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_bloc.dart';
-import 'package:wassaly/features/favorite/presentation/bloc/favorite_event.dart';
-import 'package:wassaly/features/favorite/presentation/bloc/favorite_state.dart';
 import 'package:wassaly/features/home/domain/entities/product_entity.dart';
 
 final _activeMarqueeId = ValueNotifier<int?>(null);

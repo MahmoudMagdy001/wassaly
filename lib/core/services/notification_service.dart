@@ -1,7 +1,6 @@
 import 'package:wassaly/core/constants/app_keys.dart';
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/notifications/presentation/bloc/notifications_bloc.dart';
-import 'package:wassaly/features/notifications/presentation/bloc/notifications_event.dart';
 
 class NotificationService {
   NotificationService._();

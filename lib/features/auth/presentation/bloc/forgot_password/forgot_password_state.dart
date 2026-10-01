@@ -1,31 +1,13 @@
-part of 'forgot_password_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class ForgotPasswordState extends Equatable {
-  final String email;
-  final bool isLoading;
-  final bool isSuccess;
-  final String? errorMessage;
+part 'forgot_password_state.freezed.dart';
 
-  const ForgotPasswordState({
-    this.email = '',
-    this.isLoading = false,
-    this.isSuccess = false,
-    this.errorMessage,
-  });
-
-  ForgotPasswordState copyWith({
-    String? email,
-    bool? isLoading,
-    bool? isSuccess,
+@freezed
+abstract class ForgotPasswordState with _$ForgotPasswordState {
+  const factory ForgotPasswordState({
+    @Default('') String email,
+    @Default(false) bool isLoading,
+    @Default(false) bool isSuccess,
     String? errorMessage,
-    bool clearError = false,
-  }) => ForgotPasswordState(
-      email: email ?? this.email,
-      isLoading: isLoading ?? this.isLoading,
-      isSuccess: isSuccess ?? this.isSuccess,
-      errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
-    );
-
-  @override
-  List<Object?> get props => [email, isLoading, isSuccess, errorMessage];
+  }) = _ForgotPasswordState;
 }

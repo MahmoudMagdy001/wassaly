@@ -2,12 +2,17 @@ import 'package:wassaly/features/home/data/models/product_model.dart';
 import 'package:wassaly/features/provider_details/domain/entities/provider_detail_entity.dart';
 import 'package:wassaly/features/sub_category/data/models/service_model.dart';
 
-class ProviderDetailReviewModel extends ProviderDetailReviewEntity {
+class ProviderDetailReviewModel {
+  final int? id;
+  final int rating;
+  final String comment;
+  final String? createdAt;
+
   const ProviderDetailReviewModel({
-    required super.rating,
-    required super.comment,
-    super.id,
-    super.createdAt,
+    required this.rating,
+    required this.comment,
+    this.id,
+    this.createdAt,
   });
 
   factory ProviderDetailReviewModel.fromJson(Map<String, dynamic> json) =>
@@ -17,18 +22,34 @@ class ProviderDetailReviewModel extends ProviderDetailReviewEntity {
         comment: json['comment'] as String? ?? '',
         createdAt: json['created_at'] as String?,
       );
+
+  ProviderDetailReviewEntity toEntity() => ProviderDetailReviewEntity(
+        id: id,
+        rating: rating,
+        comment: comment,
+        createdAt: createdAt,
+      );
 }
 
-class ProviderDetailUserModel extends ProviderDetailUserEntity {
+class ProviderDetailUserModel {
+  final int id;
+  final String name;
+  final String email;
+  final String phone;
+  final String? avatar;
+  final String type;
+  final int isActive;
+  final String createdAt;
+
   const ProviderDetailUserModel({
-    required super.id,
-    required super.name,
-    required super.email,
-    required super.phone,
-    required super.type,
-    required super.isActive,
-    required super.createdAt,
-    super.avatar,
+    required this.id,
+    required this.name,
+    required this.email,
+    required this.phone,
+    required this.type,
+    required this.isActive,
+    required this.createdAt,
+    this.avatar,
   });
 
   factory ProviderDetailUserModel.fromJson(Map<String, dynamic> json) =>
@@ -42,27 +63,56 @@ class ProviderDetailUserModel extends ProviderDetailUserEntity {
         isActive: json['is_active'] as int,
         createdAt: json['created_at'] as String,
       );
+
+  ProviderDetailUserEntity toEntity() => ProviderDetailUserEntity(
+        id: id,
+        name: name,
+        email: email,
+        phone: phone,
+        avatar: avatar,
+        type: type,
+        isActive: isActive,
+        createdAt: createdAt,
+      );
 }
 
-class ProviderDetailModel extends ProviderDetailEntity {
+class ProviderDetailModel {
+  final int id;
+  final ProviderDetailUserModel user;
+  final String title;
+  final String serviceDescription;
+  final String priceFrom;
+  final String fromDay;
+  final String toDay;
+  final String startTime;
+  final String endTime;
+  final String status;
+  final String cover;
+  final double averageRating;
+  final int reviewsCount;
+  final int successfulOrdersCount;
+  final List<ProviderDetailReviewModel> reviews;
+  final List<ServiceModel> services;
+  final List<ProductModel> products;
+
   const ProviderDetailModel({
-    required super.id,
-    required super.user,
-    required super.title,
-    required super.serviceDescription,
-    required super.priceFrom,
-    required super.fromDay,
-    required super.toDay,
-    required super.startTime,
-    required super.endTime,
-    required super.status,
-    required super.cover,
-    required super.averageRating,
-    required super.reviewsCount,
-    required super.successfulOrdersCount,
-    required super.reviews,
-    required super.services,
-    required super.products,
+    required this.id,
+    required this.user,
+    required this.title,
+    required this.serviceDescription,
+    required this.priceFrom,
+    required this.fromDay,
+    required this.toDay,
+    required this.startTime,
+    required this.endTime,
+    required this.status,
+    required this.cover,
+    required this.averageRating,
+    required this.reviewsCount,
+    required this.successfulOrdersCount,
+    required this.reviews,
+    required this.services,
+    required this.products,
   });
 
   factory ProviderDetailModel.fromJson(Map<String, dynamic> json) =>
@@ -99,5 +149,25 @@ class ProviderDetailModel extends ProviderDetailEntity {
                 ?.map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
                 .toList() ??
             [],
+      );
+
+  ProviderDetailEntity toEntity() => ProviderDetailEntity(
+        id: id,
+        user: user.toEntity(),
+        title: title,
+        serviceDescription: serviceDescription,
+        priceFrom: priceFrom,
+        fromDay: fromDay,
+        toDay: toDay,
+        startTime: startTime,
+        endTime: endTime,
+        status: status,
+        cover: cover,
+        averageRating: averageRating,
+        reviewsCount: reviewsCount,
+        successfulOrdersCount: successfulOrdersCount,
+        reviews: reviews.map((e) => e.toEntity()).toList(),
+        services: services.map((e) => e.toEntity()).toList(),
+        products: products.map((e) => e.toEntity()).toList(),
       );
 }

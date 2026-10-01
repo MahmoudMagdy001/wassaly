@@ -1,38 +1,19 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class ProductFilterParams extends Equatable {
-  final int? categoryId;
-  final double? minPrice;
-  final double? maxPrice;
-  final bool? specialOffers;
-  final List<int>? ratings;
-  final String? sort;
+part 'product_filter_params.freezed.dart';
 
-  const ProductFilterParams({
-    this.categoryId,
-    this.minPrice,
-    this.maxPrice,
-    this.specialOffers,
-    this.ratings,
-    this.sort,
-  });
+@freezed
+sealed class ProductFilterParams with _$ProductFilterParams {
+  const ProductFilterParams._();
 
-  ProductFilterParams copyWith({
+  const factory ProductFilterParams({
     int? categoryId,
     double? minPrice,
     double? maxPrice,
     bool? specialOffers,
     List<int>? ratings,
     String? sort,
-    bool clearCategory = false,
-  }) => ProductFilterParams(
-      categoryId: clearCategory ? null : (categoryId ?? this.categoryId),
-      minPrice: minPrice ?? this.minPrice,
-      maxPrice: maxPrice ?? this.maxPrice,
-      specialOffers: specialOffers ?? this.specialOffers,
-      ratings: ratings ?? this.ratings,
-      sort: sort ?? this.sort,
-    );
+  }) = _ProductFilterParams;
 
   bool get isEmpty =>
       categoryId == null &&
@@ -41,14 +22,4 @@ class ProductFilterParams extends Equatable {
       specialOffers == null &&
       (ratings == null || ratings!.isEmpty) &&
       sort == null;
-
-  @override
-  List<Object?> get props => [
-        categoryId,
-        minPrice,
-        maxPrice,
-        specialOffers,
-        ratings,
-        sort,
-      ];
 }

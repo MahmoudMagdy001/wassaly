@@ -1,18 +1,13 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class OrderEntity extends Equatable {
-  final String id;
-  final String status;
-  final double total;
-  final DateTime createdAt;
+part 'order_entity.freezed.dart';
 
-  const OrderEntity({
-    required this.id,
-    required this.status,
-    required this.total,
-    required this.createdAt,
-  });
-
-  @override
-  List<Object?> get props => [id, status, total, createdAt];
+@freezed
+abstract class OrderEntity with _$OrderEntity {
+  const factory OrderEntity({
+    required String id,
+    required String status,
+    required double total,
+    required DateTime createdAt,
+  }) = _OrderEntity;
 }

@@ -1,7 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/home/domain/entities/category_entity.dart';
 import 'package:wassaly/features/home/presentation/bloc/home_bloc.dart';
-import 'package:wassaly/features/home/presentation/bloc/home_state.dart';
 import 'package:wassaly/features/home/presentation/widgets/category_card.dart';
 
 class MainCategoriesSection extends StatelessWidget {

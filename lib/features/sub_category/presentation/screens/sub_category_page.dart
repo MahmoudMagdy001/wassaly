@@ -4,8 +4,6 @@ import 'package:wassaly/features/home/domain/entities/sub_category_entity.dart';
 import 'package:wassaly/features/sub_category/domain/entities/service_entity.dart';
 import 'package:wassaly/features/sub_category/domain/entities/sub_category_detail_entity.dart';
 import 'package:wassaly/features/sub_category/presentation/bloc/sub_category_bloc.dart';
-import 'package:wassaly/features/sub_category/presentation/bloc/sub_category_event.dart';
-import 'package:wassaly/features/sub_category/presentation/bloc/sub_category_state.dart';
 
 final _activeMarqueeId = ValueNotifier<int?>(null);
 

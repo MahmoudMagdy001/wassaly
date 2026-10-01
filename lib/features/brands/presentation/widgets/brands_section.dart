@@ -1,8 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/brands/domain/entities/brand_entity.dart';
 import 'package:wassaly/features/brands/presentation/bloc/brands_bloc.dart';
-import 'package:wassaly/features/brands/presentation/bloc/brands_event.dart';
-import 'package:wassaly/features/brands/presentation/bloc/brands_state.dart';
 import 'package:wassaly/features/brands/presentation/widgets/brand_card.dart';
 
 class BrandsSection extends StatelessWidget {
@@ -10,7 +8,7 @@ class BrandsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocProvider(
-        create: (context) => sl<BrandsBloc>()..add(GetBrandsEvent()),
+        create: (context) => sl<BrandsBloc>()..add(const GetBrandsEvent()),
         child: const _BrandsSectionView(),
       );
 }

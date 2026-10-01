@@ -19,7 +19,7 @@ class ProductsFilterRepositoryImpl implements ProductsFilterRepository {
         params: params,
         page: page,
       );
-      return Right(response);
+      return Right(response.map((m) => m.toEntity()));
     } on Failure catch (e) {
       return Left(e);
     } on Object catch (e) {

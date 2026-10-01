@@ -1,44 +1,31 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:wassaly/features/orders/domain/entities/order_item_entity.dart';
 
-class OrderEntity extends Equatable {
-  final int id;
-  final String orderNumber;
-  final String status;
-  final double totalPrice;
-  final String paymentMethod;
-  final double deliveryFees;
-  final List<OrderItemEntity> items;
-  final String createdAt;
-  final double? subTotal;
-  final double? discountAmount;
-  final String? customerName;
-  final String? customerPhone;
-  final String? deliveryAddress;
-  final String? governorateId;
-  final String? governorateName;
-  final String? centerId;
-  final String? centerName;
+part 'order_entity.freezed.dart';
 
-  const OrderEntity({
-    required this.id,
-    required this.orderNumber,
-    required this.status,
-    required this.totalPrice,
-    required this.paymentMethod,
-    required this.deliveryFees,
-    required this.items,
-    required this.createdAt,
-    this.subTotal,
-    this.discountAmount,
-    this.customerName,
-    this.customerPhone,
-    this.deliveryAddress,
-    this.governorateId,
-    this.governorateName,
-    this.centerId,
-    this.centerName,
-  });
+@freezed
+abstract class OrderEntity with _$OrderEntity {
+  const OrderEntity._();
+
+  const factory OrderEntity({
+    required int id,
+    required String orderNumber,
+    required String status,
+    required double totalPrice,
+    required String paymentMethod,
+    required double deliveryFees,
+    required List<OrderItemEntity> items,
+    required String createdAt,
+    double? subTotal,
+    double? discountAmount,
+    String? customerName,
+    String? customerPhone,
+    String? deliveryAddress,
+    String? governorateId,
+    String? governorateName,
+    String? centerId,
+    String? centerName,
+  }) = _OrderEntity;
 
   bool get isCancelled {
     final normStatus = status.trim().toLowerCase();
@@ -67,25 +54,4 @@ class OrderEntity extends Equatable {
 
   bool get canDelete => isDelivered || isCancelled;
   bool get canCancelOrUpdate => isPending;
-
-  @override
-  List<Object?> get props => [
-        id,
-        orderNumber,
-        status,
-        totalPrice,
-        paymentMethod,
-        deliveryFees,
-        items,
-        createdAt,
-        subTotal,
-        discountAmount,
-        customerName,
-        customerPhone,
-        deliveryAddress,
-        governorateId,
-        governorateName,
-        centerId,
-        centerName,
-      ];
 }

@@ -5,6 +5,9 @@ import 'package:wassaly/features/brands/domain/usecases/get_brands_usecase.dart'
 import 'package:wassaly/features/brands/presentation/bloc/brands_event.dart';
 import 'package:wassaly/features/brands/presentation/bloc/brands_state.dart';
 
+export 'brands_event.dart';
+export 'brands_state.dart';
+
 class BrandsBloc extends Bloc<BrandsEvent, BrandsState> {
   final GetBrandsUseCase _getBrandsUseCase;
   final GetBrandProductsUseCase _getBrandProductsUseCase;

@@ -1,5 +1,4 @@
 import 'package:wassaly/core/imports/imports.dart';
-import 'package:wassaly/features/auth/domain/entities/user_entity.dart';
 import 'package:wassaly/features/auth/domain/usecases/clear_user_session_usecase.dart';
 import 'package:wassaly/features/auth/domain/usecases/get_cached_user_usecase.dart';
 import 'package:wassaly/features/auth/domain/usecases/get_profile_usecase.dart';
@@ -7,8 +6,11 @@ import 'package:wassaly/features/auth/domain/usecases/get_saved_token_usecase.da
 import 'package:wassaly/features/auth/domain/usecases/login_usecase.dart';
 import 'package:wassaly/features/auth/domain/usecases/logout_usecase.dart';
 
-part 'session_event.dart';
-part 'session_state.dart';
+import 'package:wassaly/features/auth/presentation/bloc/session/session_event.dart';
+import 'package:wassaly/features/auth/presentation/bloc/session/session_state.dart';
+
+export 'session_event.dart';
+export 'session_state.dart';
 
 class SessionBloc extends Bloc<SessionEvent, SessionState> {
   final LoginUseCase _loginUseCase;

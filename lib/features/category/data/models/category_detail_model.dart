@@ -1,13 +1,19 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:wassaly/core/utils/pagination.dart';
 import 'package:wassaly/features/category/domain/entities/category_detail_entity.dart';
 import 'package:wassaly/features/home/domain/entities/category_entity.dart';
 import 'package:wassaly/features/home/domain/entities/sub_category_entity.dart';
 
-class CategoryDetailModel extends CategoryDetailEntity {
-  const CategoryDetailModel({
-    required super.category,
-    required super.subCategories,
-  });
+part 'category_detail_model.freezed.dart';
+
+@freezed
+abstract class CategoryDetailModel with _$CategoryDetailModel {
+  const CategoryDetailModel._();
+
+  const factory CategoryDetailModel({
+    required CategoryEntity category,
+    required PaginatedResponse<SubCategoryEntity> subCategories,
+  }) = _CategoryDetailModel;
 
   factory CategoryDetailModel.fromJson({
     required Map<String, dynamic> category,
@@ -38,4 +44,9 @@ class CategoryDetailModel extends CategoryDetailEntity {
       ),
     );
   }
+
+  CategoryDetailEntity toEntity() => CategoryDetailEntity(
+        category: category,
+        subCategories: subCategories,
+      );
 }

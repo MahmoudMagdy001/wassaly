@@ -1,8 +1,10 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/auth/domain/usecases/signup_usecase.dart';
+import 'package:wassaly/features/auth/presentation/bloc/signup/signup_event.dart';
+import 'package:wassaly/features/auth/presentation/bloc/signup/signup_state.dart';
 
-part 'signup_event.dart';
-part 'signup_state.dart';
+export 'signup_event.dart';
+export 'signup_state.dart';
 
 class SignupBloc extends Bloc<SignupEvent, SignupState> {
   final SignupUseCase _signupUseCase;
@@ -24,19 +26,19 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
   }
 
   void _onNameChanged(NameChanged event, Emitter<SignupState> emit) {
-    emit(state.copyWith(name: event.name, clearError: true));
+    emit(state.copyWith(name: event.name, errorMessage: null));
   }
 
   void _onPhoneChanged(PhoneChanged event, Emitter<SignupState> emit) {
-    emit(state.copyWith(phone: event.phone, clearError: true));
+    emit(state.copyWith(phone: event.phone, errorMessage: null));
   }
 
   void _onEmailChanged(EmailChanged event, Emitter<SignupState> emit) {
-    emit(state.copyWith(email: event.email, clearError: true));
+    emit(state.copyWith(email: event.email, errorMessage: null));
   }
 
   void _onPasswordChanged(PasswordChanged event, Emitter<SignupState> emit) {
-    emit(state.copyWith(password: event.password, clearError: true));
+    emit(state.copyWith(password: event.password, errorMessage: null));
   }
 
   void _onPasswordVisibilityChanged(
@@ -51,7 +53,9 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
     Emitter<SignupState> emit,
   ) {
     emit(state.copyWith(
-        confirmPassword: event.confirmPassword, clearError: true,),);
+      confirmPassword: event.confirmPassword,
+      errorMessage: null,
+    ));
   }
 
   void _onConfirmPasswordVisibilityChanged(
@@ -65,7 +69,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
     TermsAcceptedChanged event,
     Emitter<SignupState> emit,
   ) {
-    emit(state.copyWith(isTermsAccepted: event.isAccepted, clearError: true));
+    emit(state.copyWith(isTermsAccepted: event.isAccepted, errorMessage: null));
   }
 
   void _onAvatarChanged(
@@ -74,9 +78,8 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
   ) {
     emit(state.copyWith(
       avatarFile: event.avatarFile,
-      clearError: true,
-      clearAvatar: event.avatarFile == null,
-    ),);
+      errorMessage: null,
+    ));
   }
 
   Future<void> _onSignupSubmitted(
@@ -86,11 +89,11 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
     if (!state.isTermsAccepted) {
       emit(state.copyWith(
         errorMessage: 'auth_terms_required',
-      ),);
+      ));
       return;
     }
 
-    emit(state.copyWith(isLoading: true, clearError: true));
+    emit(state.copyWith(isLoading: true, errorMessage: null));
 
     final result = await _signupUseCase(
       SignupParams(
@@ -107,11 +110,11 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
       (failure) => emit(state.copyWith(
         isLoading: false,
         errorMessage: failure.message,
-      ),),
+      )),
       (user) => emit(state.copyWith(
         isLoading: false,
         isRegistered: true,
-      ),),
+      )),
     );
   }
 }

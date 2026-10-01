@@ -1,42 +1,15 @@
-part of 'otp_verification_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class OtpVerificationEvent extends Equatable {
-  const OtpVerificationEvent();
+part 'otp_verification_event.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
-}
-
-class OtpDigitChanged extends OtpVerificationEvent {
-  final String otp;
-
-  const OtpDigitChanged(this.otp);
-
-  @override
-  List<Object?> get props => [otp];
-}
-
-class VerifyOtpSubmitted extends OtpVerificationEvent {
-  const VerifyOtpSubmitted();
-}
-
-class ResendOtpRequested extends OtpVerificationEvent {
-  const ResendOtpRequested();
-}
-
-class TimerTicked extends OtpVerificationEvent {
-  final int remainingSeconds;
-
-  const TimerTicked(this.remainingSeconds);
-
-  @override
-  List<Object?> get props => [remainingSeconds];
-}
-
-class TimerCompleted extends OtpVerificationEvent {
-  const TimerCompleted();
-}
-
-class TimerStarted extends OtpVerificationEvent {
-  const TimerStarted();
+@freezed
+sealed class OtpVerificationEvent with _$OtpVerificationEvent {
+  const factory OtpVerificationEvent.otpDigitChanged(String otp) =
+      OtpDigitChanged;
+  const factory OtpVerificationEvent.verifyOtpSubmitted() = VerifyOtpSubmitted;
+  const factory OtpVerificationEvent.resendOtpRequested() = ResendOtpRequested;
+  const factory OtpVerificationEvent.timerTicked(int remainingSeconds) =
+      TimerTicked;
+  const factory OtpVerificationEvent.timerCompleted() = TimerCompleted;
+  const factory OtpVerificationEvent.timerStarted() = TimerStarted;
 }

@@ -1,48 +1,14 @@
-part of 'login_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-sealed class LoginEvent extends Equatable {
-  const LoginEvent();
+part 'login_event.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
-}
-
-class EmailChanged extends LoginEvent {
-  final String email;
-
-  const EmailChanged(this.email);
-
-  @override
-  List<Object?> get props => [email];
-}
-
-class PasswordChanged extends LoginEvent {
-  final String password;
-
-  const PasswordChanged(this.password);
-
-  @override
-  List<Object?> get props => [password];
-}
-
-class PasswordVisibilityChanged extends LoginEvent {
-  final bool isVisible;
-
-  const PasswordVisibilityChanged({required this.isVisible});
-
-  @override
-  List<Object?> get props => [isVisible];
-}
-
-class LoginSubmitted extends LoginEvent {
-  const LoginSubmitted();
-}
-
-class LoginRequiresVerification extends LoginEvent {
-  final String email;
-
-  const LoginRequiresVerification(this.email);
-
-  @override
-  List<Object?> get props => [email];
+@freezed
+sealed class LoginEvent with _$LoginEvent {
+  const factory LoginEvent.emailChanged(String email) = EmailChanged;
+  const factory LoginEvent.passwordChanged(String password) = PasswordChanged;
+  const factory LoginEvent.passwordVisibilityChanged({required bool isVisible}) =
+      PasswordVisibilityChanged;
+  const factory LoginEvent.loginSubmitted() = LoginSubmitted;
+  const factory LoginEvent.loginRequiresVerification(String email) =
+      LoginRequiresVerification;
 }

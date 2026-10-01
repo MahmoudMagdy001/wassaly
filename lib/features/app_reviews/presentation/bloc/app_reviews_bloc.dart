@@ -7,6 +7,9 @@ import 'package:wassaly/features/app_reviews/presentation/bloc/app_reviews_event
 import 'package:wassaly/features/app_reviews/presentation/bloc/app_reviews_state.dart';
 import 'package:wassaly/features/auth/domain/usecases/get_cached_user_usecase.dart';
 
+export 'app_reviews_event.dart';
+export 'app_reviews_state.dart';
+
 class AppReviewsBloc extends Bloc<AppReviewsEvent, AppReviewsState> {
   final GetAppReviewsUseCase _getAppReviewsUseCase;
   final AddAppReviewUseCase _addAppReviewUseCase;
@@ -57,7 +60,7 @@ class AppReviewsBloc extends Bloc<AppReviewsEvent, AppReviewsState> {
           state.copyWith(
             status: AppStatus.success,
             reviews: sortedReviews,
-            clearError: true,
+            errorMessage: null,
             currentUserId: user?.id != null ? int.tryParse(user!.id) : null,
           ),
         );

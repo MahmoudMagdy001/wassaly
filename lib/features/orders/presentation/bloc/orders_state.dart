@@ -1,44 +1,21 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:wassaly/core/utils/pagination.dart';
 import 'package:wassaly/features/orders/domain/entities/order_entity.dart';
 import 'package:wassaly/features/service_booking/domain/entities/booking_entity.dart';
 
+part 'orders_state.freezed.dart';
+
 enum OrdersStatus { initial, loading, loadingMore, success, failure }
 
-class OrdersState extends Equatable {
-  final OrdersStatus status;
-  final PaginatedResponse<OrderEntity> orders;
-  final OrdersStatus serviceStatus;
-  final PaginatedResponse<BookingEntity> serviceBookings;
-  final String errorMessage;
-
-  const OrdersState({
-    this.status = OrdersStatus.initial,
-    this.orders = const PaginatedResponse(data: []),
-    this.serviceStatus = OrdersStatus.initial,
-    this.serviceBookings = const PaginatedResponse(data: []),
-    this.errorMessage = '',
-  });
-
-  OrdersState copyWith({
-    OrdersStatus? status,
-    PaginatedResponse<OrderEntity>? orders,
-    OrdersStatus? serviceStatus,
-    PaginatedResponse<BookingEntity>? serviceBookings,
-    String? errorMessage,
-  }) => OrdersState(
-      status: status ?? this.status,
-      orders: orders ?? this.orders,
-      serviceStatus: serviceStatus ?? this.serviceStatus,
-      serviceBookings: serviceBookings ?? this.serviceBookings,
-      errorMessage: errorMessage ?? this.errorMessage,
-    );
-
-  @override
-  List<Object?> get props => [
-        status,
-        orders,
-        serviceStatus,
-        serviceBookings,
-        errorMessage,
-      ];
+@freezed
+abstract class OrdersState with _$OrdersState {
+  const factory OrdersState({
+    @Default(OrdersStatus.initial) OrdersStatus status,
+    @Default(PaginatedResponse<OrderEntity>(data: []))
+    PaginatedResponse<OrderEntity> orders,
+    @Default(OrdersStatus.initial) OrdersStatus serviceStatus,
+    @Default(PaginatedResponse<BookingEntity>(data: []))
+    PaginatedResponse<BookingEntity> serviceBookings,
+    @Default('') String errorMessage,
+  }) = _OrdersState;
 }

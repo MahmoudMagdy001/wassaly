@@ -1,9 +1,10 @@
 import 'package:wassaly/core/imports/imports.dart';
-import 'package:wassaly/features/auth/domain/entities/user_entity.dart';
 import 'package:wassaly/features/auth/domain/usecases/google_login_usecase.dart';
+import 'package:wassaly/features/auth/presentation/bloc/google_login/google_login_event.dart';
+import 'package:wassaly/features/auth/presentation/bloc/google_login/google_login_state.dart';
 
-part 'google_login_event.dart';
-part 'google_login_state.dart';
+export 'google_login_event.dart';
+export 'google_login_state.dart';
 
 class GoogleLoginBloc extends Bloc<GoogleLoginEvent, GoogleLoginState> {
   final GoogleLoginUseCase _googleLoginUseCase;
@@ -32,7 +33,7 @@ class GoogleLoginBloc extends Bloc<GoogleLoginEvent, GoogleLoginState> {
     GoogleLoginStarted event,
     Emitter<GoogleLoginState> emit,
   ) async {
-    emit(state.copyWith(isLoading: true, clearError: true, clearUser: true));
+    emit(state.copyWith(isLoading: true, errorMessage: null, user: null));
 
     // Listen for deep link callbacks
     await _deepLinkSubscription?.cancel();
@@ -68,7 +69,6 @@ class GoogleLoginBloc extends Bloc<GoogleLoginEvent, GoogleLoginState> {
         ),
       );
     }
-    // Don't set isLoading to false here - we wait for the deep link callback
   }
 
   Future<void> _onGoogleLoginCallbackReceived(
@@ -113,7 +113,7 @@ class GoogleLoginBloc extends Bloc<GoogleLoginEvent, GoogleLoginState> {
           state.copyWith(
             isLoading: false,
             user: user,
-            clearError: true,
+            errorMessage: null,
           ),
         );
       },

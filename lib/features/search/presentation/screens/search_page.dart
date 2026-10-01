@@ -1,7 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/search/presentation/bloc/search_bloc.dart';
-import 'package:wassaly/features/search/presentation/bloc/search_event.dart';
-import 'package:wassaly/features/search/presentation/bloc/search_state.dart';
 import 'package:wassaly/features/search/presentation/widgets/search_app_bar.dart';
 import 'package:wassaly/features/search/presentation/widgets/search_results_list.dart';
 

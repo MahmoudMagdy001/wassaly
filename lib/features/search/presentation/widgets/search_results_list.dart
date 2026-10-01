@@ -1,8 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/home/domain/entities/product_entity.dart';
 import 'package:wassaly/features/search/presentation/bloc/search_bloc.dart';
-import 'package:wassaly/features/search/presentation/bloc/search_event.dart';
-import 'package:wassaly/features/search/presentation/bloc/search_state.dart';
 
 final _activeMarqueeId = ValueNotifier<int?>(null);
 

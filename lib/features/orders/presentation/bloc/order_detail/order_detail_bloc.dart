@@ -6,6 +6,9 @@ import 'package:wassaly/features/orders/domain/usecases/update_order_usecase.dar
 import 'package:wassaly/features/orders/presentation/bloc/order_detail/order_detail_event.dart';
 import 'package:wassaly/features/orders/presentation/bloc/order_detail/order_detail_state.dart';
 
+export 'order_detail_event.dart';
+export 'order_detail_state.dart';
+
 class OrderDetailBloc extends Bloc<OrderDetailEvent, OrderDetailState> {
   final GetOrderDetailsUseCase _getOrderDetailsUseCase;
   final CancelOrderUseCase _cancelOrderUseCase;
@@ -48,7 +51,7 @@ class OrderDetailBloc extends Bloc<OrderDetailEvent, OrderDetailState> {
           status: OrderDetailStatus.failure,
           errorMessage: failure.message,
           isNotFound: failure is NotFoundFailure,
-          clearOrder: failure is NotFoundFailure,
+          order: failure is NotFoundFailure ? null : state.order,
         ),
       ),
       (order) => emit(

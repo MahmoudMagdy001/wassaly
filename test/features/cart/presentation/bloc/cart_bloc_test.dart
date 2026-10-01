@@ -9,8 +9,6 @@ import 'package:wassaly/features/cart/domain/usecases/get_cart_items_usecase.dar
 import 'package:wassaly/features/cart/domain/usecases/remove_from_cart_usecase.dart';
 import 'package:wassaly/features/cart/domain/usecases/update_quantity_usecase.dart';
 import 'package:wassaly/features/cart/presentation/bloc/cart_bloc.dart';
-import 'package:wassaly/features/cart/presentation/bloc/cart_event.dart';
-import 'package:wassaly/features/cart/presentation/bloc/cart_state.dart';
 
 class MockGetCartItemsUseCase extends Mock implements GetCartItemsUseCase {}
 class MockAddToCartUseCase extends Mock implements AddToCartUseCase {}

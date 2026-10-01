@@ -14,8 +14,6 @@ import 'package:wassaly/features/notifications/domain/usecases/mark_as_read_usec
 import 'package:wassaly/features/notifications/domain/usecases/read_all_notifications_usecase.dart';
 import 'package:wassaly/features/notifications/domain/usecases/toggle_notification_usecase.dart';
 import 'package:wassaly/features/notifications/presentation/bloc/notifications_bloc.dart';
-import 'package:wassaly/features/notifications/presentation/bloc/notifications_event.dart';
-import 'package:wassaly/features/notifications/presentation/bloc/notifications_state.dart';
 
 class MockGetNotificationsUseCase extends Mock implements GetNotificationsUseCase {}
 class MockMarkAsReadUseCase extends Mock implements MarkAsReadUseCase {}

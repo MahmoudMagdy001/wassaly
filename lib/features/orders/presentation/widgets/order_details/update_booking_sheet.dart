@@ -1,8 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/service_booking/domain/entities/booking_entity.dart';
 import 'package:wassaly/features/service_booking/presentation/bloc/booking_detail/booking_detail_bloc.dart';
-import 'package:wassaly/features/service_booking/presentation/bloc/booking_detail/booking_detail_event.dart';
-import 'package:wassaly/features/service_booking/presentation/bloc/booking_detail/booking_detail_state.dart';
 
 class UpdateBookingSheet extends StatefulWidget {
   final BookingEntity booking;

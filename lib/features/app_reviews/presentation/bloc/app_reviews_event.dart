@@ -1,40 +1,17 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class AppReviewsEvent extends Equatable {
-  const AppReviewsEvent();
+part 'app_reviews_event.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
-}
-
-class GetAppReviewsEvent extends AppReviewsEvent {
-  const GetAppReviewsEvent();
-}
-
-class AddAppReviewEvent extends AppReviewsEvent {
-  final int rating;
-  final String comment;
-
-  const AddAppReviewEvent({
-    required this.rating,
-    required this.comment,
-  });
-
-  @override
-  List<Object?> get props => [rating, comment];
-}
-
-class UpdateAppReviewEvent extends AppReviewsEvent {
-  final int reviewId;
-  final int rating;
-  final String comment;
-
-  const UpdateAppReviewEvent({
-    required this.reviewId,
-    required this.rating,
-    required this.comment,
-  });
-
-  @override
-  List<Object?> get props => [reviewId, rating, comment];
+@freezed
+sealed class AppReviewsEvent with _$AppReviewsEvent {
+  const factory AppReviewsEvent.getAppReviews() = GetAppReviewsEvent;
+  const factory AppReviewsEvent.addAppReview({
+    required int rating,
+    required String comment,
+  }) = AddAppReviewEvent;
+  const factory AppReviewsEvent.updateAppReview({
+    required int reviewId,
+    required int rating,
+    required String comment,
+  }) = UpdateAppReviewEvent;
 }

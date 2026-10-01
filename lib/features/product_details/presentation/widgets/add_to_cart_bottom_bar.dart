@@ -1,7 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/cart/presentation/bloc/cart_bloc.dart';
-import 'package:wassaly/features/cart/presentation/bloc/cart_event.dart';
-import 'package:wassaly/features/cart/presentation/bloc/cart_state.dart';
 
 class AddToCartBottomBar extends StatefulWidget {
   final int productId;

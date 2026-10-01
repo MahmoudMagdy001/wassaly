@@ -1,25 +1,17 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-/// Model for OTP verification request body
-class VerifyOtpRequestModel extends Equatable {
-  final String email;
-  final String code;
+part 'verify_otp_request_model.freezed.dart';
+part 'verify_otp_request_model.g.dart';
 
-  const VerifyOtpRequestModel({
-    required this.email,
-    required this.code,
-  });
+@freezed
+abstract class VerifyOtpRequestModel with _$VerifyOtpRequestModel {
+  const VerifyOtpRequestModel._();
 
-  factory VerifyOtpRequestModel.fromJson(Map<String, dynamic> json) => VerifyOtpRequestModel(
-      email: json['email'] as String? ?? '',
-      code: json['code'] as String? ?? '',
-    );
+  const factory VerifyOtpRequestModel({
+    required String email,
+    required String code,
+  }) = _VerifyOtpRequestModel;
 
-  Map<String, dynamic> toJson() => {
-      'email': email,
-      'code': code,
-    };
-
-  @override
-  List<Object?> get props => [email, code];
+  factory VerifyOtpRequestModel.fromJson(Map<String, dynamic> json) =>
+      _$VerifyOtpRequestModelFromJson(json);
 }

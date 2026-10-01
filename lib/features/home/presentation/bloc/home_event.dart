@@ -1,22 +1,14 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class HomeEvent extends Equatable {
-  const HomeEvent();
+part 'home_event.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
+@freezed
+sealed class HomeEvent with _$HomeEvent {
+  const factory HomeEvent.getBanners() = GetBannersEvent;
+  const factory HomeEvent.getCategories() = GetCategoriesEvent;
+  const factory HomeEvent.getPopularServices() = GetPopularServicesEvent;
+  const factory HomeEvent.loadMorePopularServices() = LoadMorePopularServicesEvent;
+  const factory HomeEvent.getProducts() = GetProductsEvent;
+  const factory HomeEvent.loadMoreProducts() = LoadMoreProductsEvent;
+  const factory HomeEvent.initialize() = HomeInitializeEvent;
 }
-
-class GetBannersEvent extends HomeEvent {}
-
-class GetCategoriesEvent extends HomeEvent {}
-
-class GetPopularServicesEvent extends HomeEvent {}
-
-class LoadMorePopularServicesEvent extends HomeEvent {}
-
-class GetProductsEvent extends HomeEvent {}
-
-class LoadMoreProductsEvent extends HomeEvent {}
-
-class HomeInitializeEvent extends HomeEvent {}

@@ -1,16 +1,12 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class ForgetVerifyOtpResponseEntity extends Equatable {
-  final bool status;
-  final String message;
-  final String? token;
+part 'forget_verify_otp_response_entity.freezed.dart';
 
-  const ForgetVerifyOtpResponseEntity({
-    required this.status,
-    required this.message,
-    this.token,
-  });
-
-  @override
-  List<Object?> get props => [status, message, token];
+@freezed
+abstract class ForgetVerifyOtpResponseEntity with _$ForgetVerifyOtpResponseEntity {
+  const factory ForgetVerifyOtpResponseEntity({
+    required bool status,
+    required String message,
+    String? token,
+  }) = _ForgetVerifyOtpResponseEntity;
 }

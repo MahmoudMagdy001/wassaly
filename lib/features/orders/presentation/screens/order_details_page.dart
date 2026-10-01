@@ -3,8 +3,6 @@ import 'package:wassaly/features/home/domain/entities/product_entity.dart';
 import 'package:wassaly/features/orders/domain/entities/order_entity.dart';
 import 'package:wassaly/features/orders/domain/entities/order_item_entity.dart';
 import 'package:wassaly/features/orders/presentation/bloc/order_detail/order_detail_bloc.dart';
-import 'package:wassaly/features/orders/presentation/bloc/order_detail/order_detail_event.dart';
-import 'package:wassaly/features/orders/presentation/bloc/order_detail/order_detail_state.dart';
 import 'package:wassaly/features/orders/presentation/widgets/order_details/order_details_cards.dart';
 import 'package:wassaly/features/orders/presentation/widgets/order_details/order_tracker_widget.dart';
 import 'package:wassaly/features/orders/presentation/widgets/order_details/update_order_sheet.dart';

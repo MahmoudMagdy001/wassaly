@@ -13,7 +13,7 @@ class BrandsRepositoryImpl implements BrandsRepository {
   Future<Either<Failure, List<BrandEntity>>> getBrands() async {
     try {
       final brands = await _remoteDataSource.getBrands();
-      return Right(brands);
+      return Right(brands.map((m) => m.toEntity()).toList());
     } on Failure catch (e) {
       return Left(e);
     } on Object catch (e) {
@@ -31,7 +31,7 @@ class BrandsRepositoryImpl implements BrandsRepository {
         brandId: brandId,
         page: page,
       );
-      return Right(products);
+      return Right(products.map((m) => m.toEntity()));
     } on Failure catch (e) {
       return Left(e);
     } on Object catch (e) {

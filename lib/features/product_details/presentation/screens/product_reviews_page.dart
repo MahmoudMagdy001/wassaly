@@ -2,7 +2,6 @@ import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
 import 'package:wassaly/features/product_details/domain/entities/product_detail_entity.dart';
 import 'package:wassaly/features/product_details/presentation/bloc/product_details_bloc.dart';
-import 'package:wassaly/features/product_details/presentation/bloc/product_details_state.dart';
 import 'package:wassaly/features/product_details/presentation/widgets/product_review_form_sheet.dart';
 
 class ProductReviewsPage extends StatelessWidget {
@@ -49,7 +48,7 @@ class ProductReviewsPage extends StatelessWidget {
                 padding: EdgeInsets.all(8.r),
                 sliver: SliverList.separated(
                   itemCount: reviews.length,
-                  separatorBuilder: (_, __) => 2.verticalSpace,
+                  separatorBuilder: (_, _) => 2.verticalSpace,
                   itemBuilder: (context, index) {
                     final review = reviews[index];
                     final isMine = currentUserId != null &&

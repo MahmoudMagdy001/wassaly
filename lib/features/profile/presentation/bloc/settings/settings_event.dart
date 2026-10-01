@@ -1,38 +1,19 @@
-part of 'settings_bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-sealed class SettingsEvent extends Equatable {
-  const SettingsEvent();
+part 'settings_event.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
-}
+@freezed
+sealed class SettingsEvent with _$SettingsEvent {
+  const factory SettingsEvent.settingsInitialized() = SettingsInitialized;
 
-class SettingsInitialized extends SettingsEvent {
-  const SettingsInitialized();
-}
+  const factory SettingsEvent.languageToggled() = LanguageToggled;
 
-class LanguageToggled extends SettingsEvent {
-  const LanguageToggled();
-}
+  const factory SettingsEvent.languageChanged(String language) =
+      LanguageChanged;
 
-class LanguageChanged extends SettingsEvent {
-  final String language;
+  const factory SettingsEvent.themeToggled() = ThemeToggled;
 
-  const LanguageChanged(this.language);
-
-  @override
-  List<Object?> get props => [language];
-}
-
-class ThemeToggled extends SettingsEvent {
-  const ThemeToggled();
-}
-
-class ThemeModeChanged extends SettingsEvent {
-  final ThemeMode themeMode;
-
-  const ThemeModeChanged(this.themeMode);
-
-  @override
-  List<Object?> get props => [themeMode];
+  const factory SettingsEvent.themeModeChanged(ThemeMode themeMode) =
+      ThemeModeChanged;
 }

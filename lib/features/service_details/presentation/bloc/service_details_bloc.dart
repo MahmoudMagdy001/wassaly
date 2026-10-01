@@ -5,8 +5,11 @@ import 'package:wassaly/features/service_details/domain/usecases/get_service_det
 import 'package:wassaly/features/service_details/domain/usecases/toggle_service_favorite_usecase.dart';
 import 'package:wassaly/features/service_details/domain/usecases/update_service_review_usecase.dart';
 
-part 'service_details_event.dart';
-part 'service_details_state.dart';
+import 'package:wassaly/features/service_details/presentation/bloc/service_details_event.dart';
+import 'package:wassaly/features/service_details/presentation/bloc/service_details_state.dart';
+
+export 'service_details_event.dart';
+export 'service_details_state.dart';
 
 class ServiceDetailsBloc
     extends Bloc<ServiceDetailsEvent, ServiceDetailsState> {

@@ -2,18 +2,15 @@ import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/cart/domain/usecases/get_user_addresses_usecase.dart';
 import 'package:wassaly/features/cart/domain/usecases/get_user_data_usecase.dart';
 import 'package:wassaly/features/orders/presentation/bloc/orders_bloc.dart';
-import 'package:wassaly/features/orders/presentation/bloc/orders_event.dart';
-import 'package:wassaly/features/profile/domain/entities/address_entity.dart';
-import 'package:wassaly/features/profile/domain/entities/center_entity.dart';
-import 'package:wassaly/features/profile/domain/entities/governorate_entity.dart';
 import 'package:wassaly/features/profile/domain/usecases/get_centers_usecase.dart';
 import 'package:wassaly/features/profile/domain/usecases/get_governorates_usecase.dart';
 import 'package:wassaly/features/service_booking/domain/entities/booking_entity.dart';
 import 'package:wassaly/features/service_booking/domain/usecases/create_booking_usecase.dart';
-import 'package:wassaly/features/service_details/domain/entities/service_detail_entity.dart';
+import 'package:wassaly/features/service_booking/presentation/bloc/service_booking_event.dart';
+import 'package:wassaly/features/service_booking/presentation/bloc/service_booking_state.dart';
 
-part 'service_booking_event.dart';
-part 'service_booking_state.dart';
+export 'service_booking_event.dart';
+export 'service_booking_state.dart';
 
 class ServiceBookingBloc
     extends Bloc<ServiceBookingEvent, ServiceBookingState> {
@@ -115,8 +112,8 @@ class ServiceBookingBloc
   ) {
     emit(state.copyWith(
       selectedDay: event.day,
-      clearSelectedTime: true,
-      clearDayError: true,
+      selectedTime: null,
+      dayError: null,
     ),);
   }
 
@@ -126,7 +123,7 @@ class ServiceBookingBloc
   ) {
     emit(state.copyWith(
       selectedTime: event.time,
-      clearTimeError: true,
+      timeError: null,
     ),);
   }
 
@@ -137,10 +134,9 @@ class ServiceBookingBloc
     emit(state.copyWith(
       selectedGovernorateId: event.governorateId,
       selectedCenterId: event.centerId,
-      clearSelectedCenterId: event.centerId == null,
       centers: const [],
       isLoadingCenters: true,
-      clearGovernorateError: true,
+      governorateError: null,
     ),);
 
     final result =
@@ -165,7 +161,7 @@ class ServiceBookingBloc
   ) {
     emit(state.copyWith(
       selectedCenterId: event.centerId,
-      clearCenterError: true,
+      centerError: null,
     ),);
   }
 
@@ -178,13 +174,15 @@ class ServiceBookingBloc
       selectedAddress: address,
       selectedGovernorateId: address.governorateId,
       selectedCenterId: address.centerId,
-      clearGovernorateError: true,
-      clearCenterError: true,
+      governorateError: null,
+      centerError: null,
     ),);
 
     // Load centers for the pre-selected governorate
-    add(ServiceBookingGovernorateSelected(address.governorateId,
-        centerId: address.centerId,),);
+    add(ServiceBookingGovernorateSelected(
+      address.governorateId,
+      centerId: address.centerId,
+    ),);
   }
 
   Future<void> _onAddressesRefreshed(
@@ -216,9 +214,9 @@ class ServiceBookingBloc
       customerPhone: event.phone ?? state.customerPhone,
       customerEmail: event.email ?? state.customerEmail,
       problemDescription: event.problemDescription ?? state.problemDescription,
-      clearNameError: event.name != null,
-      clearPhoneError: event.phone != null,
-      clearEmailError: event.email != null,
+      nameError: event.name != null ? null : state.nameError,
+      phoneError: event.phone != null ? null : state.phoneError,
+      emailError: event.email != null ? null : state.emailError,
     ),);
   }
 

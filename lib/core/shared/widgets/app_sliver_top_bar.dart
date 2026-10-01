@@ -161,7 +161,7 @@ class AppSliverTopBar extends StatelessWidget {
                       )
                     : null,
               ),
-              if (bottom != null) bottom!,
+              ?bottom,
             ],
           ),
         ),

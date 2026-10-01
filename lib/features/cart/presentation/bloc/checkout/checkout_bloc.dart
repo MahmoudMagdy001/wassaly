@@ -1,23 +1,19 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/cart/domain/entities/cart_item_entity.dart';
 import 'package:wassaly/features/cart/domain/entities/coupon_entity.dart';
-import 'package:wassaly/features/cart/domain/entities/order_entity.dart';
 import 'package:wassaly/features/cart/domain/entities/place_order_params.dart';
 import 'package:wassaly/features/cart/domain/usecases/apply_coupon_usecase.dart';
 import 'package:wassaly/features/cart/domain/usecases/get_user_addresses_usecase.dart';
 import 'package:wassaly/features/cart/domain/usecases/get_user_data_usecase.dart';
 import 'package:wassaly/features/cart/domain/usecases/place_order_usecase.dart';
-import 'package:wassaly/features/cart/presentation/bloc/cart_state.dart';
+import 'package:wassaly/features/cart/presentation/bloc/checkout/checkout_event.dart';
+import 'package:wassaly/features/cart/presentation/bloc/checkout/checkout_state.dart';
 import 'package:wassaly/features/orders/presentation/bloc/orders_bloc.dart';
-import 'package:wassaly/features/orders/presentation/bloc/orders_event.dart';
-import 'package:wassaly/features/profile/domain/entities/address_entity.dart';
-import 'package:wassaly/features/profile/domain/entities/center_entity.dart';
-import 'package:wassaly/features/profile/domain/entities/governorate_entity.dart';
 import 'package:wassaly/features/profile/domain/usecases/get_centers_usecase.dart';
 import 'package:wassaly/features/profile/domain/usecases/get_governorates_usecase.dart';
 
-part 'checkout_event.dart';
-part 'checkout_state.dart';
+export 'checkout_event.dart';
+export 'checkout_state.dart';
 
 class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
   final PlaceOrderUseCase _placeOrderUseCase;
@@ -203,12 +199,11 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     emit(state.copyWith(
       selectedGovernorateId: event.governorateId,
       selectedCenterId: event.centerId,
-      clearSelectedCenterId: event.centerId == null,
       centers: const [],
       shippingFee: shippingFee,
       total: total,
       isLoadingCenters: true,
-      clearGovernorateError: true,
+      governorateError: null,
     ),);
 
     final result =
@@ -233,7 +228,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
   ) {
     emit(state.copyWith(
       selectedCenterId: event.centerId,
-      clearCenterError: true,
+      centerError: null,
     ),);
   }
 
@@ -258,7 +253,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
 
     emit(state.copyWith(
       isApplyingCoupon: true,
-      clearCouponError: true,
+      couponError: null,
     ),);
 
     final result = await _applyCouponUseCase(event.code.trim());
@@ -278,7 +273,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
           appliedCoupon: coupon,
           discountAmount: discount,
           total: total,
-          clearCouponError: true,
+          couponError: null,
         ),);
       },
     );
@@ -291,11 +286,11 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     final total = _calculateTotal(
         state.subtotal, state.productDiscounts, state.shippingFee, 0,);
     emit(state.copyWith(
-      clearAppliedCoupon: true,
+      appliedCoupon: null,
       discountAmount: 0,
       total: total,
       couponCode: '',
-      clearCouponError: true,
+      couponError: null,
     ),);
   }
 
@@ -377,9 +372,9 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
       region: address.title,
       selectedGovernorateId: address.governorateId,
       selectedCenterId: address.centerId,
-      clearGovernorateError: true,
-      clearCenterError: true,
-      clearAddressError: true,
+      governorateError: null,
+      centerError: null,
+      addressError: null,
     ),);
 
     // Load centers for the new governorate and set the center

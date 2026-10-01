@@ -6,8 +6,12 @@ import 'package:wassaly/features/favorite/domain/usecases/toggle_favorite_usecas
 import 'package:wassaly/features/favorite/domain/usecases/toggle_service_favorite_usecase.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_event.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_state.dart';
+
 import 'package:wassaly/features/home/domain/entities/product_entity.dart';
 import 'package:wassaly/features/sub_category/domain/entities/service_entity.dart';
+
+export 'favorite_event.dart';
+export 'favorite_state.dart';
 
 class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
   final GetFavoritesUseCase getFavoritesUseCase;

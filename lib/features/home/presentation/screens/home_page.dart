@@ -1,8 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/brands/presentation/widgets/brands_section.dart';
 import 'package:wassaly/features/home/presentation/bloc/home_bloc.dart';
-import 'package:wassaly/features/home/presentation/bloc/home_event.dart';
-import 'package:wassaly/features/home/presentation/bloc/home_state.dart';
 import 'package:wassaly/features/home/presentation/widgets/widgets.dart';
 import 'package:wassaly/features/notifications/presentation/widgets/notification_badge_icon.dart';
 
@@ -11,7 +9,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocProvider(
-        create: (context) => sl<HomeBloc>()..add(HomeInitializeEvent()),
+        create: (context) => sl<HomeBloc>()..add(const HomeInitializeEvent()),
         child: const _HomeView(),
       );
 }
@@ -63,7 +61,7 @@ class _HomeViewState extends State<_HomeView> {
     final bloc = context.read<HomeBloc>();
     final startTime = DateTime.now();
 
-    bloc.add(HomeInitializeEvent());
+    bloc.add(const HomeInitializeEvent());
 
     // Wait for all sections to finish loading
     await bloc.stream.firstWhere(

@@ -1,88 +1,37 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-/// Model for parsing the registration API response
-class RegisterResponseModel extends Equatable {
-  final bool status;
-  final String message;
-  final RegisterDataModel? data;
+part 'register_response_model.freezed.dart';
+part 'register_response_model.g.dart';
 
-  const RegisterResponseModel({
-    required this.status,
-    required this.message,
-    this.data,
-  });
+@freezed
+abstract class RegisterResponseModel with _$RegisterResponseModel {
+  const RegisterResponseModel._();
 
-  factory RegisterResponseModel.fromJson(Map<String, dynamic> json) => RegisterResponseModel(
-      status: json['status'] as bool? ?? false,
-      message: json['message'] as String? ?? '',
-      data: json['data'] != null
-          ? RegisterDataModel.fromJson(json['data'] as Map<String, dynamic>)
-          : null,
-    );
+  const factory RegisterResponseModel({
+    @Default(false) bool status,
+    @Default('') String message,
+    RegisterDataModel? data,
+  }) = _RegisterResponseModel;
 
-  Map<String, dynamic> toJson() => {
-      'status': status,
-      'message': message,
-      'data': data?.toJson(),
-    };
-
-  @override
-  List<Object?> get props => [status, message, data];
+  factory RegisterResponseModel.fromJson(Map<String, dynamic> json) =>
+      _$RegisterResponseModelFromJson(json);
 }
 
-/// Inner data model for registration response
-class RegisterDataModel extends Equatable {
-  final int id;
-  final String email;
-  final String fullName;
-  final String? phone;
-  final String? type;
-  final String? emailVerifiedAt;
-  final String? createdAt;
-  final String? updatedAt;
+@freezed
+abstract class RegisterDataModel with _$RegisterDataModel {
+  const RegisterDataModel._();
 
-  const RegisterDataModel({
-    required this.id,
-    required this.email,
-    required this.fullName,
-    this.phone,
-    this.type,
-    this.emailVerifiedAt,
-    this.createdAt,
-    this.updatedAt,
-  });
+  const factory RegisterDataModel({
+    @Default(0) int id,
+    @Default('') String email,
+    @JsonKey(name: 'full_name') @Default('') String fullName,
+    String? phone,
+    String? type,
+    @JsonKey(name: 'email_verified_at') String? emailVerifiedAt,
+    @JsonKey(name: 'created_at') String? createdAt,
+    @JsonKey(name: 'updated_at') String? updatedAt,
+  }) = _RegisterDataModel;
 
-  factory RegisterDataModel.fromJson(Map<String, dynamic> json) => RegisterDataModel(
-      id: json['id'] as int? ?? 0,
-      email: json['email'] as String? ?? '',
-      fullName: json['full_name'] as String? ?? '',
-      phone: json['phone'] as String?,
-      type: json['type'] as String?,
-      emailVerifiedAt: json['email_verified_at'] as String?,
-      createdAt: json['created_at'] as String?,
-      updatedAt: json['updated_at'] as String?,
-    );
-
-  Map<String, dynamic> toJson() => {
-      'id': id,
-      'email': email,
-      'full_name': fullName,
-      'phone': phone,
-      'type': type,
-      'email_verified_at': emailVerifiedAt,
-      'created_at': createdAt,
-      'updated_at': updatedAt,
-    };
-
-  @override
-  List<Object?> get props => [
-        id,
-        email,
-        fullName,
-        phone,
-        type,
-        emailVerifiedAt,
-        createdAt,
-        updatedAt,
-      ];
+  factory RegisterDataModel.fromJson(Map<String, dynamic> json) =>
+      _$RegisterDataModelFromJson(json);
 }

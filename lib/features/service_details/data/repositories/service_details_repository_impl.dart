@@ -14,7 +14,7 @@ class ServiceDetailsRepositoryImpl implements ServiceDetailsRepository {
   ) async {
     try {
       final service = await _remoteDataSource.getServiceDetails(serviceId);
-      return Right(service);
+      return Right(service.toEntity());
     } on Failure catch (failure) {
       return Left(failure);
     } on Object catch (e) {

@@ -1,10 +1,11 @@
 import 'package:wassaly/core/imports/imports.dart';
-import 'package:wassaly/features/auth/domain/entities/user_entity.dart';
 import 'package:wassaly/features/auth/domain/usecases/login_usecase.dart';
 import 'package:wassaly/features/auth/domain/usecases/resend_otp_usecase.dart';
+import 'package:wassaly/features/auth/presentation/bloc/login/login_event.dart';
+import 'package:wassaly/features/auth/presentation/bloc/login/login_state.dart';
 
-part 'login_event.dart';
-part 'login_state.dart';
+export 'login_event.dart';
+export 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final LoginUseCase _loginUseCase;
@@ -27,11 +28,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   void _onEmailChanged(EmailChanged event, Emitter<LoginState> emit) {
-    emit(state.copyWith(email: event.email, clearError: true));
+    emit(state.copyWith(email: event.email, errorMessage: null));
   }
 
   void _onPasswordChanged(PasswordChanged event, Emitter<LoginState> emit) {
-    emit(state.copyWith(password: event.password, clearError: true));
+    emit(state.copyWith(password: event.password, errorMessage: null));
   }
 
   void _onPasswordVisibilityChanged(
@@ -45,7 +46,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     LoginSubmitted event,
     Emitter<LoginState> emit,
   ) async {
-    emit(state.copyWith(isLoading: true, clearError: true));
+    emit(state.copyWith(isLoading: true, errorMessage: null));
 
     final result = await _loginUseCase(
       LoginParams(
@@ -66,7 +67,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             state.copyWith(
               isLoading: false,
               verificationEmail: state.email,
-              clearError: true,
+              errorMessage: null,
             ),
           );
           // Dispatch event to send OTP
@@ -91,7 +92,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           state.copyWith(
             isLoading: false,
             user: user,
-            clearVerification: true,
+            requiresVerification: false,
+            verificationEmail: null,
           ),
         );
       },
@@ -102,7 +104,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     LoginRequiresVerification event,
     Emitter<LoginState> emit,
   ) async {
-    emit(state.copyWith(isLoading: true, clearError: true));
+    emit(state.copyWith(isLoading: true, errorMessage: null));
 
     final result = await _resendOtpUseCase(
       ResendOtpParams(email: event.email),

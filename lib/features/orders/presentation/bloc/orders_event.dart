@@ -1,24 +1,11 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class OrdersEvent extends Equatable {
-  const OrdersEvent();
+part 'orders_event.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
-}
-
-class GetOrdersEvent extends OrdersEvent {
-  const GetOrdersEvent();
-}
-
-class GetServiceBookingsEvent extends OrdersEvent {
-  const GetServiceBookingsEvent();
-}
-
-class LoadMoreOrdersEvent extends OrdersEvent {
-  const LoadMoreOrdersEvent();
-}
-
-class ResetOrdersEvent extends OrdersEvent {
-  const ResetOrdersEvent();
+@freezed
+sealed class OrdersEvent with _$OrdersEvent {
+  const factory OrdersEvent.getOrders() = GetOrdersEvent;
+  const factory OrdersEvent.getServiceBookings() = GetServiceBookingsEvent;
+  const factory OrdersEvent.loadMoreOrders() = LoadMoreOrdersEvent;
+  const factory OrdersEvent.resetOrders() = ResetOrdersEvent;
 }

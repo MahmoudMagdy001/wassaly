@@ -18,7 +18,7 @@ class SubCategoryRepositoryImpl implements SubCategoryRepository {
         subCategoryId,
         page: page,
       );
-      return Right(result);
+      return Right(result.toEntity());
     } on Failure catch (failure) {
       return Left(failure);
     } on Object catch (e) {

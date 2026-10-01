@@ -1,11 +1,7 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
 import 'package:wassaly/features/cart/presentation/bloc/cart_bloc.dart';
-import 'package:wassaly/features/cart/presentation/bloc/cart_event.dart';
-import 'package:wassaly/features/cart/presentation/bloc/cart_state.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_bloc.dart';
-import 'package:wassaly/features/favorite/presentation/bloc/favorite_event.dart';
-import 'package:wassaly/features/favorite/presentation/bloc/favorite_state.dart';
 import 'package:wassaly/features/main_layout/presentation/widgets/exit_confirm_overlay.dart';
 import 'package:wassaly/features/main_layout/presentation/widgets/nav_bar.dart';
 

@@ -1,6 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/orders/presentation/bloc/orders_bloc.dart';
-import 'package:wassaly/features/orders/presentation/bloc/orders_event.dart';
 import 'package:wassaly/features/service_booking/domain/entities/booking_entity.dart';
 import 'package:wassaly/features/service_booking/domain/usecases/accept_reschedule_usecase.dart';
 import 'package:wassaly/features/service_booking/domain/usecases/cancel_booking_usecase.dart';
@@ -10,6 +9,9 @@ import 'package:wassaly/features/service_booking/domain/usecases/update_booking_
 import 'package:wassaly/features/service_booking/presentation/bloc/booking_detail/booking_detail_event.dart';
 import 'package:wassaly/features/service_booking/presentation/bloc/booking_detail/booking_detail_state.dart';
 import 'package:wassaly/features/service_details/domain/usecases/get_service_details_usecase.dart';
+
+export 'booking_detail_event.dart';
+export 'booking_detail_state.dart';
 
 class BookingDetailBloc extends Bloc<BookingDetailEvent, BookingDetailState> {
   final CancelBookingUseCase _cancelBookingUseCase;

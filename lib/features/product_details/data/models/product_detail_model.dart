@@ -1,12 +1,17 @@
 import 'package:wassaly/features/product_details/domain/entities/product_detail_entity.dart';
 import 'package:wassaly/features/service_details/data/models/service_detail_model.dart';
 
-class ProductSpecificationModel extends ProductSpecificationEntity {
+class ProductSpecificationModel {
+  final int id;
+  final String key;
+  final String value;
+  final String icon;
+
   const ProductSpecificationModel({
-    required super.id,
-    required super.key,
-    required super.value,
-    required super.icon,
+    required this.id,
+    required this.key,
+    required this.value,
+    required this.icon,
   });
 
   factory ProductSpecificationModel.fromJson(Map<String, dynamic> json) =>
@@ -16,12 +21,22 @@ class ProductSpecificationModel extends ProductSpecificationEntity {
         value: json['value'] as String? ?? '',
         icon: json['icon'] as String? ?? '',
       );
+
+  ProductSpecificationEntity toEntity() => ProductSpecificationEntity(
+        id: id,
+        key: key,
+        value: value,
+        icon: icon,
+      );
 }
 
-class ProductDetailImageModel extends ProductDetailImageEntity {
+class ProductDetailImageModel {
+  final int id;
+  final String image;
+
   const ProductDetailImageModel({
-    required super.id,
-    required super.image,
+    required this.id,
+    required this.image,
   });
 
   factory ProductDetailImageModel.fromJson(Map<String, dynamic> json) =>
@@ -29,13 +44,22 @@ class ProductDetailImageModel extends ProductDetailImageEntity {
         id: json['id'] as int? ?? 0,
         image: json['image'] as String? ?? '',
       );
+
+  ProductDetailImageEntity toEntity() => ProductDetailImageEntity(
+        id: id,
+        image: image,
+      );
 }
 
-class ProductReviewUserModel extends ProductReviewUserEntity {
+class ProductReviewUserModel {
+  final int id;
+  final String name;
+  final String? avatar;
+
   const ProductReviewUserModel({
-    required super.id,
-    required super.name,
-    required super.avatar,
+    required this.id,
+    required this.name,
+    required this.avatar,
   });
 
   factory ProductReviewUserModel.fromJson(Map<String, dynamic> json) =>
@@ -44,15 +68,27 @@ class ProductReviewUserModel extends ProductReviewUserEntity {
         name: json['name'] as String? ?? '',
         avatar: json['avatar'] as String?,
       );
+
+  ProductReviewUserEntity toEntity() => ProductReviewUserEntity(
+        id: id,
+        name: name,
+        avatar: avatar,
+      );
 }
 
-class ProductDetailReviewModel extends ProductDetailReviewEntity {
+class ProductDetailReviewModel {
+  final int id;
+  final int rating;
+  final String comment;
+  final String createdAt;
+  final ProductReviewUserModel user;
+
   const ProductDetailReviewModel({
-    required super.id,
-    required super.rating,
-    required super.comment,
-    required super.createdAt,
-    required super.user,
+    required this.id,
+    required this.rating,
+    required this.comment,
+    required this.createdAt,
+    required this.user,
   });
 
   factory ProductDetailReviewModel.fromJson(Map<String, dynamic> json) =>
@@ -65,13 +101,25 @@ class ProductDetailReviewModel extends ProductDetailReviewEntity {
           json['user'] as Map<String, dynamic>? ?? {},
         ),
       );
+
+  ProductDetailReviewEntity toEntity() => ProductDetailReviewEntity(
+        id: id,
+        rating: rating,
+        comment: comment,
+        createdAt: createdAt,
+        user: user.toEntity(),
+      );
 }
 
-class ProductMetaModel extends ProductMetaEntity {
+class ProductMetaModel {
+  final int id;
+  final String name;
+  final String image;
+
   const ProductMetaModel({
-    required super.id,
-    required super.name,
-    required super.image,
+    required this.id,
+    required this.name,
+    required this.image,
   });
 
   factory ProductMetaModel.fromJson(Map<String, dynamic> json) =>
@@ -80,23 +128,43 @@ class ProductMetaModel extends ProductMetaEntity {
         name: json['name'] as String? ?? '',
         image: json['image'] as String? ?? '',
       );
+
+  ProductMetaEntity toEntity() => ProductMetaEntity(
+        id: id,
+        name: name,
+        image: image,
+      );
 }
 
-class ProductDetailModel extends ProductDetailEntity {
+class ProductDetailModel {
+  final int id;
+  final String name;
+  final String image;
+  final String price;
+  final String description;
+  final List<ProductSpecificationModel> specifications;
+  final List<ProductDetailImageModel> images;
+  final ProductMetaModel? subCategory;
+  final ProductMetaModel? brand;
+  final List<ProductDetailReviewModel> reviews;
+  final List<int> offerPercentages;
+  final bool isFavorite;
+  final ServiceProviderModel? provider;
+
   const ProductDetailModel({
-    required super.id,
-    required super.name,
-    required super.image,
-    required super.price,
-    required super.description,
-    required super.specifications,
-    required super.images,
-    required super.subCategory,
-    required super.brand,
-    required super.reviews,
-    required super.offerPercentages,
-    required super.isFavorite,
-    required super.provider,
+    required this.id,
+    required this.name,
+    required this.image,
+    required this.price,
+    required this.description,
+    required this.specifications,
+    required this.images,
+    required this.subCategory,
+    required this.brand,
+    required this.reviews,
+    required this.offerPercentages,
+    required this.isFavorite,
+    required this.provider,
   });
 
   factory ProductDetailModel.fromJson(Map<String, dynamic> json) =>
@@ -148,5 +216,21 @@ class ProductDetailModel extends ProductDetailEntity {
             : ServiceProviderModel.fromJson(
                 json['provider'] as Map<String, dynamic>,
               ),
+      );
+
+  ProductDetailEntity toEntity() => ProductDetailEntity(
+        id: id,
+        name: name,
+        image: image,
+        price: price,
+        description: description,
+        specifications: specifications.map((e) => e.toEntity()).toList(),
+        images: images.map((e) => e.toEntity()).toList(),
+        subCategory: subCategory?.toEntity(),
+        brand: brand?.toEntity(),
+        reviews: reviews.map((e) => e.toEntity()).toList(),
+        offerPercentages: offerPercentages,
+        isFavorite: isFavorite,
+        provider: provider?.toEntity(),
       );
 }

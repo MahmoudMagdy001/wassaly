@@ -1,4 +1,8 @@
-part of 'otp_verification_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:wassaly/core/shared/enums/verification_type.dart';
+import 'package:wassaly/features/auth/domain/entities/verify_otp_response_entity.dart';
+
+part 'otp_verification_state.freezed.dart';
 
 enum OtpVerificationStatus {
   initial,
@@ -16,29 +20,23 @@ enum ResendOtpStatus {
   error,
 }
 
-class OtpVerificationState extends Equatable {
-  final String otp;
-  final String email;
-  final VerificationType verificationType;
-  final OtpVerificationStatus verificationStatus;
-  final ResendOtpStatus resendStatus;
-  final String? errorMessage;
-  final int timerSeconds;
-  final bool isTimerRunning;
-  final VerifyOtpResponseEntity? verifyOtpResponse;
-  final String? resetToken;
+@freezed
+abstract class OtpVerificationState with _$OtpVerificationState {
+  const OtpVerificationState._();
 
-  const OtpVerificationState({
-    required this.email, this.otp = '',
-    this.verificationType = VerificationType.register,
-    this.verificationStatus = OtpVerificationStatus.initial,
-    this.resendStatus = ResendOtpStatus.initial,
-    this.errorMessage,
-    this.timerSeconds = 0,
-    this.isTimerRunning = false,
-    this.verifyOtpResponse,
-    this.resetToken,
-  });
+  const factory OtpVerificationState({
+    required String email,
+    @Default('') String otp,
+    @Default(VerificationType.register) VerificationType verificationType,
+    @Default(OtpVerificationStatus.initial)
+    OtpVerificationStatus verificationStatus,
+    @Default(ResendOtpStatus.initial) ResendOtpStatus resendStatus,
+    String? errorMessage,
+    @Default(0) int timerSeconds,
+    @Default(false) bool isTimerRunning,
+    VerifyOtpResponseEntity? verifyOtpResponse,
+    String? resetToken,
+  }) = _OtpVerificationState;
 
   bool get isOtpComplete => otp.length == 6;
   bool get canVerify =>
@@ -51,43 +49,4 @@ class OtpVerificationState extends Equatable {
     final seconds = (timerSeconds % 60).toString().padLeft(2, '0');
     return '$minutes:$seconds';
   }
-
-  OtpVerificationState copyWith({
-    String? otp,
-    String? email,
-    VerificationType? verificationType,
-    OtpVerificationStatus? verificationStatus,
-    ResendOtpStatus? resendStatus,
-    String? errorMessage,
-    bool clearError = false,
-    int? timerSeconds,
-    bool? isTimerRunning,
-    VerifyOtpResponseEntity? verifyOtpResponse,
-    String? resetToken,
-  }) => OtpVerificationState(
-      otp: otp ?? this.otp,
-      email: email ?? this.email,
-      verificationType: verificationType ?? this.verificationType,
-      verificationStatus: verificationStatus ?? this.verificationStatus,
-      resendStatus: resendStatus ?? this.resendStatus,
-      errorMessage: clearError ? null : errorMessage ?? this.errorMessage,
-      timerSeconds: timerSeconds ?? this.timerSeconds,
-      isTimerRunning: isTimerRunning ?? this.isTimerRunning,
-      verifyOtpResponse: verifyOtpResponse ?? this.verifyOtpResponse,
-      resetToken: resetToken ?? this.resetToken,
-    );
-
-  @override
-  List<Object?> get props => [
-        otp,
-        email,
-        verificationType,
-        verificationStatus,
-        resendStatus,
-        errorMessage,
-        timerSeconds,
-        isTimerRunning,
-        verifyOtpResponse,
-        resetToken,
-      ];
 }

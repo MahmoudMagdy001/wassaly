@@ -1,123 +1,56 @@
-part of 'profile_bloc.dart';
+import 'dart:io';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-sealed class ProfileEvent extends Equatable {
-  const ProfileEvent();
+part 'profile_event.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
-}
+@freezed
+sealed class ProfileEvent with _$ProfileEvent {
+  const factory ProfileEvent.profileFetched() = ProfileFetched;
 
-class ProfileFetched extends ProfileEvent {
-  const ProfileFetched();
-}
+  const factory ProfileEvent.profileRefreshRequested() =
+      ProfileRefreshRequested;
 
-class ProfileRefreshRequested extends ProfileEvent {
-  const ProfileRefreshRequested();
-}
+  const factory ProfileEvent.profileUpdated({
+    required String fullName,
+    required String phone,
+    File? avatar,
+    String? password,
+    String? currentPassword,
+    String? passwordConfirmation,
+  }) = ProfileUpdated;
 
-class ProfileUpdated extends ProfileEvent {
-  final String fullName;
-  final String phone;
-  final File? avatar;
-  final String? password;
-  final String? currentPassword;
-  final String? passwordConfirmation;
+  const factory ProfileEvent.profileLoggedOut() = ProfileLoggedOut;
 
-  const ProfileUpdated({
-    required this.fullName,
-    required this.phone,
-    this.avatar,
-    this.password,
-    this.currentPassword,
-    this.passwordConfirmation,
-  });
+  const factory ProfileEvent.profileLoggedOutAllDevices() =
+      ProfileLoggedOutAllDevices;
 
-  @override
-  List<Object?> get props => [
-        fullName,
-        phone,
-        avatar,
-        password,
-        currentPassword,
-        passwordConfirmation,
-      ];
-}
+  const factory ProfileEvent.profileAccountDeleted() = ProfileAccountDeleted;
 
-class ProfileLoggedOut extends ProfileEvent {
-  const ProfileLoggedOut();
-}
+  const factory ProfileEvent.addressesFetched() = AddressesFetched;
 
-class ProfileLoggedOutAllDevices extends ProfileEvent {
-  const ProfileLoggedOutAllDevices();
-}
+  const factory ProfileEvent.addressCreated({
+    required String title,
+    required String address,
+    required String governorateId,
+    required String centerId,
+  }) = AddressCreated;
 
-class ProfileAccountDeleted extends ProfileEvent {
-  const ProfileAccountDeleted();
-}
+  const factory ProfileEvent.addressUpdated({
+    required String addressId,
+    required String title,
+    required String address,
+    required String governorateId,
+    required String centerId,
+  }) = AddressUpdated;
 
-class AddressesFetched extends ProfileEvent {
-  const AddressesFetched();
-}
+  const factory ProfileEvent.addressDeleted({
+    required String addressId,
+  }) = AddressDeleted;
 
-class AddressCreated extends ProfileEvent {
-  final String title;
-  final String address;
-  final String governorateId;
-  final String centerId;
+  const factory ProfileEvent.governoratesFetched() = GovernoratesFetched;
 
-  const AddressCreated({
-    required this.title,
-    required this.address,
-    required this.governorateId,
-    required this.centerId,
-  });
+  const factory ProfileEvent.centersFetched(String governorateId) =
+      CentersFetched;
 
-  @override
-  List<Object?> get props => [title, address, governorateId, centerId];
-}
-
-class AddressUpdated extends ProfileEvent {
-  final String addressId;
-  final String title;
-  final String address;
-  final String governorateId;
-  final String centerId;
-
-  const AddressUpdated({
-    required this.addressId,
-    required this.title,
-    required this.address,
-    required this.governorateId,
-    required this.centerId,
-  });
-
-  @override
-  List<Object?> get props =>
-      [addressId, title, address, governorateId, centerId];
-}
-
-class AddressDeleted extends ProfileEvent {
-  final String addressId;
-
-  const AddressDeleted({required this.addressId});
-
-  @override
-  List<Object?> get props => [addressId];
-}
-
-class GovernoratesFetched extends ProfileEvent {
-  const GovernoratesFetched();
-}
-
-class CentersFetched extends ProfileEvent {
-  final String governorateId;
-
-  const CentersFetched(this.governorateId);
-
-  @override
-  List<Object?> get props => [governorateId];
-}
-
-class ProfileReset extends ProfileEvent {
-  const ProfileReset();
+  const factory ProfileEvent.profileReset() = ProfileReset;
 }

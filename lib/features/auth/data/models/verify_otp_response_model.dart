@@ -1,54 +1,57 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:wassaly/features/auth/domain/entities/verify_otp_response_entity.dart';
 
-/// Model for OTP verification API response
-class VerifyOtpResponseModel extends VerifyOtpResponseEntity {
-  const VerifyOtpResponseModel({
-    required super.status,
-    required super.message,
-    super.data,
-  });
+part 'verify_otp_response_model.freezed.dart';
+part 'verify_otp_response_model.g.dart';
 
-  factory VerifyOtpResponseModel.fromJson(Map<String, dynamic> json) => VerifyOtpResponseModel(
-      status: json['status'] as bool? ?? false,
-      message: json['message'] as String? ?? '',
-      data: json['data'] != null
-          ? VerifyOtpDataModel.fromJson(json['data'] as Map<String, dynamic>)
-          : null,
-    );
+@freezed
+abstract class VerifyOtpResponseModel with _$VerifyOtpResponseModel {
+  const VerifyOtpResponseModel._();
 
-  Map<String, dynamic> toJson() => {
-      'status': status,
-      'message': message,
-      'data': (data as VerifyOtpDataModel?)?.toJson(),
-    };
+  const factory VerifyOtpResponseModel({
+    @Default(false) bool status,
+    @Default('') String message,
+    VerifyOtpDataModel? data,
+  }) = _VerifyOtpResponseModel;
+
+  factory VerifyOtpResponseModel.fromJson(Map<String, dynamic> json) =>
+      VerifyOtpResponseModel(
+        status: json['status'] as bool? ?? false,
+        message: json['message'] as String? ?? '',
+        data: json['data'] != null
+            ? VerifyOtpDataModel.fromJson(json['data'] as Map<String, dynamic>)
+            : null,
+      );
+
+  VerifyOtpResponseEntity toEntity() => VerifyOtpResponseEntity(
+        status: status,
+        message: message,
+        data: data?.toEntity(),
+      );
 }
 
-/// Inner data model for OTP verification response
-class VerifyOtpDataModel extends VerifyOtpUserDataEntity {
-  const VerifyOtpDataModel({
-    required super.id,
-    required super.name,
-    required super.email,
-    super.phone,
-    super.avatar,
-    super.type,
-  });
+@freezed
+abstract class VerifyOtpDataModel with _$VerifyOtpDataModel {
+  const VerifyOtpDataModel._();
 
-  factory VerifyOtpDataModel.fromJson(Map<String, dynamic> json) => VerifyOtpDataModel(
-      id: json['id'] as int? ?? 0,
-      name: json['name'] as String? ?? '',
-      email: json['email'] as String? ?? '',
-      phone: json['phone'] as String?,
-      avatar: json['avatar'] as String?,
-      type: json['type'] as String?,
-    );
+  const factory VerifyOtpDataModel({
+    @Default(0) int id,
+    @Default('') String name,
+    @Default('') String email,
+    String? phone,
+    String? avatar,
+    String? type,
+  }) = _VerifyOtpDataModel;
 
-  Map<String, dynamic> toJson() => {
-      'id': id,
-      'name': name,
-      'email': email,
-      'phone': phone,
-      'avatar': avatar,
-      'type': type,
-    };
+  factory VerifyOtpDataModel.fromJson(Map<String, dynamic> json) =>
+      _$VerifyOtpDataModelFromJson(json);
+
+  VerifyOtpUserDataEntity toEntity() => VerifyOtpUserDataEntity(
+        id: id,
+        name: name,
+        email: email,
+        phone: phone,
+        avatar: avatar,
+        type: type,
+      );
 }

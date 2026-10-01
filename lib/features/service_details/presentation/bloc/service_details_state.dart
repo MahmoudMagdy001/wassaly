@@ -1,49 +1,20 @@
-part of 'service_details_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:wassaly/features/service_details/domain/entities/service_detail_entity.dart';
+
+part 'service_details_state.freezed.dart';
 
 enum ServiceDetailsStatus { initial, loading, success, failure }
 
 enum ReviewActionStatus { initial, loading, success, failure }
 
-class ServiceDetailsState extends Equatable {
-  final ServiceDetailsStatus status;
-  final ReviewActionStatus reviewActionStatus;
-  final ServiceDetailEntity? service;
-  final String? errorMessage;
-  final String reviewActionMessage;
-  final bool isFavoriteLoading;
-
-  const ServiceDetailsState({
-    this.status = ServiceDetailsStatus.initial,
-    this.reviewActionStatus = ReviewActionStatus.initial,
-    this.service,
-    this.errorMessage,
-    this.reviewActionMessage = '',
-    this.isFavoriteLoading = false,
-  });
-
-  ServiceDetailsState copyWith({
-    ServiceDetailsStatus? status,
-    ReviewActionStatus? reviewActionStatus,
+@freezed
+sealed class ServiceDetailsState with _$ServiceDetailsState {
+  const factory ServiceDetailsState({
+    @Default(ServiceDetailsStatus.initial) ServiceDetailsStatus status,
+    @Default(ReviewActionStatus.initial) ReviewActionStatus reviewActionStatus,
     ServiceDetailEntity? service,
     String? errorMessage,
-    String? reviewActionMessage,
-    bool? isFavoriteLoading,
-  }) => ServiceDetailsState(
-      status: status ?? this.status,
-      reviewActionStatus: reviewActionStatus ?? this.reviewActionStatus,
-      service: service ?? this.service,
-      errorMessage: errorMessage ?? this.errorMessage,
-      reviewActionMessage: reviewActionMessage ?? this.reviewActionMessage,
-      isFavoriteLoading: isFavoriteLoading ?? this.isFavoriteLoading,
-    );
-
-  @override
-  List<Object?> get props => [
-        status,
-        reviewActionStatus,
-        service,
-        errorMessage,
-        reviewActionMessage,
-        isFavoriteLoading,
-      ];
+    @Default('') String reviewActionMessage,
+    @Default(false) bool isFavoriteLoading,
+  }) = _ServiceDetailsState;
 }

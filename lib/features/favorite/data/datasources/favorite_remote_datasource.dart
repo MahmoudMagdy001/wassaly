@@ -181,7 +181,8 @@ class FavoriteRemoteDataSourceImpl implements FavoriteRemoteDataSource {
         }
 
         final favorites = itemsJson
-            .map((item) => ServiceModel.fromJson(item as Map<String, dynamic>))
+            .map((item) =>
+                ServiceModel.fromJson(item as Map<String, dynamic>).toEntity(),)
             .toList();
 
         return PaginatedResponse<ServiceEntity>.fromJson(

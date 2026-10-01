@@ -1,8 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/orders/domain/entities/order_entity.dart';
 import 'package:wassaly/features/orders/presentation/bloc/orders_bloc.dart';
-import 'package:wassaly/features/orders/presentation/bloc/orders_event.dart';
-import 'package:wassaly/features/orders/presentation/bloc/orders_state.dart';
 import 'package:wassaly/features/orders/presentation/widgets/orders/order_card.dart';
 
 class ProductOrdersTab extends StatelessWidget {

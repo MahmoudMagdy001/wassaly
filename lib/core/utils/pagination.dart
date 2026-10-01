@@ -1,19 +1,18 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class PaginatedResponse<T> extends Equatable {
-  final List<T> data;
-  final int currentPage;
-  final int lastPage;
-  final int total;
-  final int totalUnread;
+part 'pagination.freezed.dart';
 
-  const PaginatedResponse({
-    required this.data,
-    this.currentPage = 1,
-    this.lastPage = 1,
-    this.total = 0,
-    this.totalUnread = 0,
-  });
+@freezed
+abstract class PaginatedResponse<T> with _$PaginatedResponse<T> {
+  const PaginatedResponse._();
+
+  const factory PaginatedResponse({
+    required List<T> data,
+    @Default(1) int currentPage,
+    @Default(1) int lastPage,
+    @Default(0) int total,
+    @Default(0) int totalUnread,
+  }) = _PaginatedResponse<T>;
 
   factory PaginatedResponse.fromJson({
     required Map<String, dynamic> json,
@@ -75,7 +74,7 @@ class PaginatedResponse<T> extends Equatable {
 
   bool get hasMore => currentPage < lastPage;
 
-  factory PaginatedResponse.empty() => PaginatedResponse<T>(data: const []);
+  factory PaginatedResponse.empty() => const PaginatedResponse(data: []);
 
   PaginatedResponse<R> map<R>(R Function(T) mapper) => PaginatedResponse<R>(
         data: data.map(mapper).toList(),
@@ -84,22 +83,4 @@ class PaginatedResponse<T> extends Equatable {
         total: total,
         totalUnread: totalUnread,
       );
-
-  PaginatedResponse<T> copyWith({
-    List<T>? data,
-    int? currentPage,
-    int? lastPage,
-    int? total,
-    int? totalUnread,
-  }) =>
-      PaginatedResponse<T>(
-        data: data ?? this.data,
-        currentPage: currentPage ?? this.currentPage,
-        lastPage: lastPage ?? this.lastPage,
-        total: total ?? this.total,
-        totalUnread: totalUnread ?? this.totalUnread,
-      );
-
-  @override
-  List<Object?> get props => [data, currentPage, lastPage, total, totalUnread];
 }

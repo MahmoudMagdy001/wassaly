@@ -1,38 +1,14 @@
-part of 'session_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:wassaly/features/auth/domain/entities/user_entity.dart';
 
-sealed class SessionState extends Equatable {
-  const SessionState();
+part 'session_state.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
-}
-
-class SessionInitial extends SessionState {
-  const SessionInitial();
-}
-
-class SessionLoading extends SessionState {
-  const SessionLoading();
-}
-
-class SessionAuthenticated extends SessionState {
-  final UserEntity user;
-
-  const SessionAuthenticated(this.user);
-
-  @override
-  List<Object?> get props => [user];
-}
-
-class SessionUnauthenticated extends SessionState {
-  const SessionUnauthenticated();
-}
-
-class SessionError extends SessionState {
-  final String message;
-
-  const SessionError(this.message);
-
-  @override
-  List<Object?> get props => [message];
+@freezed
+sealed class SessionState with _$SessionState {
+  const factory SessionState.initial() = SessionInitial;
+  const factory SessionState.loading() = SessionLoading;
+  const factory SessionState.authenticated(UserEntity user) =
+      SessionAuthenticated;
+  const factory SessionState.unauthenticated() = SessionUnauthenticated;
+  const factory SessionState.error(String message) = SessionError;
 }

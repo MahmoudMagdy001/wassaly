@@ -1,30 +1,17 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:wassaly/features/products_filter/domain/entities/product_filter_params.dart';
 
-abstract class ProductsFilterEvent extends Equatable {
-  const ProductsFilterEvent();
+part 'products_filter_event.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
-}
+@freezed
+sealed class ProductsFilterEvent with _$ProductsFilterEvent {
+  const factory ProductsFilterEvent.filterProducts({
+    required ProductFilterParams params,
+    @Default(false) bool isLoadMore,
+  }) = FilterProductsEvent;
 
-class FilterProductsEvent extends ProductsFilterEvent {
-  final ProductFilterParams params;
-  final bool isLoadMore;
+  const factory ProductsFilterEvent.resetFilters() = ResetFiltersEvent;
 
-  const FilterProductsEvent({
-    required this.params,
-    this.isLoadMore = false,
-  });
-
-  @override
-  List<Object?> get props => [params, isLoadMore];
-}
-
-class ResetFiltersEvent extends ProductsFilterEvent {
-  const ResetFiltersEvent();
-}
-
-class FetchFilterCategoriesEvent extends ProductsFilterEvent {
-  const FetchFilterCategoriesEvent();
+  const factory ProductsFilterEvent.fetchFilterCategories() =
+      FetchFilterCategoriesEvent;
 }

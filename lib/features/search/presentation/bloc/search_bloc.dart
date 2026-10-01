@@ -3,6 +3,9 @@ import 'package:wassaly/features/search/domain/usecases/search_products_usecase.
 import 'package:wassaly/features/search/presentation/bloc/search_event.dart';
 import 'package:wassaly/features/search/presentation/bloc/search_state.dart';
 
+export 'search_event.dart';
+export 'search_state.dart';
+
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
   final SearchProductsUseCase _searchProductsUseCase;
   Timer? _debounceTimer;

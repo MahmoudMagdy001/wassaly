@@ -1,22 +1,18 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class FcmTokenRequestModel extends Equatable {
-  final String token;
-  final String deviceId;
-  final int userId;
+part 'fcm_token_request_model.freezed.dart';
+part 'fcm_token_request_model.g.dart';
 
-  const FcmTokenRequestModel({
-    required this.token,
-    required this.deviceId,
-    required this.userId,
-  });
+@freezed
+abstract class FcmTokenRequestModel with _$FcmTokenRequestModel {
+  const FcmTokenRequestModel._();
 
-  Map<String, dynamic> toJson() => {
-        'token': token,
-        'device_id': deviceId,
-        'user_id': userId,
-      };
+  const factory FcmTokenRequestModel({
+    required String token,
+    @JsonKey(name: 'device_id') required String deviceId,
+    @JsonKey(name: 'user_id') required int userId,
+  }) = _FcmTokenRequestModel;
 
-  @override
-  List<Object?> get props => [token, deviceId, userId];
+  factory FcmTokenRequestModel.fromJson(Map<String, dynamic> json) =>
+      _$FcmTokenRequestModelFromJson(json);
 }

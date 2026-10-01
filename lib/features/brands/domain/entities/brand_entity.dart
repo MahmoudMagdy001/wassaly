@@ -1,16 +1,12 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class BrandEntity extends Equatable {
-  final int id;
-  final String name;
-  final String image;
+part 'brand_entity.freezed.dart';
 
-  const BrandEntity({
-    required this.id,
-    required this.name,
-    required this.image,
-  });
-
-  @override
-  List<Object?> get props => [id, name, image];
+@freezed
+abstract class BrandEntity with _$BrandEntity {
+  const factory BrandEntity({
+    required int id,
+    required String name,
+    required String image,
+  }) = _BrandEntity;
 }

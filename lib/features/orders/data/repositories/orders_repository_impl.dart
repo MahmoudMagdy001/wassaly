@@ -20,13 +20,13 @@ class OrdersRepositoryImpl implements OrdersRepository {
 
       await _localDataSource.cacheOrders(remoteOrdersResponse.data, page: page);
 
-      return Right(remoteOrdersResponse.map((model) => model as OrderEntity));
+      return Right(remoteOrdersResponse.map((model) => model.toEntity()));
     } on Failure catch (failure) {
       final cached = _localDataSource.getCachedOrders(page: page);
       if (cached.isNotEmpty) {
         return Right(
           PaginatedResponse(
-            data: cached,
+            data: cached.map((m) => m.toEntity()).toList(),
             currentPage: page,
             lastPage: page,
             total: cached.length,
@@ -39,7 +39,7 @@ class OrdersRepositoryImpl implements OrdersRepository {
       if (cached.isNotEmpty) {
         return Right(
           PaginatedResponse(
-            data: cached,
+            data: cached.map((m) => m.toEntity()).toList(),
             currentPage: page,
             lastPage: page,
             total: cached.length,
@@ -54,7 +54,7 @@ class OrdersRepositoryImpl implements OrdersRepository {
   Future<Either<Failure, OrderEntity>> getOrderDetails(int orderId) async {
     try {
       final orderModel = await _remoteDataSource.getOrderDetails(orderId);
-      return Right(orderModel);
+      return Right(orderModel.toEntity());
     } on Failure catch (failure) {
       if (_isOrderNotFound(failure)) {
         return Left(NotFoundFailure(failure.message, error: failure.error));

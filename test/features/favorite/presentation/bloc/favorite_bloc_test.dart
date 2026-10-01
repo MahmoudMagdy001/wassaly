@@ -14,8 +14,6 @@ import 'package:wassaly/features/favorite/domain/usecases/sync_pending_favorites
 import 'package:wassaly/features/favorite/domain/usecases/toggle_favorite_usecase.dart';
 import 'package:wassaly/features/favorite/domain/usecases/toggle_service_favorite_usecase.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_bloc.dart';
-import 'package:wassaly/features/favorite/presentation/bloc/favorite_event.dart';
-import 'package:wassaly/features/favorite/presentation/bloc/favorite_state.dart';
 import 'package:wassaly/features/home/domain/entities/product_entity.dart';
 
 class MockGetFavoritesUseCase extends Mock implements GetFavoritesUseCase {}

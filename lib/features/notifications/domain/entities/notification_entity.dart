@@ -1,42 +1,16 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class NotificationEntity extends Equatable {
-  final int id;
-  final String title;
-  final String body;
-  final String type;
-  final Map<String, dynamic> data;
-  final bool isRead;
-  final DateTime createdAt;
+part 'notification_entity.freezed.dart';
 
-  const NotificationEntity({
-    required this.id,
-    required this.title,
-    required this.body,
-    required this.type,
-    required this.data,
-    required this.isRead,
-    required this.createdAt,
-  });
-
-  NotificationEntity copyWith({
-    int? id,
-    String? title,
-    String? body,
-    String? type,
-    Map<String, dynamic>? data,
-    bool? isRead,
-    DateTime? createdAt,
-  }) => NotificationEntity(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      body: body ?? this.body,
-      type: type ?? this.type,
-      data: data ?? this.data,
-      isRead: isRead ?? this.isRead,
-      createdAt: createdAt ?? this.createdAt,
-    );
-
-  @override
-  List<Object?> get props => [id, title, body, type, data, isRead, createdAt];
+@freezed
+abstract class NotificationEntity with _$NotificationEntity {
+  const factory NotificationEntity({
+    required int id,
+    required String title,
+    required String body,
+    required String type,
+    required Map<String, dynamic> data,
+    required bool isRead,
+    required DateTime createdAt,
+  }) = _NotificationEntity;
 }

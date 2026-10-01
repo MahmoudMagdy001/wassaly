@@ -1,29 +1,11 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class SearchEvent extends Equatable {
-  const SearchEvent();
+part 'search_event.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
-}
-
-class SearchQueryChanged extends SearchEvent {
-  final String query;
-
-  const SearchQueryChanged(this.query);
-
-  @override
-  List<Object?> get props => [query];
-}
-
-class SearchSubmitted extends SearchEvent {
-  const SearchSubmitted();
-}
-
-class SearchLoadMore extends SearchEvent {
-  const SearchLoadMore();
-}
-
-class SearchCleared extends SearchEvent {
-  const SearchCleared();
+@freezed
+sealed class SearchEvent with _$SearchEvent {
+  const factory SearchEvent.queryChanged(String query) = SearchQueryChanged;
+  const factory SearchEvent.submitted() = SearchSubmitted;
+  const factory SearchEvent.loadMore() = SearchLoadMore;
+  const factory SearchEvent.cleared() = SearchCleared;
 }

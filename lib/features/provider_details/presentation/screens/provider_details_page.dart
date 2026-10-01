@@ -1,8 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/provider_details/domain/entities/provider_detail_entity.dart';
 import 'package:wassaly/features/provider_details/presentation/bloc/provider_details_bloc.dart';
-import 'package:wassaly/features/provider_details/presentation/bloc/provider_details_event.dart';
-import 'package:wassaly/features/provider_details/presentation/bloc/provider_details_state.dart';
 import 'package:wassaly/features/provider_details/presentation/widgets/provider_contact_card.dart';
 import 'package:wassaly/features/provider_details/presentation/widgets/provider_header.dart';
 import 'package:wassaly/features/provider_details/presentation/widgets/provider_products_grid.dart';

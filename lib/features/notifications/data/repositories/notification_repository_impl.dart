@@ -21,14 +21,14 @@ class NotificationRepositoryImpl implements NotificationRepository {
         result.data.map((e) => e).toList(),
         page: page,
       );
-      return Right(result.map((model) => model as NotificationEntity));
+      return Right(result.map((model) => model.toEntity()));
     } on Failure catch (e) {
       // Try to return cached data on failure (like offline)
       final cached = localDataSource.getCachedNotifications(page: page);
       if (cached.isNotEmpty) {
         return Right(
           PaginatedResponse(
-            data: cached.map((e) => e as NotificationEntity).toList(),
+            data: cached.map((e) => e.toEntity()).toList(),
             currentPage: page,
             lastPage:
                 page, // Fallback: we don't know the last page for sure from cache

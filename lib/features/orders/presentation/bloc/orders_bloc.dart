@@ -6,6 +6,9 @@ import 'package:wassaly/features/orders/presentation/bloc/orders_state.dart';
 import 'package:wassaly/features/service_booking/domain/entities/booking_entity.dart';
 import 'package:wassaly/features/service_booking/domain/usecases/get_my_bookings_usecase.dart';
 
+export 'orders_event.dart';
+export 'orders_state.dart';
+
 class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
   final GetOrdersUseCase getOrdersUseCase;
   final GetMyBookingsUseCase getMyBookingsUseCase;

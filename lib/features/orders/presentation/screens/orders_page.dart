@@ -1,6 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/orders/presentation/bloc/orders_bloc.dart';
-import 'package:wassaly/features/orders/presentation/bloc/orders_event.dart';
 import 'package:wassaly/features/orders/presentation/widgets/orders/product_orders_tab.dart';
 import 'package:wassaly/features/orders/presentation/widgets/orders/service_bookings_tab.dart';
 

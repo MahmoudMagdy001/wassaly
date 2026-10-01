@@ -1,87 +1,44 @@
-part of 'service_booking_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:wassaly/features/profile/domain/entities/address_entity.dart';
+import 'package:wassaly/features/service_details/domain/entities/service_detail_entity.dart';
 
-abstract class ServiceBookingEvent extends Equatable {
-  const ServiceBookingEvent();
+part 'service_booking_event.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
+@freezed
+sealed class ServiceBookingEvent with _$ServiceBookingEvent {
+  const factory ServiceBookingEvent.initialized({
+    required ServiceDetailEntity service,
+    ServiceAvailableDayEntity? preselectedDay,
+    ServiceAvailableTimeEntity? preselectedTime,
+  }) = ServiceBookingInitialized;
+
+  const factory ServiceBookingEvent.daySelected(ServiceAvailableDayEntity day) =
+      ServiceBookingDaySelected;
+
+  const factory ServiceBookingEvent.timeSelected(
+    ServiceAvailableTimeEntity time,
+  ) = ServiceBookingTimeSelected;
+
+  const factory ServiceBookingEvent.governorateSelected(
+    String governorateId, {
+    String? centerId,
+  }) = ServiceBookingGovernorateSelected;
+
+  const factory ServiceBookingEvent.centerSelected(String centerId) =
+      ServiceBookingCenterSelected;
+
+  const factory ServiceBookingEvent.addressSelected(AddressEntity address) =
+      ServiceBookingAddressSelected;
+
+  const factory ServiceBookingEvent.addressesRefreshed() =
+      ServiceBookingAddressesRefreshed;
+
+  const factory ServiceBookingEvent.formChanged({
+    String? name,
+    String? phone,
+    String? email,
+    String? problemDescription,
+  }) = ServiceBookingFormChanged;
+
+  const factory ServiceBookingEvent.submitted() = ServiceBookingSubmitted;
 }
-
-class ServiceBookingInitialized extends ServiceBookingEvent {
-  final ServiceDetailEntity service;
-  final ServiceAvailableDayEntity? preselectedDay;
-  final ServiceAvailableTimeEntity? preselectedTime;
-
-  const ServiceBookingInitialized({
-    required this.service,
-    this.preselectedDay,
-    this.preselectedTime,
-  });
-
-  @override
-  List<Object?> get props => [service, preselectedDay, preselectedTime];
-}
-
-class ServiceBookingDaySelected extends ServiceBookingEvent {
-  final ServiceAvailableDayEntity day;
-  const ServiceBookingDaySelected(this.day);
-
-  @override
-  List<Object?> get props => [day];
-}
-
-class ServiceBookingTimeSelected extends ServiceBookingEvent {
-  final ServiceAvailableTimeEntity time;
-  const ServiceBookingTimeSelected(this.time);
-
-  @override
-  List<Object?> get props => [time];
-}
-
-class ServiceBookingGovernorateSelected extends ServiceBookingEvent {
-  final String governorateId;
-  final String? centerId;
-  const ServiceBookingGovernorateSelected(this.governorateId, {this.centerId});
-
-  @override
-  List<Object?> get props => [governorateId, centerId];
-}
-
-class ServiceBookingCenterSelected extends ServiceBookingEvent {
-  final String centerId;
-  const ServiceBookingCenterSelected(this.centerId);
-
-  @override
-  List<Object?> get props => [centerId];
-}
-
-class ServiceBookingAddressSelected extends ServiceBookingEvent {
-  final AddressEntity address;
-  const ServiceBookingAddressSelected(this.address);
-
-  @override
-  List<Object?> get props => [address];
-}
-
-class ServiceBookingAddressesRefreshed extends ServiceBookingEvent {
-  const ServiceBookingAddressesRefreshed();
-}
-
-class ServiceBookingFormChanged extends ServiceBookingEvent {
-  final String? name;
-  final String? phone;
-  final String? email;
-  final String? problemDescription;
-
-  const ServiceBookingFormChanged({
-    this.name,
-    this.phone,
-    this.email,
-    this.problemDescription,
-  });
-
-  @override
-  List<Object?> get props => [name, phone, email, problemDescription];
-}
-
-class ServiceBookingSubmitted extends ServiceBookingEvent {}

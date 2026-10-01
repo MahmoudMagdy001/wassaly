@@ -14,7 +14,7 @@ class OffersRepositoryImpl implements OffersRepository {
   }) async {
     try {
       final result = await _remoteDataSource.getOffers(page: page);
-      return Right(result);
+      return Right(result.map((m) => m.toEntity()));
     } on Failure catch (e) {
       return Left(e);
     } on Object catch (e) {

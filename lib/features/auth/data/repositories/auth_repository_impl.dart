@@ -53,7 +53,7 @@ class AuthRepositoryImpl implements AuthRepository {
       );
       await _localDataSource.cacheUser(userWithToken);
 
-      return Right(userWithToken);
+      return Right(userWithToken.toEntity());
     } on Failure catch (e) {
       return Left(e);
     } on Object catch (e) {
@@ -74,7 +74,7 @@ class AuthRepositoryImpl implements AuthRepository {
       // Update cached user
       await _localDataSource.cacheUser(user);
 
-      return Right(user);
+      return Right(user.toEntity());
     } on Failure catch (e) {
       return Left(e);
     } on Object catch (e) {
@@ -86,7 +86,7 @@ class AuthRepositoryImpl implements AuthRepository {
   FutureEither<UserEntity?> getCachedUser() async {
     try {
       final user = await _localDataSource.getCachedUser();
-      return Right(user);
+      return Right(user?.toEntity());
     } on Failure catch (e) {
       return Left(e);
     } on Object catch (e) {
@@ -177,7 +177,7 @@ class AuthRepositoryImpl implements AuthRepository {
       // Cache user locally
       await _localDataSource.cacheUser(user);
 
-      return Right(user);
+      return Right(user.toEntity());
     } on Failure catch (e) {
       return Left(e);
     } on Object catch (e) {
@@ -203,7 +203,7 @@ class AuthRepositoryImpl implements AuthRepository {
         confirmPassword: confirmPassword,
         avatarFile: avatarFile,
       );
-      return Right(result);
+      return Right(result.toEntity());
     } on Failure catch (e) {
       return Left(e);
     } on Object catch (e) {
@@ -218,7 +218,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }) async {
     try {
       final result = await _remoteDataSource.verifyOtp(email: email, otp: otp);
-      return Right(result);
+      return Right(result.toEntity());
     } on Failure catch (e) {
       return Left(e);
     } on Object catch (e) {
@@ -246,7 +246,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }) async {
     try {
       final result = await _remoteDataSource.forgetSendOtp(email: email);
-      return Right(result);
+      return Right(result.toEntity());
     } on Failure catch (e) {
       return Left(e);
     } on Object catch (e) {
@@ -262,7 +262,7 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final result =
           await _remoteDataSource.forgetVerifyOtp(email: email, otp: otp);
-      return Right(result);
+      return Right(result.toEntity());
     } on Failure catch (e) {
       return Left(e);
     } on Object catch (e) {

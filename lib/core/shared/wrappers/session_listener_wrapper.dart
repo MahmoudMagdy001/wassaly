@@ -1,11 +1,8 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
 import 'package:wassaly/features/cart/presentation/bloc/cart_bloc.dart';
-import 'package:wassaly/features/cart/presentation/bloc/cart_event.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_bloc.dart';
-import 'package:wassaly/features/favorite/presentation/bloc/favorite_event.dart';
 import 'package:wassaly/features/notifications/presentation/bloc/notifications_bloc.dart';
-import 'package:wassaly/features/notifications/presentation/bloc/notifications_event.dart';
 import 'package:wassaly/features/profile/presentation/bloc/profile/profile_bloc.dart';
 
 class SessionListenerWrapper extends StatelessWidget {

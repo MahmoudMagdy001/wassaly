@@ -1,60 +1,18 @@
-part of 'login_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:wassaly/features/auth/domain/entities/user_entity.dart';
 
-class LoginState extends Equatable {
-  final String email;
-  final String password;
-  final bool isPasswordVisible;
-  final bool isLoading;
-  final String? errorMessage;
-  final UserEntity? user;
-  final bool requiresVerification;
-  final String? verificationEmail;
+part 'login_state.freezed.dart';
 
-  const LoginState({
-    this.email = '',
-    this.password = '',
-    this.isPasswordVisible = false,
-    this.isLoading = false,
-    this.errorMessage,
-    this.user,
-    this.requiresVerification = false,
-    this.verificationEmail,
-  });
-
-  LoginState copyWith({
-    String? email,
-    String? password,
-    bool? isPasswordVisible,
-    bool? isLoading,
+@freezed
+abstract class LoginState with _$LoginState {
+  const factory LoginState({
+    @Default('') String email,
+    @Default('') String password,
+    @Default(false) bool isPasswordVisible,
+    @Default(false) bool isLoading,
     String? errorMessage,
     UserEntity? user,
-    bool? requiresVerification,
+    @Default(false) bool requiresVerification,
     String? verificationEmail,
-    bool clearError = false,
-    bool clearUser = false,
-    bool clearVerification = false,
-  }) => LoginState(
-      email: email ?? this.email,
-      password: password ?? this.password,
-      isPasswordVisible: isPasswordVisible ?? this.isPasswordVisible,
-      isLoading: isLoading ?? this.isLoading,
-      errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
-      user: clearUser ? null : (user ?? this.user),
-      requiresVerification: !clearVerification && (requiresVerification ?? this.requiresVerification),
-      verificationEmail: clearVerification
-          ? null
-          : (verificationEmail ?? this.verificationEmail),
-    );
-
-  @override
-  List<Object?> get props => [
-        email,
-        password,
-        isPasswordVisible,
-        isLoading,
-        errorMessage,
-        user,
-        requiresVerification,
-        verificationEmail,
-      ];
+  }) = _LoginState;
 }

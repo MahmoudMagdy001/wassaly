@@ -15,7 +15,7 @@ class HomeRepositoryImpl implements HomeRepository {
   Future<Either<Failure, List<BannerEntity>>> getBanners() async {
     try {
       final remoteBanners = await _remoteDataSource.getBanners();
-      return Right(remoteBanners);
+      return Right(remoteBanners.map((m) => m.toEntity()).toList());
     } on Failure catch (failure) {
       return Left(failure);
     } on Object catch (e) {
@@ -27,7 +27,7 @@ class HomeRepositoryImpl implements HomeRepository {
   Future<Either<Failure, List<CategoryEntity>>> getCategories() async {
     try {
       final remoteCategories = await _remoteDataSource.getCategories();
-      return Right(remoteCategories.map((e) => e as CategoryEntity).toList());
+      return Right(remoteCategories.map((m) => m.toEntity()).toList());
     } on Failure catch (failure) {
       return Left(failure);
     } on Object catch (e) {
@@ -42,7 +42,7 @@ class HomeRepositoryImpl implements HomeRepository {
       final remoteServicesResponse =
           await _remoteDataSource.getPopularServices(page: page);
       return Right(
-        remoteServicesResponse.map((model) => model as SubCategoryEntity),
+        remoteServicesResponse.map((model) => model.toEntity()),
       );
     } on Failure catch (failure) {
       return Left(failure);
@@ -60,7 +60,7 @@ class HomeRepositoryImpl implements HomeRepository {
           await _remoteDataSource.getProducts(page: page);
 
       return Right(
-        remoteProductsResponse.map((model) => model as ProductEntity),
+        remoteProductsResponse.map((model) => model.toEntity()),
       );
     } on Failure catch (failure) {
       return Left(failure);

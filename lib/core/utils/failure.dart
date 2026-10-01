@@ -1,38 +1,18 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class Failure extends Equatable {
-  final String message;
-  final dynamic error;
+part 'failure.freezed.dart';
 
-  const Failure(this.message, {this.error});
+@freezed
+sealed class Failure with _$Failure {
+  const Failure._();
 
-  @override
-  List<Object?> get props => [message, error];
+  const factory Failure.server(String message, {dynamic error}) = ServerFailure;
+  const factory Failure.cache(String message, {dynamic error}) = CacheFailure;
+  const factory Failure.network(String message, {dynamic error}) = NetworkFailure;
+  const factory Failure.notFound(String message, {dynamic error}) = NotFoundFailure;
+  const factory Failure.unknown(String message, {dynamic error}) = UnknownFailure;
+  const factory Failure.permission(String message, {dynamic error}) = PermissionFailure;
 
   @override
   String toString() => message;
-}
-
-class ServerFailure extends Failure {
-  const ServerFailure(super.message, {super.error});
-}
-
-class CacheFailure extends Failure {
-  const CacheFailure(super.message, {super.error});
-}
-
-class NetworkFailure extends Failure {
-  const NetworkFailure(super.message, {super.error});
-}
-
-class NotFoundFailure extends Failure {
-  const NotFoundFailure(super.message, {super.error});
-}
-
-class UnknownFailure extends Failure {
-  const UnknownFailure(super.message, {super.error});
-}
-
-class PermissionFailure extends Failure {
-  const PermissionFailure(super.message, {super.error});
 }

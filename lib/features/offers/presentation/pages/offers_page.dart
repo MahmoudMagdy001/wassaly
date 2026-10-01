@@ -1,8 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/home/domain/entities/product_entity.dart';
 import 'package:wassaly/features/offers/presentation/bloc/offers_bloc.dart';
-import 'package:wassaly/features/offers/presentation/bloc/offers_event.dart';
-import 'package:wassaly/features/offers/presentation/bloc/offers_state.dart';
 
 final _activeMarqueeId = ValueNotifier<int?>(null);
 
@@ -11,7 +9,7 @@ class OffersPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocProvider(
-        create: (context) => sl<OffersBloc>()..add(GetOffersEvent()),
+        create: (context) => sl<OffersBloc>()..add(const GetOffersEvent()),
         child: const OffersView(),
       );
 }
@@ -21,7 +19,7 @@ class OffersView extends StatelessWidget {
 
   void _onLoadMore(BuildContext context, AppStatus status) {
     if (status != AppStatus.loading) {
-      context.read<OffersBloc>().add(LoadMoreOffersEvent());
+      context.read<OffersBloc>().add(const LoadMoreOffersEvent());
     }
   }
 
@@ -111,7 +109,7 @@ class OffersView extends StatelessWidget {
                   child: AppErrorWidget(
                     message: errorMessage,
                     onRetry: () =>
-                        context.read<OffersBloc>().add(GetOffersEvent()),
+                        context.read<OffersBloc>().add(const GetOffersEvent()),
                   ),
                 );
               }

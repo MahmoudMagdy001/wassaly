@@ -1,43 +1,25 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:wassaly/core/utils/pagination.dart';
 import 'package:wassaly/features/home/domain/entities/product_entity.dart';
-
 import 'package:wassaly/features/sub_category/domain/entities/sub_category_detail_entity.dart';
+
+part 'sub_category_state.freezed.dart';
 
 enum SubCategoryStatus { initial, loading, success, failure }
 
-class SubCategoryState extends Equatable {
-  final SubCategoryStatus status;
-  final SubCategoryDetailEntity? subCategory;
-  final PaginatedResponse<ProductEntity> products;
-  final String errorMessage;
-  final bool isLoadingMore;
+@freezed
+abstract class SubCategoryState with _$SubCategoryState {
+  const SubCategoryState._();
 
-  const SubCategoryState({
-    this.status = SubCategoryStatus.initial,
-    this.subCategory,
-    this.products = const PaginatedResponse(data: []),
-    this.errorMessage = '',
-    this.isLoadingMore = false,
-  });
+  const factory SubCategoryState({
+    @Default(SubCategoryStatus.initial) SubCategoryStatus status,
+    SubCategoryDetailEntity? subCategory,
+    @Default(PaginatedResponse(data: []))
+    PaginatedResponse<ProductEntity> products,
+    @Default('') String errorMessage,
+    @Default(false) bool isLoadingMore,
+  }) = _SubCategoryState;
 
   bool get hasMoreProducts => products.hasMore;
   int get currentPage => products.currentPage;
-
-  SubCategoryState copyWith({
-    SubCategoryStatus? status,
-    SubCategoryDetailEntity? subCategory,
-    PaginatedResponse<ProductEntity>? products,
-    String? errorMessage,
-    bool? isLoadingMore,
-  }) => SubCategoryState(
-      status: status ?? this.status,
-      subCategory: subCategory ?? this.subCategory,
-      products: products ?? this.products,
-      errorMessage: errorMessage ?? this.errorMessage,
-      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
-    );
-
-  @override
-  List<Object?> get props =>
-      [status, subCategory, products, errorMessage, isLoadingMore];
 }

@@ -1,7 +1,8 @@
-import 'package:wassaly/core/imports/imports.dart';
-
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:wassaly/features/home/domain/entities/product_entity.dart';
 import 'package:wassaly/features/product_details/domain/entities/product_detail_entity.dart';
+
+part 'product_details_state.freezed.dart';
 
 enum ProductDetailsStatus { initial, loading, success, failure }
 
@@ -9,52 +10,16 @@ enum RelatedProductsStatus { initial, loading, success, failure }
 
 enum ReviewActionStatus { initial, loading, success, failure }
 
-class ProductDetailsState extends Equatable {
-  final ProductDetailsStatus status;
-  final RelatedProductsStatus relatedProductsStatus;
-  final ReviewActionStatus reviewActionStatus;
-  final ProductDetailEntity? product;
-  final List<ProductEntity> relatedProducts;
-  final String errorMessage;
-  final String reviewActionMessage;
-
-  const ProductDetailsState({
-    this.status = ProductDetailsStatus.initial,
-    this.relatedProductsStatus = RelatedProductsStatus.initial,
-    this.reviewActionStatus = ReviewActionStatus.initial,
-    this.product,
-    this.relatedProducts = const [],
-    this.errorMessage = '',
-    this.reviewActionMessage = '',
-  });
-
-  ProductDetailsState copyWith({
-    ProductDetailsStatus? status,
-    RelatedProductsStatus? relatedProductsStatus,
-    ReviewActionStatus? reviewActionStatus,
+@freezed
+sealed class ProductDetailsState with _$ProductDetailsState {
+  const factory ProductDetailsState({
+    @Default(ProductDetailsStatus.initial) ProductDetailsStatus status,
+    @Default(RelatedProductsStatus.initial)
+    RelatedProductsStatus relatedProductsStatus,
+    @Default(ReviewActionStatus.initial) ReviewActionStatus reviewActionStatus,
     ProductDetailEntity? product,
-    List<ProductEntity>? relatedProducts,
-    String? errorMessage,
-    String? reviewActionMessage,
-  }) => ProductDetailsState(
-      status: status ?? this.status,
-      relatedProductsStatus:
-          relatedProductsStatus ?? this.relatedProductsStatus,
-      reviewActionStatus: reviewActionStatus ?? this.reviewActionStatus,
-      product: product ?? this.product,
-      relatedProducts: relatedProducts ?? this.relatedProducts,
-      errorMessage: errorMessage ?? this.errorMessage,
-      reviewActionMessage: reviewActionMessage ?? this.reviewActionMessage,
-    );
-
-  @override
-  List<Object?> get props => [
-        status,
-        relatedProductsStatus,
-        reviewActionStatus,
-        product,
-        relatedProducts,
-        errorMessage,
-        reviewActionMessage,
-      ];
+    @Default([]) List<ProductEntity> relatedProducts,
+    @Default('') String errorMessage,
+    @Default('') String reviewActionMessage,
+  }) = _ProductDetailsState;
 }

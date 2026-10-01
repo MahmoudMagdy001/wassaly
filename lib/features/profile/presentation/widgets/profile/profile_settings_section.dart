@@ -1,7 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/notifications/presentation/bloc/notifications_bloc.dart';
-import 'package:wassaly/features/notifications/presentation/bloc/notifications_event.dart';
-import 'package:wassaly/features/notifications/presentation/bloc/notifications_state.dart';
 import 'package:wassaly/features/profile/presentation/bloc/settings/settings_bloc.dart';
 import 'package:wassaly/features/profile/presentation/widgets/profile/language_bottom_sheet.dart';
 import 'package:wassaly/features/profile/presentation/widgets/profile/profile_menu_tile.dart';

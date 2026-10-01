@@ -1,8 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/home/domain/entities/category_entity.dart';
 import 'package:wassaly/features/home/presentation/bloc/home_bloc.dart';
-import 'package:wassaly/features/home/presentation/bloc/home_event.dart';
-import 'package:wassaly/features/home/presentation/bloc/home_state.dart';
 import 'package:wassaly/features/home/presentation/widgets/category_card.dart';
 
 class CategoriesPage extends StatelessWidget {
@@ -45,7 +43,7 @@ class CategoriesPage extends StatelessWidget {
                   child: AppErrorWidget(
                     message: errorMessage,
                     onRetry: () =>
-                        context.read<HomeBloc>().add(GetCategoriesEvent()),
+                        context.read<HomeBloc>().add(const GetCategoriesEvent()),
                   ),
                 );
               }

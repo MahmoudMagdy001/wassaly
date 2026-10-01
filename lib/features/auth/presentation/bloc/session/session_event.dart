@@ -1,42 +1,17 @@
-part of 'session_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:wassaly/features/auth/domain/entities/user_entity.dart';
 
-sealed class SessionEvent extends Equatable {
-  const SessionEvent();
+part 'session_event.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
-}
-
-class SessionLoginRequested extends SessionEvent {
-  final String email;
-  final String password;
-
-  const SessionLoginRequested({
-    required this.email,
-    required this.password,
-  });
-
-  @override
-  List<Object?> get props => [email, password];
-}
-
-class SessionCheckRequested extends SessionEvent {
-  const SessionCheckRequested();
-}
-
-class SessionLogoutRequested extends SessionEvent {
-  const SessionLogoutRequested();
-}
-
-class SessionUserUpdated extends SessionEvent {
-  final UserEntity user;
-
-  const SessionUserUpdated(this.user);
-
-  @override
-  List<Object?> get props => [user];
-}
-
-class SessionConnectivityRestored extends SessionEvent {
-  const SessionConnectivityRestored();
+@freezed
+sealed class SessionEvent with _$SessionEvent {
+  const factory SessionEvent.loginRequested({
+    required String email,
+    required String password,
+  }) = SessionLoginRequested;
+  const factory SessionEvent.checkRequested() = SessionCheckRequested;
+  const factory SessionEvent.logoutRequested() = SessionLogoutRequested;
+  const factory SessionEvent.userUpdated(UserEntity user) = SessionUserUpdated;
+  const factory SessionEvent.connectivityRestored() =
+      SessionConnectivityRestored;
 }

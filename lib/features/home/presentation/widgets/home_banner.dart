@@ -2,7 +2,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/home/domain/entities/banner_entity.dart';
 import 'package:wassaly/features/home/presentation/bloc/home_bloc.dart';
-import 'package:wassaly/features/home/presentation/bloc/home_state.dart';
 
 class HomeBanner extends StatefulWidget {
   const HomeBanner({super.key});

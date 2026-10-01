@@ -3,7 +3,6 @@ import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dar
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_bloc.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_event.dart'
     as fav_event;
-import 'package:wassaly/features/favorite/presentation/bloc/favorite_state.dart';
 import 'package:wassaly/features/orders/presentation/bloc/orders_bloc.dart';
 import 'package:wassaly/features/service_details/domain/entities/service_detail_entity.dart';
 import 'package:wassaly/features/service_details/presentation/bloc/service_details_bloc.dart';

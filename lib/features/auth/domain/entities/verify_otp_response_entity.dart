@@ -1,37 +1,24 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class VerifyOtpResponseEntity extends Equatable {
-  final bool status;
-  final String message;
-  final VerifyOtpUserDataEntity? data;
+part 'verify_otp_response_entity.freezed.dart';
 
-  const VerifyOtpResponseEntity({
-    required this.status,
-    required this.message,
-    this.data,
-  });
-
-  @override
-  List<Object?> get props => [status, message, data];
+@freezed
+abstract class VerifyOtpResponseEntity with _$VerifyOtpResponseEntity {
+  const factory VerifyOtpResponseEntity({
+    required bool status,
+    required String message,
+    VerifyOtpUserDataEntity? data,
+  }) = _VerifyOtpResponseEntity;
 }
 
-class VerifyOtpUserDataEntity extends Equatable {
-  final int id;
-  final String name;
-  final String email;
-  final String? phone;
-  final String? avatar;
-  final String? type;
-
-  const VerifyOtpUserDataEntity({
-    required this.id,
-    required this.name,
-    required this.email,
-    this.phone,
-    this.avatar,
-    this.type,
-  });
-
-  @override
-  List<Object?> get props => [id, name, email, phone, avatar, type];
+@freezed
+abstract class VerifyOtpUserDataEntity with _$VerifyOtpUserDataEntity {
+  const factory VerifyOtpUserDataEntity({
+    required int id,
+    required String name,
+    required String email,
+    String? phone,
+    String? avatar,
+    String? type,
+  }) = _VerifyOtpUserDataEntity;
 }

@@ -16,7 +16,7 @@ class BookingRepositoryImpl implements BookingRepository {
   ) async {
     try {
       final booking = await _remoteDataSource.createBooking(params);
-      return Right(booking);
+      return Right(booking.toEntity());
     } on Failure catch (failure) {
       return Left(failure);
     } on Object catch (e) {
@@ -29,14 +29,18 @@ class BookingRepositoryImpl implements BookingRepository {
     try {
       final bookings = await _remoteDataSource.getMyBookings();
       await _localDataSource.cacheBookings(bookings);
-      return Right(bookings);
+      return Right(bookings.map((b) => b.toEntity()).toList());
     } on Failure catch (failure) {
       final cached = _localDataSource.getCachedBookings();
-      if (cached.isNotEmpty) return Right(cached);
+      if (cached.isNotEmpty) {
+        return Right(cached.map((b) => b.toEntity()).toList());
+      }
       return Left(failure);
     } on Object catch (e) {
       final cached = _localDataSource.getCachedBookings();
-      if (cached.isNotEmpty) return Right(cached);
+      if (cached.isNotEmpty) {
+        return Right(cached.map((b) => b.toEntity()).toList());
+      }
       return Left(ServerFailure(e.toString()));
     }
   }
@@ -47,7 +51,7 @@ class BookingRepositoryImpl implements BookingRepository {
   ) async {
     try {
       final booking = await _remoteDataSource.updateBooking(params);
-      return Right(booking);
+      return Right(booking.toEntity());
     } on Failure catch (failure) {
       return Left(failure);
     } on Object catch (e) {

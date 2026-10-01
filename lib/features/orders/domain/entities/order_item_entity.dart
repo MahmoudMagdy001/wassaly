@@ -1,21 +1,15 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:wassaly/features/home/domain/entities/product_entity.dart';
 
-class OrderItemEntity extends Equatable {
-  final int id;
-  final double price;
-  final int quantity;
-  final double totalPrice;
-  final ProductEntity? product;
+part 'order_item_entity.freezed.dart';
 
-  const OrderItemEntity({
-    required this.id,
-    required this.price,
-    required this.quantity,
-    required this.totalPrice,
-    this.product,
-  });
-
-  @override
-  List<Object?> get props => [id, price, quantity, totalPrice, product];
+@freezed
+abstract class OrderItemEntity with _$OrderItemEntity {
+  const factory OrderItemEntity({
+    required int id,
+    required double price,
+    required int quantity,
+    required double totalPrice,
+    ProductEntity? product,
+  }) = _OrderItemEntity;
 }

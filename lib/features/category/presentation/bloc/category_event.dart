@@ -1,36 +1,15 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:wassaly/features/home/domain/entities/sub_category_entity.dart';
 
-abstract class CategoryEvent extends Equatable {
-  const CategoryEvent();
+part 'category_event.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
-}
-
-class FetchCategoryDetailEvent extends CategoryEvent {
-  final int categoryId;
-
-  const FetchCategoryDetailEvent(this.categoryId);
-
-  @override
-  List<Object?> get props => [categoryId];
-}
-
-class LoadMoreSubCategoriesEvent extends CategoryEvent {
-  final int categoryId;
-
-  const LoadMoreSubCategoriesEvent(this.categoryId);
-
-  @override
-  List<Object?> get props => [categoryId];
-}
-
-class SelectSubCategoryEvent extends CategoryEvent {
-  final SubCategoryEntity subCategory;
-
-  const SelectSubCategoryEvent(this.subCategory);
-
-  @override
-  List<Object?> get props => [subCategory];
+@freezed
+sealed class CategoryEvent with _$CategoryEvent {
+  const factory CategoryEvent.fetchCategoryDetail(int categoryId) =
+      FetchCategoryDetailEvent;
+  const factory CategoryEvent.loadMoreSubCategories(int categoryId) =
+      LoadMoreSubCategoriesEvent;
+  const factory CategoryEvent.selectSubCategory(
+    SubCategoryEntity subCategory,
+  ) = SelectSubCategoryEvent;
 }

@@ -14,7 +14,7 @@ class ProductDetailsRepositoryImpl implements ProductDetailsRepository {
   ) async {
     try {
       final detail = await _remoteDataSource.getProductDetails(productId);
-      return Right(detail);
+      return Right(detail.toEntity());
     } on Failure catch (failure) {
       return Left(failure);
     } on Object catch (e) {

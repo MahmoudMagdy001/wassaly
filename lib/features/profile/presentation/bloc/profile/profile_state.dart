@@ -1,93 +1,27 @@
-part of 'profile_bloc.dart';
+import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/features/auth/domain/entities/user_entity.dart';
+import 'package:wassaly/features/profile/domain/entities/address_entity.dart';
+import 'package:wassaly/features/profile/domain/entities/center_entity.dart';
+import 'package:wassaly/features/profile/domain/entities/governorate_entity.dart';
 
-class ProfileState extends Equatable {
-  final AppStatus status;
-  final AppStatus actionStatus;
-  final AppStatus addressStatus;
-  final AppStatus governorateStatus;
-  final AppStatus centerStatus;
-  final UserEntity? user;
-  final List<AddressEntity> addresses;
-  final List<GovernorateEntity> governorates;
-  final List<CenterEntity> centers;
-  final String? errorMessage;
-  final String? actionError;
-  final String? addressError;
-  final String? governorateError;
-  final String? centerError;
+part 'profile_state.freezed.dart';
 
-  const ProfileState({
-    this.status = AppStatus.initial,
-    this.actionStatus = AppStatus.initial,
-    this.addressStatus = AppStatus.initial,
-    this.governorateStatus = AppStatus.initial,
-    this.centerStatus = AppStatus.initial,
-    this.user,
-    this.addresses = const [],
-    this.governorates = const [],
-    this.centers = const [],
-    this.errorMessage,
-    this.actionError,
-    this.addressError,
-    this.governorateError,
-    this.centerError,
-  });
-
-  ProfileState copyWith({
-    AppStatus? status,
-    AppStatus? actionStatus,
-    AppStatus? addressStatus,
-    AppStatus? governorateStatus,
-    AppStatus? centerStatus,
+@freezed
+sealed class ProfileState with _$ProfileState {
+  const factory ProfileState({
+    @Default(AppStatus.initial) AppStatus status,
+    @Default(AppStatus.initial) AppStatus actionStatus,
+    @Default(AppStatus.initial) AppStatus addressStatus,
+    @Default(AppStatus.initial) AppStatus governorateStatus,
+    @Default(AppStatus.initial) AppStatus centerStatus,
     UserEntity? user,
-    List<AddressEntity>? addresses,
-    List<GovernorateEntity>? governorates,
-    List<CenterEntity>? centers,
+    @Default([]) List<AddressEntity> addresses,
+    @Default([]) List<GovernorateEntity> governorates,
+    @Default([]) List<CenterEntity> centers,
     String? errorMessage,
     String? actionError,
     String? addressError,
     String? governorateError,
     String? centerError,
-    bool clearError = false,
-    bool clearActionError = false,
-    bool clearAddressError = false,
-    bool clearGovernorateError = false,
-    bool clearCenterError = false,
-  }) => ProfileState(
-      status: status ?? this.status,
-      actionStatus: actionStatus ?? this.actionStatus,
-      addressStatus: addressStatus ?? this.addressStatus,
-      governorateStatus: governorateStatus ?? this.governorateStatus,
-      centerStatus: centerStatus ?? this.centerStatus,
-      user: user ?? this.user,
-      addresses: addresses ?? this.addresses,
-      governorates: governorates ?? this.governorates,
-      centers: centers ?? this.centers,
-      errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
-      actionError: clearActionError ? null : (actionError ?? this.actionError),
-      addressError:
-          clearAddressError ? null : (addressError ?? this.addressError),
-      governorateError: clearGovernorateError
-          ? null
-          : (governorateError ?? this.governorateError),
-      centerError: clearCenterError ? null : (centerError ?? this.centerError),
-    );
-
-  @override
-  List<Object?> get props => [
-        status,
-        actionStatus,
-        addressStatus,
-        governorateStatus,
-        centerStatus,
-        user,
-        addresses,
-        governorates,
-        centers,
-        errorMessage,
-        actionError,
-        addressError,
-        governorateError,
-        centerError,
-      ];
+  }) = _ProfileState;
 }

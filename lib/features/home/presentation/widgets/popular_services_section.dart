@@ -1,8 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/home/domain/entities/sub_category_entity.dart';
 import 'package:wassaly/features/home/presentation/bloc/home_bloc.dart';
-import 'package:wassaly/features/home/presentation/bloc/home_event.dart';
-import 'package:wassaly/features/home/presentation/bloc/home_state.dart';
 import 'package:wassaly/features/home/presentation/widgets/service_item.dart';
 
 class PopularServicesSection extends StatefulWidget {
@@ -41,7 +39,7 @@ class _PopularServicesSectionState extends State<PopularServicesSection> {
       final bloc = context.read<HomeBloc>();
       if (!bloc.state.isPopularServicesLoadingMore &&
           bloc.state.popularServices.hasMore) {
-        bloc.add(LoadMorePopularServicesEvent());
+        bloc.add(const LoadMorePopularServicesEvent());
       }
     }
   }

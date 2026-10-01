@@ -7,6 +7,9 @@ import 'package:wassaly/features/product_details/presentation/bloc/product_detai
 import 'package:wassaly/features/product_details/presentation/bloc/product_details_state.dart';
 import 'package:wassaly/features/sub_category/domain/usecases/get_sub_category_detail_usecase.dart';
 
+export 'product_details_event.dart';
+export 'product_details_state.dart';
+
 class ProductDetailsBloc
     extends Bloc<ProductDetailsEvent, ProductDetailsState> {
   final GetProductDetailsUseCase _getProductDetailsUseCase;

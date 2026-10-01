@@ -1,7 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_bloc.dart';
-import 'package:wassaly/features/favorite/presentation/bloc/favorite_event.dart';
-import 'package:wassaly/features/favorite/presentation/bloc/favorite_state.dart';
 
 enum UnifiedItemType { product, service }
 

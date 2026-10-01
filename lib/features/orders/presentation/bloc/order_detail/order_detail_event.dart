@@ -1,45 +1,12 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class OrderDetailEvent extends Equatable {
-  const OrderDetailEvent();
+part 'order_detail_event.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
-}
-
-class FetchOrderDetailEvent extends OrderDetailEvent {
-  final int orderId;
-
-  const FetchOrderDetailEvent(this.orderId);
-
-  @override
-  List<Object?> get props => [orderId];
-}
-
-class CancelOrderEvent extends OrderDetailEvent {
-  final int orderId;
-
-  const CancelOrderEvent(this.orderId);
-
-  @override
-  List<Object?> get props => [orderId];
-}
-
-class UpdateOrderEvent extends OrderDetailEvent {
-  final int orderId;
-  final Map<String, dynamic> data;
-
-  const UpdateOrderEvent(this.orderId, this.data);
-
-  @override
-  List<Object?> get props => [orderId, data];
-}
-
-class DeleteOrderEvent extends OrderDetailEvent {
-  final int orderId;
-
-  const DeleteOrderEvent(this.orderId);
-
-  @override
-  List<Object?> get props => [orderId];
+@freezed
+sealed class OrderDetailEvent with _$OrderDetailEvent {
+  const factory OrderDetailEvent.fetch(int orderId) = FetchOrderDetailEvent;
+  const factory OrderDetailEvent.cancel(int orderId) = CancelOrderEvent;
+  const factory OrderDetailEvent.update(int orderId, Map<String, dynamic> data) =
+      UpdateOrderEvent;
+  const factory OrderDetailEvent.delete(int orderId) = DeleteOrderEvent;
 }

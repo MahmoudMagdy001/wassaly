@@ -1,12 +1,9 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class OffersEvent extends Equatable {
-  const OffersEvent();
+part 'offers_event.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
+@freezed
+sealed class OffersEvent with _$OffersEvent {
+  const factory OffersEvent.getOffers() = GetOffersEvent;
+  const factory OffersEvent.loadMoreOffers() = LoadMoreOffersEvent;
 }
-
-class GetOffersEvent extends OffersEvent {}
-
-class LoadMoreOffersEvent extends OffersEvent {}

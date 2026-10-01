@@ -14,7 +14,7 @@ class ProviderDetailsRepositoryImpl implements ProviderDetailsRepository {
   ) async {
     try {
       final provider = await _remoteDataSource.getProviderDetails(providerId);
-      return Right(provider);
+      return Right(provider.toEntity());
     } on Failure catch (failure) {
       return Left(failure);
     } on Object catch (e) {

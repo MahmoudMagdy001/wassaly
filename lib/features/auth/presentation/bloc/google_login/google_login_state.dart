@@ -1,28 +1,13 @@
-part of 'google_login_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:wassaly/features/auth/domain/entities/user_entity.dart';
 
-class GoogleLoginState extends Equatable {
-  final bool isLoading;
-  final String? errorMessage;
-  final UserEntity? user;
+part 'google_login_state.freezed.dart';
 
-  const GoogleLoginState({
-    this.isLoading = false,
-    this.errorMessage,
-    this.user,
-  });
-
-  GoogleLoginState copyWith({
-    bool? isLoading,
+@freezed
+abstract class GoogleLoginState with _$GoogleLoginState {
+  const factory GoogleLoginState({
+    @Default(false) bool isLoading,
     String? errorMessage,
     UserEntity? user,
-    bool clearError = false,
-    bool clearUser = false,
-  }) => GoogleLoginState(
-      isLoading: isLoading ?? this.isLoading,
-      errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
-      user: clearUser ? null : (user ?? this.user),
-    );
-
-  @override
-  List<Object?> get props => [isLoading, errorMessage, user];
+  }) = _GoogleLoginState;
 }

@@ -2,13 +2,13 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:wassaly/features/cart/domain/entities/cart_item_entity.dart';
 import 'package:wassaly/features/cart/domain/entities/offer_entity.dart'
     as cart_offer;
+import 'package:wassaly/features/home/data/models/product_model.dart';
 import 'package:wassaly/features/home/domain/entities/offer_entity.dart';
 import 'package:wassaly/features/home/domain/entities/product_entity.dart';
 import 'package:wassaly/features/home/domain/entities/review_entity.dart';
 import 'package:wassaly/features/notifications/data/models/notification_model.dart';
 import 'package:wassaly/features/orders/data/models/order_item_model.dart';
 import 'package:wassaly/features/orders/data/models/order_model.dart';
-import 'package:wassaly/features/orders/domain/entities/order_item_entity.dart';
 import 'package:wassaly/features/service_booking/data/models/booking_model.dart';
 import 'package:wassaly/features/sub_category/domain/entities/service_entity.dart';
 
@@ -146,7 +146,7 @@ class OrderModelAdapter extends TypeAdapter<OrderModel> {
         totalPrice: reader.read() as double,
         paymentMethod: reader.read() as String,
         deliveryFees: reader.read() as double,
-        items: (reader.read() as List?)?.cast<OrderItemEntity>() ?? [],
+        items: (reader.read() as List?)?.cast<OrderItemModel>() ?? [],
         createdAt: reader.read() as String,
         subTotal: reader.read() as double?,
         discountAmount: reader.read() as double?,
@@ -192,7 +192,7 @@ class OrderItemModelAdapter extends TypeAdapter<OrderItemModel> {
         price: reader.read() as double,
         quantity: reader.read() as int,
         totalPrice: reader.read() as double,
-        product: reader.read() as ProductEntity?,
+        product: reader.read() as ProductModel?,
       );
 
   @override

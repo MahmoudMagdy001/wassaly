@@ -1,15 +1,22 @@
 import 'package:intl/intl.dart';
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:wassaly/core/extensions/date_time_extension.dart';
 import 'package:wassaly/features/service_booking/domain/entities/booking_entity.dart';
 
-class BookingProviderModel extends BookingProviderEntity {
+class BookingProviderModel {
+  final int id;
+  final String name;
+  final String? avatar;
+  final String? description;
+  final double? rating;
+  final int? reviewsCount;
+
   const BookingProviderModel({
-    required super.id,
-    required super.name,
-    super.avatar,
-    super.description,
-    super.rating,
-    super.reviewsCount,
+    required this.id,
+    required this.name,
+    this.avatar,
+    this.description,
+    this.rating,
+    this.reviewsCount,
   });
 
   factory BookingProviderModel.fromJson(Map<String, dynamic> json) =>
@@ -21,14 +28,30 @@ class BookingProviderModel extends BookingProviderEntity {
         rating: (json['average_rating'] as num?)?.toDouble(),
         reviewsCount: json['reviews_count'] as int?,
       );
+
+  BookingProviderEntity toEntity() => BookingProviderEntity(
+        id: id,
+        name: name,
+        avatar: avatar,
+        description: description,
+        rating: rating,
+        reviewsCount: reviewsCount,
+      );
 }
 
-class BookingServiceModel extends BookingServiceEntity {
+class BookingServiceModel {
+  final int id;
+  final String name;
+  final num price;
+  final String? image;
+  final String? description;
+
   const BookingServiceModel({
-    required super.id,
-    required super.name,
-    required super.price, super.image,
-    super.description,
+    required this.id,
+    required this.name,
+    required this.price,
+    this.image,
+    this.description,
   });
 
   factory BookingServiceModel.fromJson(Map<String, dynamic> json) =>
@@ -39,16 +62,31 @@ class BookingServiceModel extends BookingServiceEntity {
         description: json['description'] as String?,
         price: json['price'] as num,
       );
+
+  BookingServiceEntity toEntity() => BookingServiceEntity(
+        id: id,
+        name: name,
+        price: price,
+        image: image,
+        description: description,
+      );
 }
 
-class RescheduleDetailsModel extends RescheduleDetailsEntity {
+class RescheduleDetailsModel {
+  final int? suggestedDayId;
+  final String? suggestedDayAr;
+  final String? suggestedDayEn;
+  final int? suggestedTimeId;
+  final String? suggestedTime;
+  final String? rescheduleNote;
+
   const RescheduleDetailsModel({
-    super.suggestedDayId,
-    super.suggestedDayAr,
-    super.suggestedDayEn,
-    super.suggestedTimeId,
-    super.suggestedTime,
-    super.rescheduleNote,
+    this.suggestedDayId,
+    this.suggestedDayAr,
+    this.suggestedDayEn,
+    this.suggestedTimeId,
+    this.suggestedTime,
+    this.rescheduleNote,
   });
 
   factory RescheduleDetailsModel.fromJson(Map<String, dynamic> json) {
@@ -63,29 +101,53 @@ class RescheduleDetailsModel extends RescheduleDetailsEntity {
       rescheduleNote: json['reschedule_note'] as String?,
     );
   }
+
+  RescheduleDetailsEntity toEntity() => RescheduleDetailsEntity(
+        suggestedDayId: suggestedDayId,
+        suggestedDayAr: suggestedDayAr,
+        suggestedDayEn: suggestedDayEn,
+        suggestedTimeId: suggestedTimeId,
+        suggestedTime: suggestedTime,
+        rescheduleNote: rescheduleNote,
+      );
 }
 
-class BookingModel extends BookingEntity {
+class BookingModel {
+  final int id;
+  final String status;
+  final String problemDescription;
+  final BookingServiceModel service;
+  final BookingProviderModel provider;
+  final String dayAr;
+  final String dayEn;
+  final String time;
+  final String createdAt;
+  final String customerName;
+  final String customerPhone;
+  final String? customerEmail;
+  final String? governorate;
+  final String? center;
+  final RescheduleDetailsModel? rescheduleDetails;
+
   const BookingModel({
-    required super.id,
-    required super.status,
-    required super.problemDescription,
-    required super.service,
-    required super.provider,
-    required super.dayAr,
-    required super.dayEn,
-    required super.time,
-    required super.createdAt,
-    required super.customerName,
-    required super.customerPhone,
-    super.customerEmail,
-    super.governorate,
-    super.center,
-    super.rescheduleDetails,
+    required this.id,
+    required this.status,
+    required this.problemDescription,
+    required this.service,
+    required this.provider,
+    required this.dayAr,
+    required this.dayEn,
+    required this.time,
+    required this.createdAt,
+    required this.customerName,
+    required this.customerPhone,
+    this.customerEmail,
+    this.governorate,
+    this.center,
+    this.rescheduleDetails,
   });
 
   factory BookingModel.fromJson(Map<String, dynamic> json) {
-    // Handle available_day object
     var dayAr = '';
     var dayEn = '';
     if (json['available_day'] is Map) {
@@ -99,7 +161,6 @@ class BookingModel extends BookingEntity {
         dayAr = DateFormat('EEEE, d MMMM yyyy', 'ar').format(parsedDate);
         dayEn = DateFormat('EEEE, d MMMM yyyy', 'en').format(parsedDate);
       } else {
-        // If it's a weekday name, translate/map it
         final lowerInput = dayStr.trim().toLowerCase();
         const weekdayEnToAr = {
           'monday': 'الإثنين',
@@ -138,7 +199,6 @@ class BookingModel extends BookingEntity {
       }
     }
 
-    // Handle available_time object
     var timeStr = '';
     if (json['available_time'] is Map) {
       final timeMap = json['available_time'] as Map<String, dynamic>;
@@ -175,4 +235,22 @@ class BookingModel extends BookingEntity {
           : null,
     );
   }
+
+  BookingEntity toEntity() => BookingEntity(
+        id: id,
+        status: status,
+        problemDescription: problemDescription,
+        service: service.toEntity(),
+        provider: provider.toEntity(),
+        dayAr: dayAr,
+        dayEn: dayEn,
+        time: time,
+        createdAt: createdAt,
+        customerName: customerName,
+        customerPhone: customerPhone,
+        customerEmail: customerEmail,
+        governorate: governorate,
+        center: center,
+        rescheduleDetails: rescheduleDetails?.toEntity(),
+      );
 }

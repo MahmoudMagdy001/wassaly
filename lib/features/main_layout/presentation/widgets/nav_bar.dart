@@ -1,7 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
 import 'package:wassaly/features/cart/presentation/bloc/cart_bloc.dart';
-import 'package:wassaly/features/cart/presentation/bloc/cart_state.dart';
 
 /// Bottom navigation bar for the main layout.
 /// Extracted into its own widget so it owns its own [BlocSelector] for

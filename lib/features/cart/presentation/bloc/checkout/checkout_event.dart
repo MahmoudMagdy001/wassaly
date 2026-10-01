@@ -1,86 +1,43 @@
-part of 'checkout_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:wassaly/features/cart/presentation/bloc/cart_state.dart';
+import 'package:wassaly/features/profile/domain/entities/address_entity.dart';
 
-abstract class CheckoutEvent extends Equatable {
-  const CheckoutEvent();
+part 'checkout_event.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
-}
+@freezed
+sealed class CheckoutEvent with _$CheckoutEvent {
+  const factory CheckoutEvent.initialized({
+    required CartState cartState,
+  }) = CheckoutInitialized;
 
-class CheckoutInitialized extends CheckoutEvent {
-  final CartState cartState;
+  const factory CheckoutEvent.governorateSelected(
+    String governorateId, {
+    String? centerId,
+  }) = CheckoutGovernorateSelected;
 
-  const CheckoutInitialized({required this.cartState});
+  const factory CheckoutEvent.centerSelected(
+    String centerId,
+  ) = CheckoutCenterSelected;
 
-  @override
-  List<Object?> get props => [cartState];
-}
+  const factory CheckoutEvent.formChanged({
+    String? customerName,
+    String? customerPhone,
+    String? customerAddress,
+    String? region,
+    String? couponCode,
+  }) = CheckoutFormChanged;
 
-class CheckoutGovernorateSelected extends CheckoutEvent {
-  final String governorateId;
-  final String? centerId;
+  const factory CheckoutEvent.couponApplied(
+    String code,
+  ) = CheckoutCouponApplied;
 
-  const CheckoutGovernorateSelected(this.governorateId, {this.centerId});
+  const factory CheckoutEvent.couponRemoved() = CheckoutCouponRemoved;
 
-  @override
-  List<Object?> get props => [governorateId, centerId];
-}
+  const factory CheckoutEvent.submitted() = CheckoutSubmitted;
 
-class CheckoutCenterSelected extends CheckoutEvent {
-  final String centerId;
+  const factory CheckoutEvent.addressSelected(
+    AddressEntity address,
+  ) = CheckoutAddressSelected;
 
-  const CheckoutCenterSelected(this.centerId);
-
-  @override
-  List<Object?> get props => [centerId];
-}
-
-class CheckoutFormChanged extends CheckoutEvent {
-  final String? customerName;
-  final String? customerPhone;
-  final String? customerAddress;
-  final String? region;
-  final String? couponCode;
-
-  const CheckoutFormChanged({
-    this.customerName,
-    this.customerPhone,
-    this.customerAddress,
-    this.region,
-    this.couponCode,
-  });
-
-  @override
-  List<Object?> get props =>
-      [customerName, customerPhone, customerAddress, region, couponCode];
-}
-
-class CheckoutCouponApplied extends CheckoutEvent {
-  final String code;
-
-  const CheckoutCouponApplied(this.code);
-
-  @override
-  List<Object?> get props => [code];
-}
-
-class CheckoutCouponRemoved extends CheckoutEvent {
-  const CheckoutCouponRemoved();
-}
-
-class CheckoutSubmitted extends CheckoutEvent {
-  const CheckoutSubmitted();
-}
-
-class CheckoutAddressSelected extends CheckoutEvent {
-  final AddressEntity address;
-
-  const CheckoutAddressSelected(this.address);
-
-  @override
-  List<Object?> get props => [address];
-}
-
-class CheckoutAddressesRefreshed extends CheckoutEvent {
-  const CheckoutAddressesRefreshed();
+  const factory CheckoutEvent.addressesRefreshed() = CheckoutAddressesRefreshed;
 }

@@ -1,16 +1,12 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class CategoryEntity extends Equatable {
-  final int id;
-  final String name;
-  final String image;
+part 'category_entity.freezed.dart';
 
-  const CategoryEntity({
-    required this.id,
-    required this.name,
-    required this.image,
-  });
-
-  @override
-  List<Object?> get props => [id, name, image];
+@freezed
+abstract class CategoryEntity with _$CategoryEntity {
+  const factory CategoryEntity({
+    required int id,
+    required String name,
+    required String image,
+  }) = _CategoryEntity;
 }

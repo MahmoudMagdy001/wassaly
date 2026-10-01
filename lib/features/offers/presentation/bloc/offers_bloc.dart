@@ -3,6 +3,9 @@ import 'package:wassaly/features/offers/domain/usecases/get_offers_use_case.dart
 import 'package:wassaly/features/offers/presentation/bloc/offers_event.dart';
 import 'package:wassaly/features/offers/presentation/bloc/offers_state.dart';
 
+export 'offers_event.dart';
+export 'offers_state.dart';
+
 class OffersBloc extends Bloc<OffersEvent, OffersState> {
   final GetOffersUseCase _getOffersUseCase;
 

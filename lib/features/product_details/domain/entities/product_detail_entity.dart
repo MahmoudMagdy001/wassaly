@@ -1,146 +1,74 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:wassaly/features/service_details/domain/entities/service_detail_entity.dart';
 
-class ProductSpecificationEntity extends Equatable {
-  final int id;
-  final String key;
-  final String value;
-  final String icon;
+part 'product_detail_entity.freezed.dart';
 
-  const ProductSpecificationEntity({
-    required this.id,
-    required this.key,
-    required this.value,
-    required this.icon,
-  });
-
-  @override
-  List<Object?> get props => [id, key, value, icon];
+@freezed
+sealed class ProductSpecificationEntity with _$ProductSpecificationEntity {
+  const factory ProductSpecificationEntity({
+    required int id,
+    required String key,
+    required String value,
+    required String icon,
+  }) = _ProductSpecificationEntity;
 }
 
-class ProductDetailImageEntity extends Equatable {
-  final int id;
-  final String image;
-
-  const ProductDetailImageEntity({
-    required this.id,
-    required this.image,
-  });
-
-  @override
-  List<Object?> get props => [id, image];
+@freezed
+sealed class ProductDetailImageEntity with _$ProductDetailImageEntity {
+  const factory ProductDetailImageEntity({
+    required int id,
+    required String image,
+  }) = _ProductDetailImageEntity;
 }
 
-class ProductReviewUserEntity extends Equatable {
-  final int id;
-  final String name;
-  final String? avatar;
-
-  const ProductReviewUserEntity({
-    required this.id,
-    required this.name,
-    required this.avatar,
-  });
-
-  @override
-  List<Object?> get props => [id, name, avatar];
+@freezed
+sealed class ProductReviewUserEntity with _$ProductReviewUserEntity {
+  const factory ProductReviewUserEntity({
+    required int id,
+    required String name,
+    required String? avatar,
+  }) = _ProductReviewUserEntity;
 }
 
-class ProductDetailReviewEntity extends Equatable {
-  final int id;
-  final int rating;
-  final String comment;
-  final String createdAt;
-  final ProductReviewUserEntity user;
-
-  const ProductDetailReviewEntity({
-    required this.id,
-    required this.rating,
-    required this.comment,
-    required this.createdAt,
-    required this.user,
-  });
-
-  @override
-  List<Object?> get props => [id, rating, comment, createdAt, user];
+@freezed
+sealed class ProductDetailReviewEntity with _$ProductDetailReviewEntity {
+  const factory ProductDetailReviewEntity({
+    required int id,
+    required int rating,
+    required String comment,
+    required String createdAt,
+    required ProductReviewUserEntity user,
+  }) = _ProductDetailReviewEntity;
 }
 
-class ProductMetaEntity extends Equatable {
-  final int id;
-  final String name;
-  final String image;
-
-  const ProductMetaEntity({
-    required this.id,
-    required this.name,
-    required this.image,
-  });
-
-  @override
-  List<Object?> get props => [id, name, image];
+@freezed
+sealed class ProductMetaEntity with _$ProductMetaEntity {
+  const factory ProductMetaEntity({
+    required int id,
+    required String name,
+    required String image,
+  }) = _ProductMetaEntity;
 }
 
-class ProductDetailEntity extends Equatable {
-  final int id;
-  final String name;
-  final String image;
-  final String price;
-  final String description;
-  final List<ProductSpecificationEntity> specifications;
-  final List<ProductDetailImageEntity> images;
-  final ProductMetaEntity? subCategory;
-  final ProductMetaEntity? brand;
-  final List<ProductDetailReviewEntity> reviews;
-  final List<int> offerPercentages;
-  final bool isFavorite;
+@freezed
+sealed class ProductDetailEntity with _$ProductDetailEntity {
+  const ProductDetailEntity._();
 
-  final ServiceProviderEntity? provider;
-
-  const ProductDetailEntity({
-    required this.id,
-    required this.name,
-    required this.image,
-    required this.price,
-    required this.description,
-    required this.specifications,
-    required this.images,
-    required this.subCategory,
-    required this.brand,
-    required this.reviews,
-    required this.offerPercentages,
-    required this.isFavorite,
-    required this.provider,
-  });
-
-  ProductDetailEntity copyWith({
-    int? id,
-    String? name,
-    String? image,
-    String? price,
-    String? description,
-    List<ProductSpecificationEntity>? specifications,
-    List<ProductDetailImageEntity>? images,
-    ProductMetaEntity? subCategory,
-    ProductMetaEntity? brand,
-    List<ProductDetailReviewEntity>? reviews,
-    List<int>? offerPercentages,
-    bool? isFavorite,
-    ServiceProviderEntity? provider,
-  }) => ProductDetailEntity(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      image: image ?? this.image,
-      price: price ?? this.price,
-      description: description ?? this.description,
-      specifications: specifications ?? this.specifications,
-      images: images ?? this.images,
-      subCategory: subCategory ?? this.subCategory,
-      brand: brand ?? this.brand,
-      reviews: reviews ?? this.reviews,
-      offerPercentages: offerPercentages ?? this.offerPercentages,
-      isFavorite: isFavorite ?? this.isFavorite,
-      provider: provider ?? this.provider,
-    );
+  const factory ProductDetailEntity({
+    required int id,
+    required String name,
+    required String image,
+    required String price,
+    required String description,
+    required List<ProductSpecificationEntity> specifications,
+    required List<ProductDetailImageEntity> images,
+    required ProductMetaEntity? subCategory,
+    required ProductMetaEntity? brand,
+    required List<ProductDetailReviewEntity> reviews,
+    required List<int> offerPercentages,
+    required bool isFavorite,
+    required ServiceProviderEntity? provider,
+  }) = _ProductDetailEntity;
 
   int get discountPercentage =>
       offerPercentages.isNotEmpty ? offerPercentages.first : 0;
@@ -152,21 +80,4 @@ class ProductDetailEntity extends Equatable {
     if (!hasOffer) return originalPrice;
     return originalPrice - (originalPrice * discountPercentage / 100);
   }
-
-  @override
-  List<Object?> get props => [
-        id,
-        name,
-        image,
-        price,
-        description,
-        specifications,
-        images,
-        subCategory,
-        brand,
-        reviews,
-        offerPercentages,
-        isFavorite,
-        provider,
-      ];
 }

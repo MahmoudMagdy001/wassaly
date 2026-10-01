@@ -1,72 +1,30 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:wassaly/features/service_booking/domain/entities/booking_entity.dart';
 
-abstract class BookingDetailEvent extends Equatable {
-  const BookingDetailEvent();
+part 'booking_detail_event.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
-}
+@freezed
+sealed class BookingDetailEvent with _$BookingDetailEvent {
+  const factory BookingDetailEvent.initialize(BookingEntity booking) =
+      InitializeBookingDetailEvent;
 
-class InitializeBookingDetailEvent extends BookingDetailEvent {
-  final BookingEntity booking;
+  const factory BookingDetailEvent.cancelBooking(int bookingId) =
+      CancelBookingEvent;
 
-  const InitializeBookingDetailEvent(this.booking);
+  const factory BookingDetailEvent.updateBooking(UpdateBookingParams params) =
+      UpdateBookingEvent;
 
-  @override
-  List<Object?> get props => [booking];
-}
+  const factory BookingDetailEvent.deleteBooking(int bookingId) =
+      DeleteBookingEvent;
 
-class CancelBookingEvent extends BookingDetailEvent {
-  final int bookingId;
+  const factory BookingDetailEvent.acceptReschedule(
+    AcceptRescheduleParams params,
+  ) = AcceptRescheduleEvent;
 
-  const CancelBookingEvent(this.bookingId);
+  const factory BookingDetailEvent.proposeReschedule(
+    ProposeRescheduleParams params,
+  ) = ProposeRescheduleEvent;
 
-  @override
-  List<Object?> get props => [bookingId];
-}
-
-class UpdateBookingEvent extends BookingDetailEvent {
-  final UpdateBookingParams params;
-
-  const UpdateBookingEvent(this.params);
-
-  @override
-  List<Object?> get props => [params];
-}
-
-class DeleteBookingEvent extends BookingDetailEvent {
-  final int bookingId;
-
-  const DeleteBookingEvent(this.bookingId);
-
-  @override
-  List<Object?> get props => [bookingId];
-}
-
-class AcceptRescheduleEvent extends BookingDetailEvent {
-  final AcceptRescheduleParams params;
-
-  const AcceptRescheduleEvent(this.params);
-
-  @override
-  List<Object?> get props => [params];
-}
-
-class ProposeRescheduleEvent extends BookingDetailEvent {
-  final ProposeRescheduleParams params;
-
-  const ProposeRescheduleEvent(this.params);
-
-  @override
-  List<Object?> get props => [params];
-}
-
-class LoadAvailableDaysEvent extends BookingDetailEvent {
-  final int serviceId;
-
-  const LoadAvailableDaysEvent(this.serviceId);
-
-  @override
-  List<Object?> get props => [serviceId];
+  const factory BookingDetailEvent.loadAvailableDays(int serviceId) =
+      LoadAvailableDaysEvent;
 }

@@ -1,39 +1,33 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:wassaly/core/utils/failure.dart';
+import 'package:wassaly/core/utils/pagination.dart';
 import 'package:wassaly/features/home/domain/entities/product_entity.dart';
 import 'package:wassaly/features/sub_category/domain/entities/service_entity.dart';
 
+part 'favorite_state.freezed.dart';
+
 enum FavoriteStatus { initial, loading, refreshing, success, error }
 
-class FavoriteState extends Equatable {
-  final FavoriteStatus status;
-  final FavoriteStatus serviceStatus;
-  final PaginatedResponse<ProductEntity> favorites;
-  final PaginatedResponse<ServiceEntity> serviceFavorites;
-  final Set<int> favoriteIds;
-  final Set<int> togglingIds;
-  final Set<int> serviceFavoriteIds;
-  final Set<int> serviceTogglingIds;
-  final Failure? failure;
-  final Failure? serviceFailure;
-  final bool isLoadingMore;
-  final bool isServiceLoadingMore;
+@freezed
+abstract class FavoriteState with _$FavoriteState {
+  const FavoriteState._();
 
-  const FavoriteState({
-    this.status = FavoriteStatus.initial,
-    this.serviceStatus = FavoriteStatus.initial,
-    PaginatedResponse<ProductEntity>? favorites,
-    PaginatedResponse<ServiceEntity>? serviceFavorites,
-    this.favoriteIds = const {},
-    this.togglingIds = const {},
-    this.serviceFavoriteIds = const {},
-    this.serviceTogglingIds = const {},
-    this.failure,
-    this.serviceFailure,
-    this.isLoadingMore = false,
-    this.isServiceLoadingMore = false,
-  })  : favorites = favorites ?? const PaginatedResponse(data: []),
-        serviceFavorites =
-            serviceFavorites ?? const PaginatedResponse(data: []);
+  const factory FavoriteState({
+    @Default(FavoriteStatus.initial) FavoriteStatus status,
+    @Default(FavoriteStatus.initial) FavoriteStatus serviceStatus,
+    @Default(PaginatedResponse(data: []))
+    PaginatedResponse<ProductEntity> favorites,
+    @Default(PaginatedResponse(data: []))
+    PaginatedResponse<ServiceEntity> serviceFavorites,
+    @Default({}) Set<int> favoriteIds,
+    @Default({}) Set<int> togglingIds,
+    @Default({}) Set<int> serviceFavoriteIds,
+    @Default({}) Set<int> serviceTogglingIds,
+    Failure? failure,
+    Failure? serviceFailure,
+    @Default(false) bool isLoadingMore,
+    @Default(false) bool isServiceLoadingMore,
+  }) = _FavoriteState;
 
   bool get isLoading => status == FavoriteStatus.loading;
   bool get isRefreshing => status == FavoriteStatus.refreshing;
@@ -43,48 +37,6 @@ class FavoriteState extends Equatable {
 
   /// True once the global favorites set has been loaded at least once.
   bool get hasLoaded => status != FavoriteStatus.initial;
-
-  FavoriteState copyWith({
-    FavoriteStatus? status,
-    FavoriteStatus? serviceStatus,
-    PaginatedResponse<ProductEntity>? favorites,
-    PaginatedResponse<ServiceEntity>? serviceFavorites,
-    Set<int>? favoriteIds,
-    Set<int>? togglingIds,
-    Set<int>? serviceFavoriteIds,
-    Set<int>? serviceTogglingIds,
-    Failure? failure,
-    Failure? serviceFailure,
-    bool? isLoadingMore,
-    bool? isServiceLoadingMore,
-  }) => FavoriteState(
-      status: status ?? this.status,
-      serviceStatus: serviceStatus ?? this.serviceStatus,
-      favorites: favorites ?? this.favorites,
-      serviceFavorites: serviceFavorites ?? this.serviceFavorites,
-      favoriteIds: favoriteIds ?? this.favoriteIds,
-      togglingIds: togglingIds ?? this.togglingIds,
-      serviceFavoriteIds: serviceFavoriteIds ?? this.serviceFavoriteIds,
-      serviceTogglingIds: serviceTogglingIds ?? this.serviceTogglingIds,
-      failure: failure,
-      serviceFailure: serviceFailure,
-      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
-      isServiceLoadingMore: isServiceLoadingMore ?? this.isServiceLoadingMore,
-    );
-
-  @override
-  List<Object?> get props => [
-        status,
-        serviceStatus,
-        favorites,
-        serviceFavorites,
-        favoriteIds,
-        togglingIds,
-        serviceFavoriteIds,
-        serviceTogglingIds,
-        failure,
-        serviceFailure,
-      ];
 
   // Backward compatibility getter
   String get errorMessage => failure?.message ?? '';

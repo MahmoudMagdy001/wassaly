@@ -1,14 +1,11 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class OfferEntity extends Equatable {
-  final int id;
-  final int discountPercentage;
+part 'offer_entity.freezed.dart';
 
-  const OfferEntity({
-    required this.id,
-    required this.discountPercentage,
-  });
-
-  @override
-  List<Object?> get props => [id, discountPercentage];
+@freezed
+abstract class OfferEntity with _$OfferEntity {
+  const factory OfferEntity({
+    required int id,
+    required int discountPercentage,
+  }) = _OfferEntity;
 }

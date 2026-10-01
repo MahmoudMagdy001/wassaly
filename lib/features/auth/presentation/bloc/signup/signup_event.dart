@@ -1,97 +1,24 @@
-part of 'signup_bloc.dart';
+import 'dart:io';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-sealed class SignupEvent extends Equatable {
-  const SignupEvent();
+part 'signup_event.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
-}
-
-class NameChanged extends SignupEvent {
-  final String name;
-
-  const NameChanged(this.name);
-
-  @override
-  List<Object?> get props => [name];
-}
-
-class PhoneChanged extends SignupEvent {
-  final String phone;
-
-  const PhoneChanged(this.phone);
-
-  @override
-  List<Object?> get props => [phone];
-}
-
-class EmailChanged extends SignupEvent {
-  final String email;
-
-  const EmailChanged(this.email);
-
-  @override
-  List<Object?> get props => [email];
-}
-
-class PasswordChanged extends SignupEvent {
-  final String password;
-
-  const PasswordChanged(this.password);
-
-  @override
-  List<Object?> get props => [password];
-}
-
-class PasswordVisibilityChanged extends SignupEvent {
-  final bool isVisible;
-
-  const PasswordVisibilityChanged({required this.isVisible});
-
-  @override
-  List<Object?> get props => [isVisible];
-}
-
-class ConfirmPasswordChanged extends SignupEvent {
-  final String confirmPassword;
-
-  const ConfirmPasswordChanged(this.confirmPassword);
-
-  @override
-  List<Object?> get props => [confirmPassword];
-}
-
-class ConfirmPasswordVisibilityChanged extends SignupEvent {
-  final bool isVisible;
-
-  const ConfirmPasswordVisibilityChanged({required this.isVisible});
-
-  @override
-  List<Object?> get props => [isVisible];
-}
-
-class TermsAcceptedChanged extends SignupEvent {
-  final bool isAccepted;
-
-  const TermsAcceptedChanged({required this.isAccepted});
-
-  @override
-  List<Object?> get props => [isAccepted];
-}
-
-class SignupSubmitted extends SignupEvent {
-  const SignupSubmitted();
-}
-
-class SignupWithFacebook extends SignupEvent {
-  const SignupWithFacebook();
-}
-
-class AvatarChanged extends SignupEvent {
-  final File? avatarFile;
-
-  const AvatarChanged(this.avatarFile);
-
-  @override
-  List<Object?> get props => [avatarFile];
+@freezed
+sealed class SignupEvent with _$SignupEvent {
+  const factory SignupEvent.nameChanged(String name) = NameChanged;
+  const factory SignupEvent.phoneChanged(String phone) = PhoneChanged;
+  const factory SignupEvent.emailChanged(String email) = EmailChanged;
+  const factory SignupEvent.passwordChanged(String password) = PasswordChanged;
+  const factory SignupEvent.passwordVisibilityChanged({required bool isVisible}) =
+      PasswordVisibilityChanged;
+  const factory SignupEvent.confirmPasswordChanged(String confirmPassword) =
+      ConfirmPasswordChanged;
+  const factory SignupEvent.confirmPasswordVisibilityChanged({
+    required bool isVisible,
+  }) = ConfirmPasswordVisibilityChanged;
+  const factory SignupEvent.termsAcceptedChanged({required bool isAccepted}) =
+      TermsAcceptedChanged;
+  const factory SignupEvent.signupSubmitted() = SignupSubmitted;
+  const factory SignupEvent.signupWithFacebook() = SignupWithFacebook;
+  const factory SignupEvent.avatarChanged(File? avatarFile) = AvatarChanged;
 }

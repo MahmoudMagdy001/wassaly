@@ -1,13 +1,10 @@
 import 'package:wassaly/core/imports/imports.dart';
-import 'package:wassaly/features/auth/domain/entities/user_entity.dart';
 import 'package:wassaly/features/auth/domain/usecases/get_cached_user_usecase.dart';
 import 'package:wassaly/features/auth/domain/usecases/get_profile_usecase.dart';
 import 'package:wassaly/features/auth/domain/usecases/logout_usecase.dart'
     as auth;
 import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
 import 'package:wassaly/features/profile/domain/entities/address_entity.dart';
-import 'package:wassaly/features/profile/domain/entities/center_entity.dart';
-import 'package:wassaly/features/profile/domain/entities/governorate_entity.dart';
 import 'package:wassaly/features/profile/domain/usecases/create_address_usecase.dart';
 import 'package:wassaly/features/profile/domain/usecases/delete_account_usecase.dart';
 import 'package:wassaly/features/profile/domain/usecases/delete_address_usecase.dart';
@@ -17,9 +14,11 @@ import 'package:wassaly/features/profile/domain/usecases/get_governorates_usecas
 import 'package:wassaly/features/profile/domain/usecases/logout_all_devices_usecase.dart';
 import 'package:wassaly/features/profile/domain/usecases/update_address_usecase.dart';
 import 'package:wassaly/features/profile/domain/usecases/update_profile_usecase.dart';
+import 'package:wassaly/features/profile/presentation/bloc/profile/profile_event.dart';
+import 'package:wassaly/features/profile/presentation/bloc/profile/profile_state.dart';
 
-part 'profile_event.dart';
-part 'profile_state.dart';
+export 'profile_event.dart';
+export 'profile_state.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final GetCachedUserUseCase _getCachedUserUseCase;
@@ -104,7 +103,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           emit(state.copyWith(
             status: AppStatus.success,
             user: user,
-            clearError: true,
+            errorMessage: null,
           ),);
         } else {
           emit(state.copyWith(
@@ -137,7 +136,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         _sessionBloc.add(SessionUserUpdated(user));
         emit(state.copyWith(
           user: user,
-          clearError: true,
+          errorMessage: null,
         ),);
       },
     );
@@ -171,7 +170,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         emit(state.copyWith(
           actionStatus: AppStatus.success,
           user: user,
-          clearActionError: true,
+          actionError: null,
         ),);
       },
     );
@@ -192,7 +191,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       ),),
       (_) => emit(state.copyWith(
         actionStatus: AppStatus.success,
-        clearActionError: true,
+        actionError: null,
       ),),
     );
   }
@@ -213,7 +212,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       (_) {
         emit(state.copyWith(
           actionStatus: AppStatus.success,
-          clearActionError: true,
+          actionError: null,
         ),);
         // Trigger session logout for navigation
         _sessionBloc.add(const SessionLogoutRequested());
@@ -237,7 +236,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       (_) {
         emit(state.copyWith(
           actionStatus: AppStatus.success,
-          clearActionError: true,
+          actionError: null,
         ),);
         // Delegate navigation to SessionListenerWrapper — same as logout all devices.
         _sessionBloc.add(const SessionLogoutRequested());
@@ -261,7 +260,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       (addresses) => emit(state.copyWith(
         addressStatus: AppStatus.success,
         addresses: addresses,
-        clearAddressError: true,
+        addressError: null,
       ),),
     );
   }
@@ -292,7 +291,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         emit(state.copyWith(
           addressStatus: AppStatus.success,
           addresses: updatedAddresses,
-          clearAddressError: true,
+          addressError: null,
         ),);
       },
     );
@@ -326,7 +325,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         emit(state.copyWith(
           addressStatus: AppStatus.success,
           addresses: updatedAddresses,
-          clearAddressError: true,
+          addressError: null,
         ),);
       },
     );
@@ -353,7 +352,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         emit(state.copyWith(
           addressStatus: AppStatus.success,
           addresses: updatedAddresses,
-          clearAddressError: true,
+          addressError: null,
         ),);
       },
     );
@@ -375,7 +374,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       (governorates) => emit(state.copyWith(
         governorateStatus: AppStatus.success,
         governorates: governorates,
-        clearGovernorateError: true,
+        governorateError: null,
       ),),
     );
   }
@@ -398,7 +397,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       (centers) => emit(state.copyWith(
         centerStatus: AppStatus.success,
         centers: centers,
-        clearCenterError: true,
+        centerError: null,
       ),),
     );
   }

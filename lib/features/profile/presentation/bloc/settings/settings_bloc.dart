@@ -1,7 +1,10 @@
 import 'package:wassaly/core/imports/imports.dart';
 
-part 'settings_event.dart';
-part 'settings_state.dart';
+import 'package:wassaly/features/profile/presentation/bloc/settings/settings_event.dart';
+import 'package:wassaly/features/profile/presentation/bloc/settings/settings_state.dart';
+
+export 'settings_event.dart';
+export 'settings_state.dart';
 
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final StorageService _storage;

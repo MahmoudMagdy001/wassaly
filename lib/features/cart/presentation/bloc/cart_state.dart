@@ -1,49 +1,40 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:wassaly/core/utils/failure.dart';
 import 'package:wassaly/features/cart/domain/entities/cart_checkout_entity.dart';
 import 'package:wassaly/features/cart/domain/entities/cart_item_entity.dart';
 import 'package:wassaly/features/cart/domain/entities/coupon_entity.dart';
 import 'package:wassaly/features/profile/domain/entities/address_entity.dart';
 
+part 'cart_state.freezed.dart';
+
 enum CartStatus { initial, loading, success, error }
 
-class CartState extends Equatable {
-  final CartStatus status;
-  final List<CartItemEntity> items;
-  final int cartCount;
-  final Set<int> inCartProductIds;
-  final Set<int> addingProductIds;
-  final Failure? failure;
+@freezed
+abstract class CartState with _$CartState {
+  const CartState._();
 
-  // Address fields
-  final List<AddressEntity> addresses;
-  final AddressEntity? selectedAddress;
-  final bool isLoadingAddresses;
-  final Failure? addressesFailure;
+  const factory CartState({
+    @Default(CartStatus.initial) CartStatus status,
+    @Default([]) List<CartItemEntity> items,
+    @Default(0) int cartCount,
+    @Default({}) Set<int> inCartProductIds,
+    @Default({}) Set<int> addingProductIds,
+    Failure? failure,
 
-  // Checkout data (for calculating shipping in cart page)
-  final CartCheckoutEntity? checkoutData;
+    // Address fields
+    @Default([]) List<AddressEntity> addresses,
+    AddressEntity? selectedAddress,
+    @Default(false) bool isLoadingAddresses,
+    Failure? addressesFailure,
 
-  // Coupon data
-  final CouponEntity? appliedCoupon;
-  final bool isApplyingCoupon;
-  final Failure? couponFailure;
+    // Checkout data (for calculating shipping in cart page)
+    CartCheckoutEntity? checkoutData,
 
-  const CartState({
-    this.status = CartStatus.initial,
-    this.items = const [],
-    this.cartCount = 0,
-    this.inCartProductIds = const {},
-    this.addingProductIds = const {},
-    this.failure,
-    this.addresses = const [],
-    this.selectedAddress,
-    this.isLoadingAddresses = false,
-    this.addressesFailure,
-    this.checkoutData,
-    this.appliedCoupon,
-    this.isApplyingCoupon = false,
-    this.couponFailure,
-  });
+    // Coupon data
+    CouponEntity? appliedCoupon,
+    @Default(false) bool isApplyingCoupon,
+    Failure? couponFailure,
+  }) = _CartState;
 
   bool get isLoading => status == CartStatus.loading;
   bool get isSuccess => status == CartStatus.success;
@@ -51,48 +42,6 @@ class CartState extends Equatable {
 
   bool isInCart(int productId) => inCartProductIds.contains(productId);
   bool isAdding(int productId) => addingProductIds.contains(productId);
-
-  CartState copyWith({
-    CartStatus? status,
-    List<CartItemEntity>? items,
-    int? cartCount,
-    Set<int>? inCartProductIds,
-    Set<int>? addingProductIds,
-    Failure? failure,
-    List<AddressEntity>? addresses,
-    AddressEntity? selectedAddress,
-    bool? isLoadingAddresses,
-    Failure? addressesFailure,
-    CartCheckoutEntity? checkoutData,
-    CouponEntity? appliedCoupon,
-    bool? isApplyingCoupon,
-    Failure? couponFailure,
-    bool clearError = false,
-    bool clearAddressesError = false,
-    bool clearCouponError = false,
-    bool clearSelectedAddress = false,
-  }) =>
-      CartState(
-        status: status ?? this.status,
-        items: items ?? this.items,
-        cartCount: cartCount ?? this.cartCount,
-        inCartProductIds: inCartProductIds ?? this.inCartProductIds,
-        addingProductIds: addingProductIds ?? this.addingProductIds,
-        failure: clearError ? null : failure ?? this.failure,
-        addresses: addresses ?? this.addresses,
-        selectedAddress: clearSelectedAddress
-            ? null
-            : selectedAddress ?? this.selectedAddress,
-        isLoadingAddresses: isLoadingAddresses ?? this.isLoadingAddresses,
-        addressesFailure: clearAddressesError
-            ? null
-            : addressesFailure ?? this.addressesFailure,
-        checkoutData: checkoutData ?? this.checkoutData,
-        appliedCoupon: appliedCoupon ?? this.appliedCoupon,
-        isApplyingCoupon: isApplyingCoupon ?? this.isApplyingCoupon,
-        couponFailure:
-            clearCouponError ? null : couponFailure ?? this.couponFailure,
-      );
 
   // Calculated getters
   double get totalOriginalPrice => items.fold<double>(
@@ -118,24 +67,6 @@ class CartState extends Equatable {
       totalOriginalPrice - totalAfterProductOffers;
 
   double get total => totalAfterProductOffers.clamp(0.0, double.infinity);
-
-  @override
-  List<Object?> get props => [
-        status,
-        items,
-        cartCount,
-        inCartProductIds,
-        addingProductIds,
-        failure,
-        addresses,
-        selectedAddress,
-        isLoadingAddresses,
-        addressesFailure,
-        checkoutData,
-        appliedCoupon,
-        isApplyingCoupon,
-        couponFailure,
-      ];
 
   // Backward compatibility getters
   String get errorMessage => failure?.message ?? '';

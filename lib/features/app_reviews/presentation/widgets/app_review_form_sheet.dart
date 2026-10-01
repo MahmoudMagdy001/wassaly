@@ -1,7 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/app_reviews/domain/entities/app_review_entity.dart';
 import 'package:wassaly/features/app_reviews/presentation/bloc/app_reviews_bloc.dart';
-import 'package:wassaly/features/app_reviews/presentation/bloc/app_reviews_event.dart';
 
 class AppReviewFormSheet extends StatefulWidget {
   final AppReviewEntity? review;

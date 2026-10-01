@@ -3,8 +3,6 @@ import 'package:wassaly/features/home/domain/entities/category_entity.dart';
 import 'package:wassaly/features/home/domain/entities/product_entity.dart';
 import 'package:wassaly/features/products_filter/domain/entities/product_filter_params.dart';
 import 'package:wassaly/features/products_filter/presentation/bloc/products_filter_bloc.dart';
-import 'package:wassaly/features/products_filter/presentation/bloc/products_filter_event.dart';
-import 'package:wassaly/features/products_filter/presentation/bloc/products_filter_state.dart';
 import 'package:wassaly/features/products_filter/presentation/screens/filter_options_sheet.dart';
 
 final _activeMarqueeId = ValueNotifier<int?>(null);
@@ -41,7 +39,7 @@ class ProductsFilterPage extends StatelessWidget {
   }
 
   void _removeCategory(ProductsFilterBloc bloc) {
-    final updated = bloc.state.params.copyWith(clearCategory: true);
+    final updated = bloc.state.params.copyWith(categoryId: null);
     bloc.add(FilterProductsEvent(params: updated));
   }
 
@@ -185,7 +183,7 @@ class ProductsFilterPage extends StatelessWidget {
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
           itemCount: chips.length,
-          separatorBuilder: (_, __) => 8.horizontalSpace,
+          separatorBuilder: (_, _) => 8.horizontalSpace,
           itemBuilder: (_, index) => chips[index],
         ),
       ),

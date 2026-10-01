@@ -69,7 +69,7 @@ class _ServiceDetailsGalleryState extends State<ServiceDetailsGallery> {
         8.verticalSpace,
         ValueListenableBuilder<int>(
           valueListenable: _imageIndex,
-          builder: (_, active, __) => Row(
+          builder: (_, active, _) => Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
               widget.gallery.length,

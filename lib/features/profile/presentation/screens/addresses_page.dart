@@ -48,7 +48,7 @@ class _AddressesViewState extends State<_AddressesView> {
                       (context, index) {
                         if (index.isOdd) return 16.verticalSpace;
                         return const Skeletonizer(
-                          child: _AddressCard(address: _MockAddress()),
+                          child: _AddressCard(address: _mockAddress),
                         );
                       },
                       childCount: 3 * 2 - 1,
@@ -304,15 +304,12 @@ class _DeleteAddressDialog extends StatelessWidget {
   }
 }
 
-class _MockAddress extends AddressEntity {
-  const _MockAddress()
-      : super(
-          id: '0',
-          title: 'Home Address',
-          address: '123 Main Street, Building 4',
-          governorateId: '0',
-          governorateName: 'Cairo',
-          centerId: '0',
-          centerName: 'Nasr City',
-        );
-}
+const _mockAddress = AddressEntity(
+  id: '0',
+  title: 'Home Address',
+  address: '123 Main Street, Building 4',
+  governorateId: '0',
+  governorateName: 'Cairo',
+  centerId: '0',
+  centerName: 'Nasr City',
+);

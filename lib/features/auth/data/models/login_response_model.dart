@@ -14,7 +14,9 @@ class LoginResponseModel {
   factory LoginResponseModel.fromJson(Map<String, dynamic> json) {
     final dynamic rawData = json['data'];
     return LoginResponseModel(
-      status: json['status'] as bool? ?? false,
+      status: json['status'] == true ||
+          json['status'] == 1 ||
+          json['status'] == 'true',
       message: json['message'] as String? ?? '',
       data: rawData != null && rawData is Map<String, dynamic>
           ? LoginData.fromJson(rawData)
@@ -23,10 +25,10 @@ class LoginResponseModel {
   }
 
   Map<String, dynamic> toJson() => {
-      'status': status,
-      'message': message,
-      'data': data?.toJson(),
-    };
+        'status': status,
+        'message': message,
+        'data': data?.toJson(),
+      };
 }
 
 class LoginData {
@@ -38,10 +40,14 @@ class LoginData {
     required this.token,
   });
 
-  factory LoginData.fromJson(Map<String, dynamic> json) => LoginData(
-      user: UserModel.fromJson(json['user'] as Map<String, dynamic>),
-      token: json['token'] as String,
+  factory LoginData.fromJson(Map<String, dynamic> json) {
+    final rawUser = json['user'];
+    final userMap = rawUser is Map ? Map<String, dynamic>.from(rawUser) : <String, dynamic>{};
+    return LoginData(
+      user: UserModel.fromJson(userMap),
+      token: json['token']?.toString() ?? '',
     );
+  }
 
   Map<String, dynamic> toJson() => {
       'user': user.toJson(),

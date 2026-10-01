@@ -1,34 +1,17 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class CouponEntity extends Equatable {
-  final int id;
-  final String code;
-  final String title;
-  final String description;
-  final dynamic value;
-  final String type; // 'percentage' or 'fixed'
-  final int? userUsageLimit;
-  final bool isValid;
+part 'coupon_entity.freezed.dart';
 
-  const CouponEntity({
-    required this.id,
-    required this.code,
-    required this.title,
-    required this.description,
-    required this.value,
-    required this.type,
-    required this.isValid, this.userUsageLimit,
-  });
-
-  @override
-  List<Object?> get props => [
-        id,
-        code,
-        title,
-        description,
-        value,
-        type,
-        userUsageLimit,
-        isValid,
-      ];
+@freezed
+abstract class CouponEntity with _$CouponEntity {
+  const factory CouponEntity({
+    required int id,
+    required String code,
+    required String title,
+    required String description,
+    required dynamic value,
+    required String type,
+    required bool isValid,
+    int? userUsageLimit,
+  }) = _CouponEntity;
 }

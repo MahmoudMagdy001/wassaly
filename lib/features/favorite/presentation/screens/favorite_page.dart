@@ -1,7 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_bloc.dart';
-import 'package:wassaly/features/favorite/presentation/bloc/favorite_event.dart';
-import 'package:wassaly/features/favorite/presentation/bloc/favorite_state.dart';
 import 'package:wassaly/features/favorite/presentation/widgets/product_favorites_tab.dart';
 import 'package:wassaly/features/favorite/presentation/widgets/service_favorites_tab.dart';
 

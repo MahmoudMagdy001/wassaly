@@ -1,8 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/notifications/domain/entities/notification_entity.dart';
 import 'package:wassaly/features/notifications/presentation/bloc/notifications_bloc.dart';
-import 'package:wassaly/features/notifications/presentation/bloc/notifications_event.dart';
-import 'package:wassaly/features/notifications/presentation/bloc/notifications_state.dart';
 import 'package:wassaly/features/notifications/presentation/widgets/notification_card.dart';
 
 class NotificationsPage extends StatelessWidget {
@@ -97,8 +95,8 @@ class NotificationsPage extends StatelessWidget {
 
               // ── Notification list ──
               BlocSelector<NotificationsBloc, NotificationsState,
-                  _ListSelectorData>(
-                selector: (state) => _ListSelectorData(
+                  ({List<NotificationEntity> notifications, bool isSuccess})>(
+                selector: (state) => (
                   notifications: state.notifications,
                   isSuccess: state.status.isSuccess,
                 ),
@@ -152,8 +150,8 @@ class NotificationsPage extends StatelessWidget {
 
               // ── Load-more indicator at the bottom (Standardized & Redundant Trigger) ──
               BlocSelector<NotificationsBloc, NotificationsState,
-                  _PaginationSelectorData>(
-                selector: (state) => _PaginationSelectorData(
+                  ({bool isLoadingMore, bool hasMore})>(
+                selector: (state) => (
                   isLoadingMore: state.isLoadingMore,
                   hasMore: state.hasMore,
                 ),
@@ -262,35 +260,6 @@ class NotificationsPage extends StatelessWidget {
       debugPrint('Error handling notification navigation: $e');
     }
   }
-}
-
-// ---------------------------------------------------------------------------
-// BlocSelector data holders — Equatable prevents unnecessary rebuilds
-// ---------------------------------------------------------------------------
-class _ListSelectorData extends Equatable {
-  final List<NotificationEntity> notifications;
-  final bool isSuccess;
-
-  const _ListSelectorData({
-    required this.notifications,
-    required this.isSuccess,
-  });
-
-  @override
-  List<Object?> get props => [notifications, isSuccess];
-}
-
-class _PaginationSelectorData extends Equatable {
-  final bool isLoadingMore;
-  final bool hasMore;
-
-  const _PaginationSelectorData({
-    required this.isLoadingMore,
-    required this.hasMore,
-  });
-
-  @override
-  List<Object?> get props => [isLoadingMore, hasMore];
 }
 
 // ---------------------------------------------------------------------------

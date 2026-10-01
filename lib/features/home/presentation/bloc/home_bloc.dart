@@ -10,6 +10,9 @@ import 'package:wassaly/features/home/domain/usecases/get_products_usecase.dart'
 import 'package:wassaly/features/home/presentation/bloc/home_event.dart';
 import 'package:wassaly/features/home/presentation/bloc/home_state.dart';
 
+export 'home_event.dart';
+export 'home_state.dart';
+
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final GetBannersUseCase getBannersUseCase;
   final GetCategoriesUseCase getCategoriesUseCase;

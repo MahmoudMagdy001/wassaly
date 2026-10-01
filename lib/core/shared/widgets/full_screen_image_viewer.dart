@@ -28,7 +28,7 @@ class AppImageFullScreenView extends StatefulWidget {
           opaque: false,
           barrierDismissible: true,
           barrierColor: Colors.black.withValues(alpha: 0.8),
-          pageBuilder: (context, _, __) => AppImageFullScreenView(
+          pageBuilder: (context, _, _) => AppImageFullScreenView(
             imageUrls: imageUrls,
             initialIndex: initialIndex,
             heroTagBuilder: heroTagBuilder,

@@ -1,22 +1,12 @@
-part of 'settings_bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class SettingsState extends Equatable {
-  final String language;
-  final ThemeMode themeMode;
+part 'settings_state.freezed.dart';
 
-  const SettingsState({
-    this.language = 'ar',
-    this.themeMode = ThemeMode.system,
-  });
-
-  SettingsState copyWith({
-    String? language,
-    ThemeMode? themeMode,
-  }) => SettingsState(
-      language: language ?? this.language,
-      themeMode: themeMode ?? this.themeMode,
-    );
-
-  @override
-  List<Object?> get props => [language, themeMode];
+@freezed
+sealed class SettingsState with _$SettingsState {
+  const factory SettingsState({
+    @Default('ar') String language,
+    @Default(ThemeMode.system) ThemeMode themeMode,
+  }) = _SettingsState;
 }

@@ -1,21 +1,9 @@
-part of 'forgot_password_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class ForgotPasswordEvent extends Equatable {
-  const ForgotPasswordEvent();
+part 'forgot_password_event.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
-}
-
-class EmailChanged extends ForgotPasswordEvent {
-  final String email;
-
-  const EmailChanged(this.email);
-
-  @override
-  List<Object?> get props => [email];
-}
-
-class SendOtpSubmitted extends ForgotPasswordEvent {
-  const SendOtpSubmitted();
+@freezed
+sealed class ForgotPasswordEvent with _$ForgotPasswordEvent {
+  const factory ForgotPasswordEvent.emailChanged(String email) = EmailChanged;
+  const factory ForgotPasswordEvent.sendOtpSubmitted() = SendOtpSubmitted;
 }

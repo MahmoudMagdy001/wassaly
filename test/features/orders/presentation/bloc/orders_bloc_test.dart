@@ -7,8 +7,6 @@ import 'package:wassaly/core/utils/pagination.dart';
 import 'package:wassaly/features/orders/domain/entities/order_entity.dart';
 import 'package:wassaly/features/orders/domain/usecases/get_orders_usecase.dart';
 import 'package:wassaly/features/orders/presentation/bloc/orders_bloc.dart';
-import 'package:wassaly/features/orders/presentation/bloc/orders_event.dart';
-import 'package:wassaly/features/orders/presentation/bloc/orders_state.dart';
 import 'package:wassaly/features/service_booking/domain/usecases/get_my_bookings_usecase.dart';
 
 class MockGetOrdersUseCase extends Mock implements GetOrdersUseCase {}

@@ -1,150 +1,52 @@
-import 'package:wassaly/core/imports/imports.dart';
-
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:wassaly/features/home/domain/entities/product_entity.dart';
 import 'package:wassaly/features/sub_category/domain/entities/service_entity.dart';
 
-class ProviderDetailReviewEntity extends Equatable {
-  final int? id;
-  final int rating;
-  final String comment;
-  final String? createdAt;
+part 'provider_detail_entity.freezed.dart';
 
-  const ProviderDetailReviewEntity({
-    required this.rating, required this.comment, this.id,
-    this.createdAt,
-  });
-
-  @override
-  List<Object?> get props => [id, rating, comment, createdAt];
-}
-
-class ProviderDetailUserEntity extends Equatable {
-  final int id;
-  final String name;
-  final String email;
-  final String phone;
-  final String? avatar;
-  final String type;
-  final int isActive;
-  final String createdAt;
-
-  const ProviderDetailUserEntity({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.phone,
-    required this.type, required this.isActive, required this.createdAt, this.avatar,
-  });
-
-  @override
-  List<Object?> get props => [
-        id,
-        name,
-        email,
-        phone,
-        avatar,
-        type,
-        isActive,
-        createdAt,
-      ];
-}
-
-class ProviderDetailEntity extends Equatable {
-  final int id;
-  final ProviderDetailUserEntity user;
-  final String title;
-  final String serviceDescription;
-  final String priceFrom;
-  final String fromDay;
-  final String toDay;
-  final String startTime;
-  final String endTime;
-  final String status;
-  final String cover;
-  final double averageRating;
-  final int reviewsCount;
-  final int successfulOrdersCount;
-  final List<ProviderDetailReviewEntity> reviews;
-  final List<ServiceEntity> services;
-  final List<ProductEntity> products;
-
-  const ProviderDetailEntity({
-    required this.id,
-    required this.user,
-    required this.title,
-    required this.serviceDescription,
-    required this.priceFrom,
-    required this.fromDay,
-    required this.toDay,
-    required this.startTime,
-    required this.endTime,
-    required this.status,
-    required this.cover,
-    required this.averageRating,
-    required this.reviewsCount,
-    required this.successfulOrdersCount,
-    required this.reviews,
-    required this.services,
-    required this.products,
-  });
-
-  ProviderDetailEntity copyWith({
+@freezed
+sealed class ProviderDetailReviewEntity with _$ProviderDetailReviewEntity {
+  const factory ProviderDetailReviewEntity({
+    required int rating,
+    required String comment,
     int? id,
-    ProviderDetailUserEntity? user,
-    String? title,
-    String? serviceDescription,
-    String? priceFrom,
-    String? fromDay,
-    String? toDay,
-    String? startTime,
-    String? endTime,
-    String? status,
-    String? cover,
-    double? averageRating,
-    int? reviewsCount,
-    int? successfulOrdersCount,
-    List<ProviderDetailReviewEntity>? reviews,
-    List<ServiceEntity>? services,
-    List<ProductEntity>? products,
-  }) => ProviderDetailEntity(
-      id: id ?? this.id,
-      user: user ?? this.user,
-      title: title ?? this.title,
-      serviceDescription: serviceDescription ?? this.serviceDescription,
-      priceFrom: priceFrom ?? this.priceFrom,
-      fromDay: fromDay ?? this.fromDay,
-      toDay: toDay ?? this.toDay,
-      startTime: startTime ?? this.startTime,
-      endTime: endTime ?? this.endTime,
-      status: status ?? this.status,
-      cover: cover ?? this.cover,
-      averageRating: averageRating ?? this.averageRating,
-      reviewsCount: reviewsCount ?? this.reviewsCount,
-      successfulOrdersCount:
-          successfulOrdersCount ?? this.successfulOrdersCount,
-      reviews: reviews ?? this.reviews,
-      services: services ?? this.services,
-      products: products ?? this.products,
-    );
+    String? createdAt,
+  }) = _ProviderDetailReviewEntity;
+}
 
-  @override
-  List<Object?> get props => [
-        id,
-        user,
-        title,
-        serviceDescription,
-        priceFrom,
-        fromDay,
-        toDay,
-        startTime,
-        endTime,
-        status,
-        cover,
-        averageRating,
-        reviewsCount,
-        successfulOrdersCount,
-        reviews,
-        services,
-        products,
-      ];
+@freezed
+sealed class ProviderDetailUserEntity with _$ProviderDetailUserEntity {
+  const factory ProviderDetailUserEntity({
+    required int id,
+    required String name,
+    required String email,
+    required String phone,
+    required String type,
+    required int isActive,
+    required String createdAt,
+    String? avatar,
+  }) = _ProviderDetailUserEntity;
+}
+
+@freezed
+sealed class ProviderDetailEntity with _$ProviderDetailEntity {
+  const factory ProviderDetailEntity({
+    required int id,
+    required ProviderDetailUserEntity user,
+    required String title,
+    required String serviceDescription,
+    required String priceFrom,
+    required String fromDay,
+    required String toDay,
+    required String startTime,
+    required String endTime,
+    required String status,
+    required String cover,
+    required double averageRating,
+    required int reviewsCount,
+    required int successfulOrdersCount,
+    required List<ProviderDetailReviewEntity> reviews,
+    required List<ServiceEntity> services,
+    required List<ProductEntity> products,
+  }) = _ProviderDetailEntity;
 }

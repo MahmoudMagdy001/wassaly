@@ -12,7 +12,7 @@ class AppReviewsRepositoryImpl implements AppReviewsRepository {
   Future<Either<Failure, List<AppReviewEntity>>> getAppReviews() async {
     try {
       final result = await _remoteDataSource.getAppReviews();
-      return Right(result);
+      return Right(result.map((m) => m.toEntity()).toList());
     } on Failure catch (e) {
       return Left(e);
     } on Object catch (e) {
@@ -27,7 +27,7 @@ class AppReviewsRepositoryImpl implements AppReviewsRepository {
   }) async {
     try {
       final response = await _remoteDataSource.addAppReview(rating, comment);
-      return Right(response);
+      return Right(response.toEntity());
     } on Failure catch (e) {
       return Left(e);
     } on Object catch (e) {
@@ -44,7 +44,7 @@ class AppReviewsRepositoryImpl implements AppReviewsRepository {
     try {
       final response =
           await _remoteDataSource.updateAppReview(reviewId, rating, comment);
-      return Right(response);
+      return Right(response.toEntity());
     } on Failure catch (e) {
       return Left(e);
     } on Object catch (e) {

@@ -1,18 +1,23 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:wassaly/features/auth/domain/entities/forget_send_otp_response_entity.dart';
 
-class ForgetSendOtpResponseModel extends ForgetSendOtpResponseEntity {
-  const ForgetSendOtpResponseModel({
-    required super.status,
-    required super.message,
-  });
+part 'forget_send_otp_response_model.freezed.dart';
+part 'forget_send_otp_response_model.g.dart';
 
-  factory ForgetSendOtpResponseModel.fromJson(Map<String, dynamic> json) => ForgetSendOtpResponseModel(
-      status: json['status'] as bool? ?? false,
-      message: json['message'] as String? ?? '',
-    );
+@freezed
+abstract class ForgetSendOtpResponseModel with _$ForgetSendOtpResponseModel {
+  const ForgetSendOtpResponseModel._();
 
-  Map<String, dynamic> toJson() => {
-      'status': status,
-      'message': message,
-    };
+  const factory ForgetSendOtpResponseModel({
+    @Default(false) bool status,
+    @Default('') String message,
+  }) = _ForgetSendOtpResponseModel;
+
+  factory ForgetSendOtpResponseModel.fromJson(Map<String, dynamic> json) =>
+      _$ForgetSendOtpResponseModelFromJson(json);
+
+  ForgetSendOtpResponseEntity toEntity() => ForgetSendOtpResponseEntity(
+        status: status,
+        message: message,
+      );
 }

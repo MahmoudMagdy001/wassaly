@@ -1,7 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/product_details/domain/entities/product_detail_entity.dart';
 import 'package:wassaly/features/product_details/presentation/bloc/product_details_bloc.dart';
-import 'package:wassaly/features/product_details/presentation/bloc/product_details_event.dart';
 
 class ProductReviewFormSheet extends StatefulWidget {
   final int productId;

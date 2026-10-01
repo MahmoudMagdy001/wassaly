@@ -1,6 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/category/presentation/bloc/category_bloc.dart';
-import 'package:wassaly/features/category/presentation/bloc/category_event.dart';
 import 'package:wassaly/features/home/domain/entities/sub_category_entity.dart';
 
 class CategorySideMenu extends StatelessWidget {

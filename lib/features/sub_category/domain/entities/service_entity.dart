@@ -1,20 +1,15 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class ServiceEntity extends Equatable {
-  final int id;
-  final String title;
-  final String description;
-  final String? image;
-  final num price;
-  final bool isFavorite;
+part 'service_entity.freezed.dart';
 
-  const ServiceEntity({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.price, required this.isFavorite, this.image,
-  });
-
-  @override
-  List<Object?> get props => [id, title, description, image, price, isFavorite];
+@freezed
+abstract class ServiceEntity with _$ServiceEntity {
+  const factory ServiceEntity({
+    required int id,
+    required String title,
+    required String description,
+    required num price,
+    required bool isFavorite,
+    String? image,
+  }) = _ServiceEntity;
 }

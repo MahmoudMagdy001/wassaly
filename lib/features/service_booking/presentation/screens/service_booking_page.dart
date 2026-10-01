@@ -204,7 +204,7 @@ class ServiceBookingPage extends StatelessWidget {
                               ? null
                               : () => context
                                   .read<ServiceBookingBloc>()
-                                  .add(ServiceBookingSubmitted()),
+                                  .add(const ServiceBookingSubmitted()),
                         );
                       },
                     ),

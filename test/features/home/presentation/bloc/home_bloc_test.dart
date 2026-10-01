@@ -9,8 +9,6 @@ import 'package:wassaly/features/home/domain/usecases/get_categories_usecase.dar
 import 'package:wassaly/features/home/domain/usecases/get_popular_services_usecase.dart';
 import 'package:wassaly/features/home/domain/usecases/get_products_usecase.dart';
 import 'package:wassaly/features/home/presentation/bloc/home_bloc.dart';
-import 'package:wassaly/features/home/presentation/bloc/home_event.dart';
-import 'package:wassaly/features/home/presentation/bloc/home_state.dart';
 
 class MockGetBannersUseCase extends Mock implements GetBannersUseCase {}
 class MockGetCategoriesUseCase extends Mock implements GetCategoriesUseCase {}
@@ -62,7 +60,7 @@ void main() {
             .thenAnswer((_) async => const Right<Failure, List<BannerEntity>>([tBanner]));
         return buildBloc();
       },
-      act: (bloc) => bloc.add(GetBannersEvent()),
+      act: (bloc) => bloc.add(const GetBannersEvent()),
       expect: () => [
         const HomeState(bannersStatus: HomeStatus.loading),
         const HomeState(
@@ -79,7 +77,7 @@ void main() {
             .thenAnswer((_) async => const Left<Failure, List<BannerEntity>>(ServerFailure('Failed to load banners')));
         return buildBloc();
       },
-      act: (bloc) => bloc.add(GetBannersEvent()),
+      act: (bloc) => bloc.add(const GetBannersEvent()),
       expect: () => [
         const HomeState(bannersStatus: HomeStatus.loading),
         const HomeState(

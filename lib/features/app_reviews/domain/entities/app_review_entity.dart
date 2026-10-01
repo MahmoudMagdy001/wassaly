@@ -1,36 +1,24 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class AppReviewUserEntity extends Equatable {
-  final int id;
-  final String name;
-  final String? avatar;
-  final String type;
+part 'app_review_entity.freezed.dart';
 
-  const AppReviewUserEntity({
-    required this.id,
-    required this.name,
-    required this.type, this.avatar,
-  });
-
-  @override
-  List<Object?> get props => [id, name, avatar, type];
+@freezed
+abstract class AppReviewUserEntity with _$AppReviewUserEntity {
+  const factory AppReviewUserEntity({
+    required int id,
+    required String name,
+    required String type,
+    String? avatar,
+  }) = _AppReviewUserEntity;
 }
 
-class AppReviewEntity extends Equatable {
-  final int id;
-  final int rating;
-  final String comment;
-  final AppReviewUserEntity user;
-  final String createdAt;
-
-  const AppReviewEntity({
-    required this.id,
-    required this.rating,
-    required this.comment,
-    required this.user,
-    required this.createdAt,
-  });
-
-  @override
-  List<Object?> get props => [id, rating, comment, user, createdAt];
+@freezed
+abstract class AppReviewEntity with _$AppReviewEntity {
+  const factory AppReviewEntity({
+    required int id,
+    required int rating,
+    required String comment,
+    required AppReviewUserEntity user,
+    required String createdAt,
+  }) = _AppReviewEntity;
 }

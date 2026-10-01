@@ -7,6 +7,9 @@ import 'package:wassaly/features/cart/domain/usecases/update_quantity_usecase.da
 import 'package:wassaly/features/cart/presentation/bloc/cart_event.dart';
 import 'package:wassaly/features/cart/presentation/bloc/cart_state.dart';
 
+export 'cart_event.dart';
+export 'cart_state.dart';
+
 class CartBloc extends Bloc<CartEvent, CartState> {
   final GetCartItemsUseCase getCartItemsUseCase;
   final AddToCartUseCase addToCartUseCase;

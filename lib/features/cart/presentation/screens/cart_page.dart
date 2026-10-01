@@ -1,8 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/cart/domain/entities/cart_item_entity.dart';
 import 'package:wassaly/features/cart/presentation/bloc/cart_bloc.dart';
-import 'package:wassaly/features/cart/presentation/bloc/cart_event.dart';
-import 'package:wassaly/features/cart/presentation/bloc/cart_state.dart';
 import 'package:wassaly/features/cart/presentation/widgets/cart/cart_item_widget.dart';
 import 'package:wassaly/features/cart/presentation/widgets/cart/cart_order_summary.dart';
 

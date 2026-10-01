@@ -1,36 +1,18 @@
-import 'package:equatable/equatable.dart';
-
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:wassaly/features/cart/domain/entities/cart_item_entity.dart';
 
-class PlaceOrderParams extends Equatable {
-  final String customerName;
-  final String customerPhone;
-  final String customerAddress;
-  final String governorateId;
-  final String region;
-  final String centerId;
-  final String? couponCode;
-  final List<CartItemEntity> items;
+part 'place_order_params.freezed.dart';
 
-  const PlaceOrderParams({
-    required this.customerName,
-    required this.customerPhone,
-    required this.customerAddress,
-    required this.governorateId,
-    required this.region,
-    required this.centerId,
-    required this.items, this.couponCode,
-  });
-
-  @override
-  List<Object?> get props => [
-        customerName,
-        customerPhone,
-        customerAddress,
-        governorateId,
-        region,
-        centerId,
-        couponCode,
-        items,
-      ];
+@freezed
+abstract class PlaceOrderParams with _$PlaceOrderParams {
+  const factory PlaceOrderParams({
+    required String customerName,
+    required String customerPhone,
+    required String customerAddress,
+    required String governorateId,
+    required String region,
+    required String centerId,
+    required List<CartItemEntity> items,
+    String? couponCode,
+  }) = _PlaceOrderParams;
 }

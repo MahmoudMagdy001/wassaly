@@ -2,15 +2,11 @@ import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
 import 'package:wassaly/features/cart/data/datasources/cart_local_datasource.dart';
 import 'package:wassaly/features/cart/presentation/bloc/cart_bloc.dart';
-import 'package:wassaly/features/cart/presentation/bloc/cart_event.dart';
 import 'package:wassaly/features/favorite/data/datasources/favorite_local_datasource.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_bloc.dart';
-import 'package:wassaly/features/favorite/presentation/bloc/favorite_event.dart';
 import 'package:wassaly/features/notifications/data/datasources/notification_local_datasource.dart';
 import 'package:wassaly/features/notifications/presentation/bloc/notifications_bloc.dart';
-import 'package:wassaly/features/notifications/presentation/bloc/notifications_event.dart';
 import 'package:wassaly/features/orders/presentation/bloc/orders_bloc.dart';
-import 'package:wassaly/features/orders/presentation/bloc/orders_event.dart';
 import 'package:wassaly/features/profile/presentation/bloc/profile/profile_bloc.dart';
 import 'package:wassaly/features/profile/presentation/bloc/settings/settings_bloc.dart';
 

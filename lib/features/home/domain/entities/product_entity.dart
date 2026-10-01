@@ -1,27 +1,23 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:wassaly/features/home/domain/entities/offer_entity.dart';
 import 'package:wassaly/features/home/domain/entities/review_entity.dart';
 
-class ProductEntity extends Equatable {
-  final int id;
-  final String name;
-  final String image;
-  final String price;
-  final String description;
-  final List<OfferEntity> offers;
-  final List<ReviewEntity> reviews;
-  final bool isFavorite;
+part 'product_entity.freezed.dart';
 
-  const ProductEntity({
-    required this.id,
-    required this.name,
-    required this.image,
-    required this.price,
-    required this.description,
-    required this.offers,
-    required this.reviews,
-    required this.isFavorite,
-  });
+@freezed
+abstract class ProductEntity with _$ProductEntity {
+  const ProductEntity._();
+
+  const factory ProductEntity({
+    required int id,
+    required String name,
+    required String image,
+    required String price,
+    required String description,
+    required List<OfferEntity> offers,
+    required List<ReviewEntity> reviews,
+    required bool isFavorite,
+  }) = _ProductEntity;
 
   /// Returns the first offer's discount percentage, or 0 if no offers.
   int get discountPercentage =>
@@ -46,16 +42,4 @@ class ProductEntity extends Equatable {
 
   /// Total number of reviews.
   int get reviewCount => reviews.length;
-
-  @override
-  List<Object?> get props => [
-        id,
-        name,
-        image,
-        price,
-        description,
-        offers,
-        reviews,
-        isFavorite,
-      ];
 }

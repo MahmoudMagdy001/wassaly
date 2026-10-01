@@ -1,8 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/orders/domain/entities/order_entity.dart';
 import 'package:wassaly/features/orders/presentation/bloc/order_detail/order_detail_bloc.dart';
-import 'package:wassaly/features/orders/presentation/bloc/order_detail/order_detail_event.dart';
-import 'package:wassaly/features/orders/presentation/bloc/order_detail/order_detail_state.dart';
 import 'package:wassaly/features/profile/domain/entities/address_entity.dart';
 import 'package:wassaly/features/profile/presentation/bloc/profile/profile_bloc.dart';
 

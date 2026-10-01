@@ -1,6 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/app_reviews/presentation/bloc/app_reviews_bloc.dart';
-import 'package:wassaly/features/app_reviews/presentation/bloc/app_reviews_event.dart';
 import 'package:wassaly/features/app_reviews/presentation/screens/app_reviews_page.dart';
 import 'package:wassaly/features/auth/presentation/screens/auth_callback_page.dart';
 import 'package:wassaly/features/auth/presentation/screens/forgot_password_page.dart';
@@ -24,13 +23,11 @@ import 'package:wassaly/features/favorite/presentation/screens/favorite_page.dar
 import 'package:wassaly/features/home/domain/entities/category_entity.dart';
 import 'package:wassaly/features/home/domain/entities/sub_category_entity.dart';
 import 'package:wassaly/features/home/presentation/bloc/home_bloc.dart';
-import 'package:wassaly/features/home/presentation/bloc/home_event.dart';
 import 'package:wassaly/features/home/presentation/screens/home_page.dart';
 import 'package:wassaly/features/main_layout/presentation/screens/main_layout_page.dart';
 import 'package:wassaly/features/notifications/presentation/pages/notifications_page.dart';
 import 'package:wassaly/features/offers/presentation/pages/offers_page.dart';
 import 'package:wassaly/features/orders/presentation/bloc/order_detail/order_detail_bloc.dart';
-import 'package:wassaly/features/orders/presentation/bloc/order_detail/order_detail_event.dart';
 import 'package:wassaly/features/orders/presentation/screens/booking_details_page.dart';
 import 'package:wassaly/features/orders/presentation/screens/order_details_page.dart';
 import 'package:wassaly/features/orders/presentation/screens/orders_page.dart';
@@ -51,7 +48,6 @@ import 'package:wassaly/features/provider_details/presentation/screens/provider_
 import 'package:wassaly/features/search/presentation/screens/search_page.dart';
 import 'package:wassaly/features/service_booking/domain/entities/booking_entity.dart';
 import 'package:wassaly/features/service_booking/presentation/bloc/booking_detail/booking_detail_bloc.dart';
-import 'package:wassaly/features/service_booking/presentation/bloc/booking_detail/booking_detail_event.dart';
 import 'package:wassaly/features/service_booking/presentation/screens/booking_success_page.dart';
 import 'package:wassaly/features/service_booking/presentation/screens/service_booking_page.dart';
 import 'package:wassaly/features/service_details/domain/entities/service_detail_entity.dart';
@@ -221,7 +217,7 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.allCategories,
       name: 'allCategories',
       builder: (context, state) => BlocProvider.value(
-        value: sl<HomeBloc>()..add(GetCategoriesEvent()),
+        value: sl<HomeBloc>()..add(const GetCategoriesEvent()),
         child: const CategoriesPage(),
       ),
     ),

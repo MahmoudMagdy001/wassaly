@@ -2,8 +2,6 @@ import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/home/domain/entities/product_entity.dart';
 import 'package:wassaly/features/product_details/domain/entities/product_detail_entity.dart';
 import 'package:wassaly/features/product_details/presentation/bloc/product_details_bloc.dart';
-import 'package:wassaly/features/product_details/presentation/bloc/product_details_event.dart';
-import 'package:wassaly/features/product_details/presentation/bloc/product_details_state.dart';
 import 'package:wassaly/features/product_details/presentation/widgets/product_details_content.dart';
 
 class ProductDetailsPage extends StatelessWidget {

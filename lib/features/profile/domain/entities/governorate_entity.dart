@@ -1,16 +1,12 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class GovernorateEntity extends Equatable {
-  final String id;
-  final String name;
-  final double shippingCost;
+part 'governorate_entity.freezed.dart';
 
-  const GovernorateEntity({
-    required this.id,
-    required this.name,
-    required this.shippingCost,
-  });
-
-  @override
-  List<Object?> get props => [id, name, shippingCost];
+@freezed
+abstract class GovernorateEntity with _$GovernorateEntity {
+  const factory GovernorateEntity({
+    required String id,
+    required String name,
+    required double shippingCost,
+  }) = _GovernorateEntity;
 }

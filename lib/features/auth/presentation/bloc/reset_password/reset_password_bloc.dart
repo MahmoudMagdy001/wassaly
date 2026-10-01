@@ -1,8 +1,10 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/auth/domain/usecases/reset_password_usecase.dart';
+import 'package:wassaly/features/auth/presentation/bloc/reset_password/reset_password_event.dart';
+import 'package:wassaly/features/auth/presentation/bloc/reset_password/reset_password_state.dart';
 
-part 'reset_password_event.dart';
-part 'reset_password_state.dart';
+export 'reset_password_event.dart';
+export 'reset_password_state.dart';
 
 class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
   final ResetPasswordUseCase _resetPasswordUseCase;
@@ -25,9 +27,9 @@ class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
   ) {
     emit(state.copyWith(
       password: event.password,
-      clearError: true,
+      errorMessage: null,
       status: ResetPasswordStatus.initial,
-    ),);
+    ));
   }
 
   void _onConfirmPasswordChanged(
@@ -36,9 +38,9 @@ class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
   ) {
     emit(state.copyWith(
       passwordConfirmation: event.password,
-      clearError: true,
+      errorMessage: null,
       status: ResetPasswordStatus.initial,
-    ),);
+    ));
   }
 
   void _onPasswordVisibilityToggled(
@@ -48,11 +50,11 @@ class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
     if (event.isNewPassword) {
       emit(state.copyWith(
         isNewPasswordVisible: !state.isNewPasswordVisible,
-      ),);
+      ));
     } else {
       emit(state.copyWith(
         isConfirmPasswordVisible: !state.isConfirmPasswordVisible,
-      ),);
+      ));
     }
   }
 
@@ -65,20 +67,20 @@ class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
         emit(state.copyWith(
           status: ResetPasswordStatus.error,
           errorMessage: 'auth.password_too_short',
-        ),);
+        ));
       } else if (!state.isConfirmPasswordValid) {
         emit(state.copyWith(
           status: ResetPasswordStatus.error,
           errorMessage: 'auth.passwords_do_not_match',
-        ),);
+        ));
       }
       return;
     }
 
     emit(state.copyWith(
       status: ResetPasswordStatus.loading,
-      clearError: true,
-    ),);
+      errorMessage: null,
+    ));
 
     final result = await _resetPasswordUseCase(
       ResetPasswordParams(
@@ -93,12 +95,12 @@ class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
       (failure) => emit(state.copyWith(
         status: ResetPasswordStatus.error,
         errorMessage: failure.message,
-      ),),
+      )),
       (_) => emit(state.copyWith(
         status: ResetPasswordStatus.success,
         password: '',
         passwordConfirmation: '',
-      ),),
+      )),
     );
   }
 }

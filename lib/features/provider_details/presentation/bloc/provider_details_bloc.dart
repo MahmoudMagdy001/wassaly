@@ -4,6 +4,9 @@ import 'package:wassaly/features/provider_details/domain/usecases/get_provider_d
 import 'package:wassaly/features/provider_details/presentation/bloc/provider_details_event.dart';
 import 'package:wassaly/features/provider_details/presentation/bloc/provider_details_state.dart';
 
+export 'provider_details_event.dart';
+export 'provider_details_state.dart';
+
 class ProviderDetailsBloc
     extends Bloc<ProviderDetailsEvent, ProviderDetailsState> {
   final GetProviderDetailsUseCase _getProviderDetailsUseCase;

@@ -12,6 +12,9 @@ import 'package:wassaly/features/notifications/domain/usecases/toggle_notificati
 import 'package:wassaly/features/notifications/presentation/bloc/notifications_event.dart';
 import 'package:wassaly/features/notifications/presentation/bloc/notifications_state.dart';
 
+export 'notifications_event.dart';
+export 'notifications_state.dart';
+
 class NotificationsBloc
     extends safe_bloc.Bloc<NotificationsEvent, NotificationsState> {
   final GetNotificationsUseCase getNotificationsUseCase;

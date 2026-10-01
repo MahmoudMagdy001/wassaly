@@ -1,27 +1,13 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/provider_details/domain/entities/provider_detail_entity.dart';
 
-class ProviderDetailsState extends Equatable {
-  final AppStatus status;
-  final ProviderDetailEntity? provider;
-  final String errorMessage;
+part 'provider_details_state.freezed.dart';
 
-  const ProviderDetailsState({
-    this.status = AppStatus.initial,
-    this.provider,
-    this.errorMessage = '',
-  });
-
-  ProviderDetailsState copyWith({
-    AppStatus? status,
+@freezed
+sealed class ProviderDetailsState with _$ProviderDetailsState {
+  const factory ProviderDetailsState({
+    @Default(AppStatus.initial) AppStatus status,
     ProviderDetailEntity? provider,
-    String? errorMessage,
-  }) => ProviderDetailsState(
-      status: status ?? this.status,
-      provider: provider ?? this.provider,
-      errorMessage: errorMessage ?? this.errorMessage,
-    );
-
-  @override
-  List<Object?> get props => [status, provider, errorMessage];
+    @Default('') String errorMessage,
+  }) = _ProviderDetailsState;
 }

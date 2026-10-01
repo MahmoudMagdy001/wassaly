@@ -1,17 +1,9 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class ProviderDetailsEvent extends Equatable {
-  const ProviderDetailsEvent();
+part 'provider_details_event.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
-}
-
-class FetchProviderDetailsEvent extends ProviderDetailsEvent {
-  final int providerId;
-
-  const FetchProviderDetailsEvent(this.providerId);
-
-  @override
-  List<Object?> get props => [providerId];
+@freezed
+sealed class ProviderDetailsEvent with _$ProviderDetailsEvent {
+  const factory ProviderDetailsEvent.fetchProviderDetails(int providerId) =
+      FetchProviderDetailsEvent;
 }

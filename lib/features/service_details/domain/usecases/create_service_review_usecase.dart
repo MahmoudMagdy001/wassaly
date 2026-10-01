@@ -1,29 +1,26 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/service_details/domain/repositories/service_details_repository.dart';
 
+part 'create_service_review_usecase.freezed.dart';
+
 class CreateServiceReviewUseCase {
   final ServiceDetailsRepository _repository;
 
   const CreateServiceReviewUseCase(this._repository);
 
-  Future<Either<Failure, Unit>> call(CreateServiceReviewParams params) => _repository.createServiceReview(
-      serviceId: params.serviceId,
-      rating: params.rating,
-      comment: params.comment,
-    );
+  Future<Either<Failure, Unit>> call(CreateServiceReviewParams params) =>
+      _repository.createServiceReview(
+        serviceId: params.serviceId,
+        rating: params.rating,
+        comment: params.comment,
+      );
 }
 
-class CreateServiceReviewParams extends Equatable {
-  final int serviceId;
-  final int rating;
-  final String comment;
-
-  const CreateServiceReviewParams({
-    required this.serviceId,
-    required this.rating,
-    required this.comment,
-  });
-
-  @override
-  List<Object?> get props => [serviceId, rating, comment];
+@freezed
+sealed class CreateServiceReviewParams with _$CreateServiceReviewParams {
+  const factory CreateServiceReviewParams({
+    required int serviceId,
+    required int rating,
+    required String comment,
+  }) = _CreateServiceReviewParams;
 }

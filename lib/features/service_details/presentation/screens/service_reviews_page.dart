@@ -59,7 +59,7 @@ class ServiceReviewsPage extends StatelessWidget {
                 padding: EdgeInsets.all(8.r),
                 sliver: SliverList.separated(
                   itemCount: reviews.length,
-                  separatorBuilder: (_, __) => 2.verticalSpace,
+                  separatorBuilder: (_, _) => 2.verticalSpace,
                   itemBuilder: (context, index) {
                     final review = reviews[index];
                     final isMine = currentUserId != null &&

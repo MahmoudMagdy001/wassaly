@@ -36,7 +36,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
         passwordConfirmation: passwordConfirmation,
       );
       await _localDataSource.cacheUser(user);
-      return Right(user);
+      return Right(user.toEntity());
     } on Failure catch (e) {
       return Left(e);
     } on Object catch (e) {
@@ -74,7 +74,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
   FutureEither<List<AddressEntity>> getAddresses() async {
     try {
       final addresses = await _remoteDataSource.getAddresses();
-      return Right(addresses);
+      return Right(addresses.map((m) => m.toEntity()).toList());
     } on Failure catch (e) {
       return Left(e);
     } on Object catch (e) {
@@ -96,7 +96,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
         governorateId: governorateId,
         centerId: centerId,
       );
-      return Right(result);
+      return Right(result.toEntity());
     } on Failure catch (e) {
       return Left(e);
     } on Object catch (e) {
@@ -108,7 +108,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
   FutureEither<List<GovernorateEntity>> getGovernorates() async {
     try {
       final governorates = await _remoteDataSource.getGovernorates();
-      return Right(governorates);
+      return Right(governorates.map((m) => m.toEntity()).toList());
     } on Failure catch (e) {
       return Left(e);
     } on Object catch (e) {
@@ -124,7 +124,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
       final centers = await _remoteDataSource.getCenters(
         governorateId: governorateId,
       );
-      return Right(centers);
+      return Right(centers.map((m) => m.toEntity()).toList());
     } on Failure catch (e) {
       return Left(e);
     } on Object catch (e) {
@@ -148,7 +148,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
         governorateId: governorateId,
         centerId: centerId,
       );
-      return Right(result);
+      return Right(result.toEntity());
     } on Failure catch (e) {
       return Left(e);
     } on Object catch (e) {

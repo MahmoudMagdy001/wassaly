@@ -1,7 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/orders/domain/entities/order_entity.dart';
 import 'package:wassaly/features/orders/presentation/bloc/orders_bloc.dart';
-import 'package:wassaly/features/orders/presentation/bloc/orders_event.dart';
 import 'package:wassaly/features/orders/presentation/widgets/order_status_config.dart';
 
 class OrderCard extends StatelessWidget {

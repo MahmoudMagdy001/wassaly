@@ -3,6 +3,9 @@ import 'package:wassaly/features/sub_category/domain/usecases/get_sub_category_d
 import 'package:wassaly/features/sub_category/presentation/bloc/sub_category_event.dart';
 import 'package:wassaly/features/sub_category/presentation/bloc/sub_category_state.dart';
 
+export 'sub_category_event.dart';
+export 'sub_category_state.dart';
+
 class SubCategoryBloc extends Bloc<SubCategoryEvent, SubCategoryState> {
   final GetSubCategoryDetailUseCase _getSubCategoryDetailUseCase;
 

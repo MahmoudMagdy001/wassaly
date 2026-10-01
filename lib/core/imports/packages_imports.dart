@@ -4,7 +4,6 @@ export 'package:awesome_notifications/awesome_notifications.dart'
 export 'package:cached_network_image/cached_network_image.dart';
 export 'package:cross_file/cross_file.dart';
 export 'package:dio/dio.dart';
-export 'package:equatable/equatable.dart';
 export 'package:firebase_messaging/firebase_messaging.dart';
 export 'package:flutter_animate/flutter_animate.dart' hide ShimmerEffect;
 export 'package:flutter_bloc/flutter_bloc.dart' hide Bloc, Cubit;
@@ -13,6 +12,7 @@ export 'package:flutter_screenutil/flutter_screenutil.dart';
 export 'package:flutter_secure_storage/flutter_secure_storage.dart';
 export 'package:flutter_svg/flutter_svg.dart';
 export 'package:fpdart/fpdart.dart' hide State;
+export 'package:freezed_annotation/freezed_annotation.dart';
 export 'package:go_router/go_router.dart';
 export 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 export 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';

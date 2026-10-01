@@ -1,49 +1,22 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class ProductDetailsEvent extends Equatable {
-  const ProductDetailsEvent();
+part 'product_details_event.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
-}
+@freezed
+sealed class ProductDetailsEvent with _$ProductDetailsEvent {
+  const factory ProductDetailsEvent.fetchProductDetails(int productId) =
+      FetchProductDetailsEvent;
 
-class FetchProductDetailsEvent extends ProductDetailsEvent {
-  final int productId;
+  const factory ProductDetailsEvent.createProductReview({
+    required int productId,
+    required int rating,
+    required String comment,
+  }) = CreateProductReviewEvent;
 
-  const FetchProductDetailsEvent(this.productId);
-
-  @override
-  List<Object?> get props => [productId];
-}
-
-class CreateProductReviewEvent extends ProductDetailsEvent {
-  final int productId;
-  final int rating;
-  final String comment;
-
-  const CreateProductReviewEvent({
-    required this.productId,
-    required this.rating,
-    required this.comment,
-  });
-
-  @override
-  List<Object?> get props => [productId, rating, comment];
-}
-
-class UpdateProductReviewEvent extends ProductDetailsEvent {
-  final int productId;
-  final int reviewId;
-  final int rating;
-  final String comment;
-
-  const UpdateProductReviewEvent({
-    required this.productId,
-    required this.reviewId,
-    required this.rating,
-    required this.comment,
-  });
-
-  @override
-  List<Object?> get props => [productId, reviewId, rating, comment];
+  const factory ProductDetailsEvent.updateProductReview({
+    required int productId,
+    required int reviewId,
+    required int rating,
+    required String comment,
+  }) = UpdateProductReviewEvent;
 }

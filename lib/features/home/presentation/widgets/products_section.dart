@@ -1,8 +1,6 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/home/domain/entities/product_entity.dart';
 import 'package:wassaly/features/home/presentation/bloc/home_bloc.dart';
-import 'package:wassaly/features/home/presentation/bloc/home_event.dart';
-import 'package:wassaly/features/home/presentation/bloc/home_state.dart';
 
 final _activeMarqueeId = ValueNotifier<int?>(null);
 
@@ -89,7 +87,7 @@ class ProductsSection extends StatelessWidget {
               hasMore: products.hasMore,
               isLoadingMore: isProductsLoadingMore,
               onLoadMore: () {
-                context.read<HomeBloc>().add(LoadMoreProductsEvent());
+                context.read<HomeBloc>().add(const LoadMoreProductsEvent());
               },
               itemBuilder: (context, product, index, wrapAnimation) =>
                   wrapAnimation(

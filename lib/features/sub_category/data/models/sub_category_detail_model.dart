@@ -1,17 +1,23 @@
-import 'package:wassaly/core/imports/imports.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:wassaly/core/utils/pagination.dart';
 import 'package:wassaly/features/home/data/models/product_model.dart';
-import 'package:wassaly/features/home/domain/entities/product_entity.dart';
 import 'package:wassaly/features/sub_category/data/models/service_model.dart';
 import 'package:wassaly/features/sub_category/domain/entities/sub_category_detail_entity.dart';
 
-class SubCategoryDetailModel extends SubCategoryDetailEntity {
-  const SubCategoryDetailModel({
-    required super.id,
-    required super.name,
-    required super.image,
-    required super.services,
-    required super.products,
-  });
+part 'sub_category_detail_model.freezed.dart';
+
+@freezed
+abstract class SubCategoryDetailModel with _$SubCategoryDetailModel {
+  const SubCategoryDetailModel._();
+
+  const factory SubCategoryDetailModel({
+    @Default(0) int id,
+    @Default('') String name,
+    @Default('') String image,
+    @Default([]) List<ServiceModel> services,
+    @Default(PaginatedResponse(data: []))
+    PaginatedResponse<ProductModel> products,
+  }) = _SubCategoryDetailModel;
 
   factory SubCategoryDetailModel.fromJson(
     Map<String, dynamic> json, {
@@ -22,15 +28,17 @@ class SubCategoryDetailModel extends SubCategoryDetailEntity {
             .toList() ??
         [];
 
+    final servicesList = (json['services'] as List<dynamic>?)
+            ?.map((e) => ServiceModel.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        [];
+
     return SubCategoryDetailModel(
       id: json['id'] as int? ?? 0,
       name: json['name'] as String? ?? '',
       image: json['image'] as String? ?? '',
-      services: (json['services'] as List<dynamic>?)
-              ?.map((e) => ServiceModel.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          [],
-      products: PaginatedResponse<ProductEntity>(
+      services: servicesList,
+      products: PaginatedResponse<ProductModel>(
         data: productsList,
         currentPage: pagination?['current_page'] as int? ?? 1,
         lastPage: pagination?['last_page'] as int? ?? 1,
@@ -38,4 +46,12 @@ class SubCategoryDetailModel extends SubCategoryDetailEntity {
       ),
     );
   }
+
+  SubCategoryDetailEntity toEntity() => SubCategoryDetailEntity(
+        id: id,
+        name: name,
+        image: image,
+        services: services.map((s) => s.toEntity()).toList(),
+        products: products.map((p) => p.toEntity()),
+      );
 }

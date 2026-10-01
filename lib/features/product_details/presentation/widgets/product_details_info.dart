@@ -1,12 +1,9 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/auth/presentation/bloc/session/session_bloc.dart';
 import 'package:wassaly/features/favorite/presentation/bloc/favorite_bloc.dart';
-import 'package:wassaly/features/favorite/presentation/bloc/favorite_event.dart';
-import 'package:wassaly/features/favorite/presentation/bloc/favorite_state.dart';
 import 'package:wassaly/features/home/domain/entities/product_entity.dart';
 import 'package:wassaly/features/product_details/domain/entities/product_detail_entity.dart';
 import 'package:wassaly/features/product_details/presentation/bloc/product_details_bloc.dart';
-import 'package:wassaly/features/product_details/presentation/bloc/product_details_state.dart';
 import 'package:wassaly/features/product_details/presentation/screens/product_reviews_page.dart';
 import 'package:wassaly/features/product_details/presentation/widgets/product_details_meta_chip.dart';
 import 'package:wassaly/features/product_details/presentation/widgets/product_review_form_sheet.dart';

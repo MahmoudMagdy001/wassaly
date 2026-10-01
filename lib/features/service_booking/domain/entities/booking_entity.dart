@@ -1,158 +1,90 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:intl/intl.dart';
-import 'package:wassaly/core/imports/imports.dart';
 
-class RescheduleDetailsEntity extends Equatable {
-  final int? suggestedDayId;
-  final String? suggestedDayAr;
-  final String? suggestedDayEn;
-  final int? suggestedTimeId;
-  final String? suggestedTime;
-  final String? rescheduleNote;
+part 'booking_entity.freezed.dart';
 
-  const RescheduleDetailsEntity({
-    this.suggestedDayId,
-    this.suggestedDayAr,
-    this.suggestedDayEn,
-    this.suggestedTimeId,
-    this.suggestedTime,
-    this.rescheduleNote,
-  });
+@freezed
+sealed class RescheduleDetailsEntity with _$RescheduleDetailsEntity {
+  const RescheduleDetailsEntity._();
+
+  const factory RescheduleDetailsEntity({
+    int? suggestedDayId,
+    String? suggestedDayAr,
+    String? suggestedDayEn,
+    int? suggestedTimeId,
+    String? suggestedTime,
+    String? rescheduleNote,
+  }) = _RescheduleDetailsEntity;
 
   String get suggestedDay =>
       Intl.getCurrentLocale() == 'ar'
           ? (suggestedDayAr ?? '')
           : (suggestedDayEn ?? '');
-
-  @override
-  List<Object?> get props => [
-        suggestedDayId,
-        suggestedDayAr,
-        suggestedDayEn,
-        suggestedTimeId,
-        suggestedTime,
-        rescheduleNote,
-      ];
 }
 
-class BookingProviderEntity extends Equatable {
-  final int id;
-  final String name;
-  final String? avatar;
-  final String? description;
-  final double? rating;
-  final int? reviewsCount;
-
-  const BookingProviderEntity({
-    required this.id,
-    required this.name,
-    this.avatar,
-    this.description,
-    this.rating,
-    this.reviewsCount,
-  });
-
-  @override
-  List<Object?> get props =>
-      [id, name, avatar, description, rating, reviewsCount];
+@freezed
+sealed class BookingProviderEntity with _$BookingProviderEntity {
+  const factory BookingProviderEntity({
+    required int id,
+    required String name,
+    String? avatar,
+    String? description,
+    double? rating,
+    int? reviewsCount,
+  }) = _BookingProviderEntity;
 }
 
-class BookingServiceEntity extends Equatable {
-  final int id;
-  final String name;
-  final String? image;
-  final String? description;
-  final num price;
-
-  const BookingServiceEntity({
-    required this.id,
-    required this.name,
-    required this.price, this.image,
-    this.description,
-  });
-
-  @override
-  List<Object?> get props => [id, name, image, description, price];
+@freezed
+sealed class BookingServiceEntity with _$BookingServiceEntity {
+  const factory BookingServiceEntity({
+    required int id,
+    required String name,
+    required num price,
+    String? image,
+    String? description,
+  }) = _BookingServiceEntity;
 }
 
-class BookingEntity extends Equatable {
-  final int id;
-  final String status;
-  final String problemDescription;
-  final BookingServiceEntity service;
-  final BookingProviderEntity provider;
-  final String dayAr;
-  final String dayEn;
-  final String time;
-  final String createdAt;
-  final String customerName;
-  final String customerPhone;
-  final String? customerEmail;
-  final String? governorate;
-  final String? center;
-  final RescheduleDetailsEntity? rescheduleDetails;
+@freezed
+sealed class BookingEntity with _$BookingEntity {
+  const BookingEntity._();
 
-  const BookingEntity({
-    required this.id,
-    required this.status,
-    required this.problemDescription,
-    required this.service,
-    required this.provider,
-    required this.dayAr,
-    required this.dayEn,
-    required this.time,
-    required this.createdAt,
-    required this.customerName,
-    required this.customerPhone,
-    this.customerEmail,
-    this.governorate,
-    this.center,
-    this.rescheduleDetails,
-  });
+  const factory BookingEntity({
+    required int id,
+    required String status,
+    required String problemDescription,
+    required BookingServiceEntity service,
+    required BookingProviderEntity provider,
+    required String dayAr,
+    required String dayEn,
+    required String time,
+    required String createdAt,
+    required String customerName,
+    required String customerPhone,
+    String? customerEmail,
+    String? governorate,
+    String? center,
+    RescheduleDetailsEntity? rescheduleDetails,
+  }) = _BookingEntity;
 
   String get day => Intl.getCurrentLocale() == 'ar' ? dayAr : dayEn;
-
-  @override
-  List<Object?> get props => [
-        id,
-        status,
-        problemDescription,
-        service,
-        provider,
-        dayAr,
-        dayEn,
-        time,
-        createdAt,
-        customerName,
-        customerPhone,
-        customerEmail,
-        governorate,
-        center,
-        rescheduleDetails,
-      ];
 }
 
-class BookingParams extends Equatable {
-  final int serviceId;
-  final int availableDayId;
-  final int availableTimeId;
-  final String problemDescription;
-  final String customerName;
-  final String customerPhone;
-  final String customerEmail;
-  final String governorateId;
-  final String centerId;
+@freezed
+sealed class BookingParams with _$BookingParams {
+  const BookingParams._();
 
-  const BookingParams({
-    required this.serviceId,
-    required this.availableDayId,
-    required this.availableTimeId,
-    required this.problemDescription,
-    required this.customerName,
-    required this.customerPhone,
-    required this.customerEmail,
-    required this.governorateId,
-    required this.centerId,
-  });
+  const factory BookingParams({
+    required int serviceId,
+    required int availableDayId,
+    required int availableTimeId,
+    required String problemDescription,
+    required String customerName,
+    required String customerPhone,
+    required String customerEmail,
+    required String governorateId,
+    required String centerId,
+  }) = _BookingParams;
 
   Map<String, dynamic> toJson() => {
         'service_id': serviceId,
@@ -165,65 +97,46 @@ class BookingParams extends Equatable {
         'governorate_id': governorateId,
         'center_id': centerId,
       };
-
-  @override
-  List<Object?> get props => [
-        serviceId,
-        availableDayId,
-        availableTimeId,
-        problemDescription,
-        customerName,
-        customerPhone,
-        customerEmail,
-        governorateId,
-        centerId,
-      ];
 }
 
-class UpdateBookingParams extends Equatable {
-  final int bookingId;
-  final String problemDescription;
-  final String customerPhone;
+@freezed
+sealed class UpdateBookingParams with _$UpdateBookingParams {
+  const UpdateBookingParams._();
 
-  const UpdateBookingParams({
-    required this.bookingId,
-    required this.problemDescription,
-    required this.customerPhone,
-  });
+  const factory UpdateBookingParams({
+    required int bookingId,
+    required String problemDescription,
+    required String customerPhone,
+  }) = _UpdateBookingParams;
 
   Map<String, dynamic> toJson() => {
         'booking_id': bookingId,
         'problem_description': problemDescription,
         'customer_phone': customerPhone,
       };
-
-  @override
-  List<Object?> get props => [bookingId, problemDescription, customerPhone];
 }
 
-class AcceptRescheduleParams extends Equatable {
-  final int bookingId;
+@freezed
+sealed class AcceptRescheduleParams with _$AcceptRescheduleParams {
+  const AcceptRescheduleParams._();
 
-  const AcceptRescheduleParams({required this.bookingId});
+  const factory AcceptRescheduleParams({
+    required int bookingId,
+  }) = _AcceptRescheduleParams;
 
   Map<String, dynamic> toJson() => {'booking_id': bookingId};
-
-  @override
-  List<Object?> get props => [bookingId];
 }
 
-class ProposeRescheduleParams extends Equatable {
-  final int bookingId;
-  final int suggestedDayId;
-  final int suggestedTimeId;
-  final String rescheduleNote;
+@freezed
+sealed class ProposeRescheduleParams with _$ProposeRescheduleParams {
+  const ProposeRescheduleParams._();
 
-  const ProposeRescheduleParams({
-    required this.bookingId,
-    required this.suggestedDayId,
-    required this.suggestedTimeId,
-    required this.rescheduleNote,
-  });
+  const factory ProposeRescheduleParams({
+    required int bookingId,
+    required int suggestedDayId,
+    required int suggestedTimeId,
+    required String rescheduleNote,
+  }) = _ProposeRescheduleParams;
 
   Map<String, dynamic> toJson() => {
         'booking_id': bookingId,
@@ -231,8 +144,4 @@ class ProposeRescheduleParams extends Equatable {
         'suggested_time': suggestedTimeId.toString(),
         'reschedule_note': rescheduleNote,
       };
-
-  @override
-  List<Object?> get props =>
-      [bookingId, suggestedDayId, suggestedTimeId, rescheduleNote];
 }

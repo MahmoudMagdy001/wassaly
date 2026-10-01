@@ -68,7 +68,7 @@ class AppCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                if (trailing != null) trailing!,
+                ?trailing,
               ],
             ),
           ),

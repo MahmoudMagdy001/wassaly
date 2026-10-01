@@ -1,54 +1,24 @@
-part of 'service_details_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class ServiceDetailsEvent extends Equatable {
-  const ServiceDetailsEvent();
+part 'service_details_event.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
-}
+@freezed
+sealed class ServiceDetailsEvent with _$ServiceDetailsEvent {
+  const factory ServiceDetailsEvent.fetchServiceDetails(int serviceId) =
+      FetchServiceDetailsEvent;
 
-class FetchServiceDetailsEvent extends ServiceDetailsEvent {
-  final int serviceId;
-  const FetchServiceDetailsEvent(this.serviceId);
+  const factory ServiceDetailsEvent.toggleServiceFavorite(int serviceId) =
+      ToggleServiceFavoriteEvent;
 
-  @override
-  List<Object?> get props => [serviceId];
-}
+  const factory ServiceDetailsEvent.createServiceReview({
+    required int serviceId,
+    required int rating,
+    required String comment,
+  }) = CreateServiceReviewEvent;
 
-class ToggleServiceFavoriteEvent extends ServiceDetailsEvent {
-  final int serviceId;
-  const ToggleServiceFavoriteEvent(this.serviceId);
-
-  @override
-  List<Object?> get props => [serviceId];
-}
-
-class CreateServiceReviewEvent extends ServiceDetailsEvent {
-  final int serviceId;
-  final int rating;
-  final String comment;
-
-  const CreateServiceReviewEvent({
-    required this.serviceId,
-    required this.rating,
-    required this.comment,
-  });
-
-  @override
-  List<Object?> get props => [serviceId, rating, comment];
-}
-
-class UpdateServiceReviewEvent extends ServiceDetailsEvent {
-  final int reviewId;
-  final int rating;
-  final String comment;
-
-  const UpdateServiceReviewEvent({
-    required this.reviewId,
-    required this.rating,
-    required this.comment,
-  });
-
-  @override
-  List<Object?> get props => [reviewId, rating, comment];
+  const factory ServiceDetailsEvent.updateServiceReview({
+    required int reviewId,
+    required int rating,
+    required String comment,
+  }) = UpdateServiceReviewEvent;
 }

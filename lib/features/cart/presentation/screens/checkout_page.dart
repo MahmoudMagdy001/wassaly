@@ -1,7 +1,5 @@
 import 'package:wassaly/core/imports/imports.dart';
 import 'package:wassaly/features/cart/presentation/bloc/cart_bloc.dart';
-import 'package:wassaly/features/cart/presentation/bloc/cart_event.dart';
-import 'package:wassaly/features/cart/presentation/bloc/cart_state.dart';
 import 'package:wassaly/features/cart/presentation/bloc/checkout/checkout_bloc.dart';
 import 'package:wassaly/features/cart/presentation/widgets/checkout/checkout_bottom_sheet.dart';
 import 'package:wassaly/features/cart/presentation/widgets/checkout/checkout_coupon_section.dart';

@@ -1,16 +1,12 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class CenterEntity extends Equatable {
-  final String id;
-  final String name;
-  final String governorateId;
+part 'center_entity.freezed.dart';
 
-  const CenterEntity({
-    required this.id,
-    required this.name,
-    required this.governorateId,
-  });
-
-  @override
-  List<Object?> get props => [id, name, governorateId];
+@freezed
+abstract class CenterEntity with _$CenterEntity {
+  const factory CenterEntity({
+    required String id,
+    required String name,
+    required String governorateId,
+  }) = _CenterEntity;
 }
