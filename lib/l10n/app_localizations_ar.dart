@@ -1462,6 +1462,13 @@ class SAr extends S {
   String get offers => 'العروض';
 
   @override
+  String get no_offers => 'لا يوجد عروض حالياً';
+
+  @override
+  String get no_offers_subtitle =>
+      'تابعنا باستمرار للاطلاع على أحدث العروض والخصومات';
+
+  @override
   String get privacy_policy_title => 'سياسة الخصوصية';
 
   @override

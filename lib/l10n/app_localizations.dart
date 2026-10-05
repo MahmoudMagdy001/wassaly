@@ -2767,6 +2767,18 @@ abstract class S {
   /// **'Offers'**
   String get offers;
 
+  /// No description provided for @no_offers.
+  ///
+  /// In en, this message translates to:
+  /// **'No offers available currently'**
+  String get no_offers;
+
+  /// No description provided for @no_offers_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay tuned for the latest deals and discounts'**
+  String get no_offers_subtitle;
+
   /// No description provided for @privacy_policy_title.
   ///
   /// In en, this message translates to:

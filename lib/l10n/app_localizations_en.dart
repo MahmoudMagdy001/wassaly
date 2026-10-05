@@ -1448,6 +1448,13 @@ class SEn extends S {
   String get offers => 'Offers';
 
   @override
+  String get no_offers => 'No offers available currently';
+
+  @override
+  String get no_offers_subtitle =>
+      'Stay tuned for the latest deals and discounts';
+
+  @override
   String get privacy_policy_title => 'Privacy Policy';
 
   @override

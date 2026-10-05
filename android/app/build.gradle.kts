@@ -22,7 +22,7 @@ if (keystorePropertiesFile != null) {
 
 android {
     namespace = "com.fourthpyramid.wassaly"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
     compileOptions {

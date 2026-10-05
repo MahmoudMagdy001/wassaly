@@ -459,6 +459,8 @@
   "brand_products": "Brand Products",
   "no_brand_products": "No products in this brand yet",
   "offers": "Offers",
+  "no_offers": "No offers available currently",
+  "no_offers_subtitle": "Stay tuned for the latest deals and discounts",
   "privacy_policy_title": "Privacy Policy",
   "privacy_policy_last_updated": "Last Updated",
   "privacy_policy_last_updated_date": "December 30, 2024",

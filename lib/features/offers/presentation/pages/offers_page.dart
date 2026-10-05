@@ -17,6 +17,22 @@ class OffersPage extends StatelessWidget {
 class OffersView extends StatelessWidget {
   const OffersView({super.key});
 
+  Future<void> _onRefresh(BuildContext context) async {
+    final bloc = context.read<OffersBloc>();
+    final startTime = DateTime.now();
+
+    bloc.add(const GetOffersEvent());
+
+    await bloc.stream.firstWhere(
+      (state) => state.status != AppStatus.loading,
+    );
+
+    final elapsed = DateTime.now().difference(startTime);
+    if (elapsed < const Duration(milliseconds: 500)) {
+      await Future<void>.delayed(const Duration(milliseconds: 500) - elapsed);
+    }
+  }
+
   void _onLoadMore(BuildContext context, AppStatus status) {
     if (status != AppStatus.loading) {
       context.read<OffersBloc>().add(const LoadMoreOffersEvent());
@@ -30,99 +46,123 @@ class OffersView extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: cs.surface,
-      body: CustomScrollView(
-        slivers: [
-          AppSliverTopBar(
-            titleWidget: Text(
-              l10n.offers,
-              style: context.theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: cs.primary,
+      body: RefreshIndicator(
+        onRefresh: () => _onRefresh(context),
+        color: cs.primary,
+        backgroundColor: cs.surface,
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            AppSliverTopBar(
+              titleWidget: Text(
+                l10n.offers,
+                style: context.theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: cs.primary,
+                ),
               ),
             ),
-          ),
-          BlocSelector<OffersBloc, OffersState,
-              (AppStatus, List<ProductEntity>, bool, String)>(
-            selector: (state) => (
-              state.status,
-              state.products,
-              state.hasReachedMax,
-              state.errorMessage,
-            ),
-            builder: (context, data) {
-              final (status, products, hasReachedMax, errorMessage) = data;
+            BlocSelector<OffersBloc, OffersState,
+                (AppStatus, List<ProductEntity>, bool, String)>(
+              selector: (state) => (
+                state.status,
+                state.products,
+                state.hasReachedMax,
+                state.errorMessage,
+              ),
+              builder: (context, data) {
+                final (status, products, hasReachedMax, errorMessage) = data;
 
-              final isLoading = status == AppStatus.loading && products.isEmpty;
+                final isLoading = status == AppStatus.loading && products.isEmpty;
 
-              if (isLoading || products.isNotEmpty) {
-                return AppUnifiedSection<ProductEntity>(
-                  isLoading: isLoading,
-                  items: isLoading ? const [] : products,
-                  dummyItems: const [
-                    ProductEntity(
-                      id: 1,
-                      name: 'منتج',
-                      image: '',
-                      price: '0',
-                      description: '',
-                      offers: [],
-                      reviews: [],
-                      isFavorite: false,
-                    ),
-                  ],
-                  padding:
-                      EdgeInsets.symmetric(vertical: 16.h, horizontal: 8.w),
-                  hasMore: !isLoading && !hasReachedMax,
-                  isLoadingMore: !isLoading && (status == AppStatus.loading),
-                  mainAxisExtent: 240.h,
-                  onLoadMore:
-                      isLoading ? null : () => _onLoadMore(context, status),
-                  itemBuilder: (context, product, index, wrapAnimation) =>
-                      wrapAnimation(
-                    AppUnifiedCard(
-                      id: product.id,
-                      title: product.name,
-                      description: product.description,
-                      image: product.image,
-                      price: product.discountedPrice.toStringAsFixed(0),
-                      originalPrice: product.hasOffer
-                          ? (double.tryParse(product.price) ?? 0)
-                              .toStringAsFixed(0)
-                          : null,
-                      discountPercentage:
-                          product.hasOffer ? product.discountPercentage : null,
-                      rating: product.averageRating,
-                      reviewCount: product.reviewCount,
-                      isFavorite: product.isFavorite,
-                      activeIdNotifier: _activeMarqueeId,
-                      onTap: () => context.push(
-                        AppRoutes.productDetails,
-                        extra: {'productId': product.id},
+                if (isLoading || products.isNotEmpty) {
+                  return AppUnifiedSection<ProductEntity>(
+                    isLoading: isLoading,
+                    items: isLoading ? const [] : products,
+                    dummyItems: const [
+                      ProductEntity(
+                        id: 1,
+                        name: 'منتج',
+                        image: '',
+                        price: '0',
+                        description: '',
+                        offers: [],
+                        reviews: [],
+                        isFavorite: false,
+                      ),
+                    ],
+                    padding:
+                        EdgeInsets.symmetric(vertical: 16.h, horizontal: 8.w),
+                    hasMore: !isLoading && !hasReachedMax,
+                    isLoadingMore: !isLoading && (status == AppStatus.loading),
+                    mainAxisExtent: 240.h,
+                    onLoadMore:
+                        isLoading ? null : () => _onLoadMore(context, status),
+                    itemBuilder: (context, product, index, wrapAnimation) =>
+                        wrapAnimation(
+                      AppUnifiedCard(
+                        id: product.id,
+                        title: product.name,
+                        description: product.description,
+                        image: product.image,
+                        price: product.discountedPrice.toStringAsFixed(0),
+                        originalPrice: product.hasOffer
+                            ? (double.tryParse(product.price) ?? 0)
+                                .toStringAsFixed(0)
+                            : null,
+                        discountPercentage:
+                            product.hasOffer ? product.discountPercentage : null,
+                        rating: product.averageRating,
+                        reviewCount: product.reviewCount,
+                        isFavorite: product.isFavorite,
+                        activeIdNotifier: _activeMarqueeId,
+                        onTap: () => context.push(
+                          AppRoutes.productDetails,
+                          extra: {'productId': product.id},
+                        ),
                       ),
                     ),
-                  ),
-                );
-              }
+                  );
+                }
 
-              if (status == AppStatus.failure) {
+                if (status == AppStatus.failure) {
+                  final isNoOffers = errorMessage.contains('لايوجد') ||
+                      errorMessage.contains('لا يوجد') ||
+                      errorMessage.toLowerCase().contains('no offer');
+
+                  if (isNoOffers) {
+                    return SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: AppEmptyState(
+                        icon: Icons.local_offer_outlined,
+                        title: l10n.no_offers,
+                        subtitle: l10n.no_offers_subtitle,
+                      ),
+                    );
+                  }
+
+                  return SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: AppErrorWidget(
+                      message: errorMessage,
+                      onRetry: () =>
+                          context.read<OffersBloc>().add(const GetOffersEvent()),
+                    ),
+                  );
+                }
+
                 return SliverFillRemaining(
-                  child: AppErrorWidget(
-                    message: errorMessage,
-                    onRetry: () =>
-                        context.read<OffersBloc>().add(const GetOffersEvent()),
+                  hasScrollBody: false,
+                  child: AppEmptyState(
+                    icon: Icons.local_offer_outlined,
+                    title: l10n.no_offers,
+                    subtitle: l10n.no_offers_subtitle,
                   ),
                 );
-              }
-
-              return SliverFillRemaining(
-                child: AppEmptyState(
-                  title: l10n.errors_something_went_wrong,
-                  icon: Icons.local_offer_outlined,
-                ),
-              );
-            },
-          ),
-        ],
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

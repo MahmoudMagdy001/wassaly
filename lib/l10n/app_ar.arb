@@ -460,6 +460,8 @@
   "brand_products": "منتجات البراند",
   "no_brand_products": "لا يوجد منتجات في هذا البراند حالياً",
   "offers": "العروض",
+  "no_offers": "لا يوجد عروض حالياً",
+  "no_offers_subtitle": "تابعنا باستمرار للاطلاع على أحدث العروض والخصومات",
   "privacy_policy_title": "سياسة الخصوصية",
   "privacy_policy_last_updated": "آخر تحديث",
   "privacy_policy_last_updated_date": "30 ديسمبر 2024",

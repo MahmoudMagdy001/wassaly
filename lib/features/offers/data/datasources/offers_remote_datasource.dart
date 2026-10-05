@@ -26,11 +26,23 @@ class OffersRemoteDataSourceImpl implements OffersRemoteDataSource {
         final status = responseData['status'] as bool? ?? false;
         final message = responseData['message'] as String? ?? '';
 
+        final data = responseData['data'];
+
         if (!status) {
+          final isNoData = (data is List && data.isEmpty) ||
+              data == null ||
+              message.contains('لايوجد') ||
+              message.contains('لا يوجد') ||
+              message.toLowerCase().contains('no offer');
+          if (isNoData) {
+            return PaginatedResponse.empty();
+          }
           throw ServerFailure(message);
         }
 
-        final data = responseData['data'];
+        if (data == null) {
+          return PaginatedResponse.empty();
+        }
         final items = (data as List? ?? []).map((e) {
           final offerItem = e as Map<String, dynamic>;
           final productData =
