@@ -1,30 +1,19 @@
-# Flutter ProGuard Rules
-# https://developer.android.com/studio/build/shrink-code
+# ==============================================================================
+# ProGuard & R8 Rules for Wassaly App (com.fourthpyramid.wassaly)
+# ==============================================================================
 
-# Flutter Wrapper
+# ------------------------------------------------------------------------------
+# 1. Flutter Engine, Wrapper & Core Plugins
+# ------------------------------------------------------------------------------
 -keep class io.flutter.app.** { *; }
 -keep class io.flutter.plugin.** { *; }
 -keep class io.flutter.util.** { *; }
 -keep class io.flutter.view.** { *; }
 -keep class io.flutter.** { *; }
 -keep class io.flutter.plugins.** { *; }
--keep class com.google.firebase.** { *; }
 -dontwarn io.flutter.embedding.**
 
-# Prevent R8 from leaving data object members always null
--keepclassmembers,allowobfuscation class * {
-    @com.google.gson.annotations.SerializedName <fields>;
-}
-
-# Keep generic signature of Call, Response (R8 full mode strips signatures from non-kept items)
--keep,allowobfuscation,allowshrinking interface retrofit2.Call
--keep,allowobfuscation,allowshrinking class retrofit2.Response
-
-# With R8 full mode generic signatures are stripped for classes that are not kept
--keep,allowobfuscation,allowshrinking class com.google.gson.reflect.TypeToken
--keep,allowobfuscation,allowshrinking class * extends com.google.gson.reflect.TypeToken
-
-# Keep Dart JSON serialization
+# Keep essential attributes for reflection, debugging & stack traces
 -keepattributes *Annotation*
 -keepattributes Signature
 -keepattributes Exceptions
@@ -34,18 +23,6 @@
 -keepattributes SourceFile
 -keepattributes LineNumberTable
 
-# Dio
--dontwarn com.squareup.okhttp.**
--keep class com.squareup.okhttp.** { *; }
--keep interface com.squareup.okhttp.** { *; }
--dontwarn okhttp3.**
--dontwarn okio.**
--keep class okhttp3.** { *; }
--keep interface okhttp3.** { *; }
-
-# Flutter Secure Storage
--keep class com.it_nomads.fluttersecurestorage.** { *; }
-
 # Keep native methods
 -keepclasseswithmembernames class * {
     native <methods>;
@@ -54,10 +31,101 @@
 # Keep custom exceptions
 -keep public class * extends java.lang.Exception
 
-# Keep model classes (adjust package name as needed)
+# ------------------------------------------------------------------------------
+# 2. Firebase & Google Play Services
+# ------------------------------------------------------------------------------
+-keep class com.google.firebase.** { *; }
+-dontwarn com.google.firebase.**
+-keep class com.google.android.gms.** { *; }
+-dontwarn com.google.android.gms.**
+
+# Firebase Messaging
+-keep class com.google.firebase.messaging.** { *; }
+-dontwarn com.google.firebase.messaging.**
+
+# ------------------------------------------------------------------------------
+# 3. Awesome Notifications
+# ------------------------------------------------------------------------------
+-keep class me.carda.awesome_notifications.** { *; }
+-dontwarn me.carda.awesome_notifications.**
+
+# ------------------------------------------------------------------------------
+# 4. Networking: Dio, OkHttp, Okio & Retrofit
+# ------------------------------------------------------------------------------
+-dontwarn com.squareup.okhttp.**
+-keep class com.squareup.okhttp.** { *; }
+-keep interface com.squareup.okhttp.** { *; }
+-dontwarn okhttp3.**
+-dontwarn okio.**
+-keep class okhttp3.** { *; }
+-keep interface okhttp3.** { *; }
+-dontwarn javax.annotation.**
+-dontwarn org.conscrypt.**
+-dontwarn org.bouncycastle.**
+-dontwarn org.openjsse.**
+
+# Retrofit / Call & Response
+-keep,allowobfuscation,allowshrinking interface retrofit2.Call
+-keep,allowobfuscation,allowshrinking class retrofit2.Response
+
+# ------------------------------------------------------------------------------
+# 5. Serialization (Gson, JSON & App Models)
+# ------------------------------------------------------------------------------
+-keepclassmembers,allowobfuscation class * {
+    @com.google.gson.annotations.SerializedName <fields>;
+}
+-keep,allowobfuscation,allowshrinking class com.google.gson.reflect.TypeToken
+-keep,allowobfuscation,allowshrinking class * extends com.google.gson.reflect.TypeToken
+
+# Keep application domain & data classes
 -keep class com.fourthpyramid.wassaly.** { *; }
 
-# Remove logging in release
+# ------------------------------------------------------------------------------
+# 6. Local Storage: Hive & Flutter Secure Storage & Shared Preferences
+# ------------------------------------------------------------------------------
+-keep class io.hivedb.** { *; }
+-dontwarn io.hivedb.**
+-keep class com.it_nomads.fluttersecurestorage.** { *; }
+-dontwarn com.it_nomads.fluttersecurestorage.**
+
+# ------------------------------------------------------------------------------
+# 7. Device, Permissions & System Plugins
+# ------------------------------------------------------------------------------
+-keep class com.baseflow.permissionhandler.** { *; }
+-dontwarn com.baseflow.permissionhandler.**
+-keep class dev.fluttercommunity.plus.device_info.** { *; }
+-dontwarn dev.fluttercommunity.plus.device_info.**
+
+# App Links & URL Launcher
+-keep class com.llfbandit.app_links.** { *; }
+-dontwarn com.llfbandit.app_links.**
+-keep class io.flutter.plugins.urllauncher.** { *; }
+-dontwarn io.flutter.plugins.urllauncher.**
+
+# App Version Update (Play Core In-App Updates)
+-keep class com.google.android.play.core.** { *; }
+-dontwarn com.google.android.play.core.**
+
+# Media Pickers
+-keep class io.flutter.plugins.imagepicker.** { *; }
+-dontwarn io.flutter.plugins.imagepicker.**
+
+# ------------------------------------------------------------------------------
+# 8. Kotlin & Coroutines
+# ------------------------------------------------------------------------------
+-dontwarn kotlin.Unit
+-keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
+-keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
+
+# Static analysis and annotations warnings suppression
+-dontwarn com.google.j2objc.annotations.**
+-dontwarn javax.annotation.**
+-dontwarn org.checkerframework.**
+-dontwarn com.google.errorprone.annotations.**
+
+# ------------------------------------------------------------------------------
+# 9. Release Optimization: Strip Debug Logs
+# ------------------------------------------------------------------------------
 -assumenosideeffects class android.util.Log {
     public static boolean isLoggable(java.lang.String, int);
     public static int v(...);
@@ -70,9 +138,3 @@
     public void println(...);
     public void print(...);
 }
-
-# J2ObjC and Checker Framework (Commonly missing in Guava/Google libs)
--dontwarn com.google.j2objc.annotations.**
--dontwarn javax.annotation.**
--dontwarn org.checkerframework.**
--dontwarn com.google.errorprone.annotations.**
