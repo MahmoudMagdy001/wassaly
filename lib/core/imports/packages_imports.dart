@@ -15,7 +15,6 @@ export 'package:fpdart/fpdart.dart' hide State;
 export 'package:freezed_annotation/freezed_annotation.dart';
 export 'package:go_router/go_router.dart';
 export 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
-export 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 export 'package:logger/logger.dart';
 export 'package:permission_handler/permission_handler.dart';
 export 'package:shared_preferences/shared_preferences.dart';

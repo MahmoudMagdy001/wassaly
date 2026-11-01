@@ -3606,6 +3606,36 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Products'**
   String get search_tag_products;
+
+  /// No description provided for @network_banner_captive_portal.
+  ///
+  /// In en, this message translates to:
+  /// **'Network needs sign-in or has no data balance — tap to check'**
+  String get network_banner_captive_portal;
+
+  /// No description provided for @network_banner_no_internet.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected to the network but no internet — check your data balance'**
+  String get network_banner_no_internet;
+
+  /// No description provided for @network_banner_no_interface.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet connection — Tap to retry'**
+  String get network_banner_no_interface;
+
+  /// No description provided for @network_banner_unstable.
+  ///
+  /// In en, this message translates to:
+  /// **'Internet connection unstable — Tap to check'**
+  String get network_banner_unstable;
+
+  /// No description provided for @network_banner_restored.
+  ///
+  /// In en, this message translates to:
+  /// **'Internet connection restored'**
+  String get network_banner_restored;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

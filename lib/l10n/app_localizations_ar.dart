@@ -1919,4 +1919,23 @@ class SAr extends S {
 
   @override
   String get search_tag_products => 'منتجات';
+
+  @override
+  String get network_banner_captive_portal =>
+      'الشبكة محتاجة تسجيل دخول أو الباقة منتهية — اضغط للفحص';
+
+  @override
+  String get network_banner_no_internet =>
+      'متصل بالشبكة لكن بدون إنترنت — تأكد من رصيد الباقة';
+
+  @override
+  String get network_banner_no_interface =>
+      'لا يوجد اتصال بالإنترنت — اضغط لإعادة المحاولة';
+
+  @override
+  String get network_banner_unstable =>
+      'الاتصال بالإنترنت غير مستقر - اضغط للفحص';
+
+  @override
+  String get network_banner_restored => 'تمت استعادة الاتصال بالإنترنت';
 }

@@ -67,32 +67,9 @@ class AppConfig {
     );
   }
 
-  /// Measures latency on every Dio request
+  /// Measures latency on every Dio request via StabilityInterceptor
   static void _addStabilityInterceptor() {
-    dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) {
-          options.extra['startTime'] = DateTime.now().millisecondsSinceEpoch;
-          return handler.next(options);
-        },
-        onResponse: (response, handler) {
-          _reportLatency(response.requestOptions);
-          return handler.next(response);
-        },
-        onError: (e, handler) {
-          _reportLatency(e.requestOptions);
-          return handler.next(e);
-        },
-      ),
-    );
-  }
-
-  static void _reportLatency(RequestOptions options) {
-    final startTime = options.extra['startTime'] as int?;
-    if (startTime == null) return;
-
-    final latency = DateTime.now().millisecondsSinceEpoch - startTime;
-    sl<InternetConnectionService>().reportLatency(latency);
+    dio.interceptors.add(sl<StabilityInterceptor>());
   }
 
   /// Automatically attaches the Authorization Bearer token.
@@ -109,8 +86,9 @@ class AppConfig {
           }
 
           if (_cachedToken == null) {
-            final tokenResult =
-                await SecureStorageService.instance.read('auth_token');
+            final tokenResult = await SecureStorageService.instance.read(
+              'auth_token',
+            );
             _cachedToken = tokenResult.fold((_) => null, (t) => t);
           }
 

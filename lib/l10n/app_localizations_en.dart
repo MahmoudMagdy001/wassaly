@@ -1906,4 +1906,23 @@ class SEn extends S {
 
   @override
   String get search_tag_products => 'Products';
+
+  @override
+  String get network_banner_captive_portal =>
+      'Network needs sign-in or has no data balance — tap to check';
+
+  @override
+  String get network_banner_no_internet =>
+      'Connected to the network but no internet — check your data balance';
+
+  @override
+  String get network_banner_no_interface =>
+      'No internet connection — Tap to retry';
+
+  @override
+  String get network_banner_unstable =>
+      'Internet connection unstable — Tap to check';
+
+  @override
+  String get network_banner_restored => 'Internet connection restored';
 }

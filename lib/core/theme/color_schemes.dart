@@ -11,6 +11,8 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
     required this.info,
     required this.onInfo,
     required this.starRating,
+    required this.softOrange,
+    required this.onSoftOrange,
     this.successContainer,
     this.onSuccessContainer,
     this.warningContainer,
@@ -25,6 +27,8 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
   final Color onWarning;
   final Color info;
   final Color onInfo;
+  final Color softOrange;
+  final Color onSoftOrange;
   final Color? successContainer;
   final Color? onSuccessContainer;
   final Color? warningContainer;
@@ -41,6 +45,8 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
     Color? onWarning,
     Color? info,
     Color? onInfo,
+    Color? softOrange,
+    Color? onSoftOrange,
     Color? successContainer,
     Color? onSuccessContainer,
     Color? warningContainer,
@@ -56,6 +62,8 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
         onWarning: onWarning ?? this.onWarning,
         info: info ?? this.info,
         onInfo: onInfo ?? this.onInfo,
+        softOrange: softOrange ?? this.softOrange,
+        onSoftOrange: onSoftOrange ?? this.onSoftOrange,
         successContainer: successContainer ?? this.successContainer,
         onSuccessContainer: onSuccessContainer ?? this.onSuccessContainer,
         warningContainer: warningContainer ?? this.warningContainer,
@@ -80,6 +88,8 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
       onWarning: Color.lerp(onWarning, other.onWarning, t)!,
       info: Color.lerp(info, other.info, t)!,
       onInfo: Color.lerp(onInfo, other.onInfo, t)!,
+      softOrange: Color.lerp(softOrange, other.softOrange, t)!,
+      onSoftOrange: Color.lerp(onSoftOrange, other.onSoftOrange, t)!,
       successContainer: Color.lerp(successContainer, other.successContainer, t),
       onSuccessContainer:
           Color.lerp(onSuccessContainer, other.onSuccessContainer, t),
@@ -111,6 +121,8 @@ class AppPalettes {
     infoContainer: Color(0xFF81D4FA),
     onInfoContainer: Color(0xFF01579B),
     starRating: Color(0xFFEF9F27),
+    softOrange: Color(0xFFE07A24),
+    onSoftOrange: Colors.white,
   );
 
   static const dark = AppColorsExtension(
@@ -127,6 +139,8 @@ class AppPalettes {
     infoContainer: Color(0xFF0277BD),
     onInfoContainer: Color(0xFFE1F5FE),
     starRating: Color(0xFFEF9F27),
+    softOrange: Color(0xFFFFB74D),
+    onSoftOrange: Color(0xFF4A2800),
   );
 }
 

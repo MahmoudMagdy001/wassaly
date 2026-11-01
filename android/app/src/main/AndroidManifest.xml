@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Internet is standard and required -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <!-- Required for camera functionality in system_asset_picker -->
     <uses-permission android:name="android.permission.CAMERA" />

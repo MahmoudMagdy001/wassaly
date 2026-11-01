@@ -598,5 +598,10 @@
   "search_tag_offers": "Offers",
   "search_tag_delivery": "Delivery",
   "search_tag_services": "Services",
-  "search_tag_products": "Products"
+  "search_tag_products": "Products",
+  "network_banner_captive_portal": "Network needs sign-in or has no data balance — tap to check",
+  "network_banner_no_internet": "Connected to the network but no internet — check your data balance",
+  "network_banner_no_interface": "No internet connection — Tap to retry",
+  "network_banner_unstable": "Internet connection unstable — Tap to check",
+  "network_banner_restored": "Internet connection restored"
 }

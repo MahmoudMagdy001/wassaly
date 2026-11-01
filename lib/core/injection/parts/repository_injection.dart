@@ -93,13 +93,15 @@ void initRepositoryDependencies() {
     ..registerLazySingleton<InternetConnectionService>(
       InternetConnectionService.new,
     )
-    ..registerLazySingleton<HomeNavigationService>(
-      HomeNavigationService.new,
+    ..registerLazySingleton<IInternetConnectionService>(
+      sl.call<InternetConnectionService>,
     )
-    ..registerLazySingleton<CancelRequestService>(
-      CancelRequestService.new,
-    )
+    ..registerLazySingleton<HomeNavigationService>(HomeNavigationService.new)
+    ..registerLazySingleton<CancelRequestService>(CancelRequestService.new)
     ..registerLazySingleton<CancelTokenInterceptor>(
       () => CancelTokenInterceptor(sl<CancelRequestService>()),
+    )
+    ..registerLazySingleton<StabilityInterceptor>(
+      () => StabilityInterceptor(sl<InternetConnectionService>()),
     );
 }

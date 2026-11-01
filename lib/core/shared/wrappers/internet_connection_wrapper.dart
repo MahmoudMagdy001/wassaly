@@ -1,11 +1,20 @@
-import 'package:wassaly/core/imports/core_imports.dart';
-import 'package:wassaly/core/imports/packages_imports.dart';
+import 'dart:async';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:wassaly/core/extensions/context_extension.dart';
+import 'package:wassaly/core/injection/injection.dart';
+import 'package:wassaly/core/services/internet_connection_service.dart';
+
+/// Wraps app content with an animated slim banner notifying the user
+/// about real network status changes (disconnected, unstable, restored).
 class InternetConnectionWrapper extends StatefulWidget {
   final Widget child;
+  final IInternetConnectionService? service;
 
   const InternetConnectionWrapper({
     required this.child,
+    this.service,
     super.key,
   });
 
@@ -15,169 +24,201 @@ class InternetConnectionWrapper extends StatefulWidget {
 }
 
 class _InternetConnectionWrapperState extends State<InternetConnectionWrapper> {
-  late final StreamSubscription<InternetStatus> _statusSub;
-  late final StreamSubscription<NetworkState> _stateSub;
+  late final IInternetConnectionService _service;
+  StreamSubscription<NetworkState>? _stateSub;
 
-  NetworkState _state = NetworkState.connected;
+  NetworkState _state = NetworkState.checking;
+  NetworkIssue _lastIssue = NetworkIssue.none;
   bool _showBanner = false;
-  bool _isRefreshing = false;
+  bool _isRestored = false;
   Timer? _hideTimer;
 
   @override
   void initState() {
     super.initState();
-    final svc = sl<InternetConnectionService>();
+    _service = widget.service ?? sl<InternetConnectionService>();
+    _state = _service.currentState;
+    _lastIssue = _service.lastIssue;
 
-    _statusSub = svc.internetConnection.onStatusChange.listen((status) {
-      svc.updateStatus(isConnected: status == InternetStatus.connected);
-    });
+    if (_state == NetworkState.disconnected ||
+        _state == NetworkState.unstable) {
+      _showBanner = true;
+    }
 
-    _stateSub = svc.stateStream.listen(_onStateChanged);
-
-    unawaited(_bootstrap(svc));
+    _stateSub = _service.stateStream.listen(_onStateChanged);
   }
 
-  Future<void> _bootstrap(InternetConnectionService svc) async {
-    final connected = await svc.hasConnection();
-    if (!mounted) return;
-    svc.updateStatus(isConnected: connected);
-  }
-
-  void _onStateChanged(NetworkState state) {
+  void _onStateChanged(NetworkState newState) {
     if (!mounted) return;
     _hideTimer?.cancel();
+    _hideTimer = null;
+
+    final wasDisconnected = _state == NetworkState.disconnected;
+    final currentIssue = _service.lastIssue;
 
     setState(() {
-      _state = state;
-      _showBanner = true;
+      _state = newState;
+      _lastIssue = currentIssue;
+
+      if (newState == NetworkState.disconnected ||
+          newState == NetworkState.unstable) {
+        _showBanner = true;
+        _isRestored = false;
+      } else if (newState == NetworkState.connected) {
+        if (wasDisconnected) {
+          _showBanner = true;
+          _isRestored = true;
+        } else {
+          _showBanner = false;
+          _isRestored = false;
+        }
+      } else {
+        _showBanner = false;
+        _isRestored = false;
+      }
     });
 
-    // Auto hide only for "connected" state
-    if (state == NetworkState.connected) {
+    if (newState == NetworkState.connected && _isRestored) {
       _hideTimer = Timer(const Duration(milliseconds: 1800), () {
-        if (mounted) setState(() => _showBanner = false);
+        if (mounted) {
+          setState(() {
+            _showBanner = false;
+            _isRestored = false;
+          });
+        }
       });
-    } else {
-      // Keep unstable/disconnected banner visible until resolved
-      _hideTimer = null;
     }
-  }
-
-  Future<void> _handleTap() async {
-    if (_isRefreshing) return;
-    setState(() => _isRefreshing = true);
-    await sl<InternetConnectionService>().checkNow();
-    if (mounted) setState(() => _isRefreshing = false);
   }
 
   @override
   void dispose() {
     _hideTimer?.cancel();
-    unawaited(_statusSub.cancel());
-    unawaited(_stateSub.cancel());
-    sl<InternetConnectionService>().stopPingCheck();
+    unawaited(_stateSub?.cancel());
     super.dispose();
   }
 
-  Color get _bannerColor => switch (_state) {
-        NetworkState.disconnected => const Color(0xFFB71C1C),
-        NetworkState.unstable => const Color(0xFFE65100),
-        NetworkState.connected => const Color(0xFF2E7D32),
-      };
+  @override
+  Widget build(BuildContext context) => Column(
+        children: [
+          AnimatedSize(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            child: _showBanner
+                ? _NetworkBanner(
+                    state: _state,
+                    issue: _lastIssue,
+                    isRestored: _isRestored,
+                    onTap: () => unawaited(_service.checkNow()),
+                  )
+                : const SizedBox.shrink(),
+          ),
+          Expanded(
+            child: MediaQuery.removePadding(
+              context: context,
+              removeTop: _showBanner,
+              child: widget.child,
+            ),
+          ),
+        ],
+      );
+}
 
-  IconData get _bannerIcon => switch (_state) {
-        NetworkState.disconnected => Icons.wifi_off_rounded,
-        NetworkState.unstable => Icons.network_check_rounded,
-        NetworkState.connected => Icons.wifi_rounded,
-      };
+class _NetworkBanner extends StatelessWidget {
+  final NetworkState state;
+  final NetworkIssue issue;
+  final bool isRestored;
+  final VoidCallback onTap;
 
-  String _bannerText(bool isAr) {
-    if (_isRefreshing) return isAr ? 'جاري التحقق...' : 'Checking...';
+  const _NetworkBanner({
+    required this.state,
+    required this.issue,
+    required this.isRestored,
+    required this.onTap,
+  });
 
-    return switch (_state) {
-      NetworkState.disconnected =>
-        isAr ? 'لا يوجد اتصال بالإنترنت' : 'No internet connection',
-      NetworkState.unstable =>
-        isAr ? 'الشبكة غير مستقرة' : 'Unstable connection',
-      NetworkState.connected =>
-        isAr ? 'تم استعادة الاتصال' : 'Connection restored',
-    };
+  (Color, Color, IconData, String) _bannerDetails(BuildContext context) {
+    if (isRestored && state == NetworkState.connected) {
+      return (
+        context.appColors.success,
+        context.appColors.onSuccess,
+        Icons.check_circle_outline_rounded,
+        context.l10n.network_banner_restored,
+      );
+    }
+
+    if (state == NetworkState.unstable) {
+      return (
+        context.appColors.warning,
+        context.appColors.onWarning,
+        Icons.network_check_rounded,
+        context.l10n.network_banner_unstable,
+      );
+    }
+
+    // ponytail: calm orange distinguishes "connected to network but no internet / check quota"
+    // from complete disconnection (error/red) and normal connection (success/green).
+    if (issue == NetworkIssue.noInternet ||
+        issue == NetworkIssue.captivePortal) {
+      final message = issue == NetworkIssue.noInternet
+          ? context.l10n.network_banner_no_internet
+          : context.l10n.network_banner_captive_portal;
+
+      return (
+        context.appColors.softOrange,
+        context.appColors.onSoftOrange,
+        Icons.wifi_off_rounded,
+        message,
+      );
+    }
+
+    return (
+      context.colors.error,
+      context.colors.onError,
+      Icons.wifi_off_rounded,
+      context.l10n.network_banner_no_interface,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final isAr = Localizations.localeOf(context).languageCode == 'ar';
-    final topPadding = MediaQuery.paddingOf(context).top;
+    final (bgColor, fgColor, icon, text) = _bannerDetails(context);
 
-    return Stack(
-      children: [
-        widget.child,
-        AnimatedPositioned(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOutCubic,
-          top: _showBanner ? topPadding + 10.h : -90.h,
-          left: 16.w,
-          right: 16.w,
-          child: GestureDetector(
-            onTap: _handleTap,
-            child: Material(
-              color: Colors.transparent,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-                decoration: BoxDecoration(
-                  color: _bannerColor,
-                  borderRadius: BorderRadius.circular(12.r),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.2),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 200),
-                      child: _isRefreshing
-                          ? SizedBox(
-                              width: 20.r,
-                              height: 20.r,
-                              child: const CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2.5,
-                              ),
-                            )
-                          : Icon(
-                              _bannerIcon,
-                              key: ValueKey(_state),
-                              color: Colors.white,
-                              size: 22.r,
-                            ),
-                    ),
-                    12.horizontalSpace,
-                    Expanded(
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 200),
-                        child: Text(
-                          key: ValueKey('$_state$_isRefreshing'),
-                          _bannerText(isAr),
-                          style: context.theme.textTheme.bodyMedium?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14.5.sp,
-                          ),
-                        ),
+    return Semantics(
+      liveRegion: true,
+      child: Material(
+        color: bgColor,
+        child: InkWell(
+          onTap: onTap,
+          child: SafeArea(
+            bottom: false,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(icon, color: fgColor, size: 20.r),
+                  8.horizontalSpace,
+                  Expanded(
+                    child: Text(
+                      text,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style:
+                          (context.typography.labelLarge ?? const TextStyle())
+                              .copyWith(
+                        color: fgColor,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13.sp,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
         ),
-      ],
+      ),
     );
   }
 }

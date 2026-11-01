@@ -11,5 +11,6 @@ export 'internet_connection_service.dart';
 export 'media_service.dart';
 export 'permission_service.dart';
 export 'secure_storage_service.dart';
+export 'stability_interceptor.dart';
 export 'storage_service.dart';
 export 'version_update_service.dart';
