@@ -1,204 +1,441 @@
-# Task: Add a "real internet" detection system to this Flutter app (service + HTTP interceptor + banner widget)
 
-You are working in an existing Flutter/Dart project. Implement a network-monitoring system made of THREE parts that detect whether the device has **real, working internet** (not just an active WiFi/mobile interface), including cases such as "mobile data is on but the SIM has no balance", WiFi with no uplink, and captive portals. Do not ask questions unless truly blocked; make sensible decisions and list them at the end.
+# Task: Implement Enterprise-Grade Real Internet Reachability & Network Stability Architecture in Flutter
 
-## 0. Phase 1: discover the project (do this before writing code)
+You are an expert Senior Flutter Architect. Implement a complete, production-ready internet reachability, stability monitoring, UI banner, Dio integration, and auto-recovery system across this Flutter project, following the exact specifications and architecture below.
 
-Inspect the repo and record how it handles each item below. Adapt every name/path in this spec to the project's own conventions; never force a foreign convention onto it.
+---
 
-1. **Package name, folder structure, architecture** (feature-first, layered, etc.). Decide where core/shared services live (e.g. `lib/core/services/`) and put the new files there.
-2. **Dependency injection** (get_it, injectable, Provider, Riverpod, manual singletons...). Register the service as a single lazy singleton following the existing pattern.
-3. **State management** (Bloc/Cubit, Riverpod, Provider, GetX...). The banner widget should work with the service directly via its streams; only add a Cubit/Notifier wrapper if the project's rules clearly require all state to go through it.
-4. **HTTP client.** Dio → implement the interceptor. `http`/`chopper`/`retrofit`/other → adapt the idea (a wrapper/interceptor that times requests and reports results to the service). If there is no HTTP client at all, skip the interceptor and say so.
-5. **Theming** (design tokens, extensions on `BuildContext`, or plain `ThemeData.colorScheme`). The banner must use the project's own success/warning/error colors and text styles; fall back to `Theme.of(context).colorScheme` and `textTheme` if no custom tokens exist.
-6. **Localization** (ARB/`gen-l10n`, easy_localization, intl, hardcoded). Add new strings in the project's existing mechanism and regenerate if needed. Support every language the app already supports (add translations for at least the languages present; use English as the fallback for any you can't translate confidently and flag them).
-7. **Lint rules** (`analysis_options.yaml`), formatting, test libraries (`mocktail`, `mockito`, `flutter_test`), and existing test layout.
-8. **Existing connectivity code.** Grep for `connectivity_plus`, `internet_connection_checker`, `InternetConnection`, `NetworkInfo`, offline banners, etc. Replace/migrate existing usage instead of leaving two competing systems.
-9. **Platforms targeted.** The probe uses `dart:io` and is NOT Flutter-web compatible. If the project targets web, use conditional imports and a web-safe fallback (e.g. `package:http` based probe or just trust `connectivity_plus`) and document it.
-10. **Root widget location** (`MaterialApp`/`MaterialApp.router`/`CupertinoApp`) where the banner wrapper will be mounted.
+## 1. Architectural Overview & Core Goals
 
-Add dependencies only if missing: `connectivity_plus`. Do NOT add `internet_connection_checker_plus`. Pick versions compatible with the project's SDK constraints (`flutter pub add`).
+Standard `connectivity_plus` only checks if a hardware interface (Wi-Fi or Mobile Data) is turned on—it does NOT verify actual internet access (e.g., SIM card with zero data balance, dead router uplink, or captive portal login page).
 
-## 1. Why a simple connectivity check is not enough
+You must build a complete system consisting of:
+1. **`InternetConnectionService` & `ReachabilityProbe`** (`lib/core/service/internet_connection_service.dart`): Combines `connectivity_plus` hardware events with strict multi-endpoint HTTPS reachability probes (`dart:io` `HttpClient`), latency stability tracking, exponential backoff offline recovery, epoch concurrency guards, and app lifecycle awareness.
+2. **`StabilityInterceptor`** (`lib/core/service/stability_interceptor.dart`): A Dio interceptor that measures real HTTP round-trip latency and reports network timeouts/connection errors back to `IInternetConnectionService`.
+3. **`InternetConnectionWrapper` & `_NetworkBanner`** (`lib/core/widgets/internet_connection_wrapper.dart`): A root-level UI wrapper around `MaterialApp.builder` that displays an animated status banner for `disconnected` (with issue-specific messages: `captivePortal`, `noInternet`, `noInterface`), `unstable`, and `restored` states without causing double top `SafeArea` padding.
+4. **Dependency Injection (`get_it`) & Dio Wiring**: Registering singletons in `service_locator.dart` and attaching `StabilityInterceptor` to the Dio client.
+5. **Feature-Level Auto-Recovery (`connectivityRestoredStream`)**: Automatically re-fetching data in feature pages/screens when transitioning strictly from `disconnected` to `connected`.
 
-- `connectivity_plus` only reports whether an interface (WiFi/mobile) is up. It says "connected" even with zero data balance or a router without uplink.
-- Carriers and captive portals often answer with a redirect or a `200` HTML page, so checking only `status == 200` yields false positives.
-- If the periodic check stops while offline, the app never notices that internet came back (e.g. user topped up balance) because the OS emits no event.
-- A single shared "slow hits" counter fed by both periodic pings and real HTTP traffic makes the two signals cancel each other.
-- Re-entrancy guards that return immediately make `hasConnection()` return false negatives at startup.
-- Cancelled requests, fast errors, and upload/download durations pollute latency statistics.
-- Results of a check started on one network can arrive after switching networks and overwrite the state (stale results).
-- `AppLifecycleState.inactive` fires for permission dialogs/notification shade; treating it as "background" pauses checks needlessly.
+---
 
-## 2. Part A: network service (`internet_connection_service.dart`)
+## 2. Dependencies & Platform Permissions
 
-### 2.1 Public types
+1. Ensure `connectivity_plus` and `dio` and `get_it` are in `pubspec.yaml` (Do NOT use `internet_connection_checker_plus`; we use our own `dart:io` `HttpClient` probe).
+2. Ensure Android `AndroidManifest.xml` has:
+   ```xml
+   <uses-permission android:name="android.permission.INTERNET"/>
+   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+   ```
+
+---
+
+## 3. Detailed Component Specifications
+
+### 3.1 `lib/core/service/internet_connection_service.dart`
+
+Implement the following types and classes in `lib/core/service/internet_connection_service.dart`:
+
+#### A. Enums & Interface
+
+- `enum NetworkState { checking, connected, unstable, disconnected }`
+- `enum NetworkIssue { none, noInterface, noInternet, captivePortal }`
+  - `none`: Connection is healthy and verified.
+  - `noInterface`: OS reports no active network interface (Wi-Fi / Mobile Data off).
+  - `noInternet`: Interface is active, but real internet endpoints cannot be reached (e.g., exhausted mobile data balance, dead router uplink, blocked traffic).
+  - `captivePortal`: An intermediate server intercepted the probe (3xx redirect or 2xx with unexpected body, typical of captive portals or carrier billing pages).
+- `abstract interface class IInternetConnectionService`:
+  - `Stream<NetworkState> get stateStream;`
+  - `Stream<void> get connectivityRestoredStream;` (Fires strictly when transitioning from `disconnected` -> `connected`)
+  - `Future<bool> hasConnection();`
+  - `Future<void> checkNow();`
+  - `NetworkState get currentState;`
+  - `NetworkIssue get lastIssue;`
+  - `bool get isStable;` (`currentState == NetworkState.connected`)
+  - `void reportLatency(int ms);`
+  - `void reportRequestFailure();`
+  - `void dispose();`
+
+#### B. `NetworkConfig` Constants
 
 ```dart
-enum NetworkState { checking, connected, unstable, disconnected }
-
-enum NetworkIssue {
-  none,
-  noInterface,   // OS reports no WiFi/mobile interface
-  noInternet,    // interface up but real internet unreachable (no balance, blocked, dead uplink)
-  captivePortal, // something answered but not the real endpoint (redirect / 2xx with unexpected body)
-}
-
-abstract interface class IInternetConnectionService {
-  Stream<NetworkState> get stateStream;
-  Stream<void> get connectivityRestoredStream; // fires ONLY on disconnected -> connected
-  Future<bool> hasConnection();                // true for connected or unstable
-  Future<void> checkNow();                     // forces an active check; concurrent callers share one in-flight check
-  NetworkState get currentState;
-  NetworkIssue get lastIssue;
-  bool get isStable;                           // currentState == connected
-  void reportLatency(int ms);                  // from the HTTP interceptor
-  void reportRequestFailure();                 // from the HTTP interceptor on real network failures
-  void dispose();
+class NetworkConfig {
+  static const int pingIntervalSeconds = 5;
+  static const List<int> recoveryBackoffSeconds = [2, 4, 6, 10, 15];
+  static const int slowPingThresholdMs = 700;
+  static const int slowDioThresholdMs = 2800;
+  static const int maxSlowHits = 3;
+  static const Duration slowHttpDecay = Duration(seconds: 30);
+  static const int failuresBeforeDisconnect = 2;
+  static const int requiredProbeSuccesses = 2;
+  static const Duration probeTimeout = Duration(seconds: 4);
+  static const Duration failureCheckDebounce = Duration(seconds: 3);
 }
 ```
 
-### 2.2 `NetworkConfig` constants
+#### C. Probe Models & `ReachabilityProbe`
 
-| name | value | meaning |
-| --- | --- | --- |
-| `pingIntervalSeconds` | 5 | check interval while connected/unstable |
-| `recoveryBackoffSeconds` | `[2, 4, 6, 10, 15]` | interval while disconnected; last value repeats |
-| `slowPingThresholdMs` | 700 | probe latency counted as slow |
-| `slowDioThresholdMs` (name it for the project's HTTP client) | 2800 | real request latency counted as slow |
-| `maxSlowHits` | 3 | |
-| `slowHttpDecay` | 30 s | slow HTTP hits forgotten after this long without a new slow request |
-| `failuresBeforeDisconnect` | 2 | consecutive failed checks before leaving connected/unstable |
-| `requiredProbeSuccesses` | 2 | endpoints that must agree in a full check |
-| `probeTimeout` | 4 s | |
-| `failureCheckDebounce` | 3 s | min gap between failure-triggered checks |
+- `class ProbeTarget`:
+  - `const ProbeTarget(this.uri, this.isValid);`
+  - `final Uri uri;`
+  - `final bool Function(int statusCode, String body) isValid;`
+- `enum ProbeOutcome { ok, portal, failed }`
+- `class ProbeResult`:
+  - Named constructors: `const ProbeResult.ok(int latencyMs)`, `const ProbeResult.portal()`, `const ProbeResult.failed()`.
+  - Getters: `isOk`, `isPortal`, `isFailed`, `final int? latencyMs`.
+- `class ProbeSummary`:
+  - `final bool isSuccess; final int? latencyMs; final NetworkIssue issue; final List<ProbeResult> results;`
+- `class ReachabilityProbe`:
+  - Constructor:
 
-### 2.3 `ReachabilityProbe` (verifies REAL internet)
+    ```dart
+    ReachabilityProbe({
+      List<ProbeTarget>? targets,
+      HttpClient? httpClient,
+      this.timeout = NetworkConfig.probeTimeout,
+      this.requiredSuccesses = NetworkConfig.requiredProbeSuccesses,
+    }) : targets = List<ProbeTarget>.unmodifiable(targets ?? defaultTargets),
+         _client = httpClient ?? _createDefaultClient(timeout);
+    ```
 
-- `dart:io` `HttpClient`: `connectionTimeout = probeTimeout`, `idleTimeout = 30s` (keep-alive avoids repeated TLS handshakes), custom user agent.
-- `ProbeTarget(Uri uri, bool Function(int statusCode, String body) isValid)`, injectable via the constructor so the app can add its **own backend health endpoint**. Document that in a comment.
-- Default targets, **HTTPS only** (cleartext is blocked by Android 9+/iOS ATS, and HTTPS makes DNS-hijacking portals fail the TLS handshake):
-  1. `https://cp.cloudflare.com/generate_204` → valid iff status == 204
-  2. `https://www.gstatic.com/generate_204` → valid iff status == 204
-  3. `https://captive.apple.com/hotspot-detect.html` → valid iff status == 200 and body contains `Success`
-- `run(target)`: `followRedirects = false`, `Cache-Control: no-cache`, each stage wrapped in `.timeout(probeTimeout)`, `request.abort()` on failure. Latency = time until response headers. Read at most ~4 KB of body, decode with `utf8.decode(..., allowMalformed: true)`.
-  - 3xx → `portal`
-  - `isValid` → `ok(latency)`
-  - other 2xx (reachable but unexpected content) → `portal`
-  - anything else or any exception (TLS, DNS, timeout, socket) → `failed`
-- `runPrimary()`: probe only the endpoint that was fastest in the last successful full check (initially index 0).
-- `runAll()`: probe all targets in parallel. Success iff `okCount >= min(requiredProbeSuccesses, targets.length)`; latency = **median** of ok latencies; the fastest ok endpoint becomes the new primary. On failure: `captivePortal` if any probe returned `portal`, else `noInternet`.
-- `close()` → `HttpClient.close(force: true)`.
+  - Default HTTPS-only targets (`defaultTargets`):
+    1. `Uri.parse('https://cp.cloudflare.com/generate_204')` -> `statusCode == 204`
+    2. `Uri.parse('https://www.gstatic.com/generate_204')` -> `statusCode == 204`
+    3. `Uri.parse('https://captive.apple.com/hotspot-detect.html')` -> `statusCode == 200 && body.contains('Success')`
+  - `_createDefaultClient(Duration timeout)`:
+    - `HttpClient()..connectionTimeout = timeout..idleTimeout = const Duration(seconds: 30)..userAgent = 'App-ReachabilityProbe/1.0'`
+  - Track `int _primaryIndex = 0;` (getter `int get primaryIndex => _primaryIndex;`).
+  - `Future<ProbeResult> run(ProbeTarget target)`:
+    - Starts `Stopwatch`, sends `GET` with `_client.getUrl(target.uri).timeout(timeout)`, sets `followRedirects = false` and `Cache-Control: no-cache`.
+    - Awaits `request.close().timeout(timeout)` and stops stopwatch (`latencyMs` is time to response headers).
+    - Reads response stream with `.timeout(timeout)` up to a maximum of `4096` bytes (`_maxBodyBytes`), decodes with `utf8.decode(bytes, allowMalformed: true)`.
+    - Validation rules:
+      - `statusCode >= 300 && statusCode < 400` -> `ProbeResult.portal()`
+      - `target.isValid(statusCode, body)` -> `ProbeResult.ok(latencyMs)`
+      - `statusCode >= 200 && statusCode < 300` -> `ProbeResult.portal()`
+      - Otherwise -> `ProbeResult.failed()`
+    - On any exception: safely call `request?.abort()` inside try/catch and return `ProbeResult.failed()`.
+  - `Future<ProbeResult> runPrimary()`:
+    - If `targets.isEmpty`, return `ProbeResult.failed()`.
+    - Runs `run(targets[_primaryIndex.clamp(0, targets.length - 1)])`.
+  - `Future<ProbeSummary> runAll()`:
+    - Runs all `targets` in parallel via `Future.wait(targets.map(run))`.
+    - Collects all `ok` latencies, finds the fastest target index.
+    - `needed = math.min(requiredSuccesses, targets.length)`.
+    - If `okLatencies.length >= needed`: updates `_primaryIndex = fastestIndex`, sorts `okLatencies`, computes the **median** latency, and returns `ProbeSummary(isSuccess: true, latencyMs: medianLatency, issue: NetworkIssue.none, results: results)`.
+    - Otherwise: checks `hasPortal = results.any((r) => r.isPortal)` and returns `ProbeSummary(isSuccess: false, issue: hasPortal ? NetworkIssue.captivePortal : NetworkIssue.noInternet, results: results)`.
+  - `void close()` -> `_client.close(force: true)`.
 
-### 2.4 `InternetConnectionService` behavior
+#### D. `InternetConnectionService` Implementation
 
-Implements `IInternetConnectionService` and `WidgetsBindingObserver`. Constructor (all optional, for testability): `ReachabilityProbe? probe`, `Connectivity? connectivity`, `Future<int?> Function()? pingChecker` (replaces the probe; returns latency ms or null), `bool registerObserver = true`. Registering the observer must be wrapped in try/catch (may run without a binding in tests). The constructor starts the initial check.
+- `class InternetConnectionService with WidgetsBindingObserver implements IInternetConnectionService`
+- Constructor:
 
-**Check pipeline**
+  ```dart
+  InternetConnectionService({
+    ReachabilityProbe? probe,
+    Connectivity? connectivity,
+    Future<int?> Function()? pingChecker,
+    bool registerObserver = true,
+  })
+  ```
 
-1. `connectivity.checkConnectivity()`; empty or contains `none` → `lastIssue = noInterface`, state `disconnected` immediately (no hysteresis).
-2. Reachability: run `runAll()` when state is `checking`/`disconnected` or a "force consensus" flag is set (after network switch, app resume, request failure, entering disconnected). Otherwise run the cheap `runPrimary()`; if it fails, fall back to `runAll()` (never declare offline from one endpoint).
-3. Failure: set `lastIssue`, reset ping slow hits, `consecutiveFailures++`; go `disconnected` when `consecutiveFailures >= (wasOnline ? failuresBeforeDisconnect : 1)`, otherwise keep the current state and re-check in ~1 s.
-4. Success: `consecutiveFailures = 0`, clear force-consensus, `lastIssue = none`, reset recovery backoff; latency >= `slowPingThresholdMs` → `slowPingHits++` else reset to 0; then `_applyStability()`.
+  - Registers `WidgetsBinding.instance.addObserver(this)` (wrapped in try/catch if `registerObserver` is true).
+  - Subscribes to `_listenToConnectivity()`.
+  - Immediately triggers `unawaited(checkNow())`.
+- State & Concurrency Fields:
+  - Broadcast `StreamController<NetworkState> _stateController` and `StreamController<void> _restoredController`.
+  - `_currentState = NetworkState.checking`, `_lastIssue = NetworkIssue.none`, `_lastEmittedIssue = NetworkIssue.none`.
+  - Separate slow counters: `int _slowPingHits = 0`, `int _slowHttpHits = 0`, `DateTime? _lastSlowHttpAt`, `Timer? _slowHttpDecayTimer`.
+  - Failure & Backoff counters: `int _consecutiveFailures = 0`, `int _recoveryAttempt = 0`, `bool _forceConsensus = true`.
+  - Concurrency control: `Future<void>? _inFlight`, `bool _recheck = false`, `int _epoch = 0`.
+  - Request failure debounce: `DateTime? _lastFailureCheckAt`, `Timer? _failureDebounceTimer`.
+  - Lifecycle: `bool _isBackground = false`, `bool _isDisposed = false`, `Timer? _timer`.
+- `hasConnection()`:
+  - If `_currentState == NetworkState.checking`, awaits `checkNow()` (joining the in-flight Future).
+  - Returns `_currentState == NetworkState.connected || _currentState == NetworkState.unstable`.
+- `checkNow()` & `_runChecks()`:
+  - `Future<void> checkNow() => _inFlight ??= _runChecks().whenComplete(() => _inFlight = null);`
+  - `_runChecks()` loops `do { _recheck = false; completedEpoch = await _performCheck(); } while (_recheck && !_isDisposed);` and in `finally`, if `completedEpoch` is true, calls `_scheduleNext()`.
+- `_listenToConnectivity()`:
+  - On `onConnectivityChanged`: if disposed, return. Increment `_epoch++`, set `_forceConsensus = true`.
+  - If `results.isEmpty || results.contains(ConnectivityResult.none)`:
+    - `_recheck = false; _lastIssue = NetworkIssue.noInterface; _updateState(NetworkState.disconnected); _scheduleNext();`
+  - Else:
+    - `_recheck = true; if (!_isBackground) unawaited(checkNow());`
+- `_performCheck()`:
+  - Captures `final startEpoch = _epoch;`.
+  - Calls `_connectivity.checkConnectivity()`. If `_isDisposed || _epoch != startEpoch`, return `false`.
+  - If empty or contains `ConnectivityResult.none`:
+    - Sets `_lastIssue = NetworkIssue.noInterface`, resets `_slowPingHits = 0`, `_consecutiveFailures = 0`, calls `_updateState(NetworkState.disconnected)`, returns `true`.
+  - Determines `useFullCheck = _currentState == NetworkState.checking || _currentState == NetworkState.disconnected || _forceConsensus`.
+  - Calls `_evaluateReachability(useFullCheck: useFullCheck, startEpoch: startEpoch)`:
+    - If `_pingChecker != null`, uses `_pingChecker()`.
+    - Else if `!useFullCheck`, runs `_probe.runPrimary()`. If primary succeeds, returns `ok: true`. If primary fails, falls back to `_probe.runAll()` (never declare offline from a single endpoint failure).
+    - When running full check, uses `_probe.runAll()`.
+  - After `await _evaluateReachability`, checks `if (_isDisposed || _epoch != startEpoch) return false;`.
+  - If `!outcome.ok`:
+    - `_lastIssue = outcome.issue; _slowPingHits = 0; _consecutiveFailures++;`
+    - `wasOnline = _currentState == NetworkState.connected || _currentState == NetworkState.unstable;`
+    - `requiredFailures = wasOnline ? NetworkConfig.failuresBeforeDisconnect : 1;`
+    - If `_consecutiveFailures >= requiredFailures`, calls `_updateState(NetworkState.disconnected)`.
+    - Returns `true`.
+  - If `outcome.ok`:
+    - `_consecutiveFailures = 0; _forceConsensus = false; _lastIssue = NetworkIssue.none; _recoveryAttempt = 0;`
+    - If `latency >= NetworkConfig.slowPingThresholdMs`, increments `_slowPingHits++`, else `_slowPingHits = 0`.
+    - Calls `_applyStability()` and returns `true`.
+- `_applyStability()`:
+  - Checks if `_lastSlowHttpAt` is older than `NetworkConfig.slowHttpDecay` (30s); if so, resets `_slowHttpHits = 0`, `_lastSlowHttpAt = null`, cancels `_slowHttpDecayTimer`.
+  - If `_slowPingHits >= NetworkConfig.maxSlowHits || _slowHttpHits >= NetworkConfig.maxSlowHits` -> `_updateState(NetworkState.unstable)` else `_updateState(NetworkState.connected)`.
+- `reportLatency(int ms)`:
+  - Ignores if `_isBackground || _isDisposed` or state is `disconnected` or `checking`.
+  - If `ms >= NetworkConfig.slowDioThresholdMs`: increments `_slowHttpHits++`, sets `_lastSlowHttpAt = DateTime.now()`, starts/resets `_slowHttpDecayTimer` for 30s.
+  - Else: resets `_slowHttpHits = 0`, `_lastSlowHttpAt = null`, cancels decay timer.
+  - Calls `_applyStability()`.
+- `reportRequestFailure()`:
+  - Ignores if `_isBackground || _isDisposed || _currentState == NetworkState.disconnected`.
+  - Debounces using `_lastFailureCheckAt` and `NetworkConfig.failureCheckDebounce` (3s).
+  - Sets `_forceConsensus = true` and calls `unawaited(checkNow())`.
+- `_scheduleNext()`:
+  - Cancels existing `_timer`. If `_isBackground || _isDisposed`, return.
+  - Calculates `delay`:
+    - If `_currentState == NetworkState.disconnected`: picks `NetworkConfig.recoveryBackoffSeconds[math.min(_recoveryAttempt, backoff.length - 1)]`, increments `_recoveryAttempt++`. (This guarantees active polling while offline so data balance top-ups or router recoveries are detected without OS events!).
+    - Else if `_consecutiveFailures > 0`: `const Duration(seconds: 1)`.
+    - Else: `const Duration(seconds: NetworkConfig.pingIntervalSeconds)` (5s).
+  - Starts `_timer = Timer(delay, () { if (!_isBackground && !_isDisposed) unawaited(checkNow()); });`.
+- `_updateState(NetworkState nextState)`:
+  - If disposed or closed, return.
+  - If `_currentState == nextState`:
+    - Special case: if `nextState == NetworkState.disconnected && _lastIssue != _lastEmittedIssue`, update `_lastEmittedIssue = _lastIssue` and re-emit `nextState` on `_stateController` so UI banners update their issue message immediately!
+    - Return.
+  - Saves `previousState = _currentState`, updates `_currentState = nextState`, `_lastEmittedIssue = _lastIssue`.
+  - If `nextState == NetworkState.disconnected`: resets `_slowPingHits = 0`, `_slowHttpHits = 0`, `_lastSlowHttpAt = null`, cancels `_slowHttpDecayTimer`, `_recoveryAttempt = 0`, `_consecutiveFailures = 0`, `_forceConsensus = true`.
+  - Emits `nextState` on `_stateController`.
+  - If `previousState == NetworkState.disconnected && nextState == NetworkState.connected`, emits `null` on `_restoredController`.
+- `didChangeAppLifecycleState(AppLifecycleState state)`:
+  - `paused` / `hidden`: `_isBackground = true; _cancelTimer();`
+  - `resumed`: `_isBackground = false; _forceConsensus = true; _recheck = true; unawaited(checkNow());`
+  - `inactive` / `detached`: do nothing (do NOT pause on `inactive` like notification shade or permission dialogs).
+- `dispose()`:
+  - Idempotent (`if (_isDisposed) return; _isDisposed = true;`).
+  - Removes observer, cancels all timers (`_timer`, `_slowHttpDecayTimer`, `_failureDebounceTimer`), cancels `_connectivitySubscription`, calls `_probe.close()`, closes `_stateController` and `_restoredController`.
 
-**Stability**
+---
 
-- Two separate counters: `_slowPingHits` and `_slowHttpHits` (+ timestamp of last slow HTTP hit). `_applyStability()` clears `_slowHttpHits` if older than `slowHttpDecay`; either counter >= `maxSlowHits` → `unstable`, else `connected`. Leaving `unstable` therefore needs both clear.
-- `reportLatency(ms)`: ignore when backgrounded/disposed or state is `disconnected`/`checking`; slow → `_slowHttpHits++` + timestamp, fast → reset; then `_applyStability()`.
-- `reportRequestFailure()`: ignore if backgrounded/disposed/`disconnected`; debounce by `failureCheckDebounce`; set force-consensus; `unawaited(checkNow())`.
+### 3.2 `lib/core/service/stability_interceptor.dart`
 
-**Scheduling**: ONE self-rescheduling `Timer` (not `Timer.periodic`). After every check run (in a `finally`) call `_scheduleNext()`: cancel the old timer; no-op if backgrounded/disposed; delay = backoff table while `disconnected` (attempt++), 1 s when `consecutiveFailures > 0`, else `pingIntervalSeconds`. The timer MUST keep running while disconnected so recovery is detected without any OS event. `_updateState` must not touch the timer.
+Create the Dio `StabilityInterceptor`:
 
-**Concurrency**: `Future<void>? _inFlight; Future<void> checkNow() => _inFlight ??= _runChecks().whenComplete(() => _inFlight = null);` where `_runChecks` loops `do { _recheck = false; await _performCheck(); } while (_recheck && !_isDisposed);`. Keep an `_epoch` counter incremented on every connectivity event (also sets `_recheck` and force-consensus); `_performCheck` captures it at start and discards results if it changed (or if disposed) after any `await`.
+- Constructor takes `final IInternetConnectionService _service;`.
+- `static const String skipKey = 'skipStability';`
+- `static const String _startTimeKey = 'stability_startTime';`
+- `onRequest`: if `options.extra[skipKey] != true`, records `options.extra[_startTimeKey] = DateTime.now().millisecondsSinceEpoch;`. Calls `handler.next(options)`.
+- `onResponse`: computes elapsed ms from `_startTimeKey` and calls `_service.reportLatency(latency)`. Calls `handler.next(response)`.
+- `onError`: if not skipped, switches on `err.type`:
+  - `connectionTimeout`, `sendTimeout`, `receiveTimeout`: reports latency (if available) AND calls `_service.reportRequestFailure()`.
+  - `connectionError`: calls `_service.reportRequestFailure()` ONLY (do not report fast failure as fast latency).
+  - `badResponse`: reports latency (4xx/5xx still completed a network round-trip).
+  - `cancel`, `badCertificate`, `unknown`: reports nothing.
+  - Always calls `handler.next(err)`.
 
-**Connectivity listener**: bump epoch, set `_recheck`/force-consensus; if results are empty/contain `none` → `lastIssue = noInterface`, `_updateState(disconnected)`, `_scheduleNext()`; else if not backgrounded → `unawaited(checkNow())`.
+---
 
-**`_updateState(next)`**: no-op if disposed/closed/same; `debugPrint` the transition; when entering `disconnected` reset both slow counters + recovery attempt and set force-consensus; emit on `stateStream`; emit on `connectivityRestoredStream` strictly for `disconnected -> connected`.
+### 3.3 `lib/core/widgets/internet_connection_wrapper.dart`
 
-**Lifecycle**: `paused`/`hidden` → background, cancel timer. `resumed` → un-background, force-consensus, `unawaited(checkNow())`. `inactive`/`detached` → ignore.
+Create `InternetConnectionWrapper` and `_NetworkBanner`:
 
-**`hasConnection()`**: if state is `checking`, `await checkNow()` (joins the in-flight check), then return `connected || unstable`.
+- `InternetConnectionWrapper` is a `StatefulWidget` taking `required Widget child` and optional `IInternetConnectionService? connectionService`.
+- In `initState()`:
+  - Resolves `_service = widget.connectionService ?? getIt<InternetConnectionService>()`.
+  - Initializes `_state = _service.currentState`.
+  - Listens to `_service.stateStream`:
+    - Calls `setState` on every emission.
+    - When transitioning `previousState == NetworkState.disconnected && newState == NetworkState.connected`: sets `_showRestored = true`, starts a `1800ms` timer (`_hideTimer`) that sets `_showRestored = false`.
+    - When `newState == NetworkState.disconnected || newState == NetworkState.unstable`: sets `_showRestored = false` and cancels `_hideTimer`.
+- Visibility getter `_shouldShowBanner`:
+  - Returns `true` if `_showRestored` is true, or `_state == NetworkState.disconnected`, or `_state == NetworkState.unstable`.
+  - Returns `false` on cold start (`checking -> connected`).
+- `build(BuildContext context)`:
 
-**`dispose()`**: idempotent; remove observer (try/catch), cancel timer + subscriptions, close the probe, close both controllers.
+  ```dart
+  final showBanner = _shouldShowBanner;
+  return Column(
+    children: [
+      AnimatedSize(
+        duration: const Duration(milliseconds: 300), // or context.durations.normal
+        curve: Curves.easeInOut,
+        child: showBanner
+            ? _NetworkBanner(
+                state: _state,
+                issue: _service.lastIssue,
+                isRestored: _showRestored,
+                onTap: () => unawaited(_service.checkNow()),
+              )
+            : const SizedBox.shrink(),
+      ),
+      Expanded(
+        child: MediaQuery.removePadding(
+          context: context,
+          removeTop: showBanner,
+          child: widget.child,
+        ),
+      ),
+    ],
+  );
+  ```
 
-Keep debug logs short and guarded with `debugPrint` (or the project's logger).
+  *(Note: Always keep `MediaQuery.removePadding` in the tree and toggle `removeTop: showBanner` so `widget.child` never loses its state or recreates its element subtree when the banner appears/disappears, while preventing double top status-bar padding).*
+- `_NetworkBanner`:
+  - Displays a `Material` with `InkWell(onTap: onTap)` and `SafeArea(bottom: false)`.
+  - Visual states & localized messages:
+    1. `isRestored == true`:
+       - Color: Success Green
+       - Icon: `Icons.check_circle_outline_rounded`
+       - Message (`internet_restored_banner`):
+         - AR: `'تم استعادة الاتصال بالإنترنت'`
+         - EN: `'Internet connection restored'`
+    2. `state == NetworkState.unstable`:
+       - Color: Warning Orange/Amber
+       - Icon: `Icons.wifi_protected_setup_rounded`
+       - Message (`internet_unstable_banner`):
+         - AR: `'اتصال الإنترنت ضعيف — قد يتأخر التحميل'`
+         - EN: `'Unstable internet connection — loading may be slow'`
+    3. `state == NetworkState.disconnected` (Switch on `issue`):
+       - `NetworkIssue.captivePortal`:
+         - Color: Warning Orange/Amber
+         - Icon: `Icons.wifi_lock_rounded`
+         - Message (`internet_captive_portal_banner`):
+           - AR: `'الشبكة محتاجة تسجيل دخول أو الباقة منتهية — اضغط للفحص'`
+           - EN: `'Network needs sign-in or has no data balance — tap to check'`
+       - `NetworkIssue.noInternet`:
+         - Color: Warning Orange/Amber
+         - Icon: `Icons.wifi_find_rounded`
+         - Message (`internet_no_access_banner`):
+           - AR: `'متصل بالشبكة لكن بدون إنترنت — تأكد من رصيد الباقة'`
+           - EN: `'Connected to the network but no internet — check your data balance'`
+       - `NetworkIssue.noInterface` / `NetworkIssue.none`:
+         - Color: Error Red
+         - Icon: `Icons.wifi_off_rounded`
+         - Message: `'${no_internet_title} — ${try_again_text}'` (e.g., AR: `'لا يوجد اتصال بالإنترنت — حاول مرة أخرى'` / EN: `'No Internet Connection — Try Again'`)
 
-## 3. Part B: HTTP interceptor (Dio; adapt for other clients)
+---
 
-`StabilityInterceptor(IInternetConnectionService)`:
+## 4. Application-Wide Wiring & Usage Patterns
 
-- `static const String skipKey = 'skipStability';` if `options.extra[skipKey] == true` report nothing (uploads/downloads/long-polling).
-- `onRequest`: store start timestamp in `options.extra`.
-- `onResponse`: report latency.
-- `onError`, by `DioExceptionType`:
-  - `cancel` → nothing
-  - `connectionTimeout`/`sendTimeout`/`receiveTimeout` → `reportLatency(latency)` + `reportRequestFailure()`
-  - `connectionError` → `reportRequestFailure()` only
-  - `badResponse` → `reportLatency(latency)` (a 4xx/5xx is still a valid round trip)
-  - `badCertificate`/`unknown` → nothing
-- Always call `handler.next(...)` exactly once.
-- Register it on every Dio instance that talks to the app's backend (find them via DI/factories), using the same service singleton.
+### 4.1 Dependency Injection (`lib/core/di/service_locator.dart`)
 
-## 4. Part C: banner wrapper widget (`InternetConnectionWrapper`)
+Register the services as lazy singletons at the top of `setupServiceLocator()`:
 
-A `StatefulWidget` with `child` and an optional injectable `IInternetConnectionService` (default: resolve from the project's DI). It shows a slim banner above the app content (`Column`: animated banner + `Expanded(child)`):
+```dart
+getIt
+  ..registerLazySingleton<InternetConnectionService>(
+    InternetConnectionService.new,
+  )
+  ..registerLazySingleton<IInternetConnectionService>(
+    getIt.get<InternetConnectionService>,
+  )
+  ..registerLazySingleton<StabilityInterceptor>(
+    () => StabilityInterceptor(getIt<InternetConnectionService>()),
+  );
+```
 
-- **Disconnected** (error color, wifi-off icon): message depends on `lastIssue`:
-  - `captivePortal` → EN `Network needs sign-in or has no data balance — tap to check` / AR `الشبكة محتاجة تسجيل دخول أو الباقة منتهية — اضغط للفحص`
-  - `noInternet` → EN `Connected to the network but no internet — check your data balance` / AR `متصل بالشبكة لكن بدون إنترنت — تأكد من رصيد الباقة`
-  - `noInterface`/`none` → generic "No internet connection — Tap to retry"
-- **Unstable** (warning color): EN `Internet connection unstable — Tap to check` / AR `الاتصال بالإنترنت غير مستقر - اضغط للفحص`
-- **Restored** (success color, check icon, shown for 1800 ms after `disconnected -> connected`, then hidden): EN `Internet connection restored` / AR `تمت استعادة الاتصال بالإنترنت`
-- Hidden on cold start `checking -> connected`.
-- Tapping the banner calls `service.checkNow()`.
-- Show/hide with `AnimatedSize` (use the project's animation duration token if any) and `Curves.easeInOut`.
-- Subscribe in `initState`, cancel subscription and timer in `dispose`, guard `mounted`, cancel the hide timer when entering disconnected/unstable.
-- Rebuild when `lastIssue` changes even if the state didn't (e.g. `noInterface -> captivePortal`).
-- Do NOT add a redundant `Directionality` wrapper (RTL/LTR is inherited).
-- Use `SafeArea(bottom: false)` inside the banner, and avoid a double top inset: while the banner is visible, strip the top padding from the child via `MediaQuery.removePadding(removeTop: true)`. Always keep the same widget wrapper around the child and only toggle the flag, so the child's state is never lost.
-- Banner text: `maxLines: 2`, ellipsis, centered; uses the project's text style (fallback `textTheme.labelLarge`, semi-bold) and an on-color that has enough contrast on each background (prefer theme `onError`/etc.; fall back to white).
-- All strings go through the project's localization system (ARB/gen-l10n or equivalent), for every supported locale. No hardcoded `isArabic ? ... : ...` ternaries unless the project truly has no l10n.
-- Add `Semantics(liveRegion: true)` on the banner so screen readers announce changes.
+### 4.2 Dio Client Integration (`DioHelper` / Network Client)
 
-**Mounting**: wrap the app content in `MaterialApp(builder: (context, child) => InternetConnectionWrapper(child: child!))` (or the `router` equivalent), which sits below `Localizations`/`Theme` but above the Navigator. Keep any existing `builder` logic (e.g. MediaQuery text scale overrides) and compose with it.
+When initializing `Dio`:
 
-## 5. Integration steps
+```dart
+if (getIt.isRegistered<StabilityInterceptor>()) {
+  client.interceptors.add(getIt<StabilityInterceptor>());
+}
+```
 
-1. Create the three files in the locations that fit the project structure.
-2. Register the service as a lazy singleton in DI; dispose it where the project disposes singletons (or leave it app-lifetime and document that).
-3. Register the interceptor on all relevant HTTP client instances.
-4. Mount the wrapper at the root.
-5. Migrate/remove old connectivity code and unused dependencies (Grep first; remove a package only if nothing else uses it) and run `flutter pub get`.
-6. Android: confirm `INTERNET` and `ACCESS_NETWORK_STATE` permissions in `AndroidManifest.xml`. iOS: no extra config needed since only HTTPS is used.
-7. Add the l10n keys and regenerate code.
+Also provide a helper method if Dio is initialized before DI or re-attached:
 
-## 6. Tests (use the project's test libraries; fake `Connectivity` with a controllable stream; fake probe or `pingChecker`; `fakeAsync` for timers)
+```dart
+static void attachStabilityInterceptor(StabilityInterceptor interceptor) {
+  if (_dio != null &&
+      _dio!.interceptors.every((i) => i is! StabilityInterceptor)) {
+    _dio!.interceptors.insert(0, interceptor);
+  }
+}
+```
 
-- Interface up + all probes fail → `disconnected`, `lastIssue == noInternet`.
-- Probes return portal → `lastIssue == captivePortal`.
-- One failed check while connected → stays `connected`; two consecutive → `disconnected`.
-- Disconnected → probe succeeds on a later timer tick with NO connectivity event → `connected`, and `connectivityRestoredStream` fires exactly once.
-- Backoff while disconnected: ticks at 2, 4, 6, 10, 15, 15 s.
-- Ping and HTTP slow hits counted separately; a fast ping doesn't clear HTTP hits; HTTP hits decay after 30 s; `unstable -> connected` only when both clear.
-- `hasConnection()` during the initial check awaits and returns the right value; concurrent `checkNow()` calls share one check (probe invoked once).
-- Network switch mid-check: stale result discarded, new check runs.
-- `reportRequestFailure()` triggers a check, debounced within 3 s, ignored while disconnected.
-- Lifecycle: `paused`/`hidden` cancel the timer, `resumed` triggers a check, `inactive` does nothing.
-- `dispose()` idempotent and closes streams.
-- `ReachabilityProbe` strict validation against a local `HttpServer`: 204 → ok; 302 → portal; 200 with wrong body → portal; 500 → failed; slow response → failed; consensus needs 2 of 3; median latency returned.
-- Interceptor: cancel → no report; timeout → latency + failure; connectionError → failure only; badResponse → latency; `skipStability` → nothing; `handler.next` exactly once.
-- Widget test: banner text per `NetworkIssue`, unstable style, restored banner auto-hides after 1.8 s, tap calls `checkNow`, no double top padding.
+### 4.3 Global UI Wrapping (`MaterialApp.builder`)
 
-## 7. Acceptance criteria
+In the root `MaterialApp` (e.g., `app_content.dart` or `main.dart`), wrap the `child` inside `MaterialApp.builder` with `InternetConnectionWrapper`:
 
-- `flutter analyze` is clean and `flutter test` passes.
-- "Connected to WiFi/mobile data but no internet/no balance" → `disconnected` within ~6 s of startup or network switch, with a banner explaining the likely cause; when real internet returns, the banner clears on its own (with the green "restored" flash) within a few seconds, without user action or OS events.
-- No flicker on a single timeout or single slow request.
-- Healthy steady state costs one small HTTPS request every 5 s over a kept-alive connection; nothing runs while the app is backgrounded.
-- No leftover duplicate/competing connectivity code; every existing call site compiles.
+```dart
+MaterialApp(
+  builder: (context, child) {
+    return InternetConnectionWrapper(child: child!);
+  },
+  // ...
+)
+```
 
-## 8. Final report (what I expect from you)
+### 4.4 Feature-Level Auto-Refresh on Connectivity Restored (`Pages` / `Views`)
 
-1. Summary of files created/changed and the project conventions you detected and followed.
-2. Decisions you made where this spec was ambiguous or the project differed from the assumptions.
-3. Anything you could not verify, plus a manual device checklist: airplane mode; WiFi without uplink; mobile data with zero balance; captive-portal WiFi; switching WiFi ↔ mobile mid-request; app background/resume; slow network (throttled).
+In stateful screens/pages that fetch initial remote data (e.g., `HomeView`, `CategoriesView`, `CartPage`, `OrdersView`, `ProductDetailsPage`, `FavoritesView`, `SearchView`, `ProfilePage`, etc.), subscribe to `connectivityRestoredStream` so the screen automatically reloads its Cubit/Bloc data as soon as real internet returns:
+
+```dart
+StreamSubscription<void>? _networkRestoreSubscription;
+
+@override
+void initState() {
+  super.initState();
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    if (mounted) _initData();
+  });
+  _networkRestoreSubscription = getIt<InternetConnectionService>()
+      .connectivityRestoredStream
+      .listen((_) {
+        if (mounted) {
+          _initData();
+        }
+      });
+}
+
+@override
+void dispose() {
+  unawaited(_networkRestoreSubscription?.cancel());
+  super.dispose();
+}
+```
+
+---
+
+## 5. Unit & Widget Tests Required
+
+Write comprehensive tests covering:
+
+1. **`ReachabilityProbe` Tests**:
+   - `204` status -> `ProbeResult.ok(latency)`
+   - `302` redirect -> `ProbeResult.portal()`
+   - `200` with unexpected body -> `ProbeResult.portal()`
+   - `200` with `'Success'` on Apple captive endpoint -> `ProbeResult.ok(latency)`
+   - `500` or socket timeout -> `ProbeResult.failed()`
+   - `runAll()` consensus: succeeds when at least 2 of 3 targets succeed, returns median latency, updates `primaryIndex` to the fastest responder, and classifies `captivePortal` vs `noInternet` on failure.
+2. **`InternetConnectionService` Tests** (`fakeAsync` + controllable fake `Connectivity` & `ReachabilityProbe`):
+   - Hardware interface `none` -> immediate `disconnected` with `lastIssue == NetworkIssue.noInterface`.
+   - Interface up + all probes fail -> `disconnected` with `lastIssue == NetworkIssue.noInternet`.
+   - Interface up + probe returns portal -> `disconnected` with `lastIssue == NetworkIssue.captivePortal`.
+   - Hysteresis while online: 1st failed check keeps state `connected` and schedules a 1s retry; 2nd consecutive failure transitions to `disconnected`.
+   - Active offline recovery via exponential backoff (`[2, 4, 6, 10, 15]` seconds): transitions to `connected` and fires `connectivityRestoredStream` once when probes succeed on a later timer tick without any OS connectivity event.
+   - Separate `_slowPingHits` and `_slowHttpHits` counters, 30s HTTP decay, and `unstable` state transitions.
+   - `hasConnection()` awaits in-flight initial check (`checking`) without false negatives.
+   - Epoch guard discards stale in-flight check results when a connectivity change occurs mid-probe.
+   - `reportRequestFailure()` triggers a consensus check and debounces within 3s.
+   - AppLifecycle: `paused`/`hidden` stop timers; `resumed` forces consensus check; `inactive` does not pause checks.
+3. **`StabilityInterceptor` Tests**:
+   - Measures latency on `onResponse` and `badResponse`.
+   - Calls `reportLatency` + `reportRequestFailure` on timeouts.
+   - Calls `reportRequestFailure` only on `connectionError`.
+   - Ignores `cancel` and requests with `extra: {StabilityInterceptor.skipKey: true}`.
+4. **`InternetConnectionWrapper` Widget Tests**:
+   - Displays distinct messages/icons for `noInterface`, `noInternet`, `captivePortal`, and `unstable`.
+   - Updates banner text dynamically if `lastIssue` changes while already in `disconnected` state.
+   - Shows green restored banner on `disconnected -> connected` and auto-hides after `1800ms`.
+   - Tapping the banner triggers `checkNow()`.
+
+```
+
+---

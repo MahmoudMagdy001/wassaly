@@ -13,55 +13,61 @@ class FcmTokenService {
   final _logger = Logger();
   late RegisterFcmTokenUseCase _registerFcmTokenUseCase;
 
+  String? _currentToken;
+  int? _registeredUserId;
+  StreamSubscription<String>? _tokenRefreshSubscription;
+
   /// Must be called once after DI is initialized.
   set useCase(RegisterFcmTokenUseCase value) {
     _registerFcmTokenUseCase = value;
   }
 
-  /// Fetches FCM token + device ID and registers them with the backend.
+  /// Triggers FCM registration, obtains token via onRegistered, and registers with backend.
   /// Errors are swallowed — this must never block the login flow.
   Future<void> registerToken(int userId) async {
     _logger.i('[FcmTokenService] registerToken started for user $userId');
     try {
-      String? token;
-      var retryCount = 0;
-      const maxRetries = 3;
-
-      while (token == null && retryCount < maxRetries) {
-        if (retryCount > 0) {
-          _logger.i(
-            '[FcmTokenService] FCM token was null, retrying ($retryCount/$maxRetries) after 2s...',
-          );
-          await Future<void>.delayed(const Duration(seconds: 2));
-        }
-
-        token = await FirebaseMessaging.instance.getToken();
-        retryCount++;
-      }
-
-      if (token == null) {
-        _logger.e(
-          '[FcmTokenService] ❌ FCM token is still NULL after $maxRetries attempts. Registration aborted.',
+      if (_currentToken != null && _registeredUserId == userId) {
+        _logger.i(
+          '[FcmTokenService] Token already registered for user $userId, skipping redundant registration.',
         );
         return;
       }
 
-      _logger.i(
-        '[FcmTokenService] FCM token obtained: ${token.substring(0, 10)}...',
-      );
-      final deviceId = await _getDeviceId();
+      if (_currentToken != null) {
+        await _sendTokenToBackend(_currentToken!, userId);
+        return;
+      }
 
-      final result = await _registerFcmTokenUseCase(
-        FcmTokenParams(token: token, deviceId: deviceId, userId: userId),
+      final completer = Completer<String?>();
+      final sub = FirebaseMessaging.instance.onRegistered.listen(
+        (token) {
+          if (!completer.isCompleted) completer.complete(token);
+        },
+        onError: (Object e) {
+          _logger.w('[FcmTokenService] onRegistered error: $e');
+          if (!completer.isCompleted) completer.complete(null);
+        },
       );
 
-      result.fold(
-        (failure) => _logger
-            .w('[FcmTokenService] Registration failed: ${failure.message}'),
-        (_) => _logger.i(
-          '[FcmTokenService] Token registered successfully for user $userId',
-        ),
-      );
+      try {
+        await FirebaseMessaging.instance.register();
+        final token = await completer.future.timeout(
+          const Duration(seconds: 10),
+          onTimeout: () => null,
+        );
+
+        if (token != null) {
+          _currentToken = token;
+          await _sendTokenToBackend(token, userId);
+        } else {
+          _logger.e(
+            '[FcmTokenService] ❌ Failed to obtain token from onRegistered within timeout.',
+          );
+        }
+      } finally {
+        await sub.cancel();
+      }
     } on Object catch (e) {
       _logger.e(
         '[FcmTokenService] Unexpected error during token registration: $e',
@@ -69,32 +75,20 @@ class FcmTokenService {
     }
   }
 
-  StreamSubscription<String>? _tokenRefreshSubscription;
-
-  /// Listens to token refresh events and re-registers with the backend.
+  /// Listens to token registration/refresh events and re-registers with the backend.
   void setupTokenRefresh(int userId) {
     unawaited(_tokenRefreshSubscription?.cancel());
     try {
-      _tokenRefreshSubscription = FirebaseMessaging.instance.onTokenRefresh.listen(
+      _tokenRefreshSubscription =
+          FirebaseMessaging.instance.onRegistered.listen(
         (newToken) async {
           _logger.i(
-            '[FcmTokenService] Token refreshed — re-registering for user $userId',
+            '[FcmTokenService] Token registered/refreshed — re-registering for user $userId',
           );
-          final deviceId = await _getDeviceId();
-
-          final result = await _registerFcmTokenUseCase(
-            FcmTokenParams(token: newToken, deviceId: deviceId, userId: userId),
-          );
-          result.fold(
-            (failure) => _logger.w(
-              '[FcmTokenService] Refresh registration failed: ${failure.message}',
-            ),
-            (_) => _logger
-                .i('[FcmTokenService] Refresh token registered for user $userId'),
-          );
+          await _sendTokenToBackend(newToken, userId);
         },
         onError: (Object e) =>
-            _logger.e('[FcmTokenService] onTokenRefresh error: $e'),
+            _logger.e('[FcmTokenService] onRegistered error: $e'),
       );
     } on Object catch (e) {
       _logger.w('[FcmTokenService] Firebase Messaging not initialized: $e');
@@ -105,7 +99,36 @@ class FcmTokenService {
   void cancelTokenRefresh() {
     unawaited(_tokenRefreshSubscription?.cancel());
     _tokenRefreshSubscription = null;
+    _registeredUserId = null;
     _logger.i('[FcmTokenService] Token refresh listener cancelled.');
+  }
+
+  Future<void> _sendTokenToBackend(String token, int userId) async {
+    if (_currentToken == token && _registeredUserId == userId) {
+      return;
+    }
+
+    _logger.i(
+      '[FcmTokenService] FCM token obtained: ${token.length > 10 ? token.substring(0, 10) : token}...',
+    );
+    final deviceId = await _getDeviceId();
+
+    final result = await _registerFcmTokenUseCase(
+      FcmTokenParams(token: token, deviceId: deviceId, userId: userId),
+    );
+
+    result.fold(
+      (failure) => _logger.w(
+        '[FcmTokenService] Registration failed: ${failure.message}',
+      ),
+      (_) {
+        _currentToken = token;
+        _registeredUserId = userId;
+        _logger.i(
+          '[FcmTokenService] Token registered successfully for user $userId',
+        );
+      },
+    );
   }
 
   Future<String> _getDeviceId() async {

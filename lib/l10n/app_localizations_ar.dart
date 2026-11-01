@@ -1930,12 +1930,27 @@ class SAr extends S {
 
   @override
   String get network_banner_no_interface =>
-      'لا يوجد اتصال بالإنترنت — اضغط لإعادة المحاولة';
+      'لا يوجد اتصال بالإنترنت — حاول مرة أخرى';
 
   @override
   String get network_banner_unstable =>
-      'الاتصال بالإنترنت غير مستقر - اضغط للفحص';
+      'اتصال الإنترنت ضعيف — قد يتأخر التحميل';
 
   @override
-  String get network_banner_restored => 'تمت استعادة الاتصال بالإنترنت';
+  String get network_banner_restored => 'تم استعادة الاتصال بالإنترنت';
+
+  @override
+  String get internet_captive_portal_banner =>
+      'الشبكة محتاجة تسجيل دخول أو الباقة منتهية — اضغط للفحص';
+
+  @override
+  String get internet_no_access_banner =>
+      'متصل بالشبكة لكن بدون إنترنت — تأكد من رصيد الباقة';
+
+  @override
+  String get internet_unstable_banner =>
+      'اتصال الإنترنت ضعيف — قد يتأخر التحميل';
+
+  @override
+  String get internet_restored_banner => 'تم استعادة الاتصال بالإنترنت';
 }

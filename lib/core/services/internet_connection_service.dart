@@ -10,21 +10,21 @@ enum NetworkState { checking, connected, unstable, disconnected }
 
 enum NetworkIssue {
   none,
-  noInterface, // OS reports no WiFi/mobile interface
-  noInternet, // interface up but real internet unreachable (no balance, blocked, dead uplink)
-  captivePortal, // something answered but not the real endpoint (redirect / 2xx with unexpected body)
+  noInterface,
+  noInternet,
+  captivePortal,
 }
 
 abstract interface class IInternetConnectionService {
   Stream<NetworkState> get stateStream;
-  Stream<void> get connectivityRestoredStream; // fires ONLY on disconnected -> connected
-  Future<bool> hasConnection(); // true for connected or unstable
-  Future<void> checkNow(); // forces an active check; concurrent callers share one in-flight check
+  Stream<void> get connectivityRestoredStream;
+  Future<bool> hasConnection();
+  Future<void> checkNow();
   NetworkState get currentState;
   NetworkIssue get lastIssue;
-  bool get isStable; // currentState == connected
-  void reportLatency(int ms); // from the HTTP interceptor
-  void reportRequestFailure(); // from the HTTP interceptor on real network failures
+  bool get isStable;
+  void reportLatency(int ms);
+  void reportRequestFailure();
   void dispose();
 }
 
@@ -41,8 +41,6 @@ class NetworkConfig {
   static const Duration failureCheckDebounce = Duration(seconds: 3);
 }
 
-/// Target endpoint used by [ReachabilityProbe] to check internet reachability.
-/// Custom targets (e.g. backend health checks) can be injected via [ReachabilityProbe] constructor.
 class ProbeTarget {
   final Uri uri;
   final bool Function(int statusCode, String body) isValid;
@@ -50,49 +48,90 @@ class ProbeTarget {
   const ProbeTarget(this.uri, this.isValid);
 }
 
-sealed class ProbeResult {
-  const ProbeResult();
+enum ProbeOutcome { ok, portal, failed }
+
+class ProbeResult {
+  final ProbeOutcome outcome;
+  final int? latencyMs;
+
+  const ProbeResult.ok(int latency)
+      : outcome = ProbeOutcome.ok,
+        latencyMs = latency;
+
+  const ProbeResult.portal()
+      : outcome = ProbeOutcome.portal,
+        latencyMs = null;
+
+  const ProbeResult.failed()
+      : outcome = ProbeOutcome.failed,
+        latencyMs = null;
+
+  bool get isOk => outcome == ProbeOutcome.ok;
+  bool get isPortal => outcome == ProbeOutcome.portal;
+  bool get isFailed => outcome == ProbeOutcome.failed;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ProbeResult &&
+          runtimeType == other.runtimeType &&
+          outcome == other.outcome &&
+          latencyMs == other.latencyMs;
+
+  @override
+  int get hashCode => Object.hash(outcome, latencyMs);
+
+  @override
+  String toString() =>
+      'ProbeResult(outcome: $outcome, latencyMs: $latencyMs)';
 }
 
-class ProbeOk extends ProbeResult {
-  final int latencyMs;
-  const ProbeOk(this.latencyMs);
-}
-
-class ProbePortal extends ProbeResult {
-  const ProbePortal();
-}
-
-class ProbeFailed extends ProbeResult {
-  const ProbeFailed();
-}
-
-class FullProbeResult {
+class ProbeSummary {
   final bool isSuccess;
   final int? latencyMs;
   final NetworkIssue issue;
+  final List<ProbeResult> results;
 
-  const FullProbeResult({
+  const ProbeSummary({
     required this.isSuccess,
     required this.latencyMs,
     required this.issue,
+    required this.results,
   });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ProbeSummary &&
+          runtimeType == other.runtimeType &&
+          isSuccess == other.isSuccess &&
+          latencyMs == other.latencyMs &&
+          issue == other.issue;
+
+  @override
+  int get hashCode => Object.hash(isSuccess, latencyMs, issue);
+
+  @override
+  String toString() =>
+      'ProbeSummary(isSuccess: $isSuccess, latencyMs: $latencyMs, issue: $issue, results: $results)';
 }
 
-/// Probes HTTPS endpoints to verify actual internet reachability and captive portal detection.
 class ReachabilityProbe {
   ReachabilityProbe({
     List<ProbeTarget>? targets,
     HttpClient? httpClient,
-    Duration? timeout,
-  })  : targets = targets ?? defaultTargets,
-        timeout = timeout ?? NetworkConfig.probeTimeout,
-        _client = httpClient ?? _defaultHttpClient();
+    this.timeout = NetworkConfig.probeTimeout,
+    this.requiredSuccesses = NetworkConfig.requiredProbeSuccesses,
+  })  : targets = List<ProbeTarget>.unmodifiable(targets ?? defaultTargets),
+        _client = httpClient ?? _createDefaultClient(timeout);
 
   final List<ProbeTarget> targets;
   final Duration timeout;
+  final int requiredSuccesses;
   final HttpClient _client;
   int _primaryIndex = 0;
+
+  int get primaryIndex => _primaryIndex;
 
   static List<ProbeTarget> get defaultTargets => [
         ProbeTarget(
@@ -109,98 +148,102 @@ class ReachabilityProbe {
         ),
       ];
 
-  static HttpClient _defaultHttpClient() => HttpClient()
-    ..connectionTimeout = NetworkConfig.probeTimeout
-    ..idleTimeout = const Duration(seconds: 30)
-    ..userAgent = 'Wassaly-Probe/1.0';
+  static HttpClient _createDefaultClient(Duration timeout) =>
+      HttpClient()
+        ..connectionTimeout = timeout
+        ..idleTimeout = const Duration(seconds: 30)
+        ..userAgent = 'App-ReachabilityProbe/1.0';
+
+  static const int _maxBodyBytes = 4096;
 
   Future<ProbeResult> run(ProbeTarget target) async {
     HttpClientRequest? request;
     try {
-      final sw = Stopwatch()..start();
-      request = await _client.openUrl('GET', target.uri).timeout(timeout)
-        ..followRedirects = false;
-      request.headers.set(HttpHeaders.cacheControlHeader, 'no-cache');
+      final stopwatch = Stopwatch()..start();
+      request = await _client.getUrl(target.uri).timeout(timeout)
+        ..followRedirects = false
+        ..headers.set(HttpHeaders.cacheControlHeader, 'no-cache');
 
       final response = await request.close().timeout(timeout);
-      sw.stop();
-      final latency = sw.elapsedMilliseconds;
+      stopwatch.stop();
+      final latencyMs = stopwatch.elapsedMilliseconds;
 
       final chunks = <int>[];
       await for (final chunk in response.timeout(timeout)) {
         chunks.addAll(chunk);
-        if (chunks.length >= 4096) break;
+        if (chunks.length >= _maxBodyBytes) break;
       }
-      final bodyBytes =
-          chunks.length > 4096 ? chunks.sublist(0, 4096) : chunks;
+      final bodyBytes = chunks.length > _maxBodyBytes
+          ? chunks.sublist(0, _maxBodyBytes)
+          : chunks;
       final body = utf8.decode(bodyBytes, allowMalformed: true);
 
-      if (response.statusCode >= 300 && response.statusCode < 400) {
-        return const ProbePortal();
+      final statusCode = response.statusCode;
+      if (statusCode >= 300 && statusCode < 400) {
+        return const ProbeResult.portal();
       }
-      if (target.isValid(response.statusCode, body)) {
-        return ProbeOk(latency);
+      if (target.isValid(statusCode, body)) {
+        return ProbeResult.ok(latencyMs);
       }
-      if (response.statusCode >= 200 && response.statusCode < 300) {
-        return const ProbePortal();
+      if (statusCode >= 200 && statusCode < 300) {
+        return const ProbeResult.portal();
       }
-      return const ProbeFailed();
+      return const ProbeResult.failed();
     } on Object catch (_) {
       try {
         request?.abort();
       } on Object catch (_) {}
-      return const ProbeFailed();
+      return const ProbeResult.failed();
     }
   }
 
   Future<ProbeResult> runPrimary() async {
-    if (targets.isEmpty) return const ProbeFailed();
-    if (_primaryIndex >= targets.length) _primaryIndex = 0;
-    return run(targets[_primaryIndex]);
+    if (targets.isEmpty) return const ProbeResult.failed();
+    return run(targets[_primaryIndex.clamp(0, targets.length - 1)]);
   }
 
-  Future<FullProbeResult> runAll() async {
+  Future<ProbeSummary> runAll() async {
     if (targets.isEmpty) {
-      return const FullProbeResult(
+      return const ProbeSummary(
         isSuccess: false,
         latencyMs: null,
         issue: NetworkIssue.noInternet,
+        results: [],
       );
     }
 
     final results = await Future.wait(targets.map(run));
-    final okResults = <({int index, int latency})>[];
-    var hasPortal = false;
+    final okEntries = <({int index, int latency})>[];
 
     for (var i = 0; i < results.length; i++) {
       final r = results[i];
-      if (r is ProbeOk) {
-        okResults.add((index: i, latency: r.latencyMs));
-      } else if (r is ProbePortal) {
-        hasPortal = true;
+      if (r.isOk && r.latencyMs != null) {
+        okEntries.add((index: i, latency: r.latencyMs!));
       }
     }
 
-    final requiredSuccesses =
-        math.min(NetworkConfig.requiredProbeSuccesses, targets.length);
+    final needed = math.min(requiredSuccesses, targets.length);
 
-    if (okResults.length >= requiredSuccesses) {
-      okResults.sort((a, b) => a.latency.compareTo(b.latency));
-      _primaryIndex = okResults.first.index;
+    if (okEntries.length >= needed) {
+      okEntries.sort((a, b) => a.latency.compareTo(b.latency));
+      _primaryIndex = okEntries.first.index;
 
-      final latencies = okResults.map((e) => e.latency).toList()..sort();
-      final median = latencies[latencies.length ~/ 2];
+      final okLatencies = okEntries.map((e) => e.latency).toList()..sort();
+      final medianLatency = okLatencies[okLatencies.length ~/ 2];
 
-      return FullProbeResult(
+      return ProbeSummary(
         isSuccess: true,
-        latencyMs: median,
+        latencyMs: medianLatency,
         issue: NetworkIssue.none,
+        results: results,
       );
     } else {
-      return FullProbeResult(
+      final hasPortal = results.any((r) => r.isPortal);
+      return ProbeSummary(
         isSuccess: false,
         latencyMs: null,
         issue: hasPortal ? NetworkIssue.captivePortal : NetworkIssue.noInternet,
+        results: results,
       );
     }
   }
@@ -210,7 +253,6 @@ class ReachabilityProbe {
   }
 }
 
-/// Centralized service and Single Source of Truth for real internet connectivity.
 class InternetConnectionService
     with WidgetsBindingObserver
     implements IInternetConnectionService {
@@ -228,14 +270,10 @@ class InternetConnectionService
     if (_registerObserver) {
       try {
         WidgetsBinding.instance.addObserver(this);
-      } on Object catch (_) {
-        // Observer registration may fail when run without Flutter test binding
-      }
+      } on Object catch (_) {}
     }
 
-    _connectivitySub =
-        _connectivity.onConnectivityChanged.listen(_onConnectivityChanged);
-
+    _listenToConnectivity();
     unawaited(checkNow());
   }
 
@@ -247,36 +285,39 @@ class InternetConnectionService
 
   final StreamController<NetworkState> _stateController =
       StreamController<NetworkState>.broadcast();
-  final StreamController<void> _connectivityRestoredController =
+  final StreamController<void> _restoredController =
       StreamController<void>.broadcast();
-
-  StreamSubscription<List<ConnectivityResult>>? _connectivitySub;
-  Timer? _timer;
 
   NetworkState _currentState = NetworkState.checking;
   NetworkIssue _lastIssue = NetworkIssue.none;
-  bool _isBackground = false;
-  bool _isDisposed = false;
-  bool _forceConsensus = true;
-  int _epoch = 0;
-  bool _recheck = false;
-  Future<void>? _inFlight;
+  NetworkIssue _lastEmittedIssue = NetworkIssue.none;
+
+  int _slowPingHits = 0;
+  int _slowHttpHits = 0;
+  DateTime? _lastSlowHttpAt;
+  Timer? _slowHttpDecayTimer;
 
   int _consecutiveFailures = 0;
   int _recoveryAttempt = 0;
-  int _slowPingHits = 0;
-  int _slowHttpHits = 0;
-  DateTime? _lastSlowHttpTime;
-  DateTime? _lastFailureReportTime;
+  bool _forceConsensus = true;
 
-  // --- Public API ---
+  Future<void>? _inFlight;
+  bool _recheck = false;
+  int _epoch = 0;
+
+  DateTime? _lastFailureCheckAt;
+  Timer? _failureDebounceTimer;
+
+  bool _isBackground = false;
+  bool _isDisposed = false;
+  Timer? _timer;
+  StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
 
   @override
   Stream<NetworkState> get stateStream => _stateController.stream;
 
   @override
-  Stream<void> get connectivityRestoredStream =>
-      _connectivityRestoredController.stream;
+  Stream<void> get connectivityRestoredStream => _restoredController.stream;
 
   @override
   NetworkState get currentState => _currentState;
@@ -300,6 +341,171 @@ class InternetConnectionService
   Future<void> checkNow() =>
       _inFlight ??= _runChecks().whenComplete(() => _inFlight = null);
 
+  Future<void> _runChecks() async {
+    var completedEpoch = false;
+    try {
+      do {
+        _recheck = false;
+        completedEpoch = await _performCheck();
+      } while (_recheck && !_isDisposed);
+    } finally {
+      if (completedEpoch && !_isDisposed) {
+        _scheduleNext();
+      }
+    }
+  }
+
+  void _listenToConnectivity() {
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen((results) {
+      if (_isDisposed) return;
+      _epoch++;
+      _forceConsensus = true;
+
+      final hasNoInterface =
+          results.isEmpty || results.contains(ConnectivityResult.none);
+
+      if (hasNoInterface) {
+        _recheck = false;
+        _lastIssue = NetworkIssue.noInterface;
+        _updateState(NetworkState.disconnected);
+        _scheduleNext();
+      } else {
+        _recheck = true;
+        if (!_isBackground) {
+          unawaited(checkNow());
+        }
+      }
+    });
+  }
+
+  Future<bool> _performCheck() async {
+    final startEpoch = _epoch;
+    try {
+      final connResults = await _connectivity.checkConnectivity();
+      if (_isDisposed || _epoch != startEpoch) return false;
+
+      final hasNoInterface = connResults.isEmpty ||
+          connResults.contains(ConnectivityResult.none);
+
+      if (hasNoInterface) {
+        _lastIssue = NetworkIssue.noInterface;
+        _slowPingHits = 0;
+        _consecutiveFailures = 0;
+        _updateState(NetworkState.disconnected);
+        return true;
+      }
+
+      final useFullCheck = _currentState == NetworkState.checking ||
+          _currentState == NetworkState.disconnected ||
+          _forceConsensus;
+
+      final ({bool ok, int? latency, NetworkIssue issue}) outcome;
+      if (_pingChecker != null) {
+        final latency = await _pingChecker();
+        if (_isDisposed || _epoch != startEpoch) return false;
+        if (latency != null) {
+          outcome = (ok: true, latency: latency, issue: NetworkIssue.none);
+        } else {
+          outcome = (ok: false, latency: null, issue: NetworkIssue.noInternet);
+        }
+      } else if (!useFullCheck) {
+        final primaryResult = await _probe.runPrimary();
+        if (_isDisposed || _epoch != startEpoch) return false;
+        if (primaryResult.isOk) {
+          outcome = (
+            ok: true,
+            latency: primaryResult.latencyMs,
+            issue: NetworkIssue.none,
+          );
+        } else {
+          final fullResult = await _probe.runAll();
+          if (_isDisposed || _epoch != startEpoch) return false;
+          outcome = (
+            ok: fullResult.isSuccess,
+            latency: fullResult.latencyMs,
+            issue: fullResult.issue,
+          );
+        }
+      } else {
+        final fullResult = await _probe.runAll();
+        if (_isDisposed || _epoch != startEpoch) return false;
+        outcome = (
+          ok: fullResult.isSuccess,
+          latency: fullResult.latencyMs,
+          issue: fullResult.issue,
+        );
+      }
+
+      if (_isDisposed || _epoch != startEpoch) return false;
+
+      if (!outcome.ok) {
+        _lastIssue = outcome.issue;
+        _slowPingHits = 0;
+        _consecutiveFailures++;
+
+        final wasOnline = _currentState == NetworkState.connected ||
+            _currentState == NetworkState.unstable;
+        final requiredFailures =
+            wasOnline ? NetworkConfig.failuresBeforeDisconnect : 1;
+
+        if (_consecutiveFailures >= requiredFailures) {
+          _updateState(NetworkState.disconnected);
+        } else if (_currentState == NetworkState.disconnected &&
+            _lastIssue != _lastEmittedIssue) {
+          _lastEmittedIssue = _lastIssue;
+          _stateController.add(_currentState);
+        }
+        return true;
+      }
+
+      _consecutiveFailures = 0;
+      _forceConsensus = false;
+      _lastIssue = NetworkIssue.none;
+      _recoveryAttempt = 0;
+
+      final latency = outcome.latency ?? 0;
+      if (latency >= NetworkConfig.slowPingThresholdMs) {
+        _slowPingHits++;
+      } else {
+        _slowPingHits = 0;
+      }
+
+      _applyStability();
+      return true;
+    } on Object catch (_) {
+      if (_isDisposed || _epoch != startEpoch) return false;
+      _lastIssue = NetworkIssue.noInternet;
+      _slowPingHits = 0;
+      _consecutiveFailures++;
+      final wasOnline = _currentState == NetworkState.connected ||
+          _currentState == NetworkState.unstable;
+      final requiredFailures =
+          wasOnline ? NetworkConfig.failuresBeforeDisconnect : 1;
+      if (_consecutiveFailures >= requiredFailures) {
+        _updateState(NetworkState.disconnected);
+      }
+      return true;
+    }
+  }
+
+  void _applyStability() {
+    if (_lastSlowHttpAt != null &&
+        _now().difference(_lastSlowHttpAt!) >= NetworkConfig.slowHttpDecay) {
+      _slowHttpHits = 0;
+      _lastSlowHttpAt = null;
+      _slowHttpDecayTimer?.cancel();
+      _slowHttpDecayTimer = null;
+    }
+
+    if (_slowPingHits >= NetworkConfig.maxSlowHits ||
+        _slowHttpHits >= NetworkConfig.maxSlowHits) {
+      _updateState(NetworkState.unstable);
+    } else {
+      _updateState(NetworkState.connected);
+    }
+  }
+
   @override
   void reportLatency(int ms) {
     if (_isBackground ||
@@ -311,9 +517,20 @@ class InternetConnectionService
 
     if (ms >= NetworkConfig.slowDioThresholdMs) {
       _slowHttpHits++;
-      _lastSlowHttpTime = _now();
+      _lastSlowHttpAt = _now();
+      _slowHttpDecayTimer?.cancel();
+      _slowHttpDecayTimer = Timer(NetworkConfig.slowHttpDecay, () {
+        if (!_isDisposed) {
+          _slowHttpHits = 0;
+          _lastSlowHttpAt = null;
+          _applyStability();
+        }
+      });
     } else {
       _slowHttpHits = 0;
+      _lastSlowHttpAt = null;
+      _slowHttpDecayTimer?.cancel();
+      _slowHttpDecayTimer = null;
     }
 
     _applyStability();
@@ -328,219 +545,15 @@ class InternetConnectionService
     }
 
     final now = _now();
-    if (_lastFailureReportTime != null &&
-        now.difference(_lastFailureReportTime!) <
+    if (_lastFailureCheckAt != null &&
+        now.difference(_lastFailureCheckAt!) <
             NetworkConfig.failureCheckDebounce) {
       return;
     }
 
-    _lastFailureReportTime = now;
+    _lastFailureCheckAt = now;
     _forceConsensus = true;
     unawaited(checkNow());
-  }
-
-  @override
-  void dispose() {
-    if (_isDisposed) return;
-    _isDisposed = true;
-
-    if (_registerObserver) {
-      try {
-        WidgetsBinding.instance.removeObserver(this);
-      } on Object catch (_) {}
-    }
-
-    _timer?.cancel();
-    _timer = null;
-    unawaited(_connectivitySub?.cancel());
-    _probe.close();
-    unawaited(_stateController.close());
-    unawaited(_connectivityRestoredController.close());
-  }
-
-  // --- Lifecycle Observer ---
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    assert(() {
-      debugPrint('[Network] Lifecycle State → $state');
-      return true;
-    }());
-
-    if (state == AppLifecycleState.paused || state == AppLifecycleState.hidden) {
-      _isBackground = true;
-      _timer?.cancel();
-      _timer = null;
-    } else if (state == AppLifecycleState.resumed) {
-      _isBackground = false;
-      _forceConsensus = true;
-      unawaited(checkNow());
-    }
-  }
-
-  // --- Internals ---
-
-  void _onConnectivityChanged(List<ConnectivityResult> results) {
-    _epoch++;
-    _recheck = true;
-    _forceConsensus = true;
-
-    final hasNoInterface =
-        results.isEmpty || results.contains(ConnectivityResult.none);
-
-    if (hasNoInterface) {
-      _lastIssue = NetworkIssue.noInterface;
-      _updateState(NetworkState.disconnected);
-      _scheduleNext();
-    } else if (!_isBackground) {
-      unawaited(checkNow());
-    }
-  }
-
-  Future<void> _runChecks() async {
-    do {
-      _recheck = false;
-      await _performCheck();
-    } while (_recheck && !_isDisposed);
-  }
-
-  Future<void> _performCheck() async {
-    final currentEpoch = _epoch;
-    try {
-      // 1. Connectivity check
-      final connResults = await _connectivity.checkConnectivity();
-      if (_epoch != currentEpoch || _isDisposed) return;
-
-      final hasNoInterface = connResults.isEmpty ||
-          connResults.contains(ConnectivityResult.none);
-
-      if (hasNoInterface) {
-        _lastIssue = NetworkIssue.noInterface;
-        _updateState(NetworkState.disconnected);
-        return;
-      }
-
-      // 2. Reachability check
-      if (_pingChecker != null) {
-        final latency = await _pingChecker();
-        if (_epoch != currentEpoch || _isDisposed) return;
-        if (latency != null) {
-          _handleSuccess(latency);
-        } else {
-          _handleFailure(NetworkIssue.noInternet);
-        }
-        return;
-      }
-
-      final needsFull = _currentState == NetworkState.checking ||
-          _currentState == NetworkState.disconnected ||
-          _forceConsensus;
-
-      if (needsFull) {
-        final fullResult = await _probe.runAll();
-        if (_epoch != currentEpoch || _isDisposed) return;
-        if (fullResult.isSuccess) {
-          _handleSuccess(fullResult.latencyMs!);
-        } else {
-          _handleFailure(fullResult.issue);
-        }
-      } else {
-        final primaryResult = await _probe.runPrimary();
-        if (_epoch != currentEpoch || _isDisposed) return;
-        if (primaryResult is ProbeOk) {
-          _handleSuccess(primaryResult.latencyMs);
-        } else {
-          // Never declare offline from a single endpoint failure
-          final fullResult = await _probe.runAll();
-          if (_epoch != currentEpoch || _isDisposed) return;
-          if (fullResult.isSuccess) {
-            _handleSuccess(fullResult.latencyMs!);
-          } else {
-            _handleFailure(fullResult.issue);
-          }
-        }
-      }
-    } finally {
-      if (_epoch == currentEpoch && !_isDisposed) {
-        _scheduleNext();
-      }
-    }
-  }
-
-  void _handleSuccess(int latency) {
-    _consecutiveFailures = 0;
-    _forceConsensus = false;
-    _lastIssue = NetworkIssue.none;
-    _recoveryAttempt = 0;
-
-    if (latency >= NetworkConfig.slowPingThresholdMs) {
-      _slowPingHits++;
-    } else {
-      _slowPingHits = 0;
-    }
-
-    _applyStability();
-  }
-
-  void _handleFailure(NetworkIssue issue) {
-    final previousIssue = _lastIssue;
-    _lastIssue = issue;
-    _slowPingHits = 0;
-    _consecutiveFailures++;
-
-    final wasOnline = _currentState == NetworkState.connected ||
-        _currentState == NetworkState.unstable;
-    final threshold = wasOnline ? NetworkConfig.failuresBeforeDisconnect : 1;
-
-    if (_consecutiveFailures >= threshold) {
-      _updateState(NetworkState.disconnected);
-    } else if (_currentState == NetworkState.disconnected &&
-        previousIssue != issue) {
-      _stateController.add(_currentState);
-    }
-  }
-
-  void _applyStability() {
-    if (_lastSlowHttpTime != null &&
-        _now().difference(_lastSlowHttpTime!) >=
-            NetworkConfig.slowHttpDecay) {
-      _slowHttpHits = 0;
-      _lastSlowHttpTime = null;
-    }
-
-    if (_slowPingHits >= NetworkConfig.maxSlowHits ||
-        _slowHttpHits >= NetworkConfig.maxSlowHits) {
-      _updateState(NetworkState.unstable);
-    } else {
-      _updateState(NetworkState.connected);
-    }
-  }
-
-  void _updateState(NetworkState next) {
-    if (_isDisposed || _currentState == next) return;
-
-    final previous = _currentState;
-    _currentState = next;
-
-    assert(() {
-      debugPrint('[Network] State → $next');
-      return true;
-    }());
-
-    if (next == NetworkState.disconnected) {
-      _slowPingHits = 0;
-      _slowHttpHits = 0;
-      _lastSlowHttpTime = null;
-      _recoveryAttempt = 0;
-      _forceConsensus = true;
-    }
-
-    _stateController.add(next);
-
-    if (previous == NetworkState.disconnected &&
-        next == NetworkState.connected) {
-      _connectivityRestoredController.add(null);
-    }
   }
 
   void _scheduleNext() {
@@ -565,6 +578,86 @@ class InternetConnectionService
       delay = const Duration(seconds: NetworkConfig.pingIntervalSeconds);
     }
 
-    _timer = Timer(delay, () => unawaited(checkNow()));
+    _timer = Timer(delay, () {
+      if (!_isBackground && !_isDisposed) {
+        unawaited(checkNow());
+      }
+    });
+  }
+
+  void _updateState(NetworkState nextState) {
+    if (_isDisposed) return;
+
+    if (_currentState == nextState) {
+      if (nextState == NetworkState.disconnected &&
+          _lastIssue != _lastEmittedIssue) {
+        _lastEmittedIssue = _lastIssue;
+        _stateController.add(nextState);
+      }
+      return;
+    }
+
+    final previousState = _currentState;
+    _currentState = nextState;
+    _lastEmittedIssue = _lastIssue;
+
+    if (nextState == NetworkState.disconnected) {
+      _slowPingHits = 0;
+      _slowHttpHits = 0;
+      _lastSlowHttpAt = null;
+      _slowHttpDecayTimer?.cancel();
+      _slowHttpDecayTimer = null;
+      _recoveryAttempt = 0;
+      _consecutiveFailures = 0;
+      _forceConsensus = true;
+    }
+
+    _stateController.add(nextState);
+
+    if (previousState == NetworkState.disconnected &&
+        nextState == NetworkState.connected) {
+      _restoredController.add(null);
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.hidden) {
+      _isBackground = true;
+      _timer?.cancel();
+      _timer = null;
+    } else if (state == AppLifecycleState.resumed) {
+      _isBackground = false;
+      _forceConsensus = true;
+      _recheck = true;
+      unawaited(checkNow());
+    }
+  }
+
+  @override
+  void dispose() {
+    if (_isDisposed) return;
+    _isDisposed = true;
+
+    if (_registerObserver) {
+      try {
+        WidgetsBinding.instance.removeObserver(this);
+      } on Object catch (_) {}
+    }
+
+    _timer?.cancel();
+    _timer = null;
+    _slowHttpDecayTimer?.cancel();
+    _slowHttpDecayTimer = null;
+    _failureDebounceTimer?.cancel();
+    _failureDebounceTimer = null;
+
+    unawaited(_connectivitySubscription?.cancel());
+    _connectivitySubscription = null;
+
+    _probe.close();
+    unawaited(_stateController.close());
+    unawaited(_restoredController.close());
   }
 }

@@ -31,14 +31,15 @@ void main() {
 
     when(() => mockProbe.close()).thenReturn(null);
     when(() => mockProbe.runAll()).thenAnswer(
-      (_) async => const FullProbeResult(
+      (_) async => const ProbeSummary(
         isSuccess: true,
         latencyMs: 50,
         issue: NetworkIssue.none,
+        results: [],
       ),
     );
     when(() => mockProbe.runPrimary())
-        .thenAnswer((_) async => const ProbeOk(50));
+        .thenAnswer((_) async => const ProbeResult.ok(50));
   });
 
   tearDown(() async {
@@ -50,10 +51,11 @@ void main() {
       'Interface up + all probes fail -> disconnected, lastIssue == noInternet',
       () async {
         when(() => mockProbe.runAll()).thenAnswer(
-          (_) async => const FullProbeResult(
+          (_) async => const ProbeSummary(
             isSuccess: false,
             latencyMs: null,
             issue: NetworkIssue.noInternet,
+            results: [],
           ),
         );
 
@@ -73,10 +75,11 @@ void main() {
 
     test('Probes return portal -> lastIssue == captivePortal', () async {
       when(() => mockProbe.runAll()).thenAnswer(
-        (_) async => const FullProbeResult(
+        (_) async => const ProbeSummary(
           isSuccess: false,
           latencyMs: null,
           issue: NetworkIssue.captivePortal,
+          results: [],
         ),
       );
 
@@ -108,12 +111,13 @@ void main() {
 
         // First failure: primary and fallback runAll both fail
         when(() => mockProbe.runPrimary())
-            .thenAnswer((_) async => const ProbeFailed());
+            .thenAnswer((_) async => const ProbeResult.failed());
         when(() => mockProbe.runAll()).thenAnswer(
-          (_) async => const FullProbeResult(
+          (_) async => const ProbeSummary(
             isSuccess: false,
             latencyMs: null,
             issue: NetworkIssue.noInternet,
+            results: [],
           ),
         );
 
@@ -136,16 +140,18 @@ void main() {
 
           when(() => mockProbe.runAll()).thenAnswer((_) async {
             if (probeShouldSucceed) {
-              return const FullProbeResult(
+              return const ProbeSummary(
                 isSuccess: true,
                 latencyMs: 50,
                 issue: NetworkIssue.none,
+                results: [],
               );
             }
-            return const FullProbeResult(
+            return const ProbeSummary(
               isSuccess: false,
               latencyMs: null,
               issue: NetworkIssue.noInternet,
+              results: [],
             );
           });
 
@@ -184,10 +190,11 @@ void main() {
 
         when(() => mockProbe.runAll()).thenAnswer((_) async {
           tickTimestamps.add(async.elapsed.inSeconds);
-          return const FullProbeResult(
+          return const ProbeSummary(
             isSuccess: false,
             latencyMs: null,
             issue: NetworkIssue.noInternet,
+            results: [],
           );
         });
 
@@ -284,7 +291,7 @@ void main() {
     test(
       'hasConnection() during initial check awaits and returns right value; concurrent checkNow() calls share one check',
       () async {
-        final completer = Completer<FullProbeResult>();
+        final completer = Completer<ProbeSummary>();
         when(() => mockProbe.runAll()).thenAnswer((_) => completer.future);
 
         final service = InternetConnectionService(
@@ -302,10 +309,11 @@ void main() {
         final checkNowFuture2 = service.checkNow();
 
         completer.complete(
-          const FullProbeResult(
+          const ProbeSummary(
             isSuccess: true,
             latencyMs: 40,
             issue: NetworkIssue.none,
+            results: [],
           ),
         );
 
@@ -325,8 +333,8 @@ void main() {
     test('Network switch mid-check: stale result discarded, new check runs',
         () async {
       var callCount = 0;
-      final completer1 = Completer<FullProbeResult>();
-      final completer2 = Completer<FullProbeResult>();
+      final completer1 = Completer<ProbeSummary>();
+      final completer2 = Completer<ProbeSummary>();
 
       when(() => mockProbe.runAll()).thenAnswer((_) {
         callCount++;
@@ -349,19 +357,21 @@ void main() {
 
       // Complete the first (stale) check with failure
       completer1.complete(
-        const FullProbeResult(
+        const ProbeSummary(
           isSuccess: false,
           latencyMs: null,
           issue: NetworkIssue.noInternet,
+          results: [],
         ),
       );
 
       // Complete the second check with success
       completer2.complete(
-        const FullProbeResult(
+        const ProbeSummary(
           isSuccess: true,
           latencyMs: 60,
           issue: NetworkIssue.none,
+          results: [],
         ),
       );
 

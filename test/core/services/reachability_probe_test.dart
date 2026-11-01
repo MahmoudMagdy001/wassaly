@@ -47,7 +47,7 @@ void main() {
       await server.close(force: true);
     });
 
-    test('204 response yields ProbeOk', () async {
+    test('204 response yields ProbeResult.ok', () async {
       final probe = ReachabilityProbe();
       addTearDown(probe.close);
 
@@ -57,11 +57,12 @@ void main() {
       );
 
       final result = await probe.run(target);
-      expect(result, isA<ProbeOk>());
-      expect((result as ProbeOk).latencyMs, greaterThanOrEqualTo(0));
+      expect(result.isOk, isTrue);
+      expect(result.latencyMs, isNotNull);
+      expect(result.latencyMs, greaterThanOrEqualTo(0));
     });
 
-    test('302 redirect yields ProbePortal', () async {
+    test('302 redirect yields ProbeResult.portal', () async {
       final probe = ReachabilityProbe();
       addTearDown(probe.close);
 
@@ -71,10 +72,11 @@ void main() {
       );
 
       final result = await probe.run(target);
-      expect(result, isA<ProbePortal>());
+      expect(result.isPortal, isTrue);
+      expect(result.latencyMs, isNull);
     });
 
-    test('200 with wrong body yields ProbePortal', () async {
+    test('200 with wrong body yields ProbeResult.portal', () async {
       final probe = ReachabilityProbe();
       addTearDown(probe.close);
 
@@ -84,10 +86,25 @@ void main() {
       );
 
       final result = await probe.run(target);
-      expect(result, isA<ProbePortal>());
+      expect(result.isPortal, isTrue);
     });
 
-    test('500 server error yields ProbeFailed', () async {
+    test('200 with Success on Apple captive endpoint yields ProbeResult.ok',
+        () async {
+      final probe = ReachabilityProbe();
+      addTearDown(probe.close);
+
+      final target = ProbeTarget(
+        Uri.parse('http://127.0.0.1:$port/status200_success'),
+        (status, body) => status == 200 && body.contains('Success'),
+      );
+
+      final result = await probe.run(target);
+      expect(result.isOk, isTrue);
+      expect(result.latencyMs, greaterThanOrEqualTo(0));
+    });
+
+    test('500 server error yields ProbeResult.failed', () async {
       final probe = ReachabilityProbe();
       addTearDown(probe.close);
 
@@ -97,10 +114,10 @@ void main() {
       );
 
       final result = await probe.run(target);
-      expect(result, isA<ProbeFailed>());
+      expect(result.isFailed, isTrue);
     });
 
-    test('slow response exceeding timeout yields ProbeFailed', () async {
+    test('slow response exceeding timeout yields ProbeResult.failed', () async {
       final probe = ReachabilityProbe(
         timeout: const Duration(milliseconds: 100),
       );
@@ -112,56 +129,82 @@ void main() {
       );
 
       final result = await probe.run(target);
-      expect(result, isA<ProbeFailed>());
+      expect(result.isFailed, isTrue);
     });
 
-    test('consensus needs 2 of 3 and returns median latency', () async {
-      final targets = [
-        ProbeTarget(
-          Uri.parse('http://127.0.0.1:$port/status204'),
-          (status, _) => status == 204,
-        ),
-        ProbeTarget(
-          Uri.parse('http://127.0.0.1:$port/status200_success'),
-          (status, body) => status == 200 && body.contains('Success'),
-        ),
-        ProbeTarget(
-          Uri.parse('http://127.0.0.1:$port/status500'),
-          (status, _) => status == 204,
-        ),
-      ];
+    test(
+      'runAll() consensus: succeeds when at least 2 of 3 succeed, returns median latency, updates primaryIndex',
+      () async {
+        final probe = ReachabilityProbe(
+          targets: [
+            ProbeTarget(
+              Uri.parse('http://127.0.0.1:$port/status204'),
+              (s, _) => s == 204,
+            ),
+            ProbeTarget(
+              Uri.parse('http://127.0.0.1:$port/status200_success'),
+              (s, b) => s == 200 && b.contains('Success'),
+            ),
+            ProbeTarget(
+              Uri.parse('http://127.0.0.1:$port/status500'),
+              (s, _) => s == 204,
+            ),
+          ],
+        );
+        addTearDown(probe.close);
 
-      final probe = ReachabilityProbe(targets: targets);
+        final summary = await probe.runAll();
+        expect(summary.isSuccess, isTrue);
+        expect(summary.issue, NetworkIssue.none);
+        expect(summary.latencyMs, isNotNull);
+        expect(probe.primaryIndex, isIn([0, 1]));
+      },
+    );
+
+    test('runAll() consensus fails with captivePortal if any probe saw portal',
+        () async {
+      final probe = ReachabilityProbe(
+        targets: [
+          ProbeTarget(
+            Uri.parse('http://127.0.0.1:$port/status302'),
+            (s, _) => s == 204,
+          ),
+          ProbeTarget(
+            Uri.parse('http://127.0.0.1:$port/status500'),
+            (s, _) => s == 204,
+          ),
+          ProbeTarget(
+            Uri.parse('http://127.0.0.1:$port/status500'),
+            (s, _) => s == 204,
+          ),
+        ],
+      );
       addTearDown(probe.close);
 
-      final fullResult = await probe.runAll();
-      expect(fullResult.isSuccess, isTrue);
-      expect(fullResult.latencyMs, isNotNull);
-      expect(fullResult.issue, NetworkIssue.none);
+      final summary = await probe.runAll();
+      expect(summary.isSuccess, isFalse);
+      expect(summary.issue, NetworkIssue.captivePortal);
     });
 
-    test('consensus fails with captivePortal if any probe saw portal', () async {
-      final targets = [
-        ProbeTarget(
-          Uri.parse('http://127.0.0.1:$port/status302'),
-          (status, _) => status == 204,
-        ),
-        ProbeTarget(
-          Uri.parse('http://127.0.0.1:$port/status500'),
-          (status, _) => status == 204,
-        ),
-        ProbeTarget(
-          Uri.parse('http://127.0.0.1:$port/status500'),
-          (status, _) => status == 204,
-        ),
-      ];
-
-      final probe = ReachabilityProbe(targets: targets);
+    test('runAll() consensus fails with noInternet when all endpoints fail without portal',
+        () async {
+      final probe = ReachabilityProbe(
+        targets: [
+          ProbeTarget(
+            Uri.parse('http://127.0.0.1:$port/status500'),
+            (s, _) => s == 204,
+          ),
+          ProbeTarget(
+            Uri.parse('http://127.0.0.1:$port/status500'),
+            (s, _) => s == 204,
+          ),
+        ],
+      );
       addTearDown(probe.close);
 
-      final fullResult = await probe.runAll();
-      expect(fullResult.isSuccess, isFalse);
-      expect(fullResult.issue, NetworkIssue.captivePortal);
+      final summary = await probe.runAll();
+      expect(summary.isSuccess, isFalse);
+      expect(summary.issue, NetworkIssue.noInternet);
     });
   });
 }

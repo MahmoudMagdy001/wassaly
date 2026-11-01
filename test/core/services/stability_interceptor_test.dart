@@ -27,15 +27,15 @@ void main() {
 
   group('StabilityInterceptor', () {
     test(
-      'onRequest adds startTime to options.extra and calls handler.next',
+      'onRequest adds stability_startTime to options.extra and calls handler.next',
       () {
         final options = RequestOptions(path: '/test');
         final handler = MockRequestInterceptorHandler();
 
         interceptor.onRequest(options, handler);
 
-        expect(options.extra['startTime'], isNotNull);
-        expect(options.extra['startTime'], isA<int>());
+        expect(options.extra['stability_startTime'], isNotNull);
+        expect(options.extra['stability_startTime'], isA<int>());
         verify(() => handler.next(options)).called(1);
       },
     );
@@ -49,7 +49,7 @@ void main() {
 
       interceptor.onRequest(options, handler);
 
-      expect(options.extra['startTime'], isNull);
+      expect(options.extra['stability_startTime'], isNull);
       verify(() => handler.next(options)).called(1);
     });
 
@@ -57,7 +57,7 @@ void main() {
       final startTime = DateTime.now().millisecondsSinceEpoch - 150;
       final options = RequestOptions(
         path: '/test',
-        extra: {'startTime': startTime},
+        extra: {'stability_startTime': startTime},
       );
       final response = Response<dynamic>(requestOptions: options);
       final handler = MockResponseInterceptorHandler();
@@ -77,7 +77,7 @@ void main() {
       final options = RequestOptions(
         path: '/test',
         extra: {
-          'startTime': startTime,
+          'stability_startTime': startTime,
           StabilityInterceptor.skipKey: true,
         },
       );
@@ -94,7 +94,7 @@ void main() {
       final startTime = DateTime.now().millisecondsSinceEpoch - 200;
       final options = RequestOptions(
         path: '/test',
-        extra: {'startTime': startTime},
+        extra: {'stability_startTime': startTime},
       );
       final err = DioException(
         requestOptions: options,
@@ -115,7 +115,7 @@ void main() {
         final startTime = DateTime.now().millisecondsSinceEpoch - 250;
         final options = RequestOptions(
           path: '/test',
-          extra: {'startTime': startTime},
+          extra: {'stability_startTime': startTime},
         );
         final err = DioException(
           requestOptions: options,
@@ -140,7 +140,7 @@ void main() {
       final startTime = DateTime.now().millisecondsSinceEpoch - 300;
       final options = RequestOptions(
         path: '/test',
-        extra: {'startTime': startTime},
+        extra: {'stability_startTime': startTime},
       );
       final err = DioException(
         requestOptions: options,
@@ -161,7 +161,7 @@ void main() {
       final startTime = DateTime.now().millisecondsSinceEpoch - 180;
       final options = RequestOptions(
         path: '/test',
-        extra: {'startTime': startTime},
+        extra: {'stability_startTime': startTime},
       );
       final err = DioException(
         requestOptions: options,
@@ -186,7 +186,7 @@ void main() {
       final options = RequestOptions(
         path: '/test',
         extra: {
-          'startTime': startTime,
+          'stability_startTime': startTime,
           StabilityInterceptor.skipKey: true,
         },
       );

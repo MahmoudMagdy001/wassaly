@@ -1,4 +1,4 @@
-﻿{
+{
   "@@locale": "ar",
   "app_title": "Wassaly",
   "shared_get_started": "ابدأ الآن",
@@ -601,7 +601,11 @@
   "search_tag_products": "منتجات",
   "network_banner_captive_portal": "الشبكة محتاجة تسجيل دخول أو الباقة منتهية — اضغط للفحص",
   "network_banner_no_internet": "متصل بالشبكة لكن بدون إنترنت — تأكد من رصيد الباقة",
-  "network_banner_no_interface": "لا يوجد اتصال بالإنترنت — اضغط لإعادة المحاولة",
-  "network_banner_unstable": "الاتصال بالإنترنت غير مستقر - اضغط للفحص",
-  "network_banner_restored": "تمت استعادة الاتصال بالإنترنت"
+  "network_banner_no_interface": "لا يوجد اتصال بالإنترنت — حاول مرة أخرى",
+  "network_banner_unstable": "اتصال الإنترنت ضعيف — قد يتأخر التحميل",
+  "network_banner_restored": "تم استعادة الاتصال بالإنترنت",
+  "internet_captive_portal_banner": "الشبكة محتاجة تسجيل دخول أو الباقة منتهية — اضغط للفحص",
+  "internet_no_access_banner": "متصل بالشبكة لكن بدون إنترنت — تأكد من رصيد الباقة",
+  "internet_unstable_banner": "اتصال الإنترنت ضعيف — قد يتأخر التحميل",
+  "internet_restored_banner": "تم استعادة الاتصال بالإنترنت"
 }

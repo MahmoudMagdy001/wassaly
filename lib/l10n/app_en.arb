@@ -601,7 +601,11 @@
   "search_tag_products": "Products",
   "network_banner_captive_portal": "Network needs sign-in or has no data balance — tap to check",
   "network_banner_no_internet": "Connected to the network but no internet — check your data balance",
-  "network_banner_no_interface": "No internet connection — Tap to retry",
-  "network_banner_unstable": "Internet connection unstable — Tap to check",
-  "network_banner_restored": "Internet connection restored"
+  "network_banner_no_interface": "No Internet Connection — Try Again",
+  "network_banner_unstable": "Unstable internet connection — loading may be slow",
+  "network_banner_restored": "Internet connection restored",
+  "internet_captive_portal_banner": "Network needs sign-in or has no data balance — tap to check",
+  "internet_no_access_banner": "Connected to the network but no internet — check your data balance",
+  "internet_unstable_banner": "Unstable internet connection — loading may be slow",
+  "internet_restored_banner": "Internet connection restored"
 }

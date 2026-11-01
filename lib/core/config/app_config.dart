@@ -67,9 +67,18 @@ class AppConfig {
     );
   }
 
+  /// Attaches StabilityInterceptor to the Dio client if not already present.
+  static void attachStabilityInterceptor(StabilityInterceptor interceptor) {
+    if (dio.interceptors.every((i) => i is! StabilityInterceptor)) {
+      dio.interceptors.insert(0, interceptor);
+    }
+  }
+
   /// Measures latency on every Dio request via StabilityInterceptor
   static void _addStabilityInterceptor() {
-    dio.interceptors.add(sl<StabilityInterceptor>());
+    if (sl.isRegistered<StabilityInterceptor>()) {
+      dio.interceptors.add(sl<StabilityInterceptor>());
+    }
   }
 
   /// Automatically attaches the Authorization Bearer token.

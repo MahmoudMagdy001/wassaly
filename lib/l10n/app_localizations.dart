@@ -3622,13 +3622,13 @@ abstract class S {
   /// No description provided for @network_banner_no_interface.
   ///
   /// In en, this message translates to:
-  /// **'No internet connection — Tap to retry'**
+  /// **'No Internet Connection — Try Again'**
   String get network_banner_no_interface;
 
   /// No description provided for @network_banner_unstable.
   ///
   /// In en, this message translates to:
-  /// **'Internet connection unstable — Tap to check'**
+  /// **'Unstable internet connection — loading may be slow'**
   String get network_banner_unstable;
 
   /// No description provided for @network_banner_restored.
@@ -3636,6 +3636,30 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Internet connection restored'**
   String get network_banner_restored;
+
+  /// No description provided for @internet_captive_portal_banner.
+  ///
+  /// In en, this message translates to:
+  /// **'Network needs sign-in or has no data balance — tap to check'**
+  String get internet_captive_portal_banner;
+
+  /// No description provided for @internet_no_access_banner.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected to the network but no internet — check your data balance'**
+  String get internet_no_access_banner;
+
+  /// No description provided for @internet_unstable_banner.
+  ///
+  /// In en, this message translates to:
+  /// **'Unstable internet connection — loading may be slow'**
+  String get internet_unstable_banner;
+
+  /// No description provided for @internet_restored_banner.
+  ///
+  /// In en, this message translates to:
+  /// **'Internet connection restored'**
+  String get internet_restored_banner;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

@@ -6,14 +6,17 @@ import 'package:wassaly/core/extensions/context_extension.dart';
 import 'package:wassaly/core/injection/injection.dart';
 import 'package:wassaly/core/services/internet_connection_service.dart';
 
-/// Wraps app content with an animated slim banner notifying the user
-/// about real network status changes (disconnected, unstable, restored).
+/// Wraps app content with an animated slim status banner notifying the user
+/// about real network status changes (disconnected, unstable, restored)
+/// without causing double top SafeArea padding.
 class InternetConnectionWrapper extends StatefulWidget {
   final Widget child;
+  final IInternetConnectionService? connectionService;
   final IInternetConnectionService? service;
 
   const InternetConnectionWrapper({
     required this.child,
+    this.connectionService,
     this.service,
     super.key,
   });
@@ -29,65 +32,52 @@ class _InternetConnectionWrapperState extends State<InternetConnectionWrapper> {
 
   NetworkState _state = NetworkState.checking;
   NetworkIssue _lastIssue = NetworkIssue.none;
-  bool _showBanner = false;
-  bool _isRestored = false;
+  bool _showRestored = false;
   Timer? _hideTimer;
+
+  bool get _shouldShowBanner =>
+      _showRestored ||
+      _state == NetworkState.disconnected ||
+      _state == NetworkState.unstable;
 
   @override
   void initState() {
     super.initState();
-    _service = widget.service ?? sl<InternetConnectionService>();
+    _service = widget.connectionService ??
+        widget.service ??
+        sl<InternetConnectionService>();
     _state = _service.currentState;
     _lastIssue = _service.lastIssue;
-
-    if (_state == NetworkState.disconnected ||
-        _state == NetworkState.unstable) {
-      _showBanner = true;
-    }
 
     _stateSub = _service.stateStream.listen(_onStateChanged);
   }
 
   void _onStateChanged(NetworkState newState) {
     if (!mounted) return;
-    _hideTimer?.cancel();
-    _hideTimer = null;
 
-    final wasDisconnected = _state == NetworkState.disconnected;
-    final currentIssue = _service.lastIssue;
+    final previousState = _state;
+    _state = newState;
+    _lastIssue = _service.lastIssue;
 
-    setState(() {
-      _state = newState;
-      _lastIssue = currentIssue;
-
-      if (newState == NetworkState.disconnected ||
-          newState == NetworkState.unstable) {
-        _showBanner = true;
-        _isRestored = false;
-      } else if (newState == NetworkState.connected) {
-        if (wasDisconnected) {
-          _showBanner = true;
-          _isRestored = true;
-        } else {
-          _showBanner = false;
-          _isRestored = false;
-        }
-      } else {
-        _showBanner = false;
-        _isRestored = false;
-      }
-    });
-
-    if (newState == NetworkState.connected && _isRestored) {
+    if (previousState == NetworkState.disconnected &&
+        newState == NetworkState.connected) {
+      _showRestored = true;
+      _hideTimer?.cancel();
       _hideTimer = Timer(const Duration(milliseconds: 1800), () {
         if (mounted) {
           setState(() {
-            _showBanner = false;
-            _isRestored = false;
+            _showRestored = false;
           });
         }
       });
+    } else if (newState == NetworkState.disconnected ||
+        newState == NetworkState.unstable) {
+      _showRestored = false;
+      _hideTimer?.cancel();
+      _hideTimer = null;
     }
+
+    setState(() {});
   }
 
   @override
@@ -98,29 +88,32 @@ class _InternetConnectionWrapperState extends State<InternetConnectionWrapper> {
   }
 
   @override
-  Widget build(BuildContext context) => Column(
-        children: [
-          AnimatedSize(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-            child: _showBanner
-                ? _NetworkBanner(
-                    state: _state,
-                    issue: _lastIssue,
-                    isRestored: _isRestored,
-                    onTap: () => unawaited(_service.checkNow()),
-                  )
-                : const SizedBox.shrink(),
+  Widget build(BuildContext context) {
+    final showBanner = _shouldShowBanner;
+    return Column(
+      children: [
+        AnimatedSize(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          child: showBanner
+              ? _NetworkBanner(
+                  state: _state,
+                  issue: _lastIssue,
+                  isRestored: _showRestored,
+                  onTap: () => unawaited(_service.checkNow()),
+                )
+              : const SizedBox.shrink(),
+        ),
+        Expanded(
+          child: MediaQuery.removePadding(
+            context: context,
+            removeTop: showBanner,
+            child: widget.child,
           ),
-          Expanded(
-            child: MediaQuery.removePadding(
-              context: context,
-              removeTop: _showBanner,
-              child: widget.child,
-            ),
-          ),
-        ],
-      );
+        ),
+      ],
+    );
+  }
 }
 
 class _NetworkBanner extends StatelessWidget {
@@ -142,7 +135,7 @@ class _NetworkBanner extends StatelessWidget {
         context.appColors.success,
         context.appColors.onSuccess,
         Icons.check_circle_outline_rounded,
-        context.l10n.network_banner_restored,
+        context.l10n.internet_restored_banner,
       );
     }
 
@@ -150,27 +143,30 @@ class _NetworkBanner extends StatelessWidget {
       return (
         context.appColors.warning,
         context.appColors.onWarning,
-        Icons.network_check_rounded,
-        context.l10n.network_banner_unstable,
+        Icons.wifi_protected_setup_rounded,
+        context.l10n.internet_unstable_banner,
       );
     }
 
-    // ponytail: calm orange distinguishes "connected to network but no internet / check quota"
-    // from complete disconnection (error/red) and normal connection (success/green).
-    if (issue == NetworkIssue.noInternet ||
-        issue == NetworkIssue.captivePortal) {
-      final message = issue == NetworkIssue.noInternet
-          ? context.l10n.network_banner_no_internet
-          : context.l10n.network_banner_captive_portal;
-
+    if (issue == NetworkIssue.captivePortal) {
       return (
         context.appColors.softOrange,
         context.appColors.onSoftOrange,
-        Icons.wifi_off_rounded,
-        message,
+        Icons.wifi_lock_rounded,
+        context.l10n.internet_captive_portal_banner,
       );
     }
 
+    if (issue == NetworkIssue.noInternet) {
+      return (
+        context.appColors.softOrange,
+        context.appColors.onSoftOrange,
+        Icons.wifi_find_rounded,
+        context.l10n.internet_no_access_banner,
+      );
+    }
+
+    // noInterface or none while disconnected
     return (
       context.colors.error,
       context.colors.onError,

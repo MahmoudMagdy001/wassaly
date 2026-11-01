@@ -45,7 +45,7 @@ void main() {
           home: MediaQuery(
             data: const MediaQueryData(padding: EdgeInsets.only(top: 44)),
             child: InternetConnectionWrapper(
-              service: service,
+              connectionService: service,
               child: child,
             ),
           ),
@@ -53,7 +53,7 @@ void main() {
       );
 
   group('InternetConnectionWrapper Widget Tests', () {
-    testWidgets('shows captivePortal message when disconnected',
+    testWidgets('shows captivePortal message and wifi_lock icon when disconnected',
         (tester) async {
       when(() => mockService.currentState)
           .thenReturn(NetworkState.disconnected);
@@ -70,13 +70,15 @@ void main() {
 
       expect(
         find.text(
-            'Network needs sign-in or has no data balance — tap to check'),
+          'Network needs sign-in or has no data balance — tap to check',
+        ),
         findsOneWidget,
       );
-      expect(find.byIcon(Icons.wifi_off_rounded), findsOneWidget);
+      expect(find.byIcon(Icons.wifi_lock_rounded), findsOneWidget);
     });
 
-    testWidgets('shows noInternet message and soft orange banner when disconnected',
+    testWidgets(
+        'shows noInternet message and wifi_find icon when disconnected',
         (tester) async {
       when(() => mockService.currentState)
           .thenReturn(NetworkState.disconnected);
@@ -92,10 +94,11 @@ void main() {
 
       expect(
         find.text(
-            'Connected to the network but no internet — check your data balance'),
+          'Connected to the network but no internet — check your data balance',
+        ),
         findsOneWidget,
       );
-      expect(find.byIcon(Icons.wifi_off_rounded), findsOneWidget);
+      expect(find.byIcon(Icons.wifi_find_rounded), findsOneWidget);
 
       final material = tester.widget<Material>(
         find.descendant(
@@ -106,7 +109,8 @@ void main() {
       expect(material.color, const Color(0xFFE07A24));
     });
 
-    testWidgets('shows noInterface message when disconnected', (tester) async {
+    testWidgets('shows noInterface message and wifi_off icon when disconnected',
+        (tester) async {
       when(() => mockService.currentState)
           .thenReturn(NetworkState.disconnected);
       when(() => mockService.lastIssue).thenReturn(NetworkIssue.noInterface);
@@ -120,9 +124,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(
-        find.text('No internet connection — Tap to retry'),
+        find.text('No Internet Connection — Try Again'),
         findsOneWidget,
       );
+      expect(find.byIcon(Icons.wifi_off_rounded), findsOneWidget);
     });
 
     testWidgets('shows Arabic text when locale is ar', (tester) async {
@@ -146,7 +151,7 @@ void main() {
       );
     });
 
-    testWidgets('shows unstable style when network is unstable',
+    testWidgets('shows unstable style and wifi_protected_setup icon when network is unstable',
         (tester) async {
       when(() => mockService.currentState).thenReturn(NetworkState.unstable);
 
@@ -159,10 +164,42 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(
-        find.text('Internet connection unstable — Tap to check'),
+        find.text('Unstable internet connection — loading may be slow'),
         findsOneWidget,
       );
-      expect(find.byIcon(Icons.network_check_rounded), findsOneWidget);
+      expect(find.byIcon(Icons.wifi_protected_setup_rounded), findsOneWidget);
+    });
+
+    testWidgets('updates banner text dynamically if lastIssue changes while already in disconnected state',
+        (tester) async {
+      when(() => mockService.currentState)
+          .thenReturn(NetworkState.disconnected);
+      when(() => mockService.lastIssue).thenReturn(NetworkIssue.noInterface);
+
+      await tester.pumpWidget(
+        buildTestableWidget(
+          service: mockService,
+          child: const Text('App Content'),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('No Internet Connection — Try Again'), findsOneWidget);
+      expect(find.byIcon(Icons.wifi_off_rounded), findsOneWidget);
+
+      // Now issue changes to captivePortal while still disconnected
+      when(() => mockService.lastIssue)
+          .thenReturn(NetworkIssue.captivePortal);
+      stateController.add(NetworkState.disconnected);
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text(
+          'Network needs sign-in or has no data balance — tap to check',
+        ),
+        findsOneWidget,
+      );
+      expect(find.byIcon(Icons.wifi_lock_rounded), findsOneWidget);
     });
 
     testWidgets('restored banner shows and auto-hides after 1.8 seconds',
@@ -179,7 +216,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(Icons.wifi_off_rounded), findsOneWidget);
+      expect(find.byIcon(Icons.wifi_find_rounded), findsOneWidget);
 
       // Reconnect
       when(() => mockService.currentState).thenReturn(NetworkState.connected);

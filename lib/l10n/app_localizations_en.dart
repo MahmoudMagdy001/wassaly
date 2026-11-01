@@ -1917,12 +1917,27 @@ class SEn extends S {
 
   @override
   String get network_banner_no_interface =>
-      'No internet connection — Tap to retry';
+      'No Internet Connection — Try Again';
 
   @override
   String get network_banner_unstable =>
-      'Internet connection unstable — Tap to check';
+      'Unstable internet connection — loading may be slow';
 
   @override
   String get network_banner_restored => 'Internet connection restored';
+
+  @override
+  String get internet_captive_portal_banner =>
+      'Network needs sign-in or has no data balance — tap to check';
+
+  @override
+  String get internet_no_access_banner =>
+      'Connected to the network but no internet — check your data balance';
+
+  @override
+  String get internet_unstable_banner =>
+      'Unstable internet connection — loading may be slow';
+
+  @override
+  String get internet_restored_banner => 'Internet connection restored';
 }
